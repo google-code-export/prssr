@@ -1,0 +1,129 @@
+;
+; This is an installation file for pRSSreader
+;
+; by David Andrs, 2007
+;
+
+[Version]
+	Signature            = "$Windows NT$"
+	CESignature          = "$Windows CE$"
+	Provider             = "David Andrs"
+
+[CEDevice]
+	UnsupportedPlatforms = "HPC","HPC Pro"
+	VersionMin           = 3.0
+	VersionMax           = 10000.0
+
+[CEStrings]
+	AppName              = "pRSSreader"
+	InstallDir           = "%CE1%\%AppName%"
+
+[Strings]
+	TodayItem            = "Software\Microsoft\Today\Items\pRSSreader"
+	CLSIDNewItems        = "{5056DB7C-77D7-4DEE-A7B5-8B9578370A8F}"
+
+[Shortcuts]
+	%AppName%,0,prssr.exe
+
+[SourceDisksNames]
+	1                    = ,,,bin
+	3                    = ,,,license
+
+[SourceDisksFiles]
+	prssrtoday.dll = 1
+	prssrenc.dll = 1
+	zlib1.dll = 1
+	setup.dll = 1
+	libexpat.dll = 1
+	libsgml.dll = 1
+	libregex.dll = 1
+	License.txt = 3
+	libexpat-COPYING.txt = 3
+	prssrnot.exe = 1
+	prssr.exe = 1
+
+[DestinationDirs]
+	Shortcuts              = ,%CE11%
+	Files.App.LoDPI.ARM    = ,%InstallDir%
+	Files.App.HiDPI.ARM    = ,%InstallDir%
+	Files.App.ARM          = ,%InstallDir%
+	Files.TodayPlugin      = ,%CE2%
+	Files.Libs.ARM         = ,%CE2%
+
+
+[Files.Libs.ARM]
+	prssrnot.exe,,,0x40000000
+	libexpat.dll,libexpat.dll,,0x80000000
+	libsgml.dll,libsgml.dll,,0x80000000
+	libregex.dll,libregex.dll,,0x80000000
+	prssrenc.dll,prssrenc.dll,,0x40000000
+	zlib1.dll,zlib1.dll,,0x80000000
+
+[Files.App.ARM]
+	prssr.exe,,,0x40000000
+	license.txt,,,0x40000000
+	libexpat-COPYING.txt,,,0x40000000
+
+[DefaultInstall]
+	CEShortcuts          = Shortcuts
+	CopyFiles            = Files.App.ARM,Files.Libs.ARM,Files.TodayPlugin
+	CESetupDLL           = setup.dll
+	AddReg               = RegisterPlugin,Notifications
+
+
+;---------------------------------------------------------------------------------
+; LoDPI on ARM
+;---------------------------------------------------------------------------------
+[CEDevice.LoDPI.ARM]
+	ProcessorType        = 2577
+	BuildMax             = 0xE0000000
+
+
+[SourceDisksFiles.LoDPI.ARM]
+	res096.dll = 1
+
+[DefaultInstall.LoDPI.ARM]
+	CopyFiles            = Files.App.LoDPI.ARM
+
+[Files.App.LoDPI.ARM]
+	res.dll,res096.dll,,0x40000000
+
+;---------------------------------------------------------------------------------
+; HiDPI on ARM
+;---------------------------------------------------------------------------------
+
+[CEDevice.HiDPI.ARM]
+	ProcessorType        = 2577
+	BuildMax             = 0xE0000000
+
+[SourceDisksFiles.HiDPI.ARM]
+	res192.dll = 1
+
+[DefaultInstall.HiDPI.ARM]
+	CopyFiles            = Files.App.HiDPI.ARM
+
+[Files.App.HiDPI.ARM]
+	res.dll,res192.dll,,0x40000000
+
+;
+; Today plugin
+;
+[RegisterPlugin]
+	HKLM,%TodayItem%,DLL,           0x00000000,%CE2%\prssrtoday.dll
+	HKLM,%TodayItem%,Type,          0x00010001,4
+	HKLM,%TodayItem%,Options,       0x00010001,1
+	HKLM,%TodayItem%,Selectability, 0x00010001,2
+;	HKLM,%TodayItem%,Enabled,       0x00010001,0
+
+[Files.TodayPlugin]
+	prssrtoday.dll,,,0x40000000
+
+;
+; Notifications
+;
+[Notifications]
+	HKCU,ControlPanel\Notifications\%CLSIDNewItems%,,         0x00000000, "pRSSreader: new items"
+	HKCU,ControlPanel\Notifications\%CLSIDNewItems%,Duration, 0x00010001, 0
+	HKCU,ControlPanel\Notifications\%CLSIDNewItems%,Options,  0x00010001, 0
+	HKCU,ControlPanel\Notifications\%CLSIDNewItems%,Wave,     0x00000000, ""
+
