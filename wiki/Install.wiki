@@ -1,0 +1,20 @@
+#summary How to install pRSSreader
+#labels Featured
+
+=Installing=
+----
+
+==Installing Zipped CAB File==
+
+  # Before installing, make sure that your device meets [SystemRequirements system requirements].
+  # Download and unzip *pRSSreader*.
+  # Upload unzipped *cab file* to your PocketPC.
+  # Tap the *cab file* on your PocketPC to install.
+
+
+=Uninstalling=
+----
+
+  # Tap *Start | Settings*, select *System* tab and tap *Remove programs*.
+  # Find *pRSSreader* in the program list.
+  # Tap *Remove*.
