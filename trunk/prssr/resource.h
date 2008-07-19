@@ -71,6 +71,8 @@
 #define IDD_CHOOSE_FEEDS                202
 #define IDD_CHOOSE_FEEDS_WIDE           203
 #define IDD_PROP_REWRITING              204
+#define IDD_LICENSE                     205
+#define IDD_LICENSE_WIDE                206
 
 #define IDR_FEEDITEM                    300
 #define IDR_EDIT                        301
@@ -341,6 +343,7 @@
 #define IDS_EMPTY_RULE                  646
 #define IDS_EMPTY_NAME                  647
 #define IDS_EMPTY_HOST_NAME             648
+#define IDS_ABOUT                       649
 
 // controls
 #define IDC_HTML                        1000
@@ -586,6 +589,7 @@
 #define IDC_LASTUPDATED_LBL             1243
 #define IDC_SITEMAN_LINK                1244
 #define IDC_BKGND_UPDATE                1245
+#define IDC_LICENSE                     1246
 
 #define ID_TOOLS_OPTIONS                32774
 #define ID_TOOLS_SITEMANAGER            32775

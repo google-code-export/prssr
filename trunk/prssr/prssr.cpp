@@ -6,9 +6,9 @@
 #include "../share/uihelper.h"
 
 #include "MainFrm.h"
-#include "ctrls/CeDialog.h"
-#include "ctrls/LinkCtrl.h"
+//#include "ctrls/CeDialog.h"
 #include "ctrls/InfoBar.h"
+#include "ctrls/CePropertySheet.h"
 
 //#include "Site.h"
 #include "Appearance.h"
@@ -16,6 +16,9 @@
 #include "../share/notif.h"
 
 #include "net\ssl.h"
+
+#include "AboutPg.h"
+#include "LicensePg.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
@@ -37,99 +40,6 @@ UINT CheckFeedsMessage = 0;
 UINT UpdateFeedFlagsMessage = 0;
 
 OSVERSIONINFO OSVI = { 0 };
-
-/////////////////////////////////////////////////////////////////////////////
-// CAboutDlg dialog used for App About
-
-class CAboutDlg : public CCeDialog
-{
-public:
-	CAboutDlg();
-	virtual ~CAboutDlg();
-
-// Dialog Data
-	enum { 
-		IDD = IDD_ABOUTBOX,
-		IDD_WIDE = IDD_ABOUTBOX_WIDE
-	};
-	//{{AFX_DATA(CAboutDlg)
-	CLinkCtrl m_ctlHomepageLink;
-	//}}AFX_DATA
-
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CAboutDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
-
-// Implementation
-protected:
-	//{{AFX_MSG(CAboutDlg)
-	virtual BOOL OnInitDialog();		// Added for WCE apps
-	afx_msg void OnSize(UINT nType, int cx, int cy);
-	afx_msg void OnHomePage();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
-};
-
-CAboutDlg::CAboutDlg() : CCeDialog(InWideMode() ? CAboutDlg::IDD_WIDE : CAboutDlg::IDD) {
-	//{{AFX_DATA_INIT(CAboutDlg)
-	//}}AFX_DATA_INIT
-	m_nMenuID = IDR_CANCEL;
-}
-
-CAboutDlg::~CAboutDlg() {
-}
-
-void CAboutDlg::DoDataExchange(CDataExchange* pDX) {
-	CCeDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CAboutDlg)
-	DDX_Control(pDX, IDC_HOMEPAGE_LINK, m_ctlHomepageLink);
-	//}}AFX_DATA_MAP
-}
-
-BEGIN_MESSAGE_MAP(CAboutDlg, CCeDialog)
-	//{{AFX_MSG_MAP(CAboutDlg)
-	ON_WM_SIZE()
-	ON_BN_CLICKED(IDC_HOMEPAGE_LINK, OnHomePage)
-	//}}AFX_MSG_MAP
-END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
-// CPrssrApp commands
-// Added for WCE apps
-
-BOOL CAboutDlg::OnInitDialog() {
-	LOG0(5, "CAboutDlg::OnInitDialog()");
-
-	CCeDialog::OnInitDialog();
-
-	m_strCaption.Empty();
-
-	return TRUE;
-}
-
-void CAboutDlg::OnSize(UINT nType, int cx, int cy) {
-	CCeDialog::OnSize(nType, cx, cy);
-	
-	RelayoutDialog(AfxGetInstanceHandle(), GetSafeHwnd(), InWideMode() ?
-		MAKEINTRESOURCE(IDD_WIDE) :
-		MAKEINTRESOURCE(IDD));
-
-	if (!InWideMode()) {
-		m_ctlHomepageLink.SetWindowPos(NULL, 0, cy - SCALEY(20), cx - SCALEX(10), SCALEY(20), SWP_NOZORDER);
-	}
-}
-
-void CAboutDlg::OnHomePage() { 
-	SHELLEXECUTEINFO ei = { 0 };
-	ei.cbSize = sizeof(ei);
-	ei.fMask = SEE_MASK_NOCLOSEPROCESS;
-	CString strLink;
-	m_ctlHomepageLink.GetWindowText(strLink);
-	ei.lpFile = strLink;
-	ShellExecuteEx(&ei);
-}
 
 /////////////////////////////////////////////////////////////////////////////
 // CPrssrApp
@@ -191,8 +101,14 @@ CPrssrApp theApp;
 void CPrssrApp::OnAppAbout() {
 	LOG0(3, "CPrssrApp::OnAppAbout()");
 
-	CAboutDlg aboutDlg;
-	aboutDlg.DoModal();
+	CAboutPg pgAbout;
+	CLicensePg pgLicense;
+
+	CCePropertySheet sheet(IDS_ABOUT);
+	sheet.AddPage(&pgAbout);
+	sheet.AddPage(&pgLicense);
+	sheet.SetMenu(IDR_CANCEL);
+	sheet.DoModal();
 
 #if 0
 	// testing url download

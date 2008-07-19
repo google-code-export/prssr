@@ -795,21 +795,18 @@ END
 */
 
 IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 160, 165
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-EXSTYLE 0x80000000L
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW | 0x80000000L
 CAPTION "About"
 FONT 8, "Tahoma"
 BEGIN
-    ICON            IDR_MAINFRAME,IDC_APPICON,11,12,24,24
-    LTEXT           "pRSSreader 1.4.0.7",IDC_STATIC1,40,10,120,10,SS_NOPREFIX
-    LTEXT           "Copyright (c) 2005 - 2008",IDC_STATIC3,40,25,120,10
-    LTEXT           "David Andrs",IDC_STATIC4,40,35,120,10
-    LTEXT           "Using libexpat 2.0.0, zlib 1.2.3, libsgml 1.1.4, libregex 3.8a",IDC_STATIC5,40,50,120,30
-//    LTEXT           "Using zlib 1.2.3",IDC_STATIC6,40,70,120,10
-//    LTEXT           "Using libsgml 1.1.4",IDC_STATIC7,40,80,120,10
-//    LTEXT           "Using libregex 3.8a",IDC_STATIC8,40,90,120,10
-    RTEXT           "http://pda.jasnapaka.com/prssr/",IDC_HOMEPAGE_LINK,4,
-                    153,152,10,SS_NOTIFY
+    ICON            IDR_MAINFRAME,IDC_STATIC1,135,5,21,20
+    LTEXT           "pRSSreader 1.4.1",IDC_STATIC2,5,8,115,10
+    LTEXT           "Copyright (c) 2005 - 2008",IDC_STATIC3,5,23,115,10
+    LTEXT           "David Andrš",IDC_STATIC4,5,33,115,10
+    LTEXT           "Using libexpat 2.0.0, zlib 1.2.3, libsgml 1.1.4, libregex 3.8a",IDC_STATIC5,5,50,115,30
+    RTEXT           "http://pda.jasnapaka.com/prssr/",IDC_HOMEPAGE_LINK,5,124,
+                    151,10,SS_NOTIFY
 END
 
 IDD_ABOUTBOX_WIDE DIALOG DISCARDABLE  0, 0, 210, 100
@@ -818,17 +815,35 @@ EXSTYLE 0x80000000L
 CAPTION "About"
 FONT 8, "Tahoma"
 BEGIN
-    ICON            IDR_MAINFRAME,IDC_APPICON,11,11,24,24
-    LTEXT           "pRSSreader",IDC_STATIC1,40,9,120,10,SS_NOPREFIX
-    LTEXT           "Version 1.4.0.7",IDC_STATIC2,40,19,120,10,SS_NOPREFIX
-    LTEXT           "Copyright (c) 2005 - 2008",IDC_STATIC3,40,33,120,10
-    LTEXT           "David Andrs",IDC_STATIC4,40,43,120,10
-    LTEXT           "Using libexpat 2.0.0",IDC_STATIC5,40,57,120,10
-    LTEXT           "Using zlib 1.2.3",IDC_STATIC6,40,67,120,10
-    LTEXT           "Using libsgml 1.1.4",IDC_STATIC7,40,77,120,10
-    LTEXT           "Using libregex 3.8a",IDC_STATIC8,40,87,120,10
+    ICON            IDR_MAINFRAME,IDC_STATIC1,185,5,21,20
+    LTEXT           "pRSSreader 1.4.1",IDC_STATIC2,5,8,115,10
+    LTEXT           "Copyright (c) 2005 - 2008",IDC_STATIC3,5,23,115,10
+    LTEXT           "David Andrš",IDC_STATIC4,5,33,115,10
+    LTEXT           "Using libexpat 2.0.0, zlib 1.2.3, libsgml 1.1.4, libregex 3.8a",IDC_STATIC5,5,50,200,20
     RTEXT           "http://pda.jasnapaka.com/prssr/",IDC_HOMEPAGE_LINK,4,
-                    103,205,10,SS_NOTIFY
+                    73,205,10,SS_NOTIFY
+END
+
+IDD_LICENSE DIALOGEX 0, 0, 160, 165
+STYLE DS_MODALFRAME | WS_CHILD | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW | 0x80000000L
+CAPTION "License"
+FONT 8, "Tahoma"
+BEGIN
+    EDITTEXT        IDC_LICENSE,5,5,150,129,ES_MULTILINE | ES_AUTOVSCROLL | 
+                    ES_AUTOHSCROLL | NOT WS_BORDER | WS_VSCROLL | WS_HSCROLL | 
+                    NOT WS_TABSTOP
+END
+
+IDD_LICENSE_WIDE DIALOGEX 0, 0, 210, 100
+STYLE DS_MODALFRAME | WS_CHILD | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW | 0x80000000L
+CAPTION "License"
+FONT 8, "Tahoma"
+BEGIN
+    EDITTEXT        IDC_LICENSE,5,5,150,129,ES_MULTILINE | ES_AUTOVSCROLL | 
+                    ES_AUTOHSCROLL | NOT WS_BORDER | WS_VSCROLL | WS_HSCROLL | 
+                    NOT WS_TABSTOP
 END
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1688,4 +1703,5 @@ BEGIN
 	IDS_EMPTY_RULE          "Rewriting rule is not complete."
 	IDS_EMPTY_NAME          "The name can not be empty."
 	IDS_EMPTY_HOST_NAME     "The host name can not be empty."
+	IDS_ABOUT               "About"
 END

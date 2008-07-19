@@ -26,20 +26,29 @@
 	%AppName%,0,prssr.exe
 
 [SourceDisksNames]
-	1                    = ,,,bin
-	3                    = ,,,license
+	 1 = ,"prssr",,..\prssr\prj\armv4rel
+	 2 = ,"prssrenc",,..\prssrenc\prj\armv4rel
+	 3 = ,"prssrnot",,..\prssrnot\prj\armv4rel
+	 4 = ,"prssrtoday",,..\prssrtoday\prj\armv4rel
+	 5 = ,"setup",,..\setup\prj\armv4rel
+	 6 = ,"libexpat",,..\libexpat
+	 7 = ,"libsgml",,..\libsgml
+	 8 = ,"regex",,..\regex
+	 9 = ,"res096",,..\res096\prj\armv4rel
+	10 = ,"res192",,..\res192\prj\armv4rel
+	11 = ,"zlib",,..\zlib
+	12 = ,"license",,..
 
 [SourceDisksFiles]
-	prssrtoday.dll = 1
-	prssrenc.dll = 1
-	zlib1.dll = 1
-	setup.dll = 1
-	libexpat.dll = 1
-	libsgml.dll = 1
-	libregex.dll = 1
-	License.txt = 3
-	libexpat-COPYING.txt = 3
-	prssrnot.exe = 1
+	prssrtoday.dll = 4
+	prssrenc.dll = 2
+	zlib1.dll = 11
+	setup.dll = 5
+	libexpat.dll = 6
+	libsgml.dll = 7
+	libregex.dll = 8
+	COPYING = 12
+	prssrnot.exe = 3
 	prssr.exe = 1
 
 [DestinationDirs]
@@ -61,8 +70,7 @@
 
 [Files.App.ARM]
 	prssr.exe,,,0x40000000
-	license.txt,,,0x40000000
-	libexpat-COPYING.txt,,,0x40000000
+	COPYING,,,0x40000000
 
 [DefaultInstall]
 	CEShortcuts          = Shortcuts
@@ -80,7 +88,7 @@
 
 
 [SourceDisksFiles.LoDPI.ARM]
-	res096.dll = 1
+	res096.dll = 9
 
 [DefaultInstall.LoDPI.ARM]
 	CopyFiles            = Files.App.LoDPI.ARM
@@ -97,7 +105,7 @@
 	BuildMax             = 0xE0000000
 
 [SourceDisksFiles.HiDPI.ARM]
-	res192.dll = 1
+	res192.dll = 10
 
 [DefaultInstall.HiDPI.ARM]
 	CopyFiles            = Files.App.HiDPI.ARM
