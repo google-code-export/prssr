@@ -140,9 +140,6 @@ protected:
 
 	UINT TapAndHoldTimer;
 	CPoint LastCursorPos;
-	UINT CtxMenuTimer;
-//	BOOL MyKey;
-//	BOOL IgnoreUp;
 
 	void CreateFonts();
 	void DrawIcon(CDC &dc, int icon, BOOL selected);

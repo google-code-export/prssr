@@ -89,9 +89,6 @@ CFeedView::CFeedView() {
 	m_bContextMenu = FALSE;
 
 	TapAndHoldTimer = 1;
-	CtxMenuTimer = 2;
-//	MyKey = FALSE;
-//	IgnoreUp = FALSE;
 
 	m_bScrolling = FALSE;
 
@@ -812,22 +809,6 @@ void CFeedView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			break;
 		
 		case VK_RETURN:
-			if (m_oItems.GetSize() > 0 && m_nSelectStart >= 0) {
-				SetTimer(CtxMenuTimer, TIMER_KEY_CTX_MENU, NULL);
-			}
-//			IgnoreUp = FALSE;
-
-/*			MyKey = TRUE;
-			if (((nFlags >> 14) & 1) == 0) {
-//				LOG0(1, "Down - VK_RETURN");
-				KillTimer(KeyCtxTimer);
-				SetTimer(KeyCtxTimer, 100, NULL);
-			}
-*/			break;
-
-		case VK_F23:
-			// Enter key comming from D-pad -> kill timer
-//			KillTimer(KeyCtxTimer);
 			break;
 
 		default:
@@ -843,25 +824,9 @@ void CFeedView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
 
 	switch (nChar) {
 		case VK_RETURN:
-//			if (MyKey) {
-				// prevent false WM_KEYUP to be processed
-//				LOG0(1, "Up - VK_RETURN");
-				// open item
-//				KillTimer(KeyCtxTimer);
-//				OpenItem(m_nSelectFirst);
+			if (m_oItems.GetSize() > 0 && m_nSelectFirst >= 0)
+				OpenItem(m_nSelectFirst);
 
-//				MyKey = FALSE;
-
-				KillTimer(CtxMenuTimer);
-				if (m_oItems.GetSize() > 0 && m_nSelectFirst >= 0)
-					OpenItem(m_nSelectFirst);
-/*				if (m_oItems.GetSize() > 0 && m_nSelectFirst >= 0) {
-					if (!IgnoreUp) {
-						OpenItem(m_nSelectFirst);
-					}
-				}
-*/
-//			}
 			CWnd::OnKeyUp(nChar, nRepCnt, nFlags);
 			break;
 
@@ -885,8 +850,6 @@ void CFeedView::ContextMenu(CPoint pt) {
 		AppendMenuFromResource(&popup, IDR_ENCLOSURES);
 		AppendMenuFromResource(&popup, IDR_COPY_URL);
 		AppendMenuFromResource(&popup, IDR_SEND_BY_EMAIL);
-//		popup.AppendMenu(MF_SEPARATOR);
-//		AppendMenuFromResource(&popup, IDR_ITEM_FLAG);
 		popup.AppendMenu(MF_SEPARATOR);
 		AppendMenuFromResource(&popup, IDR_ITEM_OPER);
 		
@@ -922,36 +885,6 @@ void CFeedView::OnTimer(UINT nIDEvent) {
 			ContextMenu(LastCursorPos);
 		}
 	}
-	else if (nIDEvent == CtxMenuTimer) {
-		KillTimer(CtxMenuTimer);
-/*		IgnoreUp = TRUE;
-
-//		GVITEM *gi = Items.GetAt(m_hSelectedItem);
-		POINT pt = { SCALEX(0), ((m_nSelectFirst + 1) * SCALEY(ItemHeight)) - m_nViewTop};
-//		ClientToScreen(&pt);
-		ContextMenu(pt);
-*/
-	}
-/*
-	else if (nIDEvent == KeyCtxTimer) {
-//		LOG0(1, "TIMER");
-		KillTimer(KeyCtxTimer);
-
-		//
-		SHRGINFO  shrg;
-		shrg.cbSize = sizeof(shrg);
-		shrg.hwndClient = GetSafeHwnd();
-		shrg.ptDown.x = SCALEX(5);
-		shrg.ptDown.y = m_nSelectStart * SCALEY(ItemHeight);
-		shrg.dwFlags = SHRG_NOTIFYPARENT | SHRG_RETURNCMD;
-
-//		DWORD d = ::SHRecognizeGesture(&shrg);
-//		LOG1(1, "d = %d", d);
-//		if (d == GN_CONTEXTMENU) {
-//			ContextMenu(shrg.ptDown);
-//		}
-	}
-*/
 	
 	CWnd::OnTimer(nIDEvent);
 }
@@ -1002,8 +935,6 @@ void CFeedView::OnItemMarkRead() {
 
 		CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
 		frame->UpdateTopBar();
-
-//		frame->AddSiteToSave(SiteItem);
 	}
 }
 
@@ -1020,8 +951,6 @@ void CFeedView::OnItemMarkUnread() {
 
 		CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
 		frame->UpdateTopBar();
-
-//		frame->AddSiteToSave(SiteItem);
 	}
 }
 
@@ -1038,8 +967,6 @@ void CFeedView::OnItemMarkNew() {
 
 		CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
 		frame->UpdateTopBar();
-
-//		frame->AddSiteToSave(SiteItem);
 	}
 }
 
@@ -1059,7 +986,6 @@ void CFeedView::OnItemFlag() {
 
 		CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
 		frame->UpdateTopBar();
-//		frame->AddSiteToSave(SiteItem);
 	}
 }
 
@@ -1083,7 +1009,6 @@ void CFeedView::OnItemDelete() {
 		}
 
 		CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
-//		frame->AddSiteToSave(SiteItem);
 
 		// delete from view
 		int cnt = m_nSelectEnd - m_nSelectStart + 1;
@@ -1231,7 +1156,6 @@ void CFeedView::OpenItem(int item) {
 	m_pArticleDlg->ShowWindow(SW_SHOW);
 
 	frame->UpdateTopBar();
-//	frame->AddSiteToSave(m_oItems.GetAt(item)->SiteItem);
 }
 
 void CFeedView::OpenItem(CFeedItem *feedItem) {
@@ -1470,7 +1394,6 @@ void CFeedView::OnViewHideReadItems() {
 	Config.HideReadItems = !Config.HideReadItems;
 	Config.SaveUI();
 
-//	CSiteItem *si = SiteList.GetAt(Config.ActSiteIdx);
 	InsertItems(SiteItem);
 }
 
