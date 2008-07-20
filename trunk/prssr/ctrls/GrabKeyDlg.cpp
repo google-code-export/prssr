@@ -57,7 +57,7 @@ BOOL CGrabKeyDlg::OnInitDialog() {
 	hCoreDll = LoadLibrary(_T("coredll.dll"));
 	ASSERT(hCoreDll);
 	procUnregisterFunc = (UnregisterFunc1Proc) GetProcAddress(hCoreDll, _T("UnregisterFunc1"));
-	ASSERT(procUndergisterFunc);
+	ASSERT(procUnregisterFunc);
 	for (int i = 0xc1; i <= 0xcf; i++) {
 		procUnregisterFunc(MOD_WIN, i);
 		RegisterHotKey(GetSafeHwnd(), i, MOD_WIN, i);
