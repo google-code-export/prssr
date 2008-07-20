@@ -878,6 +878,8 @@ void CMainFrame::OnToolsSiteManager() {
 		SiteList.CreateFrom(dlg.Root);
 		SiteList.SetRoot(dlg.Root);
 
+		SaveSiteList();
+
 		if (SiteList.GetCount() > 0) {
 			// update icons for top bar
 			m_ilIcons.SetImageCount(TOPBAR_IMAGE_COUNT + SiteList.GetCount());
@@ -930,7 +932,6 @@ void CMainFrame::OnToolsSiteManager() {
 			m_wndSummaryView.Invalidate();
 		}
 
-		SaveSiteList();
 		UpdateTopBar();
 
 		NotifyTodayPlugin(ReloadSubscriptionsMessage, -1);
