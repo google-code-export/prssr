@@ -78,9 +78,7 @@ public:
 	} Type;
 
 	CSiteItem(CSiteItem *parent, eType type);
-//	CSiteItem(CSiteItem *parent, CFeedInfo *siteInfo, CFeed *feed);
 	CSiteItem(CSiteItem *parent, CSiteItem *siteItem);
-//	CSiteItem(CSiteItem *parent, const CString &name);
 	~CSiteItem();
 
 	CSiteItem *Duplicate(CSiteItem *parent);
@@ -90,13 +88,9 @@ public:
 	void UseUpdatedFeed();
 	void EnsureSiteLoaded();
 
-//	int GetItemCount() const;
-//	int GetNewCount() const;
 	int GetUnreadCount() const;
 	int GetFlaggedCount() const;
 
-//	void ReadItemCountsFromCache();
-//	void WriteItemCountsToCache();
 	void UpdateCachedCounts();
 
 	void AddItem(CSiteItem *siteItem)
@@ -136,13 +130,10 @@ public:
 #endif
 
 protected:
-//	CRITICAL_SECTION CSUpdateFeed;
 	CRITICAL_SECTION CSLoadFeed;
 
-//	int NewItems;
 	int UnreadItems;
 	int FlaggedItems;
-//	int TotalItems;
 
 	BOOL Modified;						// TRUE, if the site has to be saved
 
@@ -160,9 +151,6 @@ public:
 	void Destroy();
 	void Detach();
 
-//	int Load();
-//	BOOL Save();
-
 	int GetCount();
 	CSiteItem *GetAt(int i);
 	BOOL SaveItem(int idx);
@@ -178,16 +166,11 @@ public:
 
 	void CreateFrom(CSiteItem *root);
 
-	CSiteItem *Flagged;
-	CSiteItem *Unread;
-
 protected:
 	BOOL SaveItem(CSiteItem *item, CRegistry &reg);
 	BOOL LoadItem(CSiteItem *item, CRegistry &reg);
 
-//	CIPCReadWriteLock RWLock;
 	// if TRUE, Data array is inconsistent (it is being loaded)
-//	BOOL Dirty;
 	CArray<CSiteItem*, CSiteItem*> Data;
 	CSiteItem *Root;
 	CStringArray Keywords;
@@ -196,6 +179,9 @@ protected:
 extern CSiteList SiteList;
 extern LPCTSTR GszRegItems;
 extern LPCTSTR GszRegTemp;
+
+extern CSiteItem FlaggedItems;
+extern CSiteItem UnreadItems;
 
 //////////////////////////////////////////////////////////////////////
 

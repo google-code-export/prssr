@@ -39,13 +39,6 @@ static TCHAR THIS_FILE[] = _T(__FILE__);
 static char THIS_FILE[] = __FILE__;
 #endif
 
-//
-/*
-#define OPML_LOAD_OK							0
-#define OPML_LOAD_ERROR							-1
-#define OPML_PARSING_ERROR						-2
-#define OPML_INTERNAL_ERROR                     -3
-*/
 
 // registry 
 static LPCTSTR szName = _T("Name");
@@ -78,51 +71,9 @@ static LPCTSTR szReplace = _T("Replace");
 //#ifdef PRSSR_APP
 
 CSiteList SiteList;
+CSiteItem UnreadItems(NULL, CSiteItem::VFolder);
+CSiteItem FlaggedItems(NULL, CSiteItem::VFolder);
 
-//#endif
-
-/*
-#if defined PRSSR_TODAY || PRSSR_TODAYSTUB
-
-int DrawSiteTitle(CDC *dc, CSiteItem *si, CRect *rc, UINT uFormat) {
-	int nNewCount = si->GetNewCount() + si->GetUnreadCount();
-	CString strTitle = si->Name;
-	ReplaceHTMLEntities(strTitle);
-
-	CString buffer;
-	if (nNewCount > 0)
-		buffer.Format(_T("%s (%d)"), strTitle, nNewCount);
-	else
-		buffer.Format(_T("%s"), strTitle);
-
-	int nWidth = rc->Width();
-
-	CRect rcTemp = *rc;
-	dc->DrawText(buffer, &rcTemp, uFormat | DT_CALCRECT);
-	if (rcTemp.Width() > nWidth) {
-		// Text doesn't fit in rect. We have to truncate it and add ellipsis to the end.
-		for (int i = strTitle.GetLength(); i >= 0; i--) {
-			CString strName = strTitle.Left(i);
-
-			if (nNewCount > 0)
-				buffer.Format(_T("%s... (%d)"), strName, nNewCount);
-			else
-				buffer.Format(_T("%s..."), strName);
-
-			rcTemp = *rc;
-			dc->DrawText(buffer, &rcTemp, uFormat | DT_CALCRECT);
-			if (rcTemp.Width() < nWidth) {
-				// Gotcha!
-				break;
-			}
-		}
-		return dc->DrawText(buffer, rc, uFormat);
-	}
-	return dc->DrawText(buffer, rc, uFormat);
-}
-
-#endif
-*/
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -206,10 +157,6 @@ void CFeedInfo::EnsureUniqueFileName(CString &strFileName) {
 
 	CString fileName = strFileName;
 
-	// remove possible .xml file extension
-//	if (fileName.Right(4).CompareNoCase(_T(".xml")) == 0)
-//		fileName = fileName.Left(fileName.GetLength() - 4);
-
 	CString strTestFN = fileName;
 	// if the file exists, add numerical index
 	CString strTestFullPath;
@@ -238,7 +185,6 @@ CSiteItem::CSiteItem(CSiteItem *parent, eType type) {
 	Type = type;
 	Info = NULL;
 	Feed = NULL;
-//	UpdatedFeed = NULL;
 	Sort.Item = CSortInfo::Date;
 	Sort.Type = CSortInfo::Descending;
 
@@ -256,7 +202,6 @@ CSiteItem::CSiteItem(CSiteItem *parent, eType type) {
 	FlaggedItems = 0;
 	CheckFavIcon = TRUE;
 
-//	InitializeCriticalSection(&CSUpdateFeed);
 	InitializeCriticalSection(&CSLoadFeed);
 
 #ifdef PRSSR_TODAY
@@ -296,7 +241,6 @@ CSiteItem::CSiteItem(CSiteItem *parent, CSiteItem *siteItem) {
 		Status = Ok;
 	}
 
-//	InitializeCriticalSection(&CSUpdateFeed);
 	InitializeCriticalSection(&CSLoadFeed);
 
 #ifdef PRSSR_TODAY
@@ -307,7 +251,6 @@ CSiteItem::CSiteItem(CSiteItem *parent, CSiteItem *siteItem) {
 CSiteItem::~CSiteItem() {
 	LOG1(1, "CSiteItem::~CSiteItem(%S)", Name);
 
-//	DeleteCriticalSection(&CSUpdateFeed);
 	DeleteCriticalSection(&CSLoadFeed);
 }
 
@@ -325,7 +268,6 @@ CSiteItem *CSiteItem::Duplicate(CSiteItem *parent) {
 		}
 	}
 
-//	InitializeCriticalSection(&CSUpdateFeed);
 	InitializeCriticalSection(&CSLoadFeed);
 
 	return dup;
@@ -357,31 +299,6 @@ void CSiteItem::Destroy() {
 			break;
 	}
 }
-
-/*
-void CSiteItem::SetUpdatedFeed(CFeed *feed) {
-	LOG0(5, "CSiteItem::SetUpdatedFeed()");
-
-	if (Type == Site) {
-		EnterCriticalSection(&CSUpdateFeed);
-		delete UpdatedFeed;
-		UpdatedFeed = feed;
-		LeaveCriticalSection(&CSUpdateFeed);
-	}
-}
-
-void CSiteItem::UseUpdatedFeed() {
-	LOG0(5, "CSiteItem::UseUpdatedFeed()");
-
-	if (UpdatedFeed != NULL && Type == Site) {
-		EnterCriticalSection(&CSUpdateFeed);
-		delete Feed;
-		Feed = UpdatedFeed;
-		UpdatedFeed = NULL;
-		LeaveCriticalSection(&CSUpdateFeed);
-	}
-}
-*/
 
 void CSiteItem::EnsureSiteLoaded() {
 	LOG0(5, "CSiteItem::EnsureSiteLoaded()");
@@ -423,50 +340,6 @@ void CSiteItem::EnsureSiteLoaded() {
 		LeaveCriticalSection(&CSLoadFeed);
 	}
 }
-
-/*
-int CSiteItem::GetItemCount() const {
-	LOG0(5, "CSiteItem::GetItemCount()");
-
-	if (Type == Site) {
-		if (Status == Ok && Feed != NULL)
-			return Feed->GetItemCount();
-		else
-			return TotalItems;
-	}
-	else {
-		int totalCount = 0;
-		POSITION pos = SubItems.GetHeadPosition();
-		while (pos != NULL) {
-			CSiteItem *si = SubItems.GetNext(pos);
-			totalCount += si->GetItemCount();
-		}
-
-		return totalCount;
-	}
-}
-
-int CSiteItem::GetNewCount() const {
-	LOG0(5, "CSiteItem::GetNewCount()");
-
-	if (Type == Site) {
-		if (Status == Ok && Feed != NULL)
-			return Feed->GetNewCount();
-		else
-			return NewItems;
-	}
-	else {
-		int newCount = 0;
-		POSITION pos = SubItems.GetHeadPosition();
-		while (pos != NULL) {
-			CSiteItem *si = SubItems.GetNext(pos);
-			newCount += si->GetNewCount();
-		}
-
-		return newCount;
-	}
-}
-*/
 
 int CSiteItem::GetUnreadCount() const {
 	LOG0(5, "CSiteItem::GetUnreadCount()");
@@ -516,65 +389,6 @@ int CSiteItem::GetFlaggedCount() const {
 	}
 }
 
-/*void CSiteItem::ReadItemCountsFromCache() {
-	LOG0(5, "CSiteItem::ReadItemCountsFromCache()");
-
-	if (Type == Site) {
-		HKEY hSLCache = RegOpenSiteListCacheKey();
-		if (hSLCache != NULL) {
-			HKEY hItem;
-			DWORD dwDisposition;
-			if (RegCreateKeyEx(hSLCache, Info->FileName, 0, NULL, 0, KEY_ALL_ACCESS, NULL, &hItem, &dwDisposition) == ERROR_SUCCESS) {
-				NewItems = RegReadDword(hItem, szNewItems, 0);
-				UnreadItems = RegReadDword(hItem, szUnreadItems, 0);
-				TotalItems = RegReadDword(hItem, szTotalItems, 0);
-
-				RegCloseKey(hItem);
-			}	
-
-			RegCloseKey(hSLCache);
-		}
-	}
-	else {
-		POSITION pos = SubItems.GetHeadPosition();
-		while (pos != NULL) {
-			CSiteItem *si = SubItems.GetNext(pos);
-			si->ReadItemCountsFromCache();
-		}
-	}
-}
-*/
-
-/*
-void CSiteItem::WriteItemCountsToCache() {
-	LOG0(5, "CSiteItem::WriteItemCountsToCache()");
-
-	if (Type == Site) {
-		HKEY hSLCache = RegOpenSiteListCacheKey();
-		if (hSLCache != NULL) {
-			HKEY hItem;
-			DWORD dwDisposition;
-			if (RegCreateKeyEx(hSLCache, Info->FileName, 0, NULL, 0, KEY_ALL_ACCESS, NULL, &hItem, &dwDisposition) == ERROR_SUCCESS) {
-				RegWriteDword(hItem, szNewItems, NewItems);
-				RegWriteDword(hItem, szUnreadItems, UnreadItems);
-				RegWriteDword(hItem, szTotalItems, TotalItems);
-
-				RegCloseKey(hItem);
-			}	
-
-			RegCloseKey(hSLCache);
-		}
-	}
-	else {
-		POSITION pos = SubItems.GetHeadPosition();
-		while (pos != NULL) {
-			CSiteItem *si = SubItems.GetNext(pos);
-			si->WriteItemCountsToCache();
-		}
-	}
-}
-*/
-
 void CSiteItem::UpdateCachedCounts() {
 	LOG0(5, "CSiteItem::UpdateCachedCounts()");
 
@@ -612,27 +426,16 @@ void CSiteItem::GetSites(CList<CSiteItem *, CSiteItem *> &sites) {
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CSiteList::CSiteList()
-//	: RWLock(_T("DaProfik::pRSSreader::RWLocks::SiteList"), 2000)
-{
-//	Dirty = TRUE;
+CSiteList::CSiteList() {
 	Root = NULL;
-
-	Unread = NULL;
-	Flagged = NULL;
 }
 
 CSiteList::~CSiteList() {
-//	delete Unread; //Unread = NULL;
-//	delete Flagged; //Flagged = NULL;
 }
 
 void CSiteList::Detach() {
 	Root = NULL;
 	Data.RemoveAll();
-
-	Unread = NULL;
-	Flagged = NULL;
 }
 
 void CSiteList::Destroy() {
@@ -642,9 +445,6 @@ void CSiteList::Destroy() {
 		Root->Destroy();
 		delete Root; Root = NULL;
 	}
-
-	if (Unread != NULL) Unread->Destroy();
-	if (Flagged != NULL) Flagged->Destroy();
 
 	Data.RemoveAll();
 }
@@ -673,16 +473,10 @@ void CSiteList::CreateFrom(CSiteItem *root) {
 }
 
 int CSiteList::GetIndexOf(CSiteItem *item) {
-	if (item == Flagged)
-		return SITE_FLAGGED;
-	else if (item == Unread)
-		return SITE_UNREAD;
-	else {
-		for (int i = 0; i < Data.GetSize(); i++)
-			if (Data[i] == item)
-				return i;
-		return SITE_INVALID;
-	}
+	for (int i = 0; i < Data.GetSize(); i++)
+		if (Data[i] == item)
+			return i;
+	return SITE_INVALID;
 }
 
 int CSiteList::GetCount() {
@@ -692,18 +486,12 @@ int CSiteList::GetCount() {
 CSiteItem *CSiteList::GetAt(int i) {
 	if (i >= 0 && i < Data.GetSize())
 		return Data.GetAt(i);
-	else if (i == SITE_UNREAD)
-		return Unread;
-	else if (i == SITE_FLAGGED)
-		return Flagged;
 	else
 		return NULL;
 }
 
 void CSiteList::SetRoot(CSiteItem *root) {
 	Root = root;
-	if (Unread != NULL) Unread->Parent = root;
-	if (Flagged != NULL) Flagged->Parent = root;
 }
 
 // Save ///////
@@ -1044,21 +832,6 @@ int LoadSiteList(CSiteList &siteList) {
 	siteList.CreateFrom(rootItem);
 	siteList.SetRoot(rootItem);
 	siteList.SetKeywords(keywords);
-
-#ifdef PRSSR_APP
-	CString strLabel;
-	delete siteList.Unread;
-	siteList.Unread = new CSiteItem(rootItem, CSiteItem::VFolder);
-	siteList.Unread->FlagMask = MESSAGE_UNREAD | MESSAGE_NEW;
-	siteList.Unread->Name.LoadString(IDS_UNREAD);
-	siteList.Unread->ImageIdx = 1;
-
-	delete siteList.Flagged;
-	siteList.Flagged = new CSiteItem(rootItem, CSiteItem::VFolder);
-	siteList.Flagged->FlagMask = MESSAGE_FLAG;
-	siteList.Flagged->Name.LoadString(IDS_FLAGGED);
-	siteList.Flagged->ImageIdx = 1;
-#endif
 
 	return 0;
 }

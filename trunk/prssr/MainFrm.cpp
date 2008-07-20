@@ -274,6 +274,16 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 
 //	ShowControlBar(&m_wndUpdateBar, FALSE, FALSE);
 
+	//
+	CString strLabel;
+	UnreadItems.FlagMask = MESSAGE_UNREAD | MESSAGE_NEW;
+	UnreadItems.Name.LoadString(IDS_UNREAD);
+	UnreadItems.ImageIdx = 1;
+
+	FlaggedItems.FlagMask = MESSAGE_FLAG;
+	FlaggedItems.Name.LoadString(IDS_FLAGGED);
+	FlaggedItems.ImageIdx = 1;
+
 	LoadSites();
 
 
@@ -365,8 +375,7 @@ BOOL CMainFrame::DestroyWindow() {
 	}
 
 	SetEvent(HTerminate);
-	DWORD exitCode;
-	if (GetExitCodeThread(HPreloadThread, &exitCode) == STILL_ACTIVE) {
+	if (HPreloadThread != NULL) {
 		WaitForSingleObject(HPreloadThread, INFINITE);
 	}
 
@@ -511,9 +520,6 @@ void CMainFrame::LoadSites() {
 		if (Config.ActSiteIdx < -2 || Config.ActSiteIdx >= SiteList.GetCount())
 			Config.ActSiteIdx = 0;
 	}
-//	else {
-//		Config.ActSiteIdx = -1;
-//	}
 
 	if (View == FeedView) {
 		if (Config.ActSiteIdx >= -2 && Config.ActSiteIdx < SiteList.GetCount()) {
@@ -559,7 +565,6 @@ void CMainFrame::UpdateTopBar() {
 	LOG0(5, "CMainFrame::UpdateTopBar()");
 
 	if (SiteList.GetRoot()->GetCount() == 0) {
-//		SetTopBarText(IDS_SITE_MANAGER, TOPBAR_IMAGE_SITE_MANAGER);
 	}
 	else {
 		if (View == FeedView) {
@@ -693,11 +698,6 @@ void CMainFrame::OnOpenSiteList() {
 			CheckMenuRadioItem(hRootMenu, ID_MENU_SITE_BASE - 2, ID_MENU_SITE_BASE + 1000, ID_MENU_SITE_BASE + Config.ActSiteIdx, MF_BYCOMMAND);
 		}
 
-/*		if (View == SummaryView) {
-			CheckMenuRadioItem(hRootMenu, ID_MENU_MY_CHANNELS, ID_MENU_SITE_BASE + 1000, ID_MENU_MY_CHANNELS, MF_BYCOMMAND);
-		}
-*/
-
 		CRect rcItem;
 		m_wndTopBar.GetWindowRect(&rcItem);
 		TrackPopupMenuEx(hRootMenu, TPM_RIGHTALIGN, rcItem.left, rcItem.bottom - 1, GetSafeHwnd(), NULL);
@@ -806,15 +806,15 @@ void CMainFrame::SelectSite(int nSite) {
 			}
 		}
 
-		if (SiteList.Unread->Feed != NULL) {
-			SiteList.Unread->Feed->Detach();
-			delete SiteList.Unread->Feed;
+		if (UnreadItems.Feed != NULL) {
+			UnreadItems.Feed->Detach();
+			delete UnreadItems.Feed;
 		}
-		SiteList.Unread->Feed = unreadFeed;
-		SiteList.Unread->Status = CSiteItem::Ok;
+		UnreadItems.Feed = unreadFeed;
+		UnreadItems.Status = CSiteItem::Ok;
 
 		if (View == FeedView) {
-			m_wndFeedView.InsertItems(SiteList.Unread);
+			m_wndFeedView.InsertItems(&UnreadItems);
 			UpdateSort();
 		}
 	}
@@ -838,15 +838,15 @@ void CMainFrame::SelectSite(int nSite) {
 			}
 		}
 
-		if (SiteList.Flagged->Feed != NULL) {
-			SiteList.Flagged->Feed->Detach();
-			delete SiteList.Flagged->Feed;
+		if (FlaggedItems.Feed != NULL) {
+			FlaggedItems.Feed->Detach();
+			delete FlaggedItems.Feed;
 		}
-		SiteList.Flagged->Feed = flaggedFeed;
-		SiteList.Flagged->Status = CSiteItem::Ok;
+		FlaggedItems.Feed = flaggedFeed;
+		FlaggedItems.Status = CSiteItem::Ok;
 
 		if (View == FeedView) {
-			m_wndFeedView.InsertItems(SiteList.Flagged);
+			m_wndFeedView.InsertItems(&FlaggedItems);
 			UpdateSort();
 		}
 	}
@@ -1103,7 +1103,6 @@ void CMainFrame::OnToolsMarkAllRead() {
 		m_wndFeedView.MarkAllRead();
 
 		UpdateTopBar();
-//		AddSiteToSave(m_wndFeedView.SiteItem);
 	}
 }
 
@@ -1116,7 +1115,6 @@ void CMainFrame::OnToolsMarkAllUnread() {
 		m_wndFeedView.MarkAllUnread();
 
 		UpdateTopBar();
-//		AddSiteToSave(m_wndFeedView.SiteItem);
 	}
 }
 
@@ -1203,7 +1201,7 @@ LRESULT CMainFrame::OnUpdateFeed(WPARAM wParam, LPARAM lParam) {
 			if (Config.ActSiteIdx == SITE_UNREAD) {
 				// virtual folder (unread)
 				CFeed *newFeed = si->Feed;
-				CFeed *curFeed = SiteList.Unread->Feed;
+				CFeed *curFeed = UnreadItems.Feed;
 
 				// we need to preserve new items for later caching
 				CArray<CFeedItem *, CFeedItem *> newItems;
@@ -1296,7 +1294,6 @@ void CMainFrame::AddSiteToSave(CSiteItem *si) {
 	// start the thread
 	if (HSaveSitesThread == NULL && SitesToSave.GetCount() > 0) {
 		HSaveSitesThread = CreateThread(NULL, 0, SaveSitesStubProc, this, 0, NULL);
-//		SetThreadPriority(HSaveSitesThread, THREAD_PRIORITY_LOWEST);
 	}
 }
 
@@ -1653,8 +1650,6 @@ LRESULT CMainFrame::OnUpdateFavicon(WPARAM wParam, LPARAM lParam) {
 
 	CSiteItem *si = (CSiteItem *) lParam;
 	LoadFaviconForSite(SiteList.GetIndexOf(si), si);
-//	m_wndSummaryView.Invalidate(FALSE);
-//	UpdateTopBar();
 
 	return 0;
 }

@@ -74,8 +74,8 @@ void CSummaryView::InsertSites(CSiteList *siteList) {
 
 	if (siteList->GetCount() > 0) {
 		InsertItems(GVI_ROOT, siteList->GetRoot());
-		InsertSiteItem(GVI_ROOT, siteList->Unread);
-		InsertSiteItem(GVI_ROOT, siteList->Flagged);
+		InsertSiteItem(GVI_ROOT, &UnreadItems);
+		InsertSiteItem(GVI_ROOT, &FlaggedItems);
 
 		if (::IsWindow(m_ctlSiteManLink.GetSafeHwnd())) {
 			m_ctlSiteManLink.ShowWindow(SW_HIDE);
@@ -202,9 +202,9 @@ void CSummaryView::OnDrawItem(CDC &dc, CRect &rc, HGROUPITEM hItem, BOOL selecte
 	else {
 		// vfolder
 		if (si->FlagMask == MESSAGE_FLAG)
-			newCnt = si->Parent->GetFlaggedCount();
+			newCnt = SiteList.GetRoot()->GetFlaggedCount();
 		else
-			newCnt = si->Parent->GetUnreadCount();
+			newCnt = SiteList.GetRoot()->GetUnreadCount();
 	}
 
 	clrOld = dc.SetTextColor(clrFg);
@@ -254,7 +254,10 @@ void CSummaryView::OnItemClicked() {
 	if (si != NULL && (si->Type == CSiteItem::Site || si->Type == CSiteItem::VFolder)) {
 		CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
 		frame->SwitchView(CMainFrame::FeedView);
-		frame->SelectSite(SiteList.GetIndexOf(si));
+
+		if (si == &UnreadItems) frame->SelectSite(SITE_UNREAD);
+		else if (si == &FlaggedItems) frame->SelectSite(SITE_FLAGGED);
+		else frame->SelectSite(SiteList.GetIndexOf(si));
 	}
 }
 
