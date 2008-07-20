@@ -35,6 +35,64 @@ void EnableTodayPlugin(BOOL enable = TRUE) {
 }
 
 //
+// This function performs some post-processing after we have installed
+// a CAB file which contains some 96 and some 192 DPI resource files.
+//
+// We have a list of files stored as values under a regkey.  Each file
+// should be named \path\to\file.xxx.dll, where "xxx" is the DPI of 
+// the resource file (96 or 192).  If the file is correct for our device,
+// we rename it to file.dll, otherwise, we delete it.
+//
+// When done, we delete the list of files.
+//
+BOOL InstallDpiSpecificFiles() {
+	HWND hWnd = NULL;
+	HDC hdcScreen = ::GetDC(hWnd);
+	INT nSystemDPI = GetDeviceCaps(hdcScreen, LOGPIXELSX);
+	::ReleaseDC(hWnd, hdcScreen);
+
+	HKEY hKey;
+	LPCTSTR szRegKey = _T("Software\\Microsoft\\SetupDPI");
+	if (::RegOpenKeyEx(HKEY_LOCAL_MACHINE, szRegKey, 0, 0, &hKey) != ERROR_SUCCESS) {
+		return TRUE;
+	}
+
+	for (INT i = 0;; i++) {
+		TCHAR szName[256];
+		TCHAR szLongName[256];
+		DWORD ccName = sizeof(szName) / sizeof(szName[0]) - 1;
+		szName[ccName] = '\0';
+
+		if (::RegEnumValue(hKey, i, szName, &ccName, NULL, NULL, NULL, NULL) != ERROR_SUCCESS) {
+			break;
+		}
+
+		_tcscpy(szLongName, szName);
+		LPTSTR pDot1 = _tcschr(szName, '.');
+		LPTSTR pDot2 = _tcschr(pDot1 + 1, '.');
+		if (!pDot1 || !pDot2) {
+			continue;
+		}
+		INT nFileDPI = _ttoi(pDot1 + 1);
+		_tcscpy(pDot1, pDot2);
+
+		if (nSystemDPI != nFileDPI) {
+			::DeleteFile(szLongName);
+		}
+		else {
+			::DeleteFile(szName);
+			::MoveFile(szLongName, szName);
+		}
+	}
+
+	::RegCloseKey(hKey);
+	::RegDeleteKey(HKEY_LOCAL_MACHINE, szRegKey);
+	
+	return TRUE;
+}
+
+
+//
 // Install/Uninstall
 //
 
@@ -78,6 +136,8 @@ codeINSTALL_EXIT Install_Exit(
     WORD    cFailedShortcuts)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
+
+	InstallDpiSpecificFiles();
 
 	codeINSTALL_EXIT ret = codeINSTALL_EXIT_DONE;
 	CString strCacheLocation;
