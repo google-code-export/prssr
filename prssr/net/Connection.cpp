@@ -14,10 +14,6 @@
 
 */
 
-// Connection.cpp: implementation of the CConnection class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #include "..\stdafx.h"
 #include "Connection.h"
 
