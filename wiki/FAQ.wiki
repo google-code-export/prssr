@@ -3,4 +3,6 @@
 = FAQ =
 ----
 
-TODO
+*I'm not able to uninstall pRSSreader 1.3.x. What can I do about it?*
+
+See ManualUninstallation13.
