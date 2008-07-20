@@ -14,6 +14,10 @@
 	VersionMin           = 3.0
 	VersionMax           = 10000.0
 
+[CEDevice.ARM]
+	ProcessorType        = 2577
+	BuildMax             = 0xE0000000
+
 [CEStrings]
 	AppName              = "pRSSreader"
 	InstallDir           = "%CE1%\%AppName%"
@@ -25,7 +29,19 @@
 [Shortcuts]
 	%AppName%,0,prssr.exe
 
+[DefaultInstall]
+	CEShortcuts          = Shortcuts
+	CopyFiles            = Files.License
+	AddReg               = DpiSpecificFiles,RegisterTodayPlugin,Notifications
+
+[DefaultInstall.ARM]
+	CopyFiles            = Files.App.ARM,Files.Libs.ARM,Files.TodayPlugin.ARM
+	CESetupDLL           = setup.dll
+
 [SourceDisksNames]
+	12 = ,"license",,..
+
+[SourceDisksNames.ARM]
 	 1 = ,"prssr",,..\prssr\prj\armv4rel
 	 2 = ,"prssrenc",,..\prssrenc\prj\armv4rel
 	 3 = ,"prssrnot",,..\prssrnot\prj\armv4rel
@@ -37,98 +53,58 @@
 	 9 = ,"res096",,..\res096\prj\armv4rel
 	10 = ,"res192",,..\res192\prj\armv4rel
 	11 = ,"zlib",,..\zlib
-	12 = ,"license",,..
 
 [SourceDisksFiles]
+	prssrnot.exe = 3
+	prssr.exe = 1
 	prssrtoday.dll = 4
 	prssrenc.dll = 2
-	zlib1.dll = 11
 	setup.dll = 5
+	res096.dll = 9
+	res192.dll = 10
+	zlib1.dll = 11
 	libexpat.dll = 6
 	libsgml.dll = 7
 	libregex.dll = 8
 	COPYING = 12
-	prssrnot.exe = 3
-	prssr.exe = 1
 
 [DestinationDirs]
 	Shortcuts              = ,%CE11%
-	Files.App.LoDPI.ARM    = ,%InstallDir%
-	Files.App.HiDPI.ARM    = ,%InstallDir%
 	Files.App.ARM          = ,%InstallDir%
-	Files.TodayPlugin      = ,%CE2%
+	Files.TodayPlugin.ARM  = ,%CE2%
 	Files.Libs.ARM         = ,%CE2%
-
+	Files.License          = ,%InstallDir%
 
 [Files.Libs.ARM]
-	prssrnot.exe,,,0x40000000
-	libexpat.dll,libexpat.dll,,0x80000000
-	libsgml.dll,libsgml.dll,,0x80000000
-	libregex.dll,libregex.dll,,0x80000000
-	prssrenc.dll,prssrenc.dll,,0x40000000
-	zlib1.dll,zlib1.dll,,0x80000000
+	libexpat.dll,,,0x80000000
+	libsgml.dll,,,0x80000000
+	libregex.dll,,,0x80000000
+	zlib1.dll,,,0x80000000
 
 [Files.App.ARM]
 	prssr.exe,,,0x40000000
+	res.096.dll,res096.dll,,0x40000000
+	res.192.dll,res192.dll,,0x40000000
+	prssrnot.exe,,,0x40000000
+	prssrenc.dll,,,0x40000000
+
+[Files.TodayPlugin.ARM]
+	prssrtoday.dll,,,0x40000000
+
+[Files.License]
 	COPYING,,,0x40000000
 
-[DefaultInstall]
-	CEShortcuts          = Shortcuts
-	CopyFiles            = Files.App.ARM,Files.Libs.ARM,Files.TodayPlugin
-	CESetupDLL           = setup.dll
-	AddReg               = RegisterPlugin,Notifications
+[DpiSpecificFiles]
+	HKLM,Software\Microsoft\SetupDPI,%InstallDir%\res.096.dll,65537,0
+	HKLM,Software\Microsoft\SetupDPI,%InstallDir%\res.192.dll,65537,0
 
-
-;---------------------------------------------------------------------------------
-; LoDPI on ARM
-;---------------------------------------------------------------------------------
-[CEDevice.LoDPI.ARM]
-	ProcessorType        = 2577
-	BuildMax             = 0xE0000000
-
-
-[SourceDisksFiles.LoDPI.ARM]
-	res096.dll = 9
-
-[DefaultInstall.LoDPI.ARM]
-	CopyFiles            = Files.App.LoDPI.ARM
-
-[Files.App.LoDPI.ARM]
-	res.dll,res096.dll,,0x40000000
-
-;---------------------------------------------------------------------------------
-; HiDPI on ARM
-;---------------------------------------------------------------------------------
-
-[CEDevice.HiDPI.ARM]
-	ProcessorType        = 2577
-	BuildMax             = 0xE0000000
-
-[SourceDisksFiles.HiDPI.ARM]
-	res192.dll = 10
-
-[DefaultInstall.HiDPI.ARM]
-	CopyFiles            = Files.App.HiDPI.ARM
-
-[Files.App.HiDPI.ARM]
-	res.dll,res192.dll,,0x40000000
-
-;
-; Today plugin
-;
-[RegisterPlugin]
+; register roday plugin
+[RegisterTodayPlugin]
 	HKLM,%TodayItem%,DLL,           0x00000000,%CE2%\prssrtoday.dll
 	HKLM,%TodayItem%,Type,          0x00010001,4
 	HKLM,%TodayItem%,Options,       0x00010001,1
 	HKLM,%TodayItem%,Selectability, 0x00010001,2
-;	HKLM,%TodayItem%,Enabled,       0x00010001,0
 
-[Files.TodayPlugin]
-	prssrtoday.dll,,,0x40000000
-
-;
-; Notifications
-;
 [Notifications]
 	HKCU,ControlPanel\Notifications\%CLSIDNewItems%,,         0x00000000, "pRSSreader: new items"
 	HKCU,ControlPanel\Notifications\%CLSIDNewItems%,Duration, 0x00010001, 0

@@ -3,17 +3,6 @@
 #include "resource.h"
 #include "afxres.h"
 
-/////////////////////////////////////////////////////////////////////////////
-//
-// CEUX
-//
-
-HI_RES_AWARE CEUX DISCARDABLE 
-BEGIN
-    0x0000
-END
-
-
 #ifndef _MAC
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -21,8 +10,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,3,3,0
- PRODUCTVERSION 1,3,3,0
+ FILEVERSION 1,4,1,0
+ PRODUCTVERSION 1,4,1,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x21L
@@ -40,14 +29,14 @@ BEGIN
             VALUE "Comments", "\0"
             VALUE "CompanyName", "David Andrs\0"
             VALUE "FileDescription", "pRSSreader Setup\0"
-            VALUE "FileVersion", "1, 3, 3, 0\0"
+            VALUE "FileVersion", "1, 4, 1, 0\0"
             VALUE "InternalName", "prssrtoday\0"
-            VALUE "LegalCopyright", "Copyright © 2005, 2006\0"
+            VALUE "LegalCopyright", "Copyright © 2005 - 2008\0"
             VALUE "LegalTrademarks", "\0"
-            VALUE "OriginalFilename", "setupdpi.dll\0"
+            VALUE "OriginalFilename", "setup.dll\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "pRSSreader Setup\0"
-            VALUE "ProductVersion", "1, 3, 3, 0\0"
+            VALUE "ProductVersion", "1, 4, 1, 0\0"
             VALUE "SpecialBuild", "\0"
         END
     END
@@ -148,6 +137,8 @@ LANGUAGE LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN
 #pragma code_page(1252)
 #endif //_WIN32
 #include "res/portuguese-brazil.rc2"
+
+#include "res/hires.rc2"
 
 #endif
 

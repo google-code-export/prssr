@@ -10,7 +10,7 @@ INF=pRSSreader.inf
 CABWIZ="c:/program files/windows ce tools/wce420/pocket pc 2003/tools/cabwiz.exe"
 ZIP="c:/program files/unxutils/usr/local/wbin/zip.exe"
 
-all: cab zip
+all: cab
 
 cab: $(PRODUCT)-$(VERSION).cab
 
