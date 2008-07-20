@@ -59,6 +59,7 @@ protected:
 
     //{{AFX_MSG(CAddProgressDlg)
 	afx_msg void OnTimer(UINT nIDEvent);
+	afx_msg void OnDestroy();
 	//}}AFX_MSG
 	virtual BOOL OnInitDialog();
 
@@ -81,13 +82,12 @@ CAddProgressDlg::CAddProgressDlg(CDownloader *downloader, CAddFeedDlg *parent) {
 }
 
 CAddProgressDlg::~CAddProgressDlg() {
-	KillTimer(Timer);
-	KillTimer(ProgressRefreshTimer);
 }
 
 BEGIN_MESSAGE_MAP(CAddProgressDlg, CProgressDlg)
 	//{{AFX_MSG_MAP(CAddProgressDlg)
 	ON_WM_TIMER()
+	ON_WM_DESTROY()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -102,6 +102,13 @@ BOOL CAddProgressDlg::OnInitDialog() {
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
+}
+
+void CAddProgressDlg::OnDestroy() {
+	KillTimer(Timer);
+	KillTimer(ProgressRefreshTimer);
+
+	CProgressDlg::OnDestroy();
 }
 
 void CAddProgressDlg::OnTimer(UINT nIDEvent) {

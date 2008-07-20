@@ -41,6 +41,7 @@ protected:
 
     //{{AFX_MSG(CMoveCacheProgressDlg)
 	afx_msg void OnTimer(UINT nIDEvent);
+	afx_msg void OnDestroy();
 	//}}AFX_MSG
 	virtual BOOL OnInitDialog();
 
@@ -62,12 +63,12 @@ CMoveCacheProgressDlg::CMoveCacheProgressDlg(CWnd *parent) :
 }
 
 CMoveCacheProgressDlg::~CMoveCacheProgressDlg() {
-	KillTimer(Timer);
 }
 
 BEGIN_MESSAGE_MAP(CMoveCacheProgressDlg, CProgressDlg)
 	//{{AFX_MSG_MAP(CMoveCacheProgressDlg)
 	ON_WM_TIMER()
+	ON_WM_DESTROY()
 	//}}AFX_MSG_MAP
 	ON_MESSAGE(UWM_DIALOG_CLOSE, OnClose)
 END_MESSAGE_MAP()
@@ -82,6 +83,10 @@ BOOL CMoveCacheProgressDlg::OnInitDialog() {
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
+}
+
+void CMoveCacheProgressDlg::OnDestroy() {
+	KillTimer(Timer);
 }
 
 void CMoveCacheProgressDlg::OnTimer(UINT nIDEvent) {

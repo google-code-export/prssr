@@ -51,6 +51,7 @@ protected:
 	int RangeHi;
 
     //{{AFX_MSG(CSearchProgressDlg)
+	afx_msg void OnDestroy();
 	afx_msg void OnTimer(UINT nIDEvent);
 	//}}AFX_MSG
 	virtual BOOL OnInitDialog();
@@ -70,12 +71,12 @@ CSearchProgressDlg::CSearchProgressDlg(CSyndic8ComSearcher *searcher, CSearchDlg
 }
 
 CSearchProgressDlg::~CSearchProgressDlg() {
-	KillTimer(Timer);
 }
 
 BEGIN_MESSAGE_MAP(CSearchProgressDlg, CProgressDlg)
 	//{{AFX_MSG_MAP(CSearchProgressDlg)
 	ON_WM_TIMER()
+	ON_WM_DESTROY()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -89,6 +90,10 @@ BOOL CSearchProgressDlg::OnInitDialog() {
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
+}
+
+void CSearchProgressDlg::OnDestroy() {
+	KillTimer(Timer);
 }
 
 void CSearchProgressDlg::OnTimer(UINT nIDEvent) {
