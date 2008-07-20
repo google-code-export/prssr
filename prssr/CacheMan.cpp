@@ -456,11 +456,13 @@ void CCacheManPg::LoadSite(HTREEITEM hItem) {
 		// delete temporary child item
 		m_ctlCacheItems.DeleteItem(m_ctlCacheItems.GetChildItem(hItem));
 
-		// insert feed items
-		CFeed *feed = si->Feed;
-		for (int fiIdx = 0; fiIdx < feed->GetItemCount(); fiIdx++) {
-			CFeedItem *fi = feed->GetItem(fiIdx);
-			DoInsertFeedItem(hItem, fi);
+		if (si->Feed != NULL) {
+			// insert feed items
+			CFeed *feed = si->Feed;
+			for (int fiIdx = 0; fiIdx < feed->GetItemCount(); fiIdx++) {
+				CFeedItem *fi = feed->GetItem(fiIdx);
+				DoInsertFeedItem(hItem, fi);
+			}
 		}
 	}
 }
