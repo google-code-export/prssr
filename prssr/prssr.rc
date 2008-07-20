@@ -179,11 +179,4 @@ LANGUAGE LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN
 #include "afxres.rc"         // Standard components
 #include "wceres.rc"         // WCE-specific components
 
-/*#ifdef HIDPIRES
-#include "res\hires.rc2"
-#else
-#include "res\lores.rc2"
-#endif
-*/
-
 #include "res\hires.rc2"
