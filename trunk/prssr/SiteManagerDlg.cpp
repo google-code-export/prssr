@@ -905,7 +905,10 @@ void CSiteManagerDlg::OnExportOpml() {
 	if (dlg.DoModal() == IDOK) {
 		CString strDestinationFileName = GetCacheFile(FILE_TYPE_OPML, dlg.m_strPath, OPML_FILENAME);
 
-		CSiteItem *root = (CSiteItem *) m_ctlSites.GetItemData(m_ctlSites.GetRootItem());
+		HTREEITEM hRoot = m_ctlSites.GetRootItem();
+		CreateSiteList(hRoot);
+
+		CSiteItem *root = (CSiteItem *) m_ctlSites.GetItemData(hRoot);
 		CSiteList siteListToExport;
 		siteListToExport.SetRoot(root);
 		siteListToExport.SetKeywords(SiteList.GetKeywords());
