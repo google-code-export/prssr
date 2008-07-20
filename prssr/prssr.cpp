@@ -263,6 +263,8 @@ int CPrssrApp::ExitInstance() {
 	LOG0(1, "CPrssrApp::ExitInstance()");
 
 	SiteList.Destroy();
+	delete SiteList.Unread;
+	delete SiteList.Flagged;
 
 	WSACleanup();
 	FreeSSL();
