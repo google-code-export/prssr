@@ -14,7 +14,7 @@ So you are here, becuase regular uninstall did not work for you.
 
   # Use the Task manager to stop pRSSreader service
   # Deactivate Today plugin (if activated)
-  # End pRSSreader (*ile | Exit*)
+  # End pRSSreader (*File | Exit*)
   # Delete the folder with pRSSreader's binaries (default is *\Program Files\pRSSreader*)
   # Delete librarires
     * *\windows\libexpat.dll*
