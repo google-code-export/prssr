@@ -456,6 +456,11 @@ void CSummaryView::OnSiteManLink() {
 void CSummaryView::OnSize(UINT nType, int cx, int cy) {
 	CGroupView::OnSize(nType, cx, cy);
 
+//	int height = GetSystemMetrics(SM_CYSCREEN);	
+//	CRect rc(0, height - SCALEY(54) - SCALEY(20), cx, height - SCALEY(54));
+
 	int height = GetSystemMetrics(SM_CYSCREEN);	
-	CRect rc(0, height - SCALEY(54) - SCALEY(20), cx, height - SCALEY(54));
+	int width = GetSystemMetrics(SM_CXSCREEN);	
+//	CRect rc(0, height - SCALEY(54) - SCALEY(20), width, height - SCALEY(54));
+	m_ctlSiteManLink.SetWindowPos(NULL, 0, height - SCALEY(54) - SCALEY(20), width, SCALEY(20), SWP_NOZORDER);
 }
