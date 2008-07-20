@@ -179,9 +179,6 @@ protected:
 	UINT TapAndHoldTimer;
 	CPoint LastCursorPos;
 
-	UINT CtxMenuTimer;
-//	BOOL IgnoreUp;
-
 	HGROUPITEM m_hClickedItem;
 
 	void UpdateItemsY(HGROUPITEM hParent, int &top);
