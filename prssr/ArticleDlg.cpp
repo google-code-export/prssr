@@ -51,8 +51,6 @@ void OpenOnlineMessage(const CString &link, CSiteItem *si) {
 
 		if (Config.UseHtmlOptimizer && Config.OpenMsgWithHtmlOptimizer)
 			url = MakeHtmlOptimizerUrl(url, Config.HtmlOptimizerURL);
-//		else
-//			url = link;
 	}
 
 	OpenUrlExt(url);
@@ -80,9 +78,6 @@ CArticleDlg::CArticleDlg() {
 	m_pFeedItem = NULL;
 
 	HtmlCached = FALSE;
-
-	CtxMenuTimer = 2;
-//	ReturnDown = FALSE;
 }
 
 CArticleDlg::~CArticleDlg() {
@@ -149,7 +144,6 @@ BOOL CArticleDlg::OnInitDialog() {
 	LOG0(1, "CArticleDlg::OnInitDialog()");
 
 	CCeDialog::OnInitDialog();
-//	CDialog::OnInitDialog();
 	m_strCaption.Empty();
 
 	CRect rc;
@@ -157,9 +151,6 @@ BOOL CArticleDlg::OnInitDialog() {
 	m_ctlInfoBar.Create(WS_CHILD, rc, this, IDC_INFO_BAR);
 
 	m_ctlHTML.Create(WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS, rc, GetSafeHwnd(), 0);
-
-//	m_ctlBanner.Invalidate();
-//	m_ctlBanner.UpdateWindow();
 
 	::SetWindowLong(m_ctlHTML.GetHwnd(), GWL_ID, 12321);
 	::SetFocus(m_ctlHTML.GetHwnd());
@@ -203,21 +194,6 @@ void CArticleDlg::OnDestroy() {
 	LOG0(3, "CArticleDlg::OnDestroy()");
 
 	CCeDialog::OnDestroy();
-
-/*	if (m_pParent != NULL) return;
-	CFeedView *view = (CFeedView *) m_pParent;
-
-	view->DeleteAllItems();
-	// FIXME: multiple site items in one view
-	view->InsertItems(SiteList.GetAt(Config.ActSiteIdx));
-	view->UpdateSort();
-*/
-
-//	CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
-//	frame->SelectSite(Config.ActSiteIdx);
-
-//	if (m_pParent != NULL) return;
-//	CFeedView *view = (CFeedView *) m_pParent;
 }
 
 void CArticleDlg::PostNcDestroy() {	
@@ -326,16 +302,8 @@ void CArticleDlg::ShowFeedItem() {
 		m_ctlHTML.AddText(L"</strong></p>");
 
 		// translate
-		CString d;
-		d.Format(_T("<div>%s</div>"), m_pFeedItem->Description);		// workaround for libsgml
-/*		CLocalHtmlFile h;
-		h.LoadFromMemory(d);
-		h.Filter();
-		h.TranslateForOffline();
-		CString description = h.ToString();
-*/
-		CString description = d;
-
+		CString description ;
+		description.Format(_T("<div>%s</div>"), m_pFeedItem->Description);		// workaround for libsgml
 		m_ctlHTML.AddText(L"<p>");
 		m_ctlHTML.AddText(description);
 		m_ctlHTML.AddText(L"</p>");
@@ -515,9 +483,6 @@ void CArticleDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 
 	switch (nChar) {
 		case VK_RETURN:
-//			OnItemOpen();
-			SetTimer(CtxMenuTimer, TIMER_KEY_CTX_MENU, NULL);
-//			ReturnDown = TRUE;
 			CCeDialog::OnKeyDown(nChar, nRepCnt, nFlags);
 			break;
 
@@ -552,12 +517,7 @@ void CArticleDlg::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
 
 	switch (nChar) {
 		case VK_RETURN:
-			KillTimer(CtxMenuTimer);
-/*			if (ReturnDown) {
-				ReturnDown = FALSE;
-				OnItemOpen();
-			}
-*/
+			OnItemOpen();
 			CCeDialog::OnKeyUp(nChar, nRepCnt, nFlags);
 			break;
 
@@ -669,7 +629,6 @@ void CArticleDlg::OnContextMenu(NM_HTMLCONTEXT *pnmhc) {
 		AppendMenuFromResource(&popup, IDR_SEND_BY_EMAIL);
 	}
 	else {	
-//	if (pnmhc->uTypeFlags & HTMLCONTEXT_BACKGROUND) {
 		m_strContextMnuUrl.Empty();
 		m_strContextMenuLinkName.Empty();
 
@@ -683,12 +642,9 @@ void CArticleDlg::OnContextMenu(NM_HTMLCONTEXT *pnmhc) {
 		AppendMenuFromResource(&popup, IDR_COPY_URL);
 	}
 
-//	popup.AppendMenu(MF_SEPARATOR);
-
 	popup.AppendMenu(MF_SEPARATOR);
 	AppendMenuFromResource(&popup, IDR_ITEM_FLAG);
 	AppendMenuFromResource(&popup, IDR_COPY);
-//	AppendMenuFromResource(&popup, IDR_REFRESH);
 	
 	//
 	CPoint point = pnmhc->pt;
@@ -701,15 +657,10 @@ void CArticleDlg::ResizeControls() {
 	CRect rcClient;
 	GetClientRect(&rcClient);
 
-/*    RelayoutDialog(AfxGetInstanceHandle(), GetSafeHwnd(), InWideMode() ?
-        MAKEINTRESOURCE(IDD_WIDE) :
-        MAKEINTRESOURCE(IDD));
-*/
 	CRect rcBanner;
 	m_ctlBanner.GetClientRect(&rcBanner);
 
 	m_ctlBanner.SetWindowPos(NULL, rcClient.left, rcClient.top, rcClient.Width(), SCALEY(21), SWP_NOZORDER);
-//	m_ctlBanner.Invalidate();
 
 	rcClient.top += rcBanner.Height();
 
@@ -740,16 +691,6 @@ void CArticleDlg::ResizeControls() {
 LRESULT CArticleDlg::OnHotKey(WPARAM wParam, LPARAM lParam) {
 	LOG0(3, "CArticleDlg::OnHotKey()");
 
-/*	int idHotKey = wParam;
-	UINT fuModifiers = LOWORD(lParam);
-	UINT uVirtKey = HIWORD(lParam);
-
-	UINT cmd;
-	if (Config.HwKeysCmd.Lookup(uVirtKey, cmd)) {
-		if (cmd == ID_OPEN_ENCLOSURE)
-			OnOpenEnclosure();
-	}
-*/
 	return 0;
 }
 
@@ -1267,32 +1208,5 @@ void CArticleDlg::OnSendByEmail() {
 }
 
 void CArticleDlg::OnTimer(UINT nIDEvent) {
-	if (nIDEvent == CtxMenuTimer) {
-		KillTimer(CtxMenuTimer);
-//		ReturnDown = FALSE;
-
-		CRect rc;
-		m_ctlBanner.GetClientRect(&rc);
-		ClientToScreen(rc);
-		POINT pt = { rc.left, rc.bottom};
-
-		//
-		CMenu popup;
-		popup.CreatePopupMenu();
-
-		AppendMenuFromResource(&popup, IDR_OPEN);
-		popup.AppendMenu(MF_SEPARATOR);
-		AppendBookmarkMenu(&popup);
-		AppendMenuFromResource(&popup, IDR_SEND_BY_EMAIL);
-		AppendMenuFromResource(&popup, IDR_COPY_URL);
-
-		popup.AppendMenu(MF_SEPARATOR);
-		AppendMenuFromResource(&popup, IDR_ITEM_FLAG);
-		AppendMenuFromResource(&popup, IDR_COPY);
-		
-		//
-		popup.TrackPopupMenu(TPM_LEFTALIGN, pt.x, pt.y, this);
-	}
-
 	CCeDialog::OnTimer(nIDEvent);
 }

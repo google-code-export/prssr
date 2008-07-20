@@ -108,9 +108,6 @@ CGroupView::CGroupView() {
 	ItemHeight = ITEM_MARGIN + Appearance.SummaryViewFontCfg.Size;
 
 	NoItemsId = IDS_NO_ITEMS_TO_DISPLAY;
-
-	CtxMenuTimer = 2;
-//	IgnoreUp = FALSE;
 }
 
 CGroupView::~CGroupView() {
@@ -930,21 +927,6 @@ void CGroupView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			break;
 		
 		case VK_RETURN:
-			if (Items.GetCount() > 0 && m_hSelectedItem != NULL) {
-				SetTimer(CtxMenuTimer, TIMER_KEY_CTX_MENU, NULL);
-			}
-//			IgnoreUp = FALSE;
-
-//			CView::OnKeyDown(nChar, nRepCnt, nFlags);
-			if (Items.GetCount() > 0 && m_hSelectedItem != NULL) {
-				GVITEM *gi = Items.GetAt(m_hSelectedItem);
-				POINT pt = { SCALEX(4), gi->yTop - m_nViewTop + (SCALEY(ItemHeight) - 4) };
-				ClientToScreen(&pt);
-				mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_LEFTDOWN, (pt.x * 65535) / GetSystemMetrics(SM_CXSCREEN), (pt.y * 65535) / GetSystemMetrics(SM_CYSCREEN), 0, 0);
-				LastCursorPos = pt;
-//				IgnoreUp = FALSE;
-			}
-
 			CView::OnKeyDown(nChar, nRepCnt, nFlags);
 			break;
 
@@ -956,56 +938,15 @@ void CGroupView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 
 void CGroupView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	switch (nChar) {
-//		case VK_F23:
-//			break;
-
 		case VK_RETURN:
-//			if (IgnoreUp)
-//				CView::OnKeyUp(nChar, nRepCnt, nFlags);
-/*
 			if (Items.GetCount() > 0 && m_hSelectedItem != NULL) {
-				GVITEM *gi = Items.GetAt(m_hSelectedItem);
-				POINT pt = { SCALEX(0), gi->yTop - m_nViewTop + (SCALEY(ItemHeight) - 1) };
-				ClientToScreen(&pt);
-				mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_LEFTUP, (pt.x * 65535) / GetSystemMetrics(SM_CXSCREEN), (pt.y * 65535) / GetSystemMetrics(SM_CYSCREEN), 0, 0);
-			}
-
-			KillTimer(TapAndHoldTimer);
-
-			if (IgnoreUp) {
 				// toggle item state
 				if (ItemHasChildren(m_hSelectedItem))
 					ToggleItem(m_hSelectedItem);
 				else
 					OnItemClicked();
 			}
-			else {
-				//WM_CANCELMODE
-			}
 
-			IgnoreUp = FALSE;
-*/
-/*			KillTimer(CtxMenuTimer);
-			if (Items.GetCount() > 0 && m_hSelectedItem != NULL) {
-				if (!IgnoreUp) {
-					// toggle item state
-					if (ItemHasChildren(m_hSelectedItem))
-						ToggleItem(m_hSelectedItem);
-					else
-						OnItemClicked();
-				}
-			}
-*/
-
-			if (Items.GetCount() > 0 && m_hSelectedItem != NULL) {
-				GVITEM *gi = Items.GetAt(m_hSelectedItem);
-				POINT pt = { SCALEX(4), gi->yTop - m_nViewTop + (SCALEY(ItemHeight) - 4) };
-				ClientToScreen(&pt);
-				mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_LEFTUP, (pt.x * 65535) / GetSystemMetrics(SM_CXSCREEN), (pt.y * 65535) / GetSystemMetrics(SM_CYSCREEN), 0, 0);
-				LastCursorPos = pt;
-			}
-
-//			KillTimer(CtxMenuTimer);
 			CView::OnKeyUp(nChar, nRepCnt, nFlags);
 			break;
 
@@ -1038,34 +979,8 @@ void CGroupView::OnTimer(UINT nIDEvent) {
 		shrg.dwFlags = SHRG_NOTIFYPARENT | SHRG_RETURNCMD;
 
 		if (::SHRecognizeGesture(&shrg) == GN_CONTEXTMENU) {
-//			IgnoreUp = TRUE;
 			ContextMenu(LastCursorPos);
 		}
-	}
-	else if (nIDEvent == CtxMenuTimer) {
-		KillTimer(CtxMenuTimer);
-//		IgnoreUp = TRUE;
-
-		// tap and hold
-		SHRGINFO shrg;
-		shrg.cbSize = sizeof(shrg);
-		shrg.hwndClient = GetSafeHwnd();
-		shrg.ptDown.x = LastCursorPos.x;
-		shrg.ptDown.y = LastCursorPos.y;
-		shrg.dwFlags = SHRG_NOTIFYPARENT | SHRG_RETURNCMD;
-
-		if (::SHRecognizeGesture(&shrg) == GN_CONTEXTMENU) {
-//			IgnoreUp = TRUE;
-			SendMessage(WM_CANCELMODE);
-			ContextMenu(LastCursorPos);
-		}
-
-
-/*		GVITEM *gi = Items.GetAt(m_hSelectedItem);
-		POINT pt = { SCALEX(0), gi->yTop - m_nViewTop + (SCALEY(ItemHeight) - 1) };
-//		ClientToScreen(&pt);
-		ContextMenu(pt);
-*/
 	}
 	
 	CView::OnTimer(nIDEvent);

@@ -99,22 +99,6 @@ void CSummaryView::InsertItems(HGROUPITEM hParent, CSiteItem *parent) {
 	POSITION pos = parent->SubItems.GetHeadPosition();
 	while (pos != NULL) {
 		CSiteItem *si = parent->SubItems.GetNext(pos);
-
-/*		HGROUPITEM hItem;
-		if (si->Type == CSiteItem::Site) {
-			hItem = InsertItem(si->Name, si->ImageIdx, hParent);
-			SetItemData(hItem, (DWORD) si);
-		}
-		else {
-			if (!Config.HideGroups) {
-				hItem = InsertItem(si->Name, hParent);
-				SetItemData(hItem, (DWORD) si);
-				InsertItems(hItem, si);
-			}
-			else
-				InsertItems(hParent, si);
-		}
-*/
 		InsertSiteItem(hParent, si);
 	}
 }
@@ -155,7 +139,7 @@ void CSummaryView::OnDrawItem(CDC &dc, CRect &rc, HGROUPITEM hItem, BOOL selecte
 	}
 	else {
 		if (si->Type == CSiteItem::Group) {
-			clrBg = Appearance.ClrGroupBg; //RGB(0xD5, 0xD2, 0xFF);
+			clrBg = Appearance.ClrGroupBg;
 			clrFg = Appearance.ClrGroupFg;
 		}
 		else if (si->Type == CSiteItem::VFolder) {
@@ -163,8 +147,8 @@ void CSummaryView::OnDrawItem(CDC &dc, CRect &rc, HGROUPITEM hItem, BOOL selecte
 			clrFg = Appearance.ClrVFolderFg;
 		}
 		else {
-			clrBg = Appearance.ClrSummaryBg; //::GetSysColor(COLOR_WINDOW);
-			clrFg = Appearance.ClrSummaryFg; //::GetSysColor(COLOR_WINDOWTEXT);
+			clrBg = Appearance.ClrSummaryBg;
+			clrFg = Appearance.ClrSummaryFg;
 		}
 	}
 
@@ -177,7 +161,6 @@ void CSummaryView::OnDrawItem(CDC &dc, CRect &rc, HGROUPITEM hItem, BOOL selecte
 
 	// icon
 	int nImg = si->ImageIdx;
-//	GetItemImage(hItem, nImg);
 	if (nImg != -1) {
 		DrawIcon(dc, nImg, selected);
 	}
@@ -190,7 +173,6 @@ void CSummaryView::OnDrawItem(CDC &dc, CRect &rc, HGROUPITEM hItem, BOOL selecte
 		CBrush br(RGB(0, 0, 0));
 		CBrush *pBrush = dc.SelectObject(&br);
 		if (gi->State == GVIS_COLLAPSED && gi->Childs.GetCount() > 0) {
-//			dc.DrawFrameControl(rcIcon, DFC_SCROLL, DFCS_SCROLLRIGHT);
 			CPoint pts[3] = {
 				CPoint(rc.left + SCALEX( 6), rc.top + SCALEY(5)),
 				CPoint(rc.left + SCALEX( 6), rc.top + SCALEY(13)),
@@ -205,8 +187,6 @@ void CSummaryView::OnDrawItem(CDC &dc, CRect &rc, HGROUPITEM hItem, BOOL selecte
 				CPoint(rc.left + SCALEX( 8), rc.top + SCALEY(12)),
 			};
 			dc.Polygon(pts, 3);
-
-//			dc.DrawFrameControl(rcIcon, DFC_SCROLL, DFCS_SCROLLDOWN);
 		}
 		dc.SelectObject(pBrush);
 		dc.SelectObject(pPen);
@@ -250,9 +230,6 @@ void CSummaryView::OnDrawItem(CDC &dc, CRect &rc, HGROUPITEM hItem, BOOL selecte
 	else
 		pOldFont = dc.SelectObject(&m_fntBase);
 
-//	CString s = _T("Tohle je velmi dlouhy nadpis, ktery se zlomi na vice radku, abych to mohl otestovat");
-//	DrawTextEndEllipsis(dc, s, rcTitle, DT_LEFT | DT_TOP | DT_NOPREFIX);
-
 	DrawTextEndEllipsis(dc, gi->Text, rcItem, DT_LEFT | DT_BOTTOM | DT_NOPREFIX);
 	dc.SelectObject(pOldFont);
 
@@ -278,12 +255,7 @@ void CSummaryView::OnItemClicked() {
 		CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
 		frame->SwitchView(CMainFrame::FeedView);
 		frame->SelectSite(SiteList.GetIndexOf(si));
-
-/*		// unselect item
-		HGROUPITEM hOldItem = m_hSelectedItem;
-		m_hSelectedItem = NULL;
-		InvalidateItem(hOldItem, FALSE);
-*/	}
+	}
 }
 
 void CSummaryView::ContextMenu(CPoint pt) {
@@ -434,7 +406,6 @@ void CSummaryView::OnViewHideGroups() {
 
 	SetRedraw(FALSE);
 	DeleteAllItems();
-//	InsertItems(GVI_ROOT, SiteList.GetRoot());
 	InsertSites(&SiteList);
 	SetRedraw(TRUE);
 
@@ -442,7 +413,6 @@ void CSummaryView::OnViewHideGroups() {
 	UpdateScrollBars();
 
 	Invalidate();
-//	UpdateWindow();
 }
 
 void CSummaryView::OnUpdateViewHideGroups(CCmdUI *pCmdUI) {
@@ -456,11 +426,7 @@ void CSummaryView::OnSiteManLink() {
 void CSummaryView::OnSize(UINT nType, int cx, int cy) {
 	CGroupView::OnSize(nType, cx, cy);
 
-//	int height = GetSystemMetrics(SM_CYSCREEN);	
-//	CRect rc(0, height - SCALEY(54) - SCALEY(20), cx, height - SCALEY(54));
-
 	int height = GetSystemMetrics(SM_CYSCREEN);	
 	int width = GetSystemMetrics(SM_CXSCREEN);	
-//	CRect rc(0, height - SCALEY(54) - SCALEY(20), width, height - SCALEY(54));
 	m_ctlSiteManLink.SetWindowPos(NULL, 0, height - SCALEY(54) - SCALEY(20), width, SCALEY(20), SWP_NOZORDER);
 }

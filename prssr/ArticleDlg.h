@@ -17,10 +17,8 @@
 /////////////////////////////////////////////////////////////////////////////
 // CArticleDlg dialog
 
-//class CItemListView;
 class CFeedItem;
 class CEnclosureItem;
-//class CSiteInfo;
 
 class CArticleDlg : public CCeDialog {
 // Construction
@@ -31,9 +29,6 @@ public:
 	BOOL Create(CWnd *pParentWnd = NULL);
 
 // Dialog Data
-//	CFeedView::CItem *ActiveItem;
-//	CItemListView *ItemListView;
-
 	enum {
 		IDD = IDD_ARTICLE,
 		IDD_WIDE = IDD_ARTICLE_WIDE
@@ -60,7 +55,6 @@ public:
 
 // Implementation
 protected:
-//	CCeCommandBar m_wndCommandBar;
 	CImageList m_ilIcons;
 
 	CWnd *m_pParent;
@@ -68,10 +62,6 @@ protected:
 	CString m_strContextMnuUrl;
 	CString m_strContextMenuLinkName;
 	CString m_strImageLoc;
-
-	UINT CtxMenuTimer;
-//	BOOL ReturnDown;
-
 
 	void OnContextMenu(NM_HTMLCONTEXT *pnmhc);
 
