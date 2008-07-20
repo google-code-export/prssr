@@ -431,5 +431,6 @@ void CSummaryView::OnSize(UINT nType, int cx, int cy) {
 
 	int height = GetSystemMetrics(SM_CYSCREEN);	
 	int width = GetSystemMetrics(SM_CXSCREEN);	
-	m_ctlSiteManLink.SetWindowPos(NULL, 0, height - SCALEY(54) - SCALEY(20), width, SCALEY(20), SWP_NOZORDER);
+	if (::IsWindow(m_ctlSiteManLink.GetSafeHwnd()))
+		m_ctlSiteManLink.SetWindowPos(NULL, 0, height - SCALEY(54) - SCALEY(20), width, SCALEY(20), SWP_NOZORDER);
 }
