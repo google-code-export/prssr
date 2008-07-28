@@ -18,16 +18,16 @@
  *
  */
 
-#include "..\StdAfx.h"
-#include "..\prssr.h"
-#include "searcher.h"
-#include "..\xml\XMLFile.h"
-#include "..\www\url.h"
+#include "../StdAfx.h"
+#include "../prssr.h"
+#include "Searcher.h"
+#include "../xml/XMLFile.h"
+#include "../www/url.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
 static TCHAR THIS_FILE[] = _T(__FILE__);
-#include "..\debug\crtdbg.h"
+#include "../debug/crtdbg.h"
 #define new MYDEBUG_NEW
 #endif
 
@@ -367,7 +367,7 @@ BOOL CSyndic8ComSearcher::ParseFeedInfoStruct(CXmlNode *structNode, CSearchResul
 						}
 					}
 				}
-				
+
 				PosOffset += 1000;
 			}
 

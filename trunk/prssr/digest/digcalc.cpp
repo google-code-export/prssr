@@ -1,5 +1,5 @@
-#include "md5\global.h"
-#include "md5\md5.h"
+#include "md5/global.h"
+#include "md5/MD5.h"
 #include <string.h>
 #include "digcalc.h"
 

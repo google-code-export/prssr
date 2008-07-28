@@ -18,11 +18,11 @@
  *
  */
 
-#include "..\stdafx.h"
-#include "..\prssr.h"
+#include "../StdAfx.h"
+#include "../prssr.h"
 #include "proxy.h"
 #include "httpsock.h"
-#include "httpconnection.h"
+#include "HttpConnection.h"
 #include "../../share/helpers.h"
 #include "../www/url.h"
 
@@ -223,7 +223,7 @@ BOOL CSocks5ConnectionProvider::Connect(CHttpSocket *s, DWORD serviceType, const
 		if (size > 0 && size != SOCKET_ERROR) {
 			// error in reply?
 			// VER == 1 && STATUS == 0
-			if (s5authreply[0] != 1 || s5authreply[1] != 0)		
+			if (s5authreply[0] != 1 || s5authreply[1] != 0)
 				return FALSE;
 		}
 		else

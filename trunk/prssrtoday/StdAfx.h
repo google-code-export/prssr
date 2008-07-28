@@ -1,4 +1,4 @@
-// stdafx.h : include file for standard system include files,
+// StdAfx.h : include file for standard system include files,
 //  or project specific include files that are used frequently, but
 //      are changed infrequently
 //
@@ -32,13 +32,13 @@
 #include <aygshell.h>
 #include "todaycmn.h"
 
-#include "..\share\shguim.h"
-#include "..\share\uihelper.h"
+#include "../share/shguim.h"
+#include "../share/UIHelper.h"
 
 #include "resource.h"
 
 #include <winsock.h>
-#include "..\prssr\debug\Logger.h"
+#include "../prssr/debug/Logger.h"
 
 #define countof(a) (sizeof(a) / sizeof(a[0]))
 

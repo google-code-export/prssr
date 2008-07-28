@@ -19,15 +19,15 @@
  */
 
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "Config.h"
 
-#include "..\share\defs.h"
-#include "..\share\reg.h"
+#include "../share/defs.h"
+#include "../share/reg.h"
 
 //LPCTSTR szToday = _T("Today");
 
-// today plugin config 
+// today plugin config
 LPCTSTR szMode            = _T("Mode");
 
 LPCTSTR szVerticalOffset  = _T("VertOffset");
@@ -118,7 +118,7 @@ void CConfig::Load() {
 	FontSize = reg.Read(szFontSize, CONFIG_DEFAULT_FONT_SIZE);
 	DisplayIcon = reg.Read(szDisplayIcon, CONFIG_DEFAULT_DISPLAY_ICON);
 
-	// cycling mode			
+	// cycling mode
 	CyclingSubMode = reg.Read(szCyclingSubMode, CONFIG_DEFAULT_CYCLING_SUBMODE);
 	ShowSiteName = reg.Read(szShowSiteName, CONFIG_DEFAULT_SHOW_SITE_NAME);
 	ShowDateTime = reg.Read(szShowDateTime, CONFIG_DEFAULT_SHOW_DATE_TIME);

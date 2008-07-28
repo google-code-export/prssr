@@ -19,11 +19,11 @@
  */
 
 #if defined PRSSR_APP
-	#include "../stdafx.h"
+	#include "../StdAfx.h"
 //	#include "resource.h"
 	#include "../prssr.h"
 #elif defined PRSSR_TODAY
-	#include "../../prssrtoday/stdafx.h"
+	#include "../../prssrtoday/StdAfx.h"
 	#include "../../prssrtoday/prssrtoday.h"
 #endif
 

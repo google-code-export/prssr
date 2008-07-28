@@ -19,10 +19,10 @@
  */
 
 #if defined PRSSR_APP
-	#include "../prssr/stdafx.h"
+	#include "../prssr/StdAfx.h"
 	#include "../prssr/prssr.h"
 #elif defined  PRSSR_TODAY
-	#include "../prssrtoday/stdafx.h"
+	#include "../prssrtoday/StdAfx.h"
 #endif
 
 #include "helpers.h"

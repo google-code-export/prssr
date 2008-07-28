@@ -32,7 +32,7 @@
 [DefaultInstall]
 	CEShortcuts          = Shortcuts
 	CopyFiles            = Files.License
-	AddReg               = DpiSpecificFiles,RegisterTodayPlugin,Notifications
+	AddReg               = RegisterTodayPlugin,Notifications
 
 [DefaultInstall.ARM]
 	CopyFiles            = Files.App.ARM,Files.Libs.ARM,Files.TodayPlugin.ARM
@@ -93,10 +93,6 @@
 
 [Files.License]
 	COPYING,,,0x40000000
-
-[DpiSpecificFiles]
-	HKLM,Software\Microsoft\SetupDPI,%InstallDir%\res.096.dll,65537,0
-	HKLM,Software\Microsoft\SetupDPI,%InstallDir%\res.192.dll,65537,0
 
 ; register roday plugin
 [RegisterTodayPlugin]

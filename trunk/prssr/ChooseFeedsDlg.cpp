@@ -18,12 +18,12 @@
  *
  */
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "prssr.h"
 #include "ChooseFeedsDlg.h"
 
 #include "Config.h"
-#include "../share\helpers.h"
+#include "../share/helpers.h"
 #include "Appearance.h"
 
 #include "www/AutoFeedHtmlFile.h"

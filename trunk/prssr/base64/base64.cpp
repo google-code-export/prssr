@@ -19,7 +19,7 @@
  */
 
 
-#include "..\stdafx.h"
+#include "../StdAfx.h"
 #include "base64.h"
 
 //

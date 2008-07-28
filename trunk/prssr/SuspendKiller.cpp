@@ -18,7 +18,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "SuspendKiller.h"
 
 #ifdef _DEBUG

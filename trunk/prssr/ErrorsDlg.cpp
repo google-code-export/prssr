@@ -18,10 +18,10 @@
  *
  */
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "prssr.h"
 #include "ErrorsDlg.h"
-#include "../share\helpers.h"
+#include "../share/helpers.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE

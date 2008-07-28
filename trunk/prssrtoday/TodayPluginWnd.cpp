@@ -19,7 +19,7 @@
  */
 
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "prssrtoday.h"
 #include "TodayPluginWnd.h"
 
@@ -130,17 +130,17 @@ END_MESSAGE_MAP()
 BOOL CTodayPluginWnd::Register() {
 	Unregister();
 
-	WNDCLASS wc; 
+	WNDCLASS wc;
 	memset(&wc, 0, sizeof(wc));
-	
-	wc.style		 = 0;				   
+
+	wc.style		 = 0;
 	wc.lpfnWndProc	 = (WNDPROC) ::DefWindowProc;
 	wc.hInstance	 = AfxGetInstanceHandle();
 	wc.hIcon		 = 0;
 	wc.hCursor		 = 0;
 	wc.hbrBackground = (HBRUSH) GetStockObject(WHITE_BRUSH);
 	wc.lpszClassName = TODAY_CLASS_NAME;
-	
+
 	// register our window
 	if (!AfxRegisterClass(&wc)) {
 		TRACE(_T("Class Registration Failed\n"));
@@ -243,7 +243,7 @@ BOOL CTodayPluginWnd::OnEraseBkgnd(CDC* pDC) {
 	GetClientRect(&dwi.rc);
 	::SendMessage(m_hWndParent, TODAYM_DRAWWATERMARK, 0, (LPARAM) &dwi);
 
-	return TRUE;	
+	return TRUE;
 }
 
 
@@ -355,7 +355,7 @@ void CTodayPluginWnd::DrawCycling(CDC &dc, CRect &rcLabel) {
 				CString sFeedTitle = fi->Title;
 				ReplaceHTMLEntities(sFeedTitle);
 				DrawTextEndEllipsis(dc, sFeedTitle, rcLabel, DT_LEFT | DT_TOP | DT_NOPREFIX);
-			
+
 				if (Config.ShowDateTime) {
 					rcLabel.top += RowHeight;
 					rcLabel.bottom += RowHeight;
@@ -363,9 +363,9 @@ void CTodayPluginWnd::DrawCycling(CDC &dc, CRect &rcLabel) {
 					CString strDateTime;
 					SYSTEMTIME st = { 0 };
 					if (fi->PubDate.wYear != 0) {
-//						if (Config.GMTTimes) 
+//						if (Config.GMTTimes)
 //							st = fi->PubDate;		// leave at GMT
-//						else			
+//						else
 							st = TimeToTimeZone(&fi->PubDate);		// convert to local time zone
 					}
 					if (!FormatDateTime(strDateTime, st, Config.ShowRelativeDates))
@@ -408,7 +408,7 @@ void CTodayPluginWnd::OnPaint() {
 		crText = GetParent()->SendMessage(TODAYM_GETCOLOR, (WPARAM) TODAYCOLOR_TEXT, NULL);
 	}
 
-	// Important if you want the watermark behind the text      
+	// Important if you want the watermark behind the text
 	dc.SetBkMode(TRANSPARENT);
 	dc.SetTextColor(crText);
 
@@ -446,7 +446,7 @@ void CTodayPluginWnd::OnPaint() {
 
 	ValidateRect(rcClient);
 
-	dc.RestoreDC(saveDC);	
+	dc.RestoreDC(saveDC);
 	// Do not call CWnd::OnPaint() for painting messages
 }
 
@@ -606,7 +606,7 @@ LRESULT CTodayPluginWnd::WindowProc(UINT message, WPARAM wParam, LPARAM lParam) 
 			int idx = (int) wParam;
 			if (0 <= idx && idx < SiteList.GetCount()) {
 				EnterCriticalSection(&CSSiteList);
-				
+
 				CSiteItem *si = SiteList.GetAt(idx);
 				LoadSiteItem(si, idx + 1);
 				LoadSiteItemUnreadCount(si, idx + 1);
@@ -967,7 +967,7 @@ BOOL CTodayPluginWnd::NewsAvailable() {
 			CSiteItem *si = SiteList.GetAt(i);
 			if (si->Status == CSiteItem::Ok && si->Info->TodayShow && si->Feed != NULL)
 				itemCount += si->Feed->GetItemCount();
-			
+
 			if (itemCount > 0)
 				break;
 		}
@@ -988,7 +988,7 @@ CString CTodayPluginWnd::GetPrssFilePath() {
 
 void CTodayPluginWnd::OpenReader() {
 	LOG0(1, "CTodayPluginWnd::OpenReader()");
-	
+
 	PROCESS_INFORMATION pi;
 	::CreateProcess(GetPrssFilePath(), _T(""), NULL, NULL, FALSE, 0, NULL, NULL, NULL, &pi);
 }

@@ -18,7 +18,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "prssr.h"
 #include "AcceptCertificateDlg.h"
 
@@ -74,7 +74,7 @@ END_MESSAGE_MAP()
 
 void CAcceptCertificateDlg::OnPaint() {
 	CPaintDC dc(this); // device context for painting
-	
+
 	int saveDC = dc.SaveDC();
 
 	CRect rcClient;
@@ -106,7 +106,7 @@ void CAcceptCertificateDlg::OnPaint() {
 	DrawIconEx(dc.GetSafeHdc(), SCALEX(50), rc.top, hIcon, SCALEX(16), SCALEY(16), 0, NULL, DI_NORMAL);
 
 	dc.RestoreDC(saveDC);
-	
+
 	// Do not call CCeDialog::OnPaint() for painting messages
 }
 
@@ -116,7 +116,7 @@ BOOL CAcceptCertificateDlg::OnInitDialog() {
 	CCeDialog::OnInitDialog();
 
 	HICON hIcon;
-	
+
 	hIcon = (HICON) LoadImage(theApp.GetDPISpecificInstanceHandle(), MAKEINTRESOURCE(IDI_LOCK_ALERT), IMAGE_ICON, SCALEX(32), SCALEY(32), 0);
 	SendDlgItemMessageW(GetSafeHwnd(), IDC_ALERT_ICON, STM_SETIMAGE, IMAGE_ICON, (LPARAM) hIcon);
 

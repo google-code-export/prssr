@@ -18,9 +18,9 @@
  *
  */
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "prssr.h"
-#include "../share\uihelper.h"
+#include "../share/UIHelper.h"
 #include "ArticleDlg.h"
 
 #include "ctrls/CeDialog.h"
@@ -30,8 +30,8 @@
 #include "Feed.h"
 #include "MainFrm.h"
 #include "Appearance.h"
-#include "www\LocalHtmlFile.h"
-#include "www\url.h"
+#include "www/LocalHtmlFile.h"
+#include "www/url.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
@@ -213,12 +213,12 @@ void CArticleDlg::OnDestroy() {
 	CCeDialog::OnDestroy();
 }
 
-void CArticleDlg::PostNcDestroy() {	
+void CArticleDlg::PostNcDestroy() {
 	LOG0(3, "CArticleDlg::PostNcDestroy()");
 
 	CFeedView *view = (CFeedView *) m_pParent;
 
-	if ((view->SiteItem->Type != CSiteItem::VFolder && Config.HideReadItems) || 
+	if ((view->SiteItem->Type != CSiteItem::VFolder && Config.HideReadItems) ||
 		(view->SiteItem->Type == CSiteItem::VFolder && view->SiteItem->FlagMask == MESSAGE_READ_STATE))
 	{
 		for (int i = view->GetItemCount() - 1; i >= 0; i--) {
@@ -242,7 +242,7 @@ void CArticleDlg::OnOK() {
 
 void CArticleDlg::OnCancel() {
 	LOG0(1, "CArticleDlg::OnCancel()");
-	
+
 	DestroyWindow();
 }
 
@@ -268,7 +268,7 @@ void CArticleDlg::SetupEnclosureBar(CEnclosureItem *ei) {
 		case ENCLOSURE_TYPE_IMAGE: nImage = ICON_IMAGE; break;
 		default: nImage = ICON_OTHER; break;
 	}
-	
+
 	if (cached)
 		m_ctlEnclosureBar.SetIcon(m_ilIcons.ExtractIcon(nImage));
 	else
@@ -334,7 +334,7 @@ void CArticleDlg::ShowFeedItem() {
 		SYSTEMTIME st = TimeToTimeZone(&m_pFeedItem->PubDate);		// convert to local time zone
 		FormatDateTime(sDateTime, st, Config.ShowRelativeDates);
 		sText += sDateTime;
-		
+
 		// keywords
 		if (m_pFeedItem->HasKeywordMatch()) {
 			m_ctlHTML.AddText(L"<p>Keywords: ");
@@ -631,7 +631,7 @@ void CArticleDlg::OnContextMenu(NM_HTMLCONTEXT *pnmhc) {
 	if (pnmhc->uTypeFlags & HTMLCONTEXT_LINK) {
 		m_strContextMnuUrl = pnmhc->szLinkHREF;
 		m_strContextMenuLinkName = pnmhc->szLinkName;
-		
+
 		AppendMenuFromResource(&popup, IDR_LINK_CTX);
 		popup.InsertMenu(1, MF_SEPARATOR | MF_BYPOSITION);
 		AppendBookmarkMenu(&popup);
@@ -641,11 +641,11 @@ void CArticleDlg::OnContextMenu(NM_HTMLCONTEXT *pnmhc) {
 	else if (pnmhc->uTypeFlags & (HTMLCONTEXT_IMAGE | HTMLCONTEXT_IMAGENOTLOADED)) {
 		m_strContextMnuUrl = pnmhc->szLinkHREF;
 		m_strContextMenuLinkName = pnmhc->szLinkName;
-		
+
 		AppendMenuFromResource(&popup, IDR_ARTICLE_IMAGE);
 		AppendMenuFromResource(&popup, IDR_SEND_BY_EMAIL);
 	}
-	else {	
+	else {
 		m_strContextMnuUrl.Empty();
 		m_strContextMenuLinkName.Empty();
 
@@ -662,7 +662,7 @@ void CArticleDlg::OnContextMenu(NM_HTMLCONTEXT *pnmhc) {
 	popup.AppendMenu(MF_SEPARATOR);
 	AppendMenuFromResource(&popup, IDR_ITEM_FLAG);
 	AppendMenuFromResource(&popup, IDR_COPY);
-	
+
 	//
 	CPoint point = pnmhc->pt;
 	popup.TrackPopupMenu(TPM_LEFTALIGN, point.x, point.y, this);
@@ -716,12 +716,12 @@ void CArticleDlg::OnInitMenuPopup(CMenu* pMenu, UINT nIndex, BOOL bSysMenu) {
 
 	if (bSysMenu)
 		return; // don't support system menu
-	
+
 	ASSERT(pMenu != NULL); // check the enabled state of various menu items
 	CCmdUI state;
 	state.m_pMenu = pMenu;
-	ASSERT(state.m_pOther == NULL); 
-	ASSERT(state.m_pParentMenu == NULL); 	
+	ASSERT(state.m_pOther == NULL);
+	ASSERT(state.m_pParentMenu == NULL);
 
 	// determine if menu is popup in top-level menu and set m_pOther to
 	// it if so (m_pParentMenu == NULL indicates that it is secondary popup)
@@ -730,11 +730,11 @@ void CArticleDlg::OnInitMenuPopup(CMenu* pMenu, UINT nIndex, BOOL bSysMenu) {
 		state.m_pParentMenu = pMenu; // parent == child for tracking popup
 	else if ((hParentMenu = ::WCE_FCTN(GetMenu)(m_hWnd)) != NULL) {
 		CWnd *pParent = GetTopLevelParent(); // child windows don't have menus -- need to go to the top!
-	
+
 		if (pParent != NULL &&
 			(hParentMenu = ::WCE_FCTN(GetMenu)(pParent->m_hWnd)) != NULL)
 		{
-			int nIndexMax = ::WCE_FCTN(GetMenuItemCount)(hParentMenu); 
+			int nIndexMax = ::WCE_FCTN(GetMenuItemCount)(hParentMenu);
 			for (int nIndex = 0; nIndex < nIndexMax; nIndex++) {
 				if (::GetSubMenu(hParentMenu, nIndex) == pMenu->m_hMenu) {
 					// when popup is found, m_pParentMenu is containing menu
@@ -766,7 +766,7 @@ void CArticleDlg::OnInitMenuPopup(CMenu* pMenu, UINT nIndex, BOOL bSysMenu) {
 		}
 		else {
 			// normal menu item
-			// Auto enable/disable if frame window has 'm_bAutoMenuEnable' 
+			// Auto enable/disable if frame window has 'm_bAutoMenuEnable'
 			// set and command is _not_ a system command.
 			state.m_pSubMenu = NULL;
 			state.DoUpdate(this, TRUE);
@@ -783,7 +783,7 @@ void CArticleDlg::OnInitMenuPopup(CMenu* pMenu, UINT nIndex, BOOL bSysMenu) {
 			}
 		}
 		state.m_nIndexMax = nCount;
-	} 
+	}
 }
 
 // commands
@@ -814,7 +814,7 @@ void CArticleDlg::OnItemNext() {
 				NoNewMessage();
 				break;
 			}
-		
+
 			// check
 			if (view->SiteItem->FlagMask == MESSAGE_READ_STATE) {
 				CFeedItem *fi = view->GetItem(idx);
@@ -865,7 +865,7 @@ void CArticleDlg::OnItemNext() {
 					idx = 0;
 				}
 			}
-		
+
 			// check
 			if (view->GetItemCount() > 0) {
 				if (Config.MoveToUnread || Config.HideReadItems) {
@@ -925,7 +925,7 @@ void CArticleDlg::OnItemPrev() {
 				NoNewMessage();
 				break;
 			}
-		
+
 			// check
 			if (view->SiteItem->FlagMask == MESSAGE_READ_STATE) {
 				CFeedItem *fi = view->GetItem(idx);
@@ -976,7 +976,7 @@ void CArticleDlg::OnItemPrev() {
 					idx = view->GetItemCount() - 1;
 				}
 			}
-		
+
 			// check
 			if (view->GetItemCount() > 0) {
 				if (Config.MoveToUnread || Config.HideReadItems) {
@@ -1107,7 +1107,7 @@ void CArticleDlg::OnUpdateEnclosureDelete(CCmdUI *pCmdUI) {
 		pCmdUI->Enable(IsEnclosureCached(ei->URL));
 	}
 	else
-		pCmdUI->Enable(FALSE);	
+		pCmdUI->Enable(FALSE);
 }
 
 void CArticleDlg::OnCopyUrl() {
@@ -1202,7 +1202,7 @@ void CArticleDlg::OnViewImage() {
 	CString fileName = GetCacheFile(FILE_TYPE_IMAGE, Config.CacheLocation, m_strContextMnuUrl);
 	if (FileExists(fileName)) {
 		// file is cached -> open it with a local program
-		ShellOpenFile(fileName);	
+		ShellOpenFile(fileName);
 	}
 	else {
 		// file not cached -> use web browser to open it

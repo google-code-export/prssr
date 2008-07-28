@@ -27,7 +27,7 @@
 
 #include "ctrls/CeDialog.h"
 #include "ctrls/CeListCtrl.h"
-#include "ctrls/hrule.h"
+#include "ctrls/Hrule.h"
 #include "net/Searcher.h"
 
 /////////////////////////////////////////////////////////////////////////////

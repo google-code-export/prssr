@@ -18,7 +18,7 @@
  *
  */
 
-#include "../stdafx.h"
+#include "../StdAfx.h"
 #include "../prssr.h"
 #include "LinkCtrl.h"
 

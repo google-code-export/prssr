@@ -1,5 +1,5 @@
 /**
- *  defs.cpp 
+ *  defs.cpp
  *
  *  Copyright (C) 2008  David Andrs <pda@jasnapaka.com>
  *
@@ -18,7 +18,7 @@
  *
  */
 
-#include "windows.h"
+#include <windows.h>
 
 // shared config items
 LPCTSTR szInstallDir      = _T("InstallDir");

@@ -18,7 +18,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "prssr.h"
 #include "CacheMan.h"
 #include "MainFrm.h"
@@ -26,7 +26,7 @@
 #include "Config.h"
 #include "Site.h"
 //#include "ClearCacheDlg.h"
-#include "../share\helpers.h"
+#include "../share/helpers.h"
 #include "ProgressDlg.h"
 
 #ifdef MYDEBUG
@@ -118,7 +118,7 @@ BOOL CDeleteCacheProgressDlg::OnInitDialog() {
 }
 
 void CDeleteCacheProgressDlg::OnTimer(UINT nIDEvent) {
-	
+
 	CWnd::OnTimer(nIDEvent);
 }
 
@@ -222,7 +222,7 @@ CCacheManHtmlPg::CCacheManHtmlPg() : CCacheManPg(IDS_CACHE) {
 
 BOOL CCacheManHtmlPg::OnInitDialog() {
 	CCacheManPg::OnInitDialog();
-	
+
 	return TRUE;
 }
 
@@ -277,7 +277,7 @@ CCacheManEnclosuresPg::CCacheManEnclosuresPg() : CCacheManPg(IDS_ENCLOSURES) {
 
 BOOL CCacheManEnclosuresPg::OnInitDialog() {
 	CCacheManPg::OnInitDialog();
-	
+
 	return TRUE;
 }
 
@@ -383,7 +383,7 @@ BOOL CCacheManPg::OnInitDialog() {
 	LOG0(3, "CCacheManPg::OnInitDialog()");
 
 	CCePropertyPage::OnInitDialog();
-	
+
 	AfxSetResourceHandle(theApp.GetDPISpecificInstanceHandle());
 	m_ilIcons.Create(IDB_CACHE_ITEMS, SCALEX(16), 0, RGB(255, 0, 255));
 	AfxSetResourceHandle(AfxGetInstanceHandle());
@@ -392,13 +392,13 @@ BOOL CCacheManPg::OnInitDialog() {
 	InsertItems();
 
 	UpdateControls();
-	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
 void CCacheManPg::UpdateControls() {
-	
+
 }
 
 void CCacheManPg::DoInsertFeedItem(HTREEITEM hParent, CFeedItem *fi) {
@@ -517,7 +517,7 @@ void CCacheManPg::OnRemove() {
 		if (DeleteFileList.GetCount() > 0 && AfxMessageBox(IDS_DELETE_ITEMS, MB_YESNO | MB_ICONQUESTION) == IDYES) {
 			m_pProgress = new CDeleteCacheProgressDlg(this);
 			m_pProgress->OpenDialog(IDS_DELETING, this);
-						
+
 			CloseHandle(CreateThread(NULL, 0, DeleteCacheThreadProc, this, 0, NULL));
 		}
 

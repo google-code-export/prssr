@@ -26,7 +26,7 @@
 #endif // _MSC_VER > 1000
 
 #include "ctrls/CeDialog.h"
-#include "ctrls/hrule.h"
+#include "ctrls/Hrule.h"
 //#include "Session.h"
 #include "ctrls/CeTreeCtrl.h"
 

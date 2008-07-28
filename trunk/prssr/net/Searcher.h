@@ -21,7 +21,7 @@
 #ifndef _SEARCHER_H_
 #define _SEARCHER_H_
 
-#include "..\xml\XMLFile.h"
+#include "../xml/XMLFile.h"
 #include "HttpConnection.h"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -74,13 +74,13 @@ public:
 	ESearchState State;
 
 	CSyndic8ComSearcher(const CString &what, const CString &location);
-	
+
 	virtual BOOL Search(int limit, CList<CSearchResultItem *, CSearchResultItem *> &searchResult);
 	virtual void Terminate();
 
 	BOOL IsTerminated() { return HttpConnection.IsTerminated(); }
 
-	DWORD GetDownloadedFileSize() { return PosOffset + HttpConnection.GetDownloadedFileSize(); } 
+	DWORD GetDownloadedFileSize() { return PosOffset + HttpConnection.GetDownloadedFileSize(); }
 
 protected:
 	CString What;														// what we are searching for

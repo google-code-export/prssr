@@ -18,28 +18,28 @@
  *
  */
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "prssr.h"
-#include "../share\uihelper.h"
-#include "../share\reg.h"
+#include "../share/UIHelper.h"
+#include "../share/reg.h"
 
 #include "MainFrm.h"
 #include "FeedView.h"
 #include "SummaryView.h"
-#include "misc\icon.h"
+#include "misc/icon.h"
 
 #include "SiteManagerDlg.h"
 #include "KeywordManagerDlg.h"
 #include "ErrorsDlg.h"
 #include "UpdateSitesDlg.h"
 
-#include "ctrls\CePropertySheet.h"
+#include "ctrls/CePropertySheet.h"
 
 #include "Config.h"
 #include "Appearance.h"
 
 #include "Site.h"
-#include "misc\shnotif.h"
+#include "misc/shnotif.h"
 
 // info
 #include "InfoGeneralPg.h"

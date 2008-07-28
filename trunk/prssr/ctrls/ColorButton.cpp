@@ -18,9 +18,9 @@
  *
  */
 
-#include "../stdafx.h"
+#include "../StdAfx.h"
 #include "../prssr.h"
-#include "../../share/uihelper.h"
+#include "../../share/UIHelper.h"
 #include "ColorButton.h"
 
 #ifdef MYDEBUG

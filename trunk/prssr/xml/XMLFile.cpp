@@ -19,22 +19,22 @@
  */
 
 #ifdef PRSSR_APP
-	#include "..\stdafx.h"
-	#include "..\prssr.h"
+	#include "../StdAfx.h"
+	#include "../prssr.h"
 #endif
 
 #ifdef PRSSR_TODAY
-	#include "..\prssrtoday\stdafx.h"
+	#include "..\prssrtoday\StdAfx.h"
 #endif
 
-#include "XmlFile.h"
+#include "XMLFile.h"
 #include "../../prssrenc/codepages.h"
 #include "../../share/helpers.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
 static TCHAR THIS_FILE[] = _T(__FILE__);
-#include "..\debug\crtdbg.h"
+#include "../debug/crtdbg.h"
 #define new MYDEBUG_NEW
 #endif
 
@@ -59,7 +59,7 @@ endElement(void *userData, const char *name) {
 	xml->OnEndElement(name);
 }
 
-static void XMLCALL 
+static void XMLCALL
 charDataHandler(void *userData, const XML_Char *s, int len) {
 	CXmlFile *xml = (CXmlFile *) userData;
 	xml->OnCharacterData(s, len);
@@ -307,7 +307,7 @@ declHandler(void *userData, const XML_Char *version, const XML_Char *encoding, i
 	xml->OnDeclaration(version, encoding, standalone);
 }
 
-/*static void XMLCALL 
+/*static void XMLCALL
 defaultHandler(void *userData, const XML_Char *s, int len) {
 	CXmlFile *xml = (CXmlFile *) userData;
 	xml->OnDefault(s, len);
@@ -365,7 +365,7 @@ BOOL CXmlNode::AddChild(CXmlNode *child) {
 	return TRUE;
 }
 
-CString CXmlNode::GetName() { 
+CString CXmlNode::GetName() {
 	if (Type == Tag)
 		return Text;
 	else
@@ -407,7 +407,7 @@ CString CXmlNode::GetXML() {
 					strPair.Format(_T(" %s=\"%s\""), attr->GetName(), attr->GetValue());
 					sAttrs += strPair;
 				}
-				
+
 				sName = child->GetName();
 				if (child->GetChildCount() > 0) {
 					sTag.Format(_T("<%s%s>%s</%s>"), sName, sAttrs, child->GetXML(), sName);
@@ -417,12 +417,12 @@ CString CXmlNode::GetXML() {
 				}
 				strXML += sTag;
 				break;
-		
+
 			case CXmlNode::Data:
 				strXML += child->Text;
 				break;
 		}
-	}	
+	}
 
 	strXML.TrimLeft();
 	strXML.TrimRight();
@@ -601,7 +601,7 @@ BOOL CXmlFile::LoadFromFile(LPCTSTR fileName) {
 		if (ReadFile(hFile, buf, BUFSIZ, &read, NULL)) {
 			done = read < BUFSIZ;
 			if (XML_Parse(parser, buf, read, done) == XML_STATUS_ERROR) {
-				LOG2(7, "Error: %s at line %d", 
+				LOG2(7, "Error: %s at line %d",
 					XML_ErrorString(XML_GetErrorCode(parser)),
 					XML_GetCurrentLineNumber(parser));
 				ret = FALSE;
@@ -649,7 +649,7 @@ BOOL CXmlFile::LoadFromMemory(char buffer[], int len) {
 	// main load loop with the parsing
 	BOOL done = FALSE;
 	if (XML_Parse(parser, buffer, len, done) == XML_STATUS_ERROR) {
-		LOG2(7, "Error: %s at line %d", 
+		LOG2(7, "Error: %s at line %d",
 			XML_ErrorString(XML_GetErrorCode(parser)),
 			XML_GetCurrentLineNumber(parser));
 		ret = FALSE;
@@ -752,7 +752,7 @@ BOOL CXmlFile::Save(LPCTSTR fileName) {
 
 		// save xml
 		ret = ret ? SaveNode(file, RootNode) : FALSE;
-	
+
 		file.Close();
 
 		return ret;

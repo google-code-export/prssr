@@ -18,13 +18,13 @@
  *
  */
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "prssr.h"
-#include "../share\uihelper.h"
+#include "../share/UIHelper.h"
 
 #include "UpdateBar.h"
 #include "Appearance.h"
-#include "../share\helpers.h"
+#include "../share/helpers.h"
 #include "MainFrm.h"
 #include "Config.h"
 #include "Errors.h"

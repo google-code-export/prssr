@@ -18,7 +18,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "prssrtoday.h"
 #include "OptAppearancePg.h"
 #include "Config.h"
@@ -88,7 +88,7 @@ BOOL COptAppearancePg::OnInitDialog() {
 	LOG0(3, "COptAppearancePg::OnInitDialog()");
 
 	CPropertyPage::OnInitDialog();
-	
+
 	// insert font sizes
 	for (int i = 0; i < sizeof(FontSize) / sizeof(FontSize[0]); i++) {
 		CString strSize;
@@ -99,7 +99,7 @@ BOOL COptAppearancePg::OnInitDialog() {
 	}
 
 	int nCurSel = m_ctlFontSize.GetCurSel();
-	if (Config.FontSize == -1 || nCurSel == CB_ERR) 
+	if (Config.FontSize == -1 || nCurSel == CB_ERR)
 		m_ctlFontSize.SetCurSel(0);
 
 	SetForegroundWindow();

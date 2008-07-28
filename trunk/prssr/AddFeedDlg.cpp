@@ -18,14 +18,14 @@
  *
  */
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "prssr.h"
 #include "AddFeedDlg.h"
 #include "prssr.h"
 #include "Config.h"
 #include "../share/helpers.h"
 
-#include "net/httpconnection.h"
+#include "net/HttpConnection.h"
 #include "net/Connection.h"
 #include "net/Download.h"
 
@@ -34,7 +34,7 @@
 #include "xml/FeedFile.h"
 #include "ProgressDlg.h"
 #include "ChooseFeedsDlg.h"
-#include "www/HtmlFile.h"
+#include "www/HTMLFile.h"
 #include "www/AutoFeedHtmlFile.h"
 
 #ifdef MYDEBUG
@@ -71,7 +71,7 @@ protected:
 	EDownloadState State;
 	CDownloader *Downloader;
 	CAddFeedDlg *Parent;
-	
+
 	int RangeHi, PosOffset;
 
     //{{AFX_MSG(CAddProgressDlg)
@@ -136,7 +136,7 @@ void CAddProgressDlg::OnTimer(UINT nIDEvent) {
 		if (Downloader != NULL)
 			state = Downloader->State;
 		LeaveCriticalSection(&CSDownloader);
-		
+
 		if (State != state) {
 			State = state;
 
@@ -167,7 +167,7 @@ void CAddProgressDlg::OnTimer(UINT nIDEvent) {
 		}
 		LeaveCriticalSection(&CSDownloader);
 	}
-	
+
 	CWnd::OnTimer(nIDEvent);
 }
 
@@ -301,7 +301,7 @@ void CAddFeedDlg::OnOK() {
 
 			m_pProgress = new CAddProgressDlg(Downloader, this);
 			m_pProgress->OpenDialog(IDS_DOWNLOADING_FEED, this);
-						
+
 			CloseHandle(CreateThread(NULL, 0, AddThreadProc, this, 0, NULL));
 		}
 		else

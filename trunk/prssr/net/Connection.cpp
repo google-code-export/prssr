@@ -8,19 +8,21 @@
 
   PARTICULAR PURPOSE.
 
-  
+
 
     This is "Sample Code" and is distributable subject to the terms of the end user license agreement.
 
 */
 
-#include "..\stdafx.h"
+//#include "../StdAfx.h"
+#include <afx.h>
+#include "../debug/Logger.h"
 #include "Connection.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
 static TCHAR THIS_FILE[] = _T(__FILE__);
-#include "..\debug\crtdbg.h"
+#include "../debug/crtdbg.h"
 #define new MYDEBUG_NEW
 #endif
 
@@ -33,7 +35,7 @@ static char THIS_FILE[] = __FILE__;
 //LPCTSTR CConnection::s_szInternetPath = TEXT("http://www.microsoft.com/");
 //LPTSTR CConnection::s_szCorpNetPath = TEXT("http://defaultcorporatenetworkpath");
 
-const GUID IID_ConnPrv_IProxyExtension = 
+const GUID IID_ConnPrv_IProxyExtension =
 	{ 0xaf96b0bd, 0xa481, 0x482c, { 0xa0, 0x94, 0xa8, 0x44, 0x87, 0x67, 0xa0, 0xc0 } };
 
 // {436EF144-B4FB-4863-A041-8F905A62C572}

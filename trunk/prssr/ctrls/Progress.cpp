@@ -18,8 +18,8 @@
  *
  */
 
-#include "..\stdafx.h"
-#include "..\prssr.h"
+#include "../StdAfx.h"
+#include "../prssr.h"
 #include "Progress.h"
 
 #ifdef MYDEBUG

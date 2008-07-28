@@ -25,10 +25,10 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "feed.h"
-#include "ctrls\CePropertySheet.h"
-#include "ctrls\CePropertyPage.h"
-#include "ctrls\CeTreeCtrl.h"
+#include "Feed.h"
+#include "ctrls/CePropertySheet.h"
+#include "ctrls/CePropertyPage.h"
+#include "ctrls/CeTreeCtrl.h"
 #include "../share/helpers.h"
 
 
@@ -101,7 +101,7 @@ protected:
 
 	void InsertItems();
 	void UpdateControls();
-	
+
 	virtual void ResizeControls();
 	virtual int GetItemImage(CFeedItem *fi);
 	virtual void DoInsertFeedItem(HTREEITEM hParent, CFeedItem *fi);

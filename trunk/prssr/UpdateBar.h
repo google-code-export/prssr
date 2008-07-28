@@ -25,7 +25,7 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-#include "ctrls/CeToolbar.h"
+#include "ctrls/CeToolBar.h"
 #include "ctrls/TextProgressCtrl.h"
 
 #include "net/Download.h"

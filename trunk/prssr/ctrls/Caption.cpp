@@ -19,15 +19,15 @@
  */
 
 #if defined PRSSR_APP
-	#include "../stdafx.h"
+	#include "../StdAfx.h"
 	#include "../prssr.h"
 	#include "../Appearance.h"
 #elif defined PRSSR_TODAY
-	#include "../../prssrtoday/stdafx.h"
+	#include "../../prssrtoday/StdAfx.h"
 #endif
 
 #include "Caption.h"
-#include "../../share/uihelper.h"
+#include "../../share/UIHelper.h"
 #include "../../share/helpers.h"
 
 #ifdef MYDEBUG

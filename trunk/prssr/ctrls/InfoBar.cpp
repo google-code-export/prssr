@@ -18,9 +18,9 @@
  *
  */
 
-#include "../stdafx.h"
+#include "../StdAfx.h"
 #include "../prssr.h"
-#include "../../share/uihelper.h"
+#include "../../share/UIHelper.h"
 #include "../../share/helpers.h"
 
 #include "InfoBar.h"
@@ -29,7 +29,7 @@
 #ifdef MYDEBUG
 #undef THIS_FILE
 static TCHAR THIS_FILE[] = _T(__FILE__);
-#include "..\debug\crtdbg.h"
+#include "../debug/crtdbg.h"
 #define new MYDEBUG_NEW
 #endif
 

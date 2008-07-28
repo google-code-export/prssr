@@ -18,18 +18,18 @@
  *
  */
 
-#include "..\stdafx.h"
-#include "..\prssr.h"
+#include "../StdAfx.h"
+#include "../prssr.h"
 #include "GroupView.h"
 
 #include "../Appearance.h"
-#include "../config.h"
+#include "../Config.h"
 #include "../../share/helpers.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
 static TCHAR THIS_FILE[] = _T(__FILE__);
-#include "..\debug\crtdbg.h"
+#include "../debug/crtdbg.h"
 #define new MYDEBUG_NEW
 #endif
 

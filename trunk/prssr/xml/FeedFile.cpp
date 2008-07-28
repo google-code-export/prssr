@@ -19,12 +19,12 @@
  */
 
 #ifdef PRSSR_APP
-	#include "..\stdafx.h"
-	#include "..\prssr.h"
+	#include "../StdAfx.h"
+	#include "../prssr.h"
 #endif
 
 #if defined PRSSR_TODAY
-	#include "..\prssrtoday\stdafx.h"
+	#include "..\prssrtoday\StdAfx.h"
 #endif
 
 #include "FeedFile.h"

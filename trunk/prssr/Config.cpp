@@ -19,7 +19,7 @@
  */
 
 #if defined PRSSR_APP
-	#include "stdafx.h"
+	#include "StdAfx.h"
 	#include "prssr.h"
 	#include "../share/resource.h"
 	#include "resource.h"

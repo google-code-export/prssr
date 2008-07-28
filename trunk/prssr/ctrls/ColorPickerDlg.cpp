@@ -18,10 +18,10 @@
  *
  */
 
-#include "../stdafx.h"
+#include "../StdAfx.h"
 #include "../prssr.h"
 #include "ColorPickerDlg.h"
-#include "../../share/uihelper.h"
+#include "../../share/UIHelper.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE

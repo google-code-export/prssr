@@ -19,9 +19,9 @@
  */
 
 #if defined PRSSR_APP
-	#include "../stdafx.h"
+	#include "../StdAfx.h"
 #elif defined PRSSR_TODAY
-	#include "../../prssrtoday/stdafx.h"
+	#include "../../prssrtoday/StdAfx.h"
 #endif
 
 #include "Logger.h"

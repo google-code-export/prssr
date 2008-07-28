@@ -18,9 +18,7 @@
  *
  */
 
-#include "stdafx.h"
-#include "Appearance.h"
-
+#include "StdAfx.h"
 #include "Appearance.h"
 #include "../share/reg.h"
 
@@ -96,7 +94,7 @@ void CAppearance::Destroy() {
 
 void CAppearance::Save() {
 	CRegistry::DeleteKey(HKEY_CURRENT_USER, REG_KEY_APPEARANCE);
-	
+
 	CRegistry reg(HKEY_CURRENT_USER, REG_KEY_APPEARANCE);
 	reg.Write(szClearType, ClearType);
 
