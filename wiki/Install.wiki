@@ -11,6 +11,15 @@
   # Upload unzipped *cab file* to your PocketPC.
   # Tap the *cab file* on your PocketPC to install.
 
+==Installing from Desktop==
+
+Desktop installation file will automatically install pRSSreader on your Pocket PC device using the !ActiveSync.
+
+    * Before installing, make sure that your device meets [SystemRequirements system requirements].
+    * Download installation file to your desktop computer.
+    * Run the downloaded file.
+    * Follow installation instructions.
+
 
 =Uninstalling=
 ----
