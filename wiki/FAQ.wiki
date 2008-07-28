@@ -7,3 +7,46 @@
 *I'm not able to uninstall pRSSreader 1.3.x. What can I do about it?*
 
 See ManualUninstallation13.
+
+*My ISP requires special User-Agent string for the Internet access. How can I change it?*
+
+  * Tap *Tools | Options*, select *Retrieval tab*, change *User-Agent* string to *Pocket IE*.
+  * If the above did not work for you, try to:
+    # run registry editor,
+    # open {{{HKCU\Software\DaProfik\pRSSreader}}} key,
+    # change *User Agent* value to whatever you want.
+              
+*I need to send special HTTP headers with every HTTP request. How can I do it?*
+
+  # run registry editor,
+  # open {{{HKCU\Software\DaProfik\pRSSreader}}} key,
+  # create *Additional HTTP Headers* value typed as *Multiline String Value*,
+  # Insert your special HTTP headers here.
+       
+       
+*I want to run pRSSreader from my script. Are there any command line parameters?*
+
+Yes, see [CommandLineParameters Comand line parameters].
+
+
+*I'm accessing the Internet via HTTP proxy and downloading of feeds via HTTPS is not working. Where is the problem?*
+
+Accessing HTTPS sites via HTTP proxy is not possible at all due to man-in-the-middle attacks. It is not the problem of pRSSreader. It is given by HTTP specification.
+
+Note: Accessing HTTPS via SOCKS proxy server is possible.
+
+       
+*Where is Skweezer option for HTML optimization?*
+
+See FAQ: How to use Skweezer with pRSSreader.
+
+       
+*How to use Skweezer with pRSSreader?*
+
+  # Enter Tools | Options.
+  # Active the HTML tab.
+  # Check Use HTML Optimizer.
+  # Enter {{{http://www.skweezer.net/skweeze.aspx?q=[%URL%]&i=1}}} (if you do not want images to be cached, omit '&i=1').
+       
+
+TODO: localization info
