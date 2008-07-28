@@ -19,7 +19,7 @@
  */
 
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "prssrtoday.h"
 #include "OptModePg.h"
 #include "Config.h"
@@ -118,7 +118,7 @@ BOOL COptModePg::OnInitDialog() {
 	LOG0(3, "COptModePg::OnInitDialog()");
 
 	CPropertyPage::OnInitDialog();
-	
+
 	int i;
 
 	m_ctlHeightSpin.SendMessage(CCM_SETVERSION, COMCTL32_VERSION);

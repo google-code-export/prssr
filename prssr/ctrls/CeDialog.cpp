@@ -18,7 +18,7 @@
  *
  */
 
-#include "..\stdafx.h"
+#include "../StdAfx.h"
 #include "CeDialog.h"
 #include "../../share/helpers.h"
 #include "../Appearance.h"
@@ -26,7 +26,7 @@
 #ifdef MYDEBUG
 #undef THIS_FILE
 static TCHAR THIS_FILE[] = _T(__FILE__);
-#include "..\debug\crtdbg.h"
+#include "../debug/crtdbg.h"
 #define new MYDEBUG_NEW
 #endif
 

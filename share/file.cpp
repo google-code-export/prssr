@@ -19,7 +19,7 @@
  */
 
 #include <windows.h>
-#include "File.h"
+#include "file.h"
 #include <afxwin.h>
 
 #ifdef MYDEBUG
@@ -31,7 +31,7 @@ static TCHAR THIS_FILE[] = _T(__FILE__);
 
 CBufferedFile::CBufferedFile(DWORD bufferSize/* = 8192*/) {
 	File = NULL;
-	
+
 	BufferSize = bufferSize;
 	Buffer = new BYTE [BufferSize];
 
@@ -133,7 +133,7 @@ BOOL CBufferedFile::Read(LPVOID lpBuffer, DWORD nNumberOfBytesToRead, DWORD *nBy
 			int nToRead = BufferFilled - BufferPos;
 			if (nToRead <= 0) {
 				DWORD read;
-				
+
 				BufferStart = SetFilePointer(File, 0, NULL, FILE_CURRENT);
 				ret = ReadFile(File, Buffer, BufferSize, &read, NULL);
 				BufferFilled = read;

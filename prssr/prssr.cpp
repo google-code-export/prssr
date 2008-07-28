@@ -18,9 +18,9 @@
  *
  */
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "prssr.h"
-#include "../share/uihelper.h"
+#include "../share/UIHelper.h"
 
 #include "MainFrm.h"
 //#include "ctrls/CeDialog.h"
@@ -32,7 +32,7 @@
 #include "Config.h"
 #include "../share/notif.h"
 
-#include "net\ssl.h"
+#include "net/ssl.h"
 
 #include "AboutPg.h"
 #include "LicensePg.h"
@@ -138,7 +138,7 @@ void CPrssrApp::OnAppAbout() {
 
 	CWebDownloader wd(_T("\\"), 1);
 	wd.DownloadUrl(&dd);
-*/	
+*/
 
 	// testing HTML translation for offline browsing
 /*	CDownloadData dd(_T("url"), _T("\\digiarena.html"));
@@ -193,7 +193,15 @@ BOOL CPrssrApp::InitInstance() {
 	CTextProgressCtrl::Register();
 	CInfoBar::Register();
 
-	m_hResDLL = LoadLibrary(_T("res.dll"));
+	// get DPI
+	HDC hdcScreen = ::GetDC(NULL);
+	int nSystemDPI = ::GetDeviceCaps(hdcScreen, LOGPIXELSX);
+	::ReleaseDC(NULL, hdcScreen);
+
+	// load the resource library according to the system DPI
+	CString resLibName;
+	resLibName.Format(_T("res.%03d.dll"), nSystemDPI);
+	m_hResDLL = LoadLibrary(resLibName);
 
 	if (!InitHTMLControl(AfxGetInstanceHandle()))
 		return 0;
@@ -203,7 +211,7 @@ BOOL CPrssrApp::InitInstance() {
 	icce.dwSize = sizeof(icce);
 	icce.dwICC = ICC_DATE_CLASSES | ICC_LISTVIEW_CLASSES | ICC_PROGRESS_CLASS | ICC_UPDOWN_CLASS | ICC_TREEVIEW_CLASSES | ICC_TOOLTIP_CLASSES | ICC_TAB_CLASSES;
 	InitCommonControlsEx(&icce);
-	
+
 	SHInitExtraControls();
 
 	// frame
@@ -241,7 +249,7 @@ BOOL CPrssrApp::InitInstance() {
 
 	if ((npos = strCmdLine.Find(_T("/openitem"))) != -1) {
 		CString sPar = strCmdLine.Mid(npos + 10);
-		
+
 /*		CString sSite, sFeedIdx;
 
 		int nSpacePos = sPar.Find(' ');

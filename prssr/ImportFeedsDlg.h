@@ -28,7 +28,7 @@
 #include "Site.h"
 #include "ctrls/CeDialog.h"
 #include "ctrls/BrowseDlg.h"
-#include "ctrls/hrule.h"
+#include "ctrls/Hrule.h"
 #include "FeedsTreeCtrl.h"
 
 

@@ -18,7 +18,7 @@
  *
  */
 
-#include "../stdafx.h"
+#include "../StdAfx.h"
 #include "../prssr.h"
 #include "httpsock.h"
 #include "http.h"

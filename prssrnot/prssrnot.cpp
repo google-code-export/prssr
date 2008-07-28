@@ -19,12 +19,12 @@
  */
 
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "../share/defs.h"
 #include "../share/wnd.h"
 #include "../share/reg.h"
 #include "../share/notif.h"
-#include "../prssr/net/connection.h"
+#include "../prssr/net/Connection.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow) {
 	CRegistry reg(HKEY_CURRENT_USER, REG_KEY_APP);

@@ -25,8 +25,8 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-#include "../share\SyncList.h"
-#include "ctrls\CeToolbar.h"
+#include "../share/SyncList.h"
+#include "ctrls/CeToolBar.h"
 #include "Site.h"
 //#include "Download.h"
 #include "UpdateBar.h"

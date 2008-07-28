@@ -19,11 +19,11 @@
  */
 
 #ifdef PRSSR_APP
-	#include "..\stdafx.h"
-	#include "..\prssr.h"
+	#include "../StdAfx.h"
+	#include "../prssr.h"
 #endif
 
-#include "AutoFeedHTMLFile.h"
+#include "AutoFeedHtmlFile.h"
 #include "../../share/helpers.h"
 
 #ifdef MYDEBUG
@@ -63,7 +63,7 @@ void CDiscoverFeedHtmlFile::GetRSS(DOM_NODE *node, CList<CHtmlFeed *, CHtmlFeed 
 			const char *title = domElementGetAttribute(node, "title");
 			const char *href = domElementGetAttribute(node, "href");
 
-			if (type != NULL && 
+			if (type != NULL &&
 				(_stricmp(type, "application/rss+xml") == 0 || _stricmp(type, "application/atom+xml") == 0) &&
 				title != NULL && href != NULL)
 			{

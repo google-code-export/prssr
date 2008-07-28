@@ -19,10 +19,10 @@
  */
 
 #ifdef PRSSR_APP
-	#include "..\stdafx.h"
+	#include "../StdAfx.h"
 #endif
 
-#include "OPMLFile.h"
+#include "OpmlFile.h"
 
 #include "../Site.h"
 #include "../Config.h"
@@ -344,7 +344,7 @@ BOOL COpmlFile::SaveSite(CXmlNode *parent, CSiteItem *item) {
 		siteAttrs.AddTail(new CXmlAttr(_T("cacheEnclosures"), 1));
 //	else
 //		siteAttrs.AddTail(new CXmlAttr(_T("cacheEnclosures"), 0));
-	
+
 	if (info->CacheEnclosures) {
 		TCHAR buf[32];
 		swprintf(buf, _T("%d"), info->EnclosureLimit);

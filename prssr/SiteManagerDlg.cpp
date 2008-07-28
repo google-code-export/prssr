@@ -18,7 +18,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "prssr.h"
 #include "SiteManagerDlg.h"
 
@@ -37,7 +37,7 @@
 #include "ctrls/BrowseDlg.h"
 
 #include "xml/FeedFile.h"
-#include "xml/OPMLFile.h"
+#include "xml/OpmlFile.h"
 
 #include "../share/helpers.h"
 

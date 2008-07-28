@@ -26,8 +26,8 @@
 #endif // _MSC_VER > 1000
 
 #include "XMLFile.h"
-#include "..\Feed.h"
-#include "..\Site.h"
+#include "../Feed.h"
+#include "../Site.h"
 
 //class CFeedItem;
 

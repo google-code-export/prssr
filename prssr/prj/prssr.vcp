@@ -49,8 +49,8 @@ RSC=rc.exe
 # PROP Target_Dir ""
 # ADD BASE RSC /l 0x409 /d UNDER_CE=$(CEVersion) /d _WIN32_WCE=$(CEVersion) /d "NDEBUG" /d "UNICODE" /d "_UNICODE" /d "$(CePlatform)" /d "ARM" /d "_ARM_" /d "ARMV4" /d "_AFXDLL" /r
 # ADD RSC /l 0x409 /d UNDER_CE=$(CEVersion) /d _WIN32_WCE=$(CEVersion) /d "NDEBUG" /d "UNICODE" /d "_UNICODE" /d "$(CePlatform)" /d "ARM" /d "_ARM_" /d "ARMV4" /d "_AFXDLL" /d "AFX_TARG_ENU" /r
-# ADD BASE CPP /nologo /W3 /D "ARM" /D "_ARM_" /D "ARMV4" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "NDEBUG" /D "_AFXDLL" /Yu"stdafx.h" /O2 /M$(CECrtMT) /c
-# ADD CPP /nologo /W3 /D "NDEBUG" /D "ARM" /D "_ARM_" /D "ARMV4" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_AFXDLL" /D "PRSSR_APP" /D "LOGGING" /Yu"stdafx.h" /O2 /M$(CECrtMT) /c
+# ADD BASE CPP /nologo /W3 /D "ARM" /D "_ARM_" /D "ARMV4" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "NDEBUG" /D "_AFXDLL" /Yu"StdAfx.h" /O2 /M$(CECrtMT) /c
+# ADD CPP /nologo /W3 /D "NDEBUG" /D "ARM" /D "_ARM_" /D "ARMV4" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_AFXDLL" /D "PRSSR_APP" /D "LOGGING" /Yu"StdAfx.h" /O2 /M$(CECrtMT) /c
 # SUBTRACT CPP /Fr
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
@@ -80,8 +80,8 @@ LINK32=link.exe
 # PROP Target_Dir ""
 # ADD BASE RSC /l 0x409 /d UNDER_CE=$(CEVersion) /d _WIN32_WCE=$(CEVersion) /d "DEBUG" /d "UNICODE" /d "_UNICODE" /d "$(CePlatform)" /d "ARM" /d "_ARM_" /d "ARMV4" /d "_AFXDLL" /r
 # ADD RSC /l 0x409 /d UNDER_CE=$(CEVersion) /d _WIN32_WCE=$(CEVersion) /d "DEBUG" /d "UNICODE" /d "_UNICODE" /d "$(CePlatform)" /d "ARM" /d "_ARM_" /d "ARMV4" /d "_AFXDLL" /d "AFX_TARG_ENU" /r
-# ADD BASE CPP /nologo /W3 /Zi /Od /D "DEBUG" /D "ARM" /D "_ARM_" /D "ARMV4" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_AFXDLL" /Yu"stdafx.h" /M$(CECrtMTDebug) /c
-# ADD CPP /nologo /W3 /Zi /Od /D "DEBUG" /D "ARM" /D "_ARM_" /D "ARMV4" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_AFXDLL" /D "PRSSR_APP" /Yu"stdafx.h" /M$(CECrtMTDebug) /c
+# ADD BASE CPP /nologo /W3 /Zi /Od /D "DEBUG" /D "ARM" /D "_ARM_" /D "ARMV4" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_AFXDLL" /Yu"StdAfx.h" /M$(CECrtMTDebug) /c
+# ADD CPP /nologo /W3 /Zi /Od /D "DEBUG" /D "ARM" /D "_ARM_" /D "ARMV4" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_AFXDLL" /D "PRSSR_APP" /Yu"StdAfx.h" /M$(CECrtMTDebug) /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o "NUL" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o "NUL" /win32
 BSC32=bscmake.exe
@@ -111,15 +111,15 @@ DEP_CPP_ABOUT=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\AboutPg.h"\
-	"..\Config.h"\
+	"../Config.h"\
 	"..\ctrls\CePropertyPage.h"\
 	"..\ctrls\LinkCtrl.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\proxy.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -135,10 +135,10 @@ DEP_CPP_ACCEP=\
 	"..\ctrls\Caption.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeEdit.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -167,22 +167,22 @@ DEP_CPP_ADDFE=\
 	"..\..\share\wnd.h"\
 	"..\AddFeedDlg.h"\
 	"..\ChooseFeedsDlg.h"\
-	"..\Config.h"\
+	"../Config.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeEdit.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\Connection.h"\
-	"..\net\Download.h"\
+	"../net/download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
 	"..\net\proxy.h"\
 	"..\ProgressDlg.h"\
-	"..\prssr.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../Site.h"\
+	"../StdAfx.h"\
 	"..\www\AutoFeedHtmlFile.h"\
 	"..\www\HTMLFile.h"\
 	"..\www\url.h"\
@@ -200,10 +200,10 @@ DEP_CPP_APPEA=\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
-	"..\Appearance.h"\
-	"..\debug\crtdbg.h"\
+	"../Appearance.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\StdAfx.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -231,9 +231,9 @@ DEP_CPP_ARTIC=\
 	"..\..\share\SyncList.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Appearance.h"\
+	"../Appearance.h"\
 	"..\ArticleDlg.h"\
-	"..\Config.h"\
+	"../Config.h"\
 	"..\ctrls\Banner.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeToolBar.h"\
@@ -243,19 +243,19 @@ DEP_CPP_ARTIC=\
 	"..\ctrls\InfoBar.h"\
 	"..\ctrls\LinkCtrl.h"\
 	"..\ctrls\TextProgressCtrl.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\FeedView.h"\
 	"..\MainFrm.h"\
-	"..\net\Download.h"\
+	"../net/download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
 	"..\net\proxy.h"\
-	"..\prssr.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../Site.h"\
+	"../StdAfx.h"\
 	"..\SummaryView.h"\
 	"..\UpdateBar.h"\
 	"..\www\HTMLFile.h"\
@@ -273,13 +273,13 @@ DEP_CPP_AUTHE=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\AuthenticationDlg.h"\
+	"../AuthenticationDlg.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeEdit.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -296,7 +296,7 @@ DEP_CPP_CACHE=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\CacheMan.h"\
-	"..\Config.h"\
+	"../Config.h"\
 	"..\ctrls\CePropertyPage.h"\
 	"..\ctrls\CePropertySheet.h"\
 	"..\ctrls\CeToolBar.h"\
@@ -304,20 +304,20 @@ DEP_CPP_CACHE=\
 	"..\ctrls\GroupView.h"\
 	"..\ctrls\LinkCtrl.h"\
 	"..\ctrls\TextProgressCtrl.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\FeedView.h"\
 	"..\MainFrm.h"\
-	"..\net\Download.h"\
+	"../net/download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
 	"..\net\proxy.h"\
 	"..\ProgressDlg.h"\
-	"..\prssr.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../Site.h"\
+	"../StdAfx.h"\
 	"..\SummaryView.h"\
 	"..\UpdateBar.h"\
 	"..\www\url.h"\
@@ -348,17 +348,17 @@ DEP_CPP_CHOOS=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Appearance.h"\
+	"../Appearance.h"\
 	"..\ChooseFeedsDlg.h"\
-	"..\Config.h"\
+	"../Config.h"\
 	"..\ctrls\CeDialog.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\proxy.h"\
-	"..\prssr.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../Site.h"\
+	"../StdAfx.h"\
 	"..\www\AutoFeedHtmlFile.h"\
 	"..\www\HTMLFile.h"\
 	"..\www\url.h"\
@@ -376,14 +376,14 @@ DEP_CPP_CONFI=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Appearance.h"\
-	"..\Config.h"\
-	"..\debug\crtdbg.h"\
+	"../Appearance.h"\
+	"../Config.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\proxy.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -395,7 +395,7 @@ DEP_CPP_ERROR=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\debug\Logger.h"\
-	"..\StdAfx.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -411,12 +411,12 @@ DEP_CPP_ERRORS=\
 	"..\..\share\wnd.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeListCtrl.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
 	"..\ErrorsDlg.h"\
-	"..\Feed.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../Feed.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -446,16 +446,16 @@ DEP_CPP_FEED_=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Config.h"\
-	"..\debug\crtdbg.h"\
+	"../Config.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\Connection.h"\
 	"..\net\proxy.h"\
-	"..\prssr.h"\
+	"../prssr.h"\
 	"..\sha1\sha1.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
+	"../Site.h"\
+	"../StdAfx.h"\
 	"..\www\HTMLFile.h"\
 	"..\www\LocalHtmlFile.h"\
 	"..\www\url.h"\
@@ -484,15 +484,15 @@ DEP_CPP_FEEDS=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Appearance.h"\
+	"../Appearance.h"\
 	"..\ctrls\CeTreeCtrl.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\FeedsTreeCtrl.h"\
-	"..\prssr.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../Site.h"\
+	"../StdAfx.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
@@ -509,9 +509,9 @@ DEP_CPP_FEEDV=\
 	"..\..\share\SyncList.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Appearance.h"\
+	"../Appearance.h"\
 	"..\ArticleDlg.h"\
-	"..\Config.h"\
+	"../Config.h"\
 	"..\ctrls\Banner.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeToolBar.h"\
@@ -521,19 +521,19 @@ DEP_CPP_FEEDV=\
 	"..\ctrls\InfoBar.h"\
 	"..\ctrls\LinkCtrl.h"\
 	"..\ctrls\TextProgressCtrl.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\FeedView.h"\
 	"..\MainFrm.h"\
-	"..\net\Download.h"\
+	"../net/download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
 	"..\net\proxy.h"\
-	"..\prssr.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../Site.h"\
+	"../StdAfx.h"\
 	"..\SummaryView.h"\
 	"..\UpdateBar.h"\
 	"..\www\url.h"\
@@ -552,23 +552,23 @@ DEP_CPP_IMPOR=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Appearance.h"\
-	"..\Config.h"\
+	"../Appearance.h"\
+	"../Config.h"\
 	"..\ctrls\BrowseDlg.h"\
 	"..\ctrls\Caption.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeEdit.h"\
 	"..\ctrls\CeTreeCtrl.h"\
 	"..\ctrls\Hrule.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\FeedsTreeCtrl.h"\
 	"..\ImportFeedsDlg.h"\
 	"..\net\proxy.h"\
-	"..\prssr.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../Site.h"\
+	"../StdAfx.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
@@ -583,11 +583,11 @@ DEP_CPP_INFOC=\
 	"..\..\share\wnd.h"\
 	"..\ctrls\CeEdit.h"\
 	"..\ctrls\Hrule.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
 	"..\InfoChannelPg.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -600,11 +600,11 @@ DEP_CPP_INFOD=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\ctrls\Hrule.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
 	"..\InfoDescriptionPg.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -618,16 +618,16 @@ DEP_CPP_INFOG=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Config.h"\
+	"../Config.h"\
 	"..\ctrls\Caption.h"\
 	"..\ctrls\Hrule.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\InfoGeneralPg.h"\
 	"..\net\proxy.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -644,14 +644,14 @@ DEP_CPP_KEYWO=\
 	"..\..\share\wnd.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeListCtrl.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\KeywordManagerDlg.h"\
 	"..\ProgressDlg.h"\
-	"..\prssr.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../Site.h"\
+	"../StdAfx.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
@@ -666,15 +666,15 @@ DEP_CPP_LICEN=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Config.h"\
+	"../Config.h"\
 	"..\ctrls\CePropertyPage.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\LicensePg.h"\
 	"..\net\proxy.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -691,9 +691,9 @@ DEP_CPP_MAINF=\
 	"..\..\share\SyncList.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Appearance.h"\
+	"../Appearance.h"\
 	"..\CacheMan.h"\
-	"..\Config.h"\
+	"../Config.h"\
 	"..\ctrls\Caption.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeEdit.h"\
@@ -707,10 +707,10 @@ DEP_CPP_MAINF=\
 	"..\ctrls\Hrule.h"\
 	"..\ctrls\LinkCtrl.h"\
 	"..\ctrls\TextProgressCtrl.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
 	"..\ErrorsDlg.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\FeedsTreeCtrl.h"\
 	"..\FeedView.h"\
 	"..\InfoChannelPg.h"\
@@ -720,7 +720,7 @@ DEP_CPP_MAINF=\
 	"..\MainFrm.h"\
 	"..\misc\icon.h"\
 	"..\misc\shnotif.h"\
-	"..\net\Download.h"\
+	"../net/download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
@@ -731,10 +731,10 @@ DEP_CPP_MAINF=\
 	"..\OptGeneralPg.h"\
 	"..\OptRetrievalPg.h"\
 	"..\Properties.h"\
-	"..\prssr.h"\
-	"..\Site.h"\
+	"../prssr.h"\
+	"../Site.h"\
 	"..\SiteManagerDlg.h"\
-	"..\StdAfx.h"\
+	"../StdAfx.h"\
 	"..\SummaryView.h"\
 	"..\UpdateBar.h"\
 	"..\UpdateSitesDlg.h"\
@@ -754,23 +754,23 @@ DEP_CPP_OPTAP=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Appearance.h"\
-	"..\Config.h"\
+	"../Appearance.h"\
+	"../Config.h"\
 	"..\ctrls\BrowseDlg.h"\
 	"..\ctrls\Caption.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeEdit.h"\
 	"..\ctrls\ColorButton.h"\
 	"..\ctrls\ColorPickerDlg.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\proxy.h"\
 	"..\OptAppearancePg.h"\
 	"..\ProgressDlg.h"\
-	"..\prssr.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../Site.h"\
+	"../StdAfx.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
@@ -786,20 +786,20 @@ DEP_CPP_OPTCA=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Config.h"\
+	"../Config.h"\
 	"..\ctrls\BrowseDlg.h"\
 	"..\ctrls\Caption.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeEdit.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\proxy.h"\
 	"..\OptCachePg.h"\
 	"..\ProgressDlg.h"\
-	"..\prssr.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../Site.h"\
+	"../StdAfx.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
@@ -814,18 +814,18 @@ DEP_CPP_OPTCO=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Config.h"\
+	"../Config.h"\
 	"..\ctrls\Caption.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeEdit.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\proxy.h"\
 	"..\OptConnectionPg.h"\
 	"..\ProxyProfilesDlg.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -839,14 +839,14 @@ DEP_CPP_OPTGE=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Config.h"\
-	"..\debug\crtdbg.h"\
+	"../Config.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\proxy.h"\
 	"..\OptGeneralPg.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -860,16 +860,16 @@ DEP_CPP_OPTRE=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Config.h"\
+	"../Config.h"\
 	"..\ctrls\Caption.h"\
 	"..\ctrls\CeEdit.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\proxy.h"\
 	"..\OptRetrievalPg.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"connmgr.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	{$(INCLUDE)}"notify.h"\
@@ -886,13 +886,13 @@ DEP_CPP_PROGR=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Appearance.h"\
-	"..\debug\crtdbg.h"\
+	"../Appearance.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\ProgressDlg.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -904,11 +904,11 @@ DEP_CPP_PROPA=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
 	"..\PropArchivePg.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -921,11 +921,11 @@ DEP_CPP_PROPAU=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\ctrls\CeEdit.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
 	"..\PropAuthenticationPg.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -938,11 +938,11 @@ DEP_CPP_PROPC=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\ctrls\CeEdit.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
 	"..\PropCachingPg.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -961,9 +961,9 @@ DEP_CPP_PROPE=\
 	"..\ctrls\CeListCtrl.h"\
 	"..\ctrls\CePropertyPage.h"\
 	"..\ctrls\CePropertySheet.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\PropArchivePg.h"\
 	"..\PropAuthenticationPg.h"\
 	"..\PropCachingPg.h"\
@@ -971,9 +971,9 @@ DEP_CPP_PROPE=\
 	"..\PropGeneralPg.h"\
 	"..\PropRewritingPg.h"\
 	"..\PropUpdatingPg.h"\
-	"..\prssr.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../Site.h"\
+	"../StdAfx.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
@@ -987,11 +987,11 @@ DEP_CPP_PROPG=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\ctrls\CeEdit.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
 	"..\PropGeneralPg.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -1010,14 +1010,14 @@ DEP_CPP_PROPR=\
 	"..\ctrls\CeEdit.h"\
 	"..\ctrls\CeListCtrl.h"\
 	"..\ctrls\CePropertyPage.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\PropRewritingPg.h"\
-	"..\prssr.h"\
+	"../prssr.h"\
 	"..\RewriteRuleDlg.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
+	"../Site.h"\
+	"../StdAfx.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
@@ -1030,11 +1030,11 @@ DEP_CPP_PROPU=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
 	"..\PropUpdatingPg.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -1048,17 +1048,17 @@ DEP_CPP_PROXY=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Config.h"\
+	"../Config.h"\
 	"..\ctrls\Caption.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeEdit.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\proxy.h"\
 	"..\ProxyProfilesDlg.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -1076,8 +1076,8 @@ DEP_CPP_PRSSR=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\AboutPg.h"\
-	"..\Appearance.h"\
-	"..\Config.h"\
+	"../Appearance.h"\
+	"../Config.h"\
 	"..\ctrls\CePropertyPage.h"\
 	"..\ctrls\CePropertySheet.h"\
 	"..\ctrls\CeToolBar.h"\
@@ -1085,21 +1085,21 @@ DEP_CPP_PRSSR=\
 	"..\ctrls\InfoBar.h"\
 	"..\ctrls\LinkCtrl.h"\
 	"..\ctrls\TextProgressCtrl.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\FeedView.h"\
 	"..\LicensePg.h"\
 	"..\MainFrm.h"\
-	"..\net\Download.h"\
+	"../net/download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
 	"..\net\proxy.h"\
 	"..\net\ssl.h"\
-	"..\prssr.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../Site.h"\
+	"../StdAfx.h"\
 	"..\SummaryView.h"\
 	"..\UpdateBar.h"\
 	"..\www\url.h"\
@@ -1123,12 +1123,12 @@ DEP_CPP_REWRI=\
 	"..\..\share\wnd.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeEdit.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
-	"..\prssr.h"\
+	"../Feed.h"\
+	"../prssr.h"\
 	"..\RewriteRuleDlg.h"\
-	"..\StdAfx.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -1144,12 +1144,12 @@ DEP_CPP_SEARC=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Config.h"\
+	"../Config.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeEdit.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\Connection.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
@@ -1157,9 +1157,9 @@ DEP_CPP_SEARC=\
 	"..\net\proxy.h"\
 	"..\net\Searcher.h"\
 	"..\ProgressDlg.h"\
-	"..\prssr.h"\
+	"../prssr.h"\
 	"..\SearchDlg.h"\
-	"..\StdAfx.h"\
+	"../StdAfx.h"\
 	"..\xml\XMLFile.h"\
 	{$(INCLUDE)}"connmgr.h"\
 	{$(INCLUDE)}"connmgr_proxy.h"\
@@ -1179,22 +1179,22 @@ DEP_CPP_SEARCH=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Appearance.h"\
-	"..\Config.h"\
+	"../Appearance.h"\
+	"../Config.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeListCtrl.h"\
 	"..\ctrls\Hrule.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
 	"..\net\proxy.h"\
 	"..\net\Searcher.h"\
-	"..\prssr.h"\
+	"../prssr.h"\
 	"..\SearchResultsDlg.h"\
-	"..\StdAfx.h"\
+	"../StdAfx.h"\
 	"..\xml\XMLFile.h"\
 	{$(INCLUDE)}"connmgr.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
@@ -1216,14 +1216,14 @@ DEP_CPP_SITE_=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Config.h"\
-	"..\debug\crtdbg.h"\
+	"../Config.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\proxy.h"\
-	"..\prssr.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../Site.h"\
+	"../StdAfx.h"\
 	"..\www\url.h"\
 	"..\xml\FeedFile.h"\
 	"..\xml\OpmlFile.h"\
@@ -1252,8 +1252,8 @@ DEP_CPP_SITEM=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\AddFeedDlg.h"\
-	"..\Appearance.h"\
-	"..\Config.h"\
+	"../Appearance.h"\
+	"../Config.h"\
 	"..\ctrls\BrowseDlg.h"\
 	"..\ctrls\Caption.h"\
 	"..\ctrls\CeDialog.h"\
@@ -1262,9 +1262,9 @@ DEP_CPP_SITEM=\
 	"..\ctrls\CePropertySheet.h"\
 	"..\ctrls\CeTreeCtrl.h"\
 	"..\ctrls\Hrule.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\FeedsTreeCtrl.h"\
 	"..\ImportFeedsDlg.h"\
 	"..\net\http.h"\
@@ -1273,12 +1273,12 @@ DEP_CPP_SITEM=\
 	"..\net\proxy.h"\
 	"..\net\Searcher.h"\
 	"..\Properties.h"\
-	"..\prssr.h"\
+	"../prssr.h"\
 	"..\SearchDlg.h"\
 	"..\SearchResultsDlg.h"\
-	"..\Site.h"\
+	"../Site.h"\
 	"..\SiteManagerDlg.h"\
-	"..\StdAfx.h"\
+	"../StdAfx.h"\
 	"..\www\url.h"\
 	"..\xml\FeedFile.h"\
 	"..\xml\OpmlFile.h"\
@@ -1294,10 +1294,10 @@ DEP_CPP_STDAF=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\debug\Logger.h"\
-	"..\StdAfx.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
-# ADD CPP /Yc"stdafx.h"
+# ADD CPP /Yc"StdAfx.h"
 # End Source File
 # Begin Source File
 
@@ -1311,26 +1311,26 @@ DEP_CPP_SUMMA=\
 	"..\..\share\SyncList.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Appearance.h"\
-	"..\Config.h"\
+	"../Appearance.h"\
+	"../Config.h"\
 	"..\ctrls\CeToolBar.h"\
 	"..\ctrls\GroupView.h"\
 	"..\ctrls\LinkCtrl.h"\
 	"..\ctrls\TextProgressCtrl.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\FeedView.h"\
 	"..\MainFrm.h"\
-	"..\net\Download.h"\
+	"../net/download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
 	"..\net\proxy.h"\
 	"..\Properties.h"\
-	"..\prssr.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../Site.h"\
+	"../StdAfx.h"\
 	"..\SummaryView.h"\
 	"..\UpdateBar.h"\
 	"..\www\url.h"\
@@ -1345,7 +1345,7 @@ DEP_CPP_SUSPE=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\debug\Logger.h"\
-	"..\StdAfx.h"\
+	"../StdAfx.h"\
 	"..\SuspendKiller.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
@@ -1374,27 +1374,27 @@ DEP_CPP_UPDAT=\
 	"..\..\share\SyncList.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Appearance.h"\
-	"..\Config.h"\
+	"../Appearance.h"\
+	"../Config.h"\
 	"..\ctrls\CeToolBar.h"\
 	"..\ctrls\GroupView.h"\
 	"..\ctrls\LinkCtrl.h"\
 	"..\ctrls\TextProgressCtrl.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\FeedView.h"\
 	"..\MainFrm.h"\
 	"..\misc\shnotif.h"\
 	"..\net\Connection.h"\
-	"..\net\Download.h"\
+	"../net/download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
 	"..\net\proxy.h"\
-	"..\prssr.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../Site.h"\
+	"../StdAfx.h"\
 	"..\SummaryView.h"\
 	"..\SuspendKiller.h"\
 	"..\UpdateBar.h"\
@@ -1419,19 +1419,19 @@ DEP_CPP_UPDATE=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Appearance.h"\
-	"..\Config.h"\
+	"../Appearance.h"\
+	"../Config.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeTreeCtrl.h"\
 	"..\ctrls\Hrule.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\FeedsTreeCtrl.h"\
 	"..\net\proxy.h"\
-	"..\prssr.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../Site.h"\
+	"../StdAfx.h"\
 	"..\UpdateSitesDlg.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
@@ -1587,7 +1587,7 @@ SOURCE=..\ProxyProfilesDlg.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\prssr.h
+SOURCE=../prssr.h
 # End Source File
 # Begin Source File
 
@@ -1615,7 +1615,7 @@ SOURCE=..\SiteManagerDlg.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\StdAfx.h
+SOURCE=../StdAfx.h
 # End Source File
 # Begin Source File
 
@@ -1686,7 +1686,7 @@ DEP_CPP_LOGGE=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\debug\Logger.h"\
-	"..\StdAfx.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"aygshell.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	{$(INCLUDE)}"sipapi.h"\
@@ -1716,13 +1716,13 @@ DEP_CPP_BANNE=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Appearance.h"\
+	"../Appearance.h"\
 	"..\ctrls\Banner.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../Feed.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -1745,11 +1745,11 @@ DEP_CPP_BROWS=\
 	"..\ctrls\Caption.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeEdit.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../Feed.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -1771,13 +1771,13 @@ DEP_CPP_CAPTI=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Appearance.h"\
+	"../Appearance.h"\
 	"..\ctrls\Caption.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../Feed.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"aygshell.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	{$(INCLUDE)}"sipapi.h"\
@@ -1801,12 +1801,12 @@ DEP_CPP_CEDIA=\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
-	"..\Appearance.h"\
+	"../Appearance.h"\
 	"..\ctrls\CeDialog.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
-	"..\StdAfx.h"\
+	"../Feed.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -1824,10 +1824,10 @@ DEP_CPP_CEEDI=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\ctrls\CeEdit.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -1845,10 +1845,10 @@ DEP_CPP_CELIS=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\ctrls\CeListCtrl.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -1868,11 +1868,11 @@ DEP_CPP_CEPRO=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\ctrls\CePropertyPage.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../Feed.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -1893,10 +1893,10 @@ DEP_CPP_CEPROP=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\ctrls\CePropertySheet.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"aygshell.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	{$(INCLUDE)}"sipapi.h"\
@@ -1918,11 +1918,11 @@ DEP_CPP_CETOO=\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
-	"..\Appearance.h"\
+	"../Appearance.h"\
 	"..\ctrls\CeToolBar.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\StdAfx.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -1940,12 +1940,12 @@ DEP_CPP_CETRE=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Appearance.h"\
+	"../Appearance.h"\
 	"..\ctrls\CeTreeCtrl.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -1963,10 +1963,10 @@ DEP_CPP_COLOR=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\ctrls\ColorButton.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -1985,10 +1985,10 @@ DEP_CPP_COLORP=\
 	"..\..\share\wnd.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\ColorPickerDlg.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -2008,13 +2008,13 @@ DEP_CPP_ENCLO=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Appearance.h"\
+	"../Appearance.h"\
 	"..\ctrls\EnclosureBar.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../Feed.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -2032,10 +2032,10 @@ DEP_CPP_GRABK=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\ctrls\GrabKeyDlg.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -2055,15 +2055,15 @@ DEP_CPP_GROUP=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Appearance.h"\
-	"..\Config.h"\
+	"../Appearance.h"\
+	"../Config.h"\
 	"..\ctrls\GroupView.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\proxy.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -2081,10 +2081,10 @@ DEP_CPP_HRULE=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\ctrls\Hrule.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -2102,10 +2102,10 @@ DEP_CPP_HTMLC=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\ctrls\HtmlCtrl.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -2125,13 +2125,13 @@ DEP_CPP_INFOB=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Appearance.h"\
+	"../Appearance.h"\
 	"..\ctrls\InfoBar.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../Feed.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -2149,10 +2149,10 @@ DEP_CPP_LINKC=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\ctrls\LinkCtrl.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -2170,10 +2170,10 @@ DEP_CPP_PROGRE=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\ctrls\Progress.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -2193,16 +2193,16 @@ DEP_CPP_TEXTP=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\ctrls\TextProgressCtrl.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
-	"..\net\Download.h"\
+	"../Feed.h"\
+	"../net/download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
 	"..\net\proxy.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"connmgr.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
@@ -2230,7 +2230,7 @@ SOURCE=..\..\share\defs.h
 SOURCE=..\..\share\file.cpp
 DEP_CPP_FILE_=\
 	"..\..\share\file.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
@@ -2252,17 +2252,17 @@ DEP_CPP_HELPE=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Config.h"\
-	"..\debug\crtdbg.h"\
+	"../Config.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\Connection.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
 	"..\net\proxy.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"aygshell.h"\
 	{$(INCLUDE)}"connmgr.h"\
@@ -2299,7 +2299,7 @@ SOURCE=..\..\share\notif.h
 SOURCE=..\..\share\reg.cpp
 DEP_CPP_REG_C=\
 	"..\..\share\reg.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
@@ -2355,10 +2355,10 @@ SOURCE=..\net\Connection.cpp
 DEP_CPP_CONNE=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
 	"..\net\Connection.h"\
-	"..\StdAfx.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"connmgr.h"\
 	{$(INCLUDE)}"connmgr_proxy.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
@@ -2380,24 +2380,24 @@ DEP_CPP_DOWNL=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\AuthenticationDlg.h"\
+	"../AuthenticationDlg.h"\
 	"..\base64\base64.h"\
-	"..\Config.h"\
+	"../Config.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeEdit.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\digest\digcalc.h"\
-	"..\Feed.h"\
+	"../digest/digcalc.h"\
+	"../Feed.h"\
 	"..\net\Connection.h"\
-	"..\net\Download.h"\
+	"../net/download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
 	"..\net\proxy.h"\
-	"..\prssr.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../Site.h"\
+	"../StdAfx.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"connmgr.h"\
 	{$(INCLUDE)}"connmgr_proxy.h"\
@@ -2419,13 +2419,13 @@ DEP_CPP_HTTP_=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\http.h"\
 	"..\net\httpsock.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -2446,15 +2446,15 @@ DEP_CPP_HTTPC=\
 	"..\..\share\wnd.h"\
 	"..\..\zlib\zconf.h"\
 	"..\..\zlib\zlib.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
 	"..\net\proxy.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"connmgr.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
@@ -2472,12 +2472,12 @@ DEP_CPP_HTTPS=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
 	"..\net\httpsock.h"\
 	"..\net\ssl.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	{$(INCLUDE)}"sslsock.h"\
 	
@@ -2497,15 +2497,15 @@ DEP_CPP_PROXY_=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
 	"..\net\proxy.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"connmgr.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
@@ -2527,15 +2527,15 @@ DEP_CPP_SEARCHE=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
 	"..\net\proxy.h"\
 	"..\net\Searcher.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	"..\www\url.h"\
 	"..\xml\XMLFile.h"\
 	{$(INCLUDE)}"connmgr.h"\
@@ -2558,17 +2558,17 @@ DEP_CPP_SSL_C=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\AcceptCertificateDlg.h"\
-	"..\Config.h"\
+	"../Config.h"\
 	"..\ctrls\Caption.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeEdit.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\proxy.h"\
 	"..\net\ssl.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	{$(INCLUDE)}"sslsock.h"\
 	
@@ -2590,7 +2590,7 @@ DEP_CPP_BASE6=\
 	"..\..\share\UIHelper.h"\
 	"..\base64\base64.h"\
 	"..\debug\Logger.h"\
-	"..\StdAfx.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -2607,7 +2607,7 @@ SOURCE=..\base64\base64.h
 
 SOURCE=..\digest\digcalc.cpp
 DEP_CPP_DIGCA=\
-	"..\digest\digcalc.h"\
+	"../digest/digcalc.h"\
 	"..\digest\md5\global.h"\
 	"..\digest\md5\MD5.h"\
 	
@@ -2676,11 +2676,11 @@ DEP_CPP_AUTOF=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../Feed.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	"..\www\AutoFeedHtmlFile.h"\
 	"..\www\HTMLFile.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
@@ -2716,11 +2716,11 @@ DEP_CPP_HTMLF=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../Feed.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	"..\www\HTMLFile.h"\
 	{$(INCLUDE)}"aygshell.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
@@ -2758,13 +2758,13 @@ DEP_CPP_LOCAL=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\Config.h"\
-	"..\debug\crtdbg.h"\
+	"../Config.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\proxy.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	"..\www\HTMLFile.h"\
 	"..\www\LocalHtmlFile.h"\
 	"..\www\url.h"\
@@ -2785,7 +2785,7 @@ DEP_CPP_URL_C=\
 	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\www\url.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -2807,11 +2807,11 @@ DEP_CPP_ICON_=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
 	"..\misc\icon.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -2828,11 +2828,11 @@ DEP_CPP_SHNOT=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
 	"..\misc\shnotif.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -2858,19 +2858,19 @@ DEP_CPP_FEEDF=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
-	"..\prssr.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
+	"../Feed.h"\
+	"../prssr.h"\
+	"../Site.h"\
+	"../StdAfx.h"\
 	"..\www\url.h"\
 	"..\xml\FeedFile.h"\
 	"..\xml\XMLFile.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 NODEP_CPP_FEEDF=\
-	"..\prssrtoday\stdafx.h"\
+	"..\prssrtoday\StdAfx.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
@@ -2890,13 +2890,13 @@ DEP_CPP_OPMLF=\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
-	"..\Config.h"\
-	"..\debug\crtdbg.h"\
+	"../Config.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"../Feed.h"\
 	"..\net\proxy.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
+	"../Site.h"\
+	"../StdAfx.h"\
 	"..\www\url.h"\
 	"..\xml\OpmlFile.h"\
 	"..\xml\XMLFile.h"\
@@ -2921,16 +2921,16 @@ DEP_CPP_XMLFI=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\debug\crtdbg.h"\
+	"../debug/crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
+	"../Feed.h"\
+	"../prssr.h"\
+	"../StdAfx.h"\
 	"..\xml\XMLFile.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 NODEP_CPP_XMLFI=\
-	"..\prssrtoday\stdafx.h"\
+	"..\prssrtoday\StdAfx.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File

@@ -19,17 +19,17 @@
  */
 
 #if defined PRSSR_APP
-	#include "..\stdafx.h"
-	#include "..\prssr.h"
+	#include "../StdAfx.h"
+	#include "../prssr.h"
 #endif
 
 #include "Download.h"
 
 //#include "..\share\defs.h"
-#include "..\Config.h"
+#include "../Config.h"
 #include "HttpConnection.h"
-#include "..\Site.h"
-#include "..\Feed.h"
+#include "../Site.h"
+#include "../Feed.h"
 //#include "..\FeedFile.h"
 
 #include "../../share/helpers.h"
@@ -38,16 +38,16 @@
 #include "Connection.h"
 #if defined PRSSR_APP
 //	#include "CePropertySheet.h"
-	#include "..\AuthenticationDlg.h"
+	#include "../AuthenticationDlg.h"
 //	#include "..\MainFrm.h"
 #endif
-#include "..\digest\digcalc.h"
+#include "../digest/digcalc.h"
 //#include "SuspendKiller.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
 static TCHAR THIS_FILE[] = _T(__FILE__);
-#include "..\debug\crtdbg.h"
+#include "../debug/crtdbg.h"
 #define new MYDEBUG_NEW
 #endif
 

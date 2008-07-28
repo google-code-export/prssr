@@ -1,4 +1,4 @@
-// stdafx.h : include file for standard system include files,
+// StdAfx.h : include file for standard system include files,
 //  or project specific include files that are used frequently, but
 //      are changed infrequently
 //
@@ -31,7 +31,7 @@
 
 
 #include "../share/shguim.h"
-#include "../share/uihelper.h"
+#include "../share/UIHelper.h"
 
 #if defined(_WIN32_WCE) && (_WIN32_WCE >= 211) && (_AFXDLL)
 #include <afxdtctl.h>		// MFC support for Internet Explorer 4 Common Controls

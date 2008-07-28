@@ -12,7 +12,7 @@ Abstract:
 
 --*/
 
-#include "uihelper.h"
+#include "UIHelper.h"
 
 HIDPI_ENABLE;
 
@@ -81,12 +81,12 @@ BOOL HIDPI_StretchBitmap(
     DeleteDC(hdcSrc);
     DeleteDC(hdcDst);
 
-    // Delete the passed in bitmap        
+    // Delete the passed in bitmap
     DeleteObject(*phbm);
     *phbm = hbmNew;
 
     fRet = TRUE;
-    
+
 donestretch:
     return fRet;
 }
@@ -129,7 +129,7 @@ static BOOL HIDPI_StretchIcon_Internal(
     DeleteObject(hbmMask);
 
     DeleteDC(hdc);
-    
+
     return (fDrawImageOK && fDrawMaskOK && *phiconOut != NULL) ? TRUE : FALSE;
 }
 
@@ -241,14 +241,14 @@ HIMAGELIST HIDPI_ImageList_LoadImage(
     {
         goto cleanup;
     }
-    
+
     // do we need to scale this image?
     if (BmpLogPixelsX == g_HIDPI_LogPixelsX)
     {
         piml = ImageList_LoadImage(hinst, lpbmp, cx, cGrow, crMask, uType, uFlags);
         goto cleanup;
     }
-    
+
     cxImage = HIDPIMulDiv(cx, BmpLogPixelsX, g_HIDPI_LogPixelsX);
 
     // Bitmap width should be multiple integral of image width.
@@ -290,11 +290,11 @@ HIMAGELIST HIDPI_ImageList_LoadImage(
     // bitmap MUST be de-selected from the DC
     // create the image list of the size asked for.
     piml = ImageList_Create(cx, cy, flags, cImages, cGrow);
-        
+
     if (piml)
     {
         int added;
-        
+
         if (crMask == CLR_NONE)
         {
             added = ImageList_Add(piml, hbmImage, NULL);
@@ -303,7 +303,7 @@ HIMAGELIST HIDPI_ImageList_LoadImage(
         {
             added = ImageList_AddMasked(piml, hbmImage, crMask);
         }
-            
+
         if (added < 0)
         {
             ImageList_Destroy(piml);
@@ -340,7 +340,7 @@ int HIDPI_ImageList_ReplaceIcon(HIMAGELIST himl, int i, HICON hicon)
 BOOL HIDPI_RectangleInternal(HDC hdc, int nLeft, int nTop, int nRight, int nBottom, int nThickness)
 {
     int nOff = nThickness/2;
-        
+
     nLeft   += nOff;
     nTop    += nOff;
     nRight  -= nOff;
@@ -374,7 +374,7 @@ BOOL HIDPI_Rectangle(HDC hdc, int nLeft, int nTop, int nRight, int nBottom)
 
     return HIDPI_RectangleInternal(hdc, nLeft, nTop, nRight, nBottom, lpenSel.lopnWidth.x);
 }
- 
+
 
 BOOL HIDPI_PolylineInternal(HDC hdc, const POINT *lppt, int cPoints, int nStyle, int nThickness)
 {
@@ -487,10 +487,10 @@ static LPBYTE WalkDialogData(LPBYTE lpData)
 //    Listboxes and combo boxes: ensures that the selected item is visible.
 //
 static void FixupDialogItem(
-    HINSTANCE hInst, 
-    HWND hDlg, 
-    LPDLGITEMTEMPLATE lpDlgItem, 
-    LPWORD lpClass, 
+    HINSTANCE hInst,
+    HWND hDlg,
+    LPDLGITEMTEMPLATE lpDlgItem,
+    LPWORD lpClass,
     LPWORD lpData)
 {
     if (lpClass[0] == 0xFFFF)
@@ -527,7 +527,7 @@ static void FixupDialogItem(
             case 0x0083: // list box
             {
                 INT nSel = SendDlgItemMessageW(hDlg, lpDlgItem->id, LB_GETCURSEL, 0, 0);
-                if (nSel != LB_ERR) 
+                if (nSel != LB_ERR)
                 {
                     SendDlgItemMessageW(hDlg, lpDlgItem->id, LB_SETCURSEL, nSel, 0);
                 }
@@ -537,7 +537,7 @@ static void FixupDialogItem(
             case 0x0085: // combo box
             {
                 INT nSel = SendDlgItemMessageW(hDlg, lpDlgItem->id, CB_GETCURSEL, 0, 0);
-                if (nSel != CB_ERR) 
+                if (nSel != CB_ERR)
                 {
                     SendDlgItemMessageW(hDlg, lpDlgItem->id, CB_SETCURSEL, nSel, 0);
                 }
@@ -550,7 +550,7 @@ static void FixupDialogItem(
 BOOL RelayoutDialog(HINSTANCE hInst, HWND hDlg, LPCWSTR iddTemplate)
 {
     HRSRC hRsrc = FindResource((HMODULE)hInst, iddTemplate, RT_DIALOG);
-    if (hRsrc == NULL) 
+    if (hRsrc == NULL)
     {
         return FALSE;
     }
@@ -574,7 +574,7 @@ BOOL RelayoutDialog(HINSTANCE hInst, HWND hDlg, LPCWSTR iddTemplate)
     lpData = WalkDialogData(lpData);     // menu
     lpData = WalkDialogData(lpData);     // class
     lpData = WalkDialogData(lpData);     // title
-    
+
     if (lpTemplate->style & DS_SETFONT)
     {
         lpData += sizeof(WORD);          // font size.
@@ -586,7 +586,7 @@ BOOL RelayoutDialog(HINSTANCE hInst, HWND hDlg, LPCWSTR iddTemplate)
         lpData = (LPBYTE) (((INT)lpData + 3) & ~3);  // force to DWORD boundary.
         LPDLGITEMTEMPLATE lpDlgItem = (LPDLGITEMTEMPLATE)lpData;
         HWND hwndCtl = GetDlgItem(hDlg, lpDlgItem->id);
-    
+
         if (lpDlgItem->id == 0xFFFF)
         {
             nStatics++;
@@ -602,21 +602,21 @@ BOOL RelayoutDialog(HINSTANCE hInst, HWND hDlg, LPCWSTR iddTemplate)
             r.right  = lpDlgItem->x + lpDlgItem->cx;
             r.bottom = lpDlgItem->y + lpDlgItem->cy;
             MapDialogRect(hDlg, &r);
-            DeferWindowPos(hDWP, hwndCtl, NULL, 
+            DeferWindowPos(hDWP, hwndCtl, NULL,
                 r.left, r.top, r.right - r.left, r.bottom - r.top, SWP_NOZORDER);
         }
 
         lpData += sizeof(DLGITEMTEMPLATE);
         LPWORD lpClass = (LPWORD)lpData;
         lpData = WalkDialogData(lpData);  // class
-        
+
         //
         // Do some special handling for each dialog item (changing text,
         // bitmaps, ensuring visible, etc.
         //
         FixupDialogItem(hInst, hDlg, lpDlgItem, lpClass, (LPWORD)lpData);
 
-        lpData = WalkDialogData(lpData);  // title        
+        lpData = WalkDialogData(lpData);  // title
         WORD cbExtra = *((LPWORD)lpData); // extra class data.
         lpData += (cbExtra ? cbExtra : sizeof(WORD));
     }

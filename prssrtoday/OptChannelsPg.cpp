@@ -19,7 +19,7 @@
  */
 
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "prssrtoday.h"
 
 #include "OptChannelsPg.h"
@@ -84,7 +84,7 @@ BOOL COptChannelsPg::OnInitDialog() {
 	LOG0(5, "COptChannelsPg::OnInitDialog()");
 
 	CPropertyPage::OnInitDialog();
-	
+
 	m_ctlChannels.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_CHECKBOXES);
 
 	CRect rc;

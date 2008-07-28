@@ -27,7 +27,7 @@
 
 #include "proxy.h"
 #include "httpsock.h"
-#include "connmgr.h"
+#include <connmgr.h>
 #include "http.h"
 #include "../../share/file.h"
 

@@ -18,15 +18,15 @@
  *
  */
 
-#include "../stdafx.h"
+#include "../StdAfx.h"
 #include "../prssr.h"
-#include "browsedlg.h"
+#include "BrowseDlg.h"
 #include "../../share/helpers.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
 static TCHAR THIS_FILE[] = _T(__FILE__);
-#include "..\debug\crtdbg.h"
+#include "../debug/crtdbg.h"
 #define new MYDEBUG_NEW
 #endif
 
@@ -46,7 +46,7 @@ static char THIS_FILE[] = __FILE__;
 //
 // For sorting files and dirs (dirs go before files)
 //
-static int CALLBACK 
+static int CALLBACK
 DirFileCompareProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort) {
 	LOG0(5, "DirFileCompareProc()");
 
@@ -308,7 +308,7 @@ void CBrowseDlg::OnSelchangedDirs(NMHDR* pNMHDR, LRESULT* pResult) {
 	LOG0(5, "CBrowseDlg::OnSelchangedDirs()");
 
 	NM_TREEVIEW* pNMTreeView = (NM_TREEVIEW*)pNMHDR;
-	
+
 	// set path
 	m_ctlPath.SetWindowText(GetFullPath(pNMTreeView->itemNew.hItem));
 
@@ -398,7 +398,7 @@ void CBrowseDlg::OnCancel() {
 		m_ctlDirs.SendMessage(TVM_ENDEDITLABELNOW, TRUE);
 		return;
 	}
-	
+
 	CCeDialog::OnCancel();
 }
 
@@ -429,7 +429,7 @@ void CBrowseDlg::OnEndlabeleditDirs(NMHDR* pNMHDR, LRESULT* pResult) {
 	LOG0(5, "CBrowseDlg::OnEndlabeleditDirs()");
 
 	TV_DISPINFO* pTVDispInfo = (TV_DISPINFO*)pNMHDR;
-	
+
 	if (pTVDispInfo->item.pszText != NULL &&
 		lstrlen(pTVDispInfo->item.pszText) > 0) {
 
@@ -463,7 +463,7 @@ CString CBrowseDlg::GetFullPath(HTREEITEM hItem) {
 	while (hParent != m_hRootItem) {
 		path = _T("\\") + m_ctlDirs.GetItemText(hParent) + path;
 		hParent = m_ctlDirs.GetParentItem(hParent);
-	} 
+	}
 
 	if (path.GetLength() == 0)
 		path = _T("\\");

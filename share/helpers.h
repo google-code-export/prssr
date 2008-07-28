@@ -1,5 +1,5 @@
 /**
- *  helpers.h : Miscelanous helping functions 
+ *  helpers.h : Miscelanous helping functions
  *
  *  Copyright (C) 2008  David Andrs <pda@jasnapaka.com>
  *
@@ -23,7 +23,7 @@
 
 #include <winsock.h>
 #include "file.h"
-#include "../prssr/feed.h"
+#include "../prssr/Feed.h"
 
 // class for storing sort info
 
@@ -163,13 +163,13 @@ CString GetNumberItemText(CDC *pDC, const CString &strTitle, int newCount, int n
 
 // get the device IP address (form: 127.0.0.1 is represented by 0x0100007F)
 u_long GetDeviceIP();
-// returns TRUE if device is cradle, otherwise it returns FALSE 
+// returns TRUE if device is cradle, otherwise it returns FALSE
 BOOL IsDeviceCradled();
 
 // returns FALSE, if there is no internet connection
 BOOL CheckConnection(BOOL autoConnect, BOOL &disconnect);
 
-// 
+//
 char *WCharToChar(const CString &str, UINT codePage = CP_ACP);
 CString CharToWChar(const char *str, UINT codePage);
 CString CharToWChar(const char *str);

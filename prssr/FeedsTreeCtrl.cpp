@@ -18,12 +18,12 @@
  *
  */
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "prssr.h"
 #include "FeedsTreeCtrl.h"
 
 #include "Site.h"
-#include "../share\helpers.h"
+#include "../share/helpers.h"
 #include "Appearance.h"
 
 #ifdef MYDEBUG

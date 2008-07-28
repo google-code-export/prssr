@@ -18,7 +18,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "prssr.h"
 #include "FeedView.h"
 //#include "data.h"
@@ -26,7 +26,7 @@
 #include "Appearance.h"
 #include "Feed.h"
 #include "Site.h"
-#include "config.h"
+#include "Config.h"
 #include "../share/helpers.h"
 #include "ArticleDlg.h"
 #include "MainFrm.h"
@@ -70,7 +70,7 @@ BOOL CFeedView::Register() {
 	wndcls.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
 
 	//you can specify your own window procedure
-	wndcls.lpfnWndProc = ::DefWindowProc; 
+	wndcls.lpfnWndProc = ::DefWindowProc;
 	wndcls.hInstance = AfxGetInstanceHandle();
 //	wndcls.hIcon = LoadIcon(IDR_MAINFRAME); // or load a different icon
 //	wndcls.hCursor = LoadCursor( IDC_ARROW );
@@ -292,7 +292,7 @@ void CFeedView::MarkAllRead() {
 
 	for (int i = 0; i < m_oItems.GetSize(); i++)
 		MarkItem(i, MESSAGE_READ);
-	
+
 	if (SiteItem != NULL) {
 		if (SiteItem->Type == CSiteItem::VFolder && SiteItem->FlagMask == MESSAGE_READ_STATE)
 			DeleteAllItems();
@@ -428,7 +428,7 @@ void CFeedView::DrawItem(CDC &dc, CRect &rc, int idx) {
 			clrOld = dc.SetTextColor(clrFg);
 		else
 			clrOld = dc.SetTextColor(Appearance.ClrDate);
-		dc.DrawText(sTime, &rcTime, DT_LEFT | DT_BOTTOM | DT_NOPREFIX);	
+		dc.DrawText(sTime, &rcTime, DT_LEFT | DT_BOTTOM | DT_NOPREFIX);
 		dc.SetTextColor(clrOld);
 
 		dc.SelectObject(pOldFont);
@@ -460,7 +460,7 @@ void CFeedView::OnPaint() {
 	LOG0(5, "CFeedView::OnPaint()");
 
 	CPaintDC dc(this); // device context for painting
-	
+
 	int nSavedDC = dc.SaveDC();
 
 	CRect rc;
@@ -470,7 +470,7 @@ void CFeedView::OnPaint() {
 		CRect rcClip;
 		dc.GetClipBox(rcClip);
 //		LOG4(1, "Clip = (%d, %d, %d, %d)", rcClip.left, rcClip.top, rcClip.right, rcClip.bottom);
-		
+
 		if (m_oVScrollBar.IsWindowVisible()) {
 			CRect rcVScroll;
 			m_oVScrollBar.GetWindowRect(rcVScroll);
@@ -551,12 +551,12 @@ static DWORD WINAPI ScrollThread(LPVOID lpParam) {
 		view->m_nViewTop = top;
 		view->AdjustViewTop();
 		if (oldtop != view->m_nViewTop) {
-			view->ScrollWindowEx(0, oldtop - view->m_nViewTop, &view->m_rcScroll, &view->m_rcScroll, 
+			view->ScrollWindowEx(0, oldtop - view->m_nViewTop, &view->m_rcScroll, &view->m_rcScroll,
 				NULL, NULL, SW_INVALIDATE);
 			view->m_oVScrollBar.SetScrollPos(view->m_nViewTop, TRUE);
 			view->OnMouseMove(view->m_nOldKeys, view->m_ptOldCursorPos);
 		}
-		
+
 		Sleep(SCROLL_SLEEP);
 	}
 
@@ -702,7 +702,7 @@ void CFeedView::OnMouseMove(UINT nFlags, CPoint pt) {
 				delta = SCALEY(SCROLL_MAXSPEED);
 			else if (delta < -SCALEY(SCROLL_MAXSPEED))
 				delta = -SCALEY(SCROLL_MAXSPEED);
-			
+
 			m_nScrollDelta = delta;
 			if (!m_bScrolling) {
 				m_bScrolling = TRUE;
@@ -712,7 +712,7 @@ void CFeedView::OnMouseMove(UINT nFlags, CPoint pt) {
 		else
 			m_bScrolling = FALSE;
 	}
-	
+
 	if (!m_bContextMenu && m_bSelecting) {
 		KillTimer(TapAndHoldTimer);
 
@@ -773,7 +773,7 @@ void CFeedView::OnLButtonUp(UINT nFlags, CPoint point) {
 			}
 		}
 	}
-	
+
 	m_bScrolling = FALSE;
 	m_bSelecting = FALSE;
 	m_bContextMenu = FALSE;
@@ -818,13 +818,13 @@ void CFeedView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			if (SiteItem->Type != CSiteItem::VFolder) {
 				int oldSiteIdx = Config.ActSiteIdx;
 				MoveToNextChannel();
-				
+
 				CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
 				frame->AddSiteToSave(SiteList.GetAt(oldSiteIdx));
 				frame->PreloadSite(Config.ActSiteIdx);
 			}
 			break;
-		
+
 		case VK_RETURN:
 			break;
 
@@ -869,7 +869,7 @@ void CFeedView::ContextMenu(CPoint pt) {
 		AppendMenuFromResource(&popup, IDR_SEND_BY_EMAIL);
 		popup.AppendMenu(MF_SEPARATOR);
 		AppendMenuFromResource(&popup, IDR_ITEM_OPER);
-		
+
 		// track popup menu
 		ClientToScreen(&pt);
 		popup.TrackPopupMenu(TPM_TOPALIGN | TPM_LEFTALIGN, pt.x, pt.y, AfxGetMainWnd());
@@ -902,7 +902,7 @@ void CFeedView::OnTimer(UINT nIDEvent) {
 			ContextMenu(LastCursorPos);
 		}
 	}
-	
+
 	CWnd::OnTimer(nIDEvent);
 }
 
@@ -1055,7 +1055,7 @@ int CFeedView::MoveToNextItem() {
 	if (m_nSelectFirst < m_oItems.GetSize() - 1) {
 		m_nSelectFirst++;
 		m_nSelectEnd = m_nSelectStart = m_nSelectFirst;
-		
+
 		int y = m_nSelectFirst * SCALEY(ItemHeight);
 		if (y < m_nViewTop)
 			m_nViewTop = y;
@@ -1163,7 +1163,7 @@ void CFeedView::OpenItem(int item) {
 		m_pArticleDlg->m_ctlBanner.SetImageList(&frame->m_ilIcons);
 		m_pArticleDlg->m_ctlBanner.SetSmbImageList(&m_oIcons);
 	}
-			
+
 	MarkItem(item, MESSAGE_READ);
 
 	SetupArticleDlg(item);

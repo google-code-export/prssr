@@ -18,12 +18,12 @@
  *
  */
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "prssr.h"
 #include "KeywordManagerDlg.h"
 #include "../share/helpers.h"
 #include "ProgressDlg.h"
-#include "site.h"
+#include "Site.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
@@ -203,7 +203,7 @@ BOOL CKeywordManagerDlg::OnInitDialog() {
 	LOG0(3, "CKeywordManagerDlg::OnInitDialog()");
 
 	CCeDialog::OnInitDialog();
-	
+
 	m_ctlKeywords.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
 	// fill list control
@@ -250,7 +250,7 @@ void CKeywordManagerDlg::OnItemchangedKeywords(NMHDR *pNMHDR, LRESULT *pResult) 
 	NM_LISTVIEW *pNMListView = (NM_LISTVIEW *) pNMHDR;
 
 	UpdateControls();
-		
+
 	*pResult = 0;
 }
 
@@ -321,7 +321,7 @@ void CKeywordManagerDlg::OnKeydownKeywords(NMHDR *pNMHDR, LRESULT *pResult) {
 	LOG0(5, "CKeywordManagerDlg::OnKeydownKeywords()");
 
 	LV_KEYDOWN *plvkd = (LV_KEYDOWN *) pNMHDR;
-   
+
 	if (plvkd->wVKey == VK_RETURN) {
 		int item = m_ctlKeywords.GetNextItem(-1, LVNI_SELECTED);
 		if (item != -1)
@@ -353,7 +353,7 @@ void CKeywordManagerDlg::OnContextMenu(NMHDR *pNMHDR, LRESULT *pResult) {
 	popup.LoadMenu(IDR_KEYWORD_MANAGER_CTX);
 	CMenu *submenu = popup.GetSubMenu(0);
 	submenu->TrackPopupMenu(TPM_LEFTALIGN, pInfo->ptAction.x, pInfo->ptAction.y, this);
-	
+
 	*pResult = TRUE; // This is important!
 }
 
@@ -364,7 +364,7 @@ void CKeywordManagerDlg::OnEdit() {
 	if (item != -1)
 		EditKeyword(item);
 }
-	
+
 void CKeywordManagerDlg::OnUpdateEdit(CCmdUI *pCmdUI) {
 	LOG0(5, "CKeywordManagerDlg::OnUpdateEdit()");
 

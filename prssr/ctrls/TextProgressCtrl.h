@@ -25,7 +25,7 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
-#include "..\net\download.h"
+#include "../net/Download.h"
 
 //
 // CTextProgressCtrl class
@@ -67,7 +67,7 @@ protected:
 	CFont m_fntText;
 	CString m_strText;
 	CString m_strSize;
-	
+
 	void FinishRedraw();
 
 	UINT ProgressRefreshTimer;

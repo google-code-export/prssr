@@ -18,10 +18,10 @@
  *
  */
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "prssr.h"
 #include "SummaryView.h"
-#include "../share\helpers.h"
+#include "../share/helpers.h"
 #include "Config.h"
 #include "Appearance.h"
 #include "MainFrm.h"
