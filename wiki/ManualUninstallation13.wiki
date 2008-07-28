@@ -3,7 +3,7 @@
 = Uninstallation of 1.3.x =
 ----
 
-So you are here, becuase regular uninstall did not work for you.
+So you are here, because regular uninstall did not work for you.
 
 ==Prerequisities==
 
