@@ -10,4 +10,4 @@ Operating system:
   * Windows Mobile 5.0 for Pocket PC
   * Windows Mobile 6.0 Professional 
 
-Batti runs on minimal hardware. You will need approximately XXX KiB of free space (disk or RAM). 
+pRSSreader runs on minimal hardware. You will need approximately 1,111 KiB of free space (disk or RAM) and some disk capacity for cache for storing your feeds, etc.
