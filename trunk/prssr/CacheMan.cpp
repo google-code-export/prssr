@@ -128,6 +128,69 @@ void CDeleteCacheProgressDlg::OnCancel() {
 	CProgressDlg::OnCancel();
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+
+DWORD WINAPI PurgeCacheThreadProc(LPVOID lpParameter) {
+	CCacheManPg *dlg = (CCacheManPg *) lpParameter;
+	return dlg->PurgeThread();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+class CPurgeCacheProgressDlg : public CProgressDlg {
+public:
+	CPurgeCacheProgressDlg(CCacheManPg *parent);
+	virtual ~CPurgeCacheProgressDlg();
+
+protected:
+	CCacheManPg *Parent;
+
+    //{{AFX_MSG(CPurgeCacheProgressDlg)
+	afx_msg void OnTimer(UINT nIDEvent);
+	//}}AFX_MSG
+	virtual BOOL OnInitDialog();
+
+	virtual void OnCancel();
+
+	DECLARE_MESSAGE_MAP()
+
+	friend class CCacheManPg;
+};
+
+CPurgeCacheProgressDlg::CPurgeCacheProgressDlg(CCacheManPg *parent) {
+	Parent = parent;
+}
+
+CPurgeCacheProgressDlg::~CPurgeCacheProgressDlg() {
+}
+
+BEGIN_MESSAGE_MAP(CPurgeCacheProgressDlg, CProgressDlg)
+	//{{AFX_MSG_MAP(CPurgeCacheProgressDlg)
+	ON_WM_TIMER()
+	//}}AFX_MSG_MAP
+END_MESSAGE_MAP()
+
+BOOL CPurgeCacheProgressDlg::OnInitDialog() {
+	LOG0(3, "CPurgeCacheProgressDlg::OnInitDialog()");
+
+	CProgressDlg::OnInitDialog();
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+	              // EXCEPTION: OCX Property Pages should return FALSE
+}
+
+void CPurgeCacheProgressDlg::OnTimer(UINT nIDEvent) {
+
+	CWnd::OnTimer(nIDEvent);
+}
+
+void CPurgeCacheProgressDlg::OnCancel() {
+	LOG0(3, "CPurgeCacheProgressDlg::OnCancel()");
+
+	CProgressDlg::OnCancel();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 CCacheTreeCtrl::CCacheTreeCtrl() {
@@ -269,6 +332,10 @@ void CCacheManHtmlPg::DoCacheItems() {
 	pMainFrm->m_wndUpdateBar.Start();
 }
 
+void CCacheManHtmlPg::DoPurgeCache() {
+	PurgePath = GetCachePath(FILE_TYPE_HTML, Config.CacheLocation);
+}
+
 /////////////////////////////////////////////////////////////////////////////
 
 CCacheManEnclosuresPg::CCacheManEnclosuresPg() : CCacheManPg(IDS_ENCLOSURES) {
@@ -334,6 +401,10 @@ void CCacheManEnclosuresPg::DoCacheItems() {
 	pMainFrm->m_wndUpdateBar.Start();
 }
 
+void CCacheManEnclosuresPg::DoPurgeCache() {
+	PurgePath = GetCachePath(FILE_TYPE_ENCLOSURE, Config.CacheLocation);
+}
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CCacheManPg property page
@@ -373,6 +444,7 @@ BEGIN_MESSAGE_MAP(CCacheManPg, CCePropertyPage)
 	//}}AFX_MSG_MAP
 	ON_COMMAND(ID_REMOVE, OnRemove)
 	ON_COMMAND(ID_CACHE, OnCache)
+	ON_COMMAND(ID_PURGE_CACHE, OnPurgeCache)
 	ON_MESSAGE(UWM_GROUP_CHECKED, OnGroupChecked)
 END_MESSAGE_MAP()
 
@@ -494,6 +566,8 @@ void CCacheManPg::OnItemExpanding(NMHDR *pnmh, LRESULT *pResult) {
     *pResult = 0;        // Allow the expansion to proceed.
 }
 
+// Delete ////
+
 void CCacheManPg::OnRemove() {
 	LOG0(3, "CCachemanPg::OnRemove()");
 
@@ -572,6 +646,8 @@ DWORD CCacheManPg::DeleteThread() {
 	return 0;
 }
 
+// Cache ////
+
 void CCacheManPg::OnCache() {
 	// gather files to cache
 	HTREEITEM hItem = m_ctlCacheItems.GetRootItem();
@@ -604,4 +680,64 @@ void CCacheManPg::OnCache() {
 
 		hItem = m_ctlCacheItems.GetNextSiblingItem(hItem);
 	}
+}
+
+// Purge ////
+
+void CCacheManPg::DoPurgeCache() {
+}
+
+void CCacheManPg::OnPurgeCache() {
+	if (AfxMessageBox(IDS_PURGE_CACHE_WARNING, MB_YESNO | MB_ICONQUESTION) == IDYES) {
+		if (m_pPurgeProgress == NULL) {
+			DoPurgeCache();
+
+			m_pPurgeProgress = new CPurgeCacheProgressDlg(this);
+			m_pPurgeProgress->OpenDialog(IDS_PURGING_CACHE, this);
+
+			CloseHandle(CreateThread(NULL, 0, PurgeCacheThreadProc, this, 0, NULL));
+		}
+		else {
+			m_pPurgeProgress->SetActiveWindow();
+		}
+
+	}
+}
+
+// TODO: progress
+static void DeleteFiles(const CString &dir) {
+	CString path;
+	path.Format(_T("%s\\*.*"), dir);
+
+	WIN32_FIND_DATA fd;
+	HANDLE hFind = FindFirstFile(path, &fd);
+	if (hFind != INVALID_HANDLE_VALUE) {
+		do {
+			CString fileNamePath;
+			fileNamePath.Format(_T("%s\\%s"), dir, CString(fd.cFileName));
+
+			if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+				DeleteFiles(fileNamePath);
+				::RemoveDirectory(fileNamePath);
+			}
+			else {
+				::DeleteFile(fileNamePath);
+			}
+		} while (FindNextFile(hFind, &fd));
+		FindClose(hFind);
+	}
+}
+
+
+DWORD CCacheManPg::PurgeThread() {
+	LOG0(3, "CCacheManPg::PurgeThread() - start");
+
+	DeleteFiles(PurgePath);
+
+	m_pPurgeProgress->CloseDialog();
+	m_pPurgeProgress = NULL;
+
+	LOG0(3, "CCacheManPg::DeleteThread() - end");
+
+	return 0;
 }

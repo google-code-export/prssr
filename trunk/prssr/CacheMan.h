@@ -33,6 +33,7 @@
 
 
 class CDeleteCacheProgressDlg;
+class CPurgeCacheProgressDlg;
 
 /////////////////////////////////////////////////////////////////////////////
 // CCacheTreeCtrl class
@@ -99,6 +100,9 @@ protected:
 	EFileType FileType;
 	CArray<CFeedItem *, CFeedItem *> CacheList;
 
+	CString PurgePath;
+	CPurgeCacheProgressDlg *m_pPurgeProgress;
+
 	void InsertItems();
 	void UpdateControls();
 
@@ -109,6 +113,8 @@ protected:
 	virtual void DoInsertCache(HTREEITEM hItem);
 	virtual void DoCacheItems();
 	virtual DWORD DeleteThread();
+	virtual void DoPurgeCache();
+	virtual DWORD PurgeThread();
 
 	void LoadSite(HTREEITEM hItem);
 
@@ -120,10 +126,12 @@ protected:
 	void OnItemExpanding(NMHDR *pnmh, LRESULT *pResult);
 	void OnRemove();
 	void OnCache();
+	void OnPurgeCache();
 
 	DECLARE_MESSAGE_MAP()
 
 	friend DWORD WINAPI DeleteCacheThreadProc(LPVOID lpParameter);
+	friend DWORD WINAPI PurgeCacheThreadProc(LPVOID lpParameter);
 };
 
 
@@ -143,6 +151,7 @@ protected:
 	virtual void DoInsertFeedItem(HTREEITEM hParent, CFeedItem *fi);
 	virtual void DoInsertDelete(HTREEITEM hItem);
 	virtual void DoCacheItems();
+	virtual void DoPurgeCache();
 };
 
 ////////////////////////////////////////////////////////
@@ -161,6 +170,7 @@ protected:
 	virtual void DoInsertFeedItem(HTREEITEM hParent, CFeedItem *fi);
 	virtual void DoInsertDelete(HTREEITEM hItem);
 	virtual void DoCacheItems();
+	virtual void DoPurgeCache();
 };
 
 ////////////////////////////////////////////////////////
