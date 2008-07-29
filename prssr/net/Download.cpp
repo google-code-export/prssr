@@ -74,7 +74,7 @@ BOOL DownloadFavIcon(const CString &url, const CString &fileName) {
 	CString sServer, sObject;
 	INTERNET_PORT nPort;
 	ParseURL(url, serviceType, sServer, sObject, nPort);
-	
+
 	CString faviconURL;
 	faviconURL.Format(_T("%s://%s/favicon.ico"),
 		serviceType == INET_SERVICE_HTTPS ? _T("https") : _T("http"), sServer);
@@ -338,7 +338,7 @@ void CDownloader::PrepareAuthorizationHeader(int nc, const CString &uri, const C
 	delete [] pszNonce;
 	delete [] pszURI;
 	delete [] pszQop;
-	
+
 	header = authorization;
 }
 
@@ -527,9 +527,10 @@ BOOL CDownloader::OnResponse(CHttpRequest *&req, CHttpResponse *&res, LPVOID con
 				end = TRUE;
 				break;
 
-			case HTTP_STATUS_MOVED:
-			case HTTP_STATUS_REDIRECT:
-			case HTTP_STATUS_REDIRECT_METHOD: {
+			case HTTP_STATUS_MOVED:								// 301
+			case HTTP_STATUS_REDIRECT:							// 302
+			case HTTP_STATUS_REDIRECT_KEEP_VERB:				// 307
+			case HTTP_STATUS_REDIRECT_METHOD: {					// 303
 				redirections++;
 
 				CString newAddress, headers;
@@ -557,7 +558,7 @@ BOOL CDownloader::OnResponse(CHttpRequest *&req, CHttpResponse *&res, LPVOID con
 					HttpConnection.Close();
 
 					if (HttpConnection.Open(ServiceType, ServerName, Port)) {
-						req = HttpConnection.CreateRequest(object);			
+						req = HttpConnection.CreateRequest(object);
 						if (req != NULL) {
 							req->AddHeaders(AdditionalHeaders);
 							HttpConnection.SendRequest(req);
@@ -602,7 +603,7 @@ BOOL CDownloader::OnResponse(CHttpRequest *&req, CHttpResponse *&res, LPVOID con
 					end = TRUE;
 				}
 				else {
-					// proxy needs authentication 
+					// proxy needs authentication
 					end = TRUE;
 				}
 */
@@ -650,7 +651,7 @@ BOOL CDownloader::SaveHttpObject(CString &url, const CString &strFileName, LPVOI
 		DWORD timeout = 3000;			// we start with 3 seconds
 		for (int tries = 0; tries < 3; tries++) {
 			if (HttpConnection.Open(ServiceType, ServerName, Port)) {
-				CHttpRequest *req = HttpConnection.CreateRequest(objectName);			
+				CHttpRequest *req = HttpConnection.CreateRequest(objectName);
 				if (req != NULL) {
 					State = DOWNLOAD_STATE_SENDING_REQUEST;
 					req->AddHeaders(AdditionalHeaders);
@@ -682,7 +683,7 @@ BOOL CDownloader::SaveHttpObject(CString &url, const CString &strFileName, LPVOI
 					Error = DOWNLOAD_ERROR_SENDING_REQUEST;
 
 				HttpConnection.Close();
-				
+
 				return Error == DOWNLOAD_ERROR_NONE;
 			}
 			else {
@@ -711,7 +712,7 @@ BOOL CDownloader::PartialDownload(CString &url, const CString &strFileName, DWOR
 
 	FreeAdditionalHeaders();
 	CString sRange;
-	if (endOffset == 0) 
+	if (endOffset == 0)
 		sRange.Format(_T("bytes=%d-"), startOffset);
 	else
 		sRange.Format(_T("bytes=%d-%d"), startOffset, endOffset);
@@ -753,7 +754,7 @@ void CUpdateDownloader::OnBeforeSendRequest(CHttpRequest *&req, LPVOID context) 
 BOOL CUpdateDownloader::OnResponse(CHttpRequest *&req, CHttpResponse *&res, LPVOID context) {
 	LOG0(3, "CUpdateDownloader::OnResponse()");
 
-	Updated = TRUE;	
+	Updated = TRUE;
 	switch (res->GetStatusCode()) {
 		case HTTP_STATUS_NOT_MODIFIED:
 			// do nothing
