@@ -53,7 +53,7 @@ BOOL DcDateToSytemTime(LPCTSTR strTime, SYSTEMTIME *time) {
 	TCHAR sign;
 	double second = 0;
 	int year, month, day, hour = 0, minute = 0, tzhour = 0, tzmin = 0;
-	if (swscanf(strTime, _T("%d-%d-%dT%d:%d:%lf%c%d:%d"), 
+	if (swscanf(strTime, _T("%d-%d-%dT%d:%d:%lf%c%d:%d"),
 		&year, &month, &day, &hour, &minute, &second, &sign, &tzhour, &tzmin) < 6)
 		return FALSE;
 
@@ -126,7 +126,7 @@ BOOL DateRfc822ToSystemTime(LPCTSTR strTime, SYSTEMTIME *time) {
 	// day
 	if (swscanf(token, _T("%d"), &day) != 1) return FALSE;
 	st.wDay = day;
-	
+
 	// month
 	token = wcstok(NULL, seps);
 	if (token == NULL) return FALSE;
@@ -453,14 +453,12 @@ BOOL CFeedFile::RSSFillItem(CXmlNode *xmlItem, CFeedItem *item) {
 		CString name = childNode->GetName();
 		CString value = childNode->GetXML();
 		if (name.Compare(_T("title")) == 0)
-			item->Title = value;
+			item->Title = StripHtmlTags(value);
 #if defined PRSSR_APP
 		else if (name.Compare(_T("description")) == 0)
 			sDescription = value;
 		else if (name.Compare(_T("content:encoded")) == 0)
 			sContent = value;
-#endif
-#if defined PRSSR_APP
 		else if (name.Compare(_T("dc:creator")) == 0 || name.Compare(_T("author")) == 0) {
 			item->Author = value;
 		}
@@ -765,7 +763,7 @@ BOOL CFeedFile::AtomFillItem(CXmlNode *xmlItem, CFeedItem *item) {
 		CString name = child->GetName();
 
 		if (name.Compare(_T("title")) == 0) {
-			item->Title = child->GetValue();
+			item->Title = StripHtmlTags(child->GetValue());
 		}
 #if defined PRSSR_APP
 		else if (wcscmp(name, _T("content")) == 0) {
@@ -774,8 +772,6 @@ BOOL CFeedFile::AtomFillItem(CXmlNode *xmlItem, CFeedItem *item) {
 		else if (wcscmp(name, _T("summary")) == 0) {
 			summary = child->GetXML();
 		}
-#endif
-#if defined PRSSR_APP
 		else if (wcscmp(name, _T("author")) == 0) {
 			AtomFillPerson(child, item->Author);
 		}
