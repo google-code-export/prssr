@@ -1275,13 +1275,13 @@ END
 
 IDR_CACHE_MANAGER MENU DISCARDABLE
 BEGIN
-    MENUITEM "Close",                           IDOK
+    MENUITEM "Delete",                          ID_REMOVE
     POPUP "Menu"
     BEGIN
-        MENUITEM "Cache selected",                       ID_CACHE
-        MENUITEM "Delete selected",                      ID_REMOVE
-//        MENUITEM SEPARATOR
-//        MENUITEM "Close",                       IDOK
+        MENUITEM "Cache selected",              ID_CACHE
+        MENUITEM "Purge cache",                 ID_PURGE_CACHE
+        MENUITEM SEPARATOR
+        MENUITEM "Close",                       IDOK
     END
 END
 
@@ -1704,4 +1704,5 @@ BEGIN
 	IDS_EMPTY_NAME          "The name can not be empty."
 	IDS_EMPTY_HOST_NAME     "The host name can not be empty."
 	IDS_ABOUT               "About"
+	IDS_PURGE_CACHE_WARNING "Purge all cache content?"
 END

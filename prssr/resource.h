@@ -45,8 +45,8 @@
 #define IDD_ADD_OFFLINE_WIDE            163
 #define IDD_SEARCH                      164
 #define IDD_SEARCH_WIDE                 165
-#define IDD_PROGRESS                    166 
-#define IDD_PROGRESS_WIDE               167 
+#define IDD_PROGRESS                    166
+#define IDD_PROGRESS_WIDE               167
 #define IDD_KEYWORD_MANAGER             168
 #define IDD_KEYWORD_MANAGER_WIDE        169
 #define IDD_CACHE_MANAGER               170
@@ -302,7 +302,7 @@
 #define IDS_DELETE_KEYWORDS             588
 #define IDS_PROFILE                     589
 #define IDS_DELETE_PROXY_PROFILE        590
-#define IDS_DOWNLOADING_FEED            591 
+#define IDS_DOWNLOADING_FEED            591
 
 #define IDS_BOOKMARK_AT                 592
 #define IDS_BAD_URL_FMT_SBS             593
@@ -344,6 +344,7 @@
 #define IDS_EMPTY_NAME                  647
 #define IDS_EMPTY_HOST_NAME             648
 #define IDS_ABOUT                       649
+#define IDS_PURGE_CACHE_WARNING	         650
 
 // controls
 #define IDC_HTML                        1000
@@ -670,11 +671,12 @@
 #define ID_CACHE_UNREAD                 32875
 #define ID_RETRY                        32876
 #define ID_CACHE                        32877
+#define ID_PURGE_CACHE                  32878
 
-#define ID_SOCIAL_BOOKMARK_BASE			33000
+#define ID_SOCIAL_BOOKMARK_BASE			 33000
 
 // Next default values for new objects
-// 
+//
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        252
