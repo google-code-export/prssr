@@ -1279,6 +1279,8 @@ BEGIN
     POPUP "Menu"
     BEGIN
         MENUITEM "Cache selected",              ID_CACHE
+        MENUITEM "Select All",                  ID_SELECT_ALL
+        MENUITEM SEPARATOR
         MENUITEM "Purge cache",                 ID_PURGE_CACHE
         MENUITEM SEPARATOR
         MENUITEM "Close",                       IDOK

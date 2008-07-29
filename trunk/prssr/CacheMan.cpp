@@ -405,7 +405,6 @@ void CCacheManEnclosuresPg::DoPurgeCache() {
 	PurgePath = GetCachePath(FILE_TYPE_ENCLOSURE, Config.CacheLocation);
 }
 
-
 /////////////////////////////////////////////////////////////////////////////
 // CCacheManPg property page
 
@@ -445,6 +444,7 @@ BEGIN_MESSAGE_MAP(CCacheManPg, CCePropertyPage)
 	ON_COMMAND(ID_REMOVE, OnRemove)
 	ON_COMMAND(ID_CACHE, OnCache)
 	ON_COMMAND(ID_PURGE_CACHE, OnPurgeCache)
+	ON_COMMAND(ID_SELECT_ALL, OnSelectAll)
 	ON_MESSAGE(UWM_GROUP_CHECKED, OnGroupChecked)
 END_MESSAGE_MAP()
 
@@ -740,4 +740,24 @@ DWORD CCacheManPg::PurgeThread() {
 	LOG0(3, "CCacheManPg::DeleteThread() - end");
 
 	return 0;
+}
+
+// Select All ////
+
+void CCacheManPg::OnSelectAll() {
+	// remove checks from site items
+	HTREEITEM hItem = m_ctlCacheItems.GetRootItem();
+	while (hItem != NULL) {
+		m_ctlCacheItems.SetCheck(hItem, TRUE);
+
+		// child items
+		HTREEITEM hChild = m_ctlCacheItems.GetChildItem(hItem);
+		while (hChild != NULL) {
+			m_ctlCacheItems.SetCheck(hChild, TRUE);
+			hChild = m_ctlCacheItems.GetNextSiblingItem(hChild);
+		}
+
+
+		hItem = m_ctlCacheItems.GetNextSiblingItem(hItem);
+	}
 }

@@ -127,6 +127,7 @@ protected:
 	void OnRemove();
 	void OnCache();
 	void OnPurgeCache();
+	void OnSelectAll();
 
 	DECLARE_MESSAGE_MAP()
 
