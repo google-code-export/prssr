@@ -62,5 +62,6 @@ CString UrlEncode(const CString &url);
 
 // HTML
 void ReplaceHTMLEntities(CString &str);
+CString StripHtmlTags(const CString &str);
 
 #endif

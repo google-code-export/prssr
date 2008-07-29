@@ -208,7 +208,7 @@ void CFeedItem::GetEnclosures(CStringList &list, DWORD limit/* = 0*/) {
 	POSITION pos = Enclosures.GetHeadPosition();
 	while (pos != NULL) {
 		CEnclosureItem *enclosure = Enclosures.GetNext(pos);
-		
+
 		if (limit == 0 || enclosure->Length <= limit)
 			list.AddTail(enclosure->URL);
 	}
@@ -232,7 +232,7 @@ void CFeedItem::UpdateHiddenFlag() {
 				Hidden = FALSE;
 			else
 				Hidden = TRUE;
-		}				
+		}
 		else
 			Hidden = FALSE;
 	}
@@ -256,13 +256,7 @@ void CFeedItem::SearchKeywords(CStringArray &keywords) {
 	for (int k = 0; k < keywords.GetSize(); k++) {
 		CString kword = keywords.GetAt(k);
 
-		CHtmlFile html;
-		html.SetFlags(SGML_EXTENSION_HTML_FLAG_STRIPELEMENT | SGML_EXTENSION_HTML_FLAG_STRIPCOMMENT);
-		CString descr;
-		descr.Format(_T("<div>%s</div>"), Description);		// libsgml workaround
-		html.LoadFromMemory(descr);
-
-		CString text = html.ToString();
+		CString text = StripHtmlTags(Description);
 		if (text.Find(kword) != -1) {
 			KeywordPos.Add(k);
 		}
@@ -389,7 +383,7 @@ struct CArchiveFileChunk {
 
 	void CalcSize() {
 //		LOG0(5, "CArchiveFileChunk::CalcSize()");
-		
+
 		if (Childs.GetCount() > 0) {
 			Header.Size = 0;
 			POSITION pos = Childs.GetHeadPosition();
@@ -432,7 +426,7 @@ static BOOL ReadString(CBufferedFile &file, int len, CString &str) {
 	}
 	else
 		str.Empty();
-	
+
 	return TRUE;
 }
 
@@ -630,7 +624,7 @@ BOOL CFeed::Load(LPCTSTR fileName, CSiteItem *si) {
 #endif
 			else
 				file.Seek(hdr.Size, FILE_CURRENT);
-			
+
 			remain -= hdr.Size;
 		} // while
 
@@ -716,7 +710,7 @@ BOOL CFeed::Save(LPCTSTR fileName) {
 					while (pos != NULL) {
 						CEnclosureItem *ei = fi->Enclosures.GetNext(pos);
 						CArchiveFileChunk *eitm = new CArchiveFileChunk("ENIT");
-						
+
 						eitm->Add("URL ", ei->URL);
 						eitm->Add("ETYP", ei->Type);
 						eitm->Add("LENG", ei->Length);
@@ -809,7 +803,7 @@ void CFeed::GetPlaylistItems(CList<CPlaylistItem*, CPlaylistItem*> &list, DWORD 
 		POSITION pos = fi->Enclosures.GetHeadPosition();
 		while (pos != NULL) {
 			CEnclosureItem *enclosure = fi->Enclosures.GetNext(pos);
-			
+
 			if (enclosure->Type.Left(5).CompareNoCase(_T("audio")) == 0 ||
 				enclosure->Type.Left(5).CompareNoCase(_T("video")) == 0)
 			{
@@ -858,13 +852,13 @@ BOOL CFeed::GenerateASX(const CString &strFileName, DWORD limit) {
 		POSITION pos = list.GetHeadPosition();
 		while (pos != NULL) {
 			CPlaylistItem *pi = list.GetNext(pos);
-				
+
 			ret = ret ? WriteFileString(file, _T("\t<entry>\n"), CP_ACP) : FALSE;
 
 			CString strTitle;
 			strTitle.Format(_T("\t\t<title>%s</title>\n"), pi->Title);
 			ret = ret ? WriteFileString(file, strTitle, CP_ACP) : FALSE;
-				
+
 			CString strRef;
 			strRef.Format(_T("\t\t<ref href=\"%s\" />\n"), pi->FileName);
 			ret = ret ? WriteFileString(file, strRef, CP_ACP) : FALSE;
@@ -917,11 +911,11 @@ BOOL CFeed::GenerateM3U(const CString &strFileName, DWORD limit) {
 		POSITION pos = list.GetHeadPosition();
 		while (pos != NULL) {
 			CPlaylistItem *pi = list.GetNext(pos);
-			
+
 			CString strINF;
 			strINF.Format(_T("#EXTINF:,%s\n"), pi->Title);
 			ret = ret ? WriteFileString(file, strINF, CP_ACP) : FALSE;
-			
+
 			CString strFile;
 			strFile.Format(_T("%s\n"), pi->FileName);
 			ret = ret ? WriteFileString(file, strFile, CP_ACP) : FALSE;
