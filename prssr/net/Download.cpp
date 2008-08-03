@@ -754,23 +754,22 @@ void CUpdateDownloader::OnBeforeSendRequest(CHttpRequest *&req, LPVOID context) 
 BOOL CUpdateDownloader::OnResponse(CHttpRequest *&req, CHttpResponse *&res, LPVOID context) {
 	LOG0(3, "CUpdateDownloader::OnResponse()");
 
+	CString strETag, strLastModified;
+
 	Updated = TRUE;
 	switch (res->GetStatusCode()) {
 		case HTTP_STATUS_NOT_MODIFIED:
 			// do nothing
 			Updated = FALSE;	// do not download the file (it is not changed)
+			LOG0(3, "- NOT updated");
 			return TRUE;
 
-		case HTTP_STATUS_OK: {
-			CString strETag, strLastModified;
-			if (res->GetHeader(_T("ETag"), strETag)) {
+		case HTTP_STATUS_OK:
+			if (res->GetHeader(_T("ETag"), strETag))
 				ETag = strETag;
-			}
-			if (res->GetHeader(_T("Last-Modified"), strLastModified)) {
+			if (res->GetHeader(_T("Last-Modified"), strLastModified))
 				LastModified = strLastModified;
-			}
 			return TRUE;
-			} break;
 
 		default:
 			return CDownloader::OnResponse(req, res, context);

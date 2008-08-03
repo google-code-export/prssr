@@ -66,7 +66,7 @@ static BOOL TranslateForOfflineReading(const CString &srcFileName, const CString
 	file.TranslateForOffline();
 	file.Recode();
 	file.Save(destFileName);
-	
+
 	return TRUE;
 }
 
@@ -161,7 +161,7 @@ CDownloadItem *CDownloadQueue::Dequeue() {
 	EnterCriticalSection(&CS);
 	CDownloadItem *item = Items.RemoveHead();
 	LeaveCriticalSection(&CS);
-	return item;	
+	return item;
 }
 
 
@@ -445,7 +445,7 @@ BOOL CUpdateBar::UpdateFeed(CSiteItem *si, BOOL updateOnly) {
 	GetTempFileName(Config.CacheLocation, _T("rsr"), 0, tmpFileName);
 
 	CString sErrMsg;
-	if (Updater->SaveHttpObject(si->Info->XmlUrl, tmpFileName)) {
+	if (Updater->SaveHttpObject(si->Info->XmlUrl, tmpFileName) && Updater->Updated) {
 		CFeedFile xml;
 		if (xml.LoadFromFile(tmpFileName)) {
 			CFeed *feed = new CFeed;
@@ -454,7 +454,7 @@ BOOL CUpdateBar::UpdateFeed(CSiteItem *si, BOOL updateOnly) {
 
 /*				SYSTEMTIME st;
 				GetLocalTime(&st);
-				SystemTimeToFileTime(&st, &(si->LastUpdate));				
+				SystemTimeToFileTime(&st, &(si->LastUpdate));
 */
 
 				if (si->Feed == NULL) {
@@ -466,7 +466,7 @@ BOOL CUpdateBar::UpdateFeed(CSiteItem *si, BOOL updateOnly) {
 					si->Feed->Language = feed->Language;
 					si->Feed->Published = feed->Published;
 					si->Feed->Title = feed->Title;
-					si->Feed->UpdateInterval = feed->UpdateInterval; 
+					si->Feed->UpdateInterval = feed->UpdateInterval;
 				}
 
 				// mark all new items in the old feed as unread
@@ -510,7 +510,7 @@ BOOL CUpdateBar::UpdateFeed(CSiteItem *si, BOOL updateOnly) {
 		CString sMsg;
 		sMsg.Format(_T("%s: %s"), si->Name, sErrMsg);
 		CErrorItem *ei = new CErrorItem(sMsg);
-		ei->Type = CErrorItem::Site; 
+		ei->Type = CErrorItem::Site;
 		ei->SiteIdx = SiteList.GetIndexOf(si);
 		ei->UpdateOnly = updateOnly;
 		Errors.Add(ei);
@@ -535,7 +535,7 @@ void CUpdateBar::MergeFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
 	FeedIntersection(feed, si->Feed, &existingItems);
 
 	CArray<CFeedItem *, CFeedItem *> itemsToClean;
-	
+
 	int i;
 	CList<CFeedItem *, CFeedItem *> items;
 	if (si->Info->CacheLimit > 0 || si->Info->CacheLimit == CACHE_LIMIT_DEFAULT) {
@@ -564,7 +564,7 @@ void CUpdateBar::MergeFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
 				if (toAdd > 0) {
 					items.AddTail(fi);
 					toAdd--;
-				}	
+				}
 				else
 					itemsToClean.Add(fi);							// old item -> delete it!
 			}
@@ -605,7 +605,7 @@ void CUpdateBar::MergeFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
 			items.AddTail(si->Feed->GetItem(i));
 		// add new items
 		for (i = 0; i < newItems.GetSize(); i++)
-			items.AddTail(newItems.GetAt(i));		
+			items.AddTail(newItems.GetAt(i));
 
 		// free duplicate items
 		for (i = 0; i < existingItems.GetSize(); i++)
@@ -649,7 +649,7 @@ void CUpdateBar::MergeFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
 	ClearImages(itemsToClean);
 	ClearHtmlPages(itemsToClean);
 	ClearEnclosures(itemsToClean);
-	
+
 	for (i = 0; i < itemsToClean.GetSize(); i++)
 		delete itemsToClean[i];
 
@@ -895,7 +895,7 @@ void CUpdateBar::UpdateThread() {
 
 	LOG0(3, "CUpdateBar::UpdateThread() - end");
 }
-	
+
 void CUpdateBar::UpdateProgressText() {
 	CString sText;
 	CString sTitle;
@@ -918,7 +918,7 @@ void CUpdateBar::UpdateProgressText() {
 			m_ctlProgress.SetText(sText);
 			break;
 	}
-	
+
 }
 
 void CUpdateBar::ShowError(UINT nID) {
