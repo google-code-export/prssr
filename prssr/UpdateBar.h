@@ -124,8 +124,6 @@ protected:
 	HANDLE HUpdateThread;
 	CRITICAL_SECTION CSUpdateList;
 	CList<CUpdateItem *, CUpdateItem *> UpdateList;
-	CRITICAL_SECTION CSUpdater;
-	CUpdateDownloader *Updater;
 	CRITICAL_SECTION CSDownloader;
 	CDownloader *Downloader;
 	int ErrorCount;

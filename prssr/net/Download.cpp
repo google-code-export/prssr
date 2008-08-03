@@ -345,9 +345,6 @@ void CDownloader::PrepareAuthorizationHeader(int nc, const CString &uri, const C
 BOOL CDownloader::DoDigestAuthentication(CHttpRequest *&req, CHttpResponse *&res, LPVOID context) {
 	LOG0(5, "CDownloader::DoDigestAuthentication()");
 
-//	BOOL ret = FALSE;
-//	BOOL end = FALSE;
-
 	int nc = 1;
 	do {
 		// force closing of the connection
@@ -506,34 +503,43 @@ BOOL CDownloader::DoAuthentication(const CString &authChallenge, CHttpRequest *&
 ///
 
 void CDownloader::OnBeforeSendRequest(CHttpRequest *&req, LPVOID context) {
+	if (!ETag.IsEmpty())
+		req->SetHeader(_T("If-None-Match"), (LPCTSTR) ETag);
+	if (!LastModified.IsEmpty())
+		req->SetHeader(_T("If-Modified-Since"), (LPCTSTR) LastModified);
 }
 
 BOOL CDownloader::OnResponse(CHttpRequest *&req, CHttpResponse *&res, LPVOID context) {
 	LOG0(3, "CDownloader::OnResponse()");
 
-	BOOL ret = FALSE;
 	int redirections = 0;	// number of redirections
-	BOOL end = FALSE;
-
 	DWORD statusCode;
+	CString newAddress, headers;
+	CString strETag, strLastModified;
+
+	Updated = FALSE;
 	do {
 		statusCode = res->GetStatusCode();
 		switch (statusCode) {
 			case HTTP_STATUS_OK:
 			case HTTP_STATUS_PARTIAL_CONTENT:
 				SaveHeaders(res);
-				// end loop
-				ret = TRUE;
-				end = TRUE;
-				break;
+				if (res->GetHeader(_T("ETag"), strETag)) ETag = strETag;
+				if (res->GetHeader(_T("Last-Modified"), strLastModified)) LastModified = strLastModified;
+				Updated = TRUE;
+				return TRUE;
+
+			case HTTP_STATUS_NOT_MODIFIED:						// 304
+				LOG0(3, "- NOT updated");
+				Updated = FALSE;	// do not download the file (it is not changed)
+				return FALSE;
 
 			case HTTP_STATUS_MOVED:								// 301
 			case HTTP_STATUS_REDIRECT:							// 302
 			case HTTP_STATUS_REDIRECT_KEEP_VERB:				// 307
-			case HTTP_STATUS_REDIRECT_METHOD: {					// 303
+			case HTTP_STATUS_REDIRECT_METHOD:					// 303
 				redirections++;
 
-				CString newAddress, headers;
 				if (res->GetHeader(_T("Location"), newAddress)) {
 					CString object;
 					if (ParseURL(newAddress, ServiceType, ServerName, object, Port)) {
@@ -567,58 +573,55 @@ BOOL CDownloader::OnResponse(CHttpRequest *&req, CHttpResponse *&res, LPVOID con
 							}
 							else {
 								Error = DOWNLOAD_ERROR_RESPONSE_ERROR;
-								end = TRUE;
+								return FALSE;
 							}
 						}
 						else {
 							Error = DOWNLOAD_ERROR_SENDING_REQUEST;
-							end = TRUE;
+							return FALSE;
 						}
 					}
 					else {
 						Error = DOWNLOAD_ERROR_CONNECTION_ERROR;
-						end = TRUE;
+						return FALSE;
 					}
 				}
 				else {
 					Error = DOWNLOAD_ERROR_NO_LOCATION_HEADER;
-					end = TRUE;
+					return FALSE;
 				}
 
-				} break;
+				break;
 
 			case HTTP_STATUS_DENIED:
 				// 401 Authorization required
-				ret = WWWAuthentication(req, res, context);
-				end = TRUE;
-				break;
+				return WWWAuthentication(req, res, context);
 
-			case 407:
+/*			case 407:
 				// 407 Proxy Authentication required
-/*				if (HttpConnection.Proxy->NeedAuth) {
-					AuthSet = TRUE;
-					UserName = HttpConnection.Proxy->UserName;
-					Password = HttpConnection.Proxy->Password;
-					ret = ProxyAuthentication(req, res, context);
-					end = TRUE;
-				}
-				else {
-					// proxy needs authentication
-					end = TRUE;
-				}
-*/
+//				if (HttpConnection.Proxy->NeedAuth) {
+//					AuthSet = TRUE;
+//					UserName = HttpConnection.Proxy->UserName;
+//					Password = HttpConnection.Proxy->Password;
+//					ret = ProxyAuthentication(req, res, context);
+//					end = TRUE;
+//				}
+//				else {
+//					// proxy needs authentication
+//					end = TRUE;
+//				}
 				end = TRUE;
 				break;
+*/
 
 			default:
 				Error = DOWNLOAD_ERROR_HTTP_ERROR;
 				HttpErrorNo = statusCode;
-				end = TRUE;
-				break;
+				return FALSE;
 		}
-	} while (!end && redirections < 6);
+	} while (redirections < 6);
 
-	return ret;
+	return FALSE;
 }
 
 void CDownloader::Terminate() {
@@ -724,60 +727,4 @@ BOOL CDownloader::PartialDownload(CString &url, const CString &strFileName, DWOR
 void CDownloader::FreeAdditionalHeaders() {
 	while (!AdditionalHeaders.IsEmpty())
 		delete AdditionalHeaders.RemoveHead();
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-CUpdateDownloader::CUpdateDownloader(const CString &etag, const CString &lastModified)
-	: CDownloader()
-{
-	LOG0(5, "CUpdateDownloader::CUpdateDownloader()");
-
-	ETag = etag;
-	LastModified = lastModified;
-}
-
-CUpdateDownloader::~CUpdateDownloader() {
-	LOG0(5, "CUpdateDownloader::~CUpdateDownloader()");
-
-}
-
-void CUpdateDownloader::OnBeforeSendRequest(CHttpRequest *&req, LPVOID context) {
-	LOG0(5, "CUpdateDownloader::OnBeforeSendRequest()");
-
-	if (!ETag.IsEmpty())
-		req->SetHeader(_T("If-None-Match"), (LPCTSTR) ETag);
-	if (!LastModified.IsEmpty())
-		req->SetHeader(_T("If-Modified-Since"), (LPCTSTR) LastModified);
-}
-
-BOOL CUpdateDownloader::OnResponse(CHttpRequest *&req, CHttpResponse *&res, LPVOID context) {
-	LOG0(3, "CUpdateDownloader::OnResponse()");
-
-	CString strETag, strLastModified;
-
-	Updated = TRUE;
-	switch (res->GetStatusCode()) {
-		case HTTP_STATUS_NOT_MODIFIED:
-			// do nothing
-			Updated = FALSE;	// do not download the file (it is not changed)
-			LOG0(3, "- NOT updated");
-			return TRUE;
-
-		case HTTP_STATUS_OK:
-			if (res->GetHeader(_T("ETag"), strETag))
-				ETag = strETag;
-			if (res->GetHeader(_T("Last-Modified"), strLastModified))
-				LastModified = strLastModified;
-			return TRUE;
-
-		default:
-			return CDownloader::OnResponse(req, res, context);
-	}
-}
-
-BOOL CUpdateDownloader::OnBeforeFileDownload(LPVOID context) {
-	LOG0(3, "CUpdateDownloader::OnBeforeFileDownload()");
-
-	return Updated;
 }
