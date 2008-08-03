@@ -768,6 +768,8 @@ void ReplaceHTMLEntities(CString &str) {
 	}
 }
 
+#if defined PRSSR_APP
+
 CString StripHtmlTags(const CString &str) {
 	CHtmlFile html;
 	html.SetFlags(SGML_EXTENSION_HTML_FLAG_STRIPELEMENT | SGML_EXTENSION_HTML_FLAG_STRIPCOMMENT);
@@ -778,3 +780,5 @@ CString StripHtmlTags(const CString &str) {
 
 	return html.ToString();
 }
+
+#endif

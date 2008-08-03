@@ -62,6 +62,9 @@ CString UrlEncode(const CString &url);
 
 // HTML
 void ReplaceHTMLEntities(CString &str);
+
+#if defined PRSSR_APP
 CString StripHtmlTags(const CString &str);
+#endif
 
 #endif
