@@ -100,6 +100,11 @@ public:
 
 	CString GetCharset() { return Charset; }
 
+	// for Conditional GET
+	CString ETag;
+	CString LastModified;
+	BOOL Updated;
+
 protected:
 	CHttpConnection HttpConnection;
 
@@ -140,42 +145,11 @@ protected:
 	CList<CHttpHeader *, CHttpHeader*> AdditionalHeaders;
 
 	HANDLE HTerminate;
-//	friend class CWebDownloader;
-};
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
-//
-// Downloading HTTP object via conditional GET
-//
-
-class CUpdateDownloader : public CDownloader {
-public:
-	CUpdateDownloader(const CString &etag, const CString &lastModified);
-	virtual ~CUpdateDownloader();
-
-protected:
-	virtual void OnBeforeSendRequest(CHttpRequest *&req, LPVOID context);
-	virtual BOOL OnResponse(CHttpRequest *&req, CHttpResponse *&res, LPVOID context);
-	virtual BOOL OnBeforeFileDownload(LPVOID context);
-
-	CString ETag;
-	CString LastModified;
-
-	BOOL Updated;
-
-	friend class CUpdateBar;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 BOOL DownloadFavIcon(const CString &url, const CString &fileName);
-
-/*
-DWORD WINAPI UpdateThreadProc(LPVOID lpParameter);
-UINT ManualUpdateThreadProc(LPVOID lpParameter);
-*/
-
 void MakeOptimizedUrl(CString &url);
 
 #endif // !defined(_DOWNLOAD_H_)

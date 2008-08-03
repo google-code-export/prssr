@@ -179,12 +179,10 @@ CUpdateBar::CUpdateBar() {
 	LOG0(5, "CUpdateBar::CUpdateBar()");
 
 	HUpdateThread = NULL;
-	Updater = NULL;
 	Downloader = NULL;
 	ErrorCount = 0;
 	Terminate = FALSE;
 
-	InitializeCriticalSection(&CSUpdater);
 	InitializeCriticalSection(&CSUpdateList);
 	InitializeCriticalSection(&CSDownloader);
 }
@@ -194,7 +192,6 @@ CUpdateBar::~CUpdateBar() {
 
 	DeleteCriticalSection(&CSDownloader);
 	DeleteCriticalSection(&CSUpdateList);
-	DeleteCriticalSection(&CSUpdater);
 }
 
 BOOL CUpdateBar::Create(CWnd *pParentWnd) {
@@ -378,13 +375,15 @@ BOOL CUpdateBar::UpdateFeeds() {
 
 			LOG1(3, "Updating %S", si->Name);
 
-			EnterCriticalSection(&CSUpdater);
-			Updater = new CUpdateDownloader(si->Info->ETag, si->Info->LastModified);
-			LeaveCriticalSection(&CSUpdater);
+			EnterCriticalSection(&CSDownloader);
+			Downloader = new CDownloader;
+			Downloader->ETag = si->Info->ETag;
+			Downloader->LastModified = si->Info->LastModified;
+			LeaveCriticalSection(&CSDownloader);
 
 			if (UpdateFeed(si, ui->UpdateOnly)) {
-				si->Info->ETag = Updater->ETag;
-				si->Info->LastModified = Updater->LastModified;
+				si->Info->ETag = Downloader->ETag;
+				si->Info->LastModified = Downloader->LastModified;
 
 				if (si->CheckFavIcon) {
 					// temp file name
@@ -406,10 +405,10 @@ BOOL CUpdateBar::UpdateFeeds() {
 				// process
 			}
 
-			EnterCriticalSection(&CSUpdater);
-			delete Updater;
-			Updater = NULL;
-			LeaveCriticalSection(&CSUpdater);
+			EnterCriticalSection(&CSDownloader);
+			delete Downloader;
+			Downloader = NULL;
+			LeaveCriticalSection(&CSDownloader);
 
 			m_ctlProgress.SetStep(1);
 			m_ctlProgress.StepIt();
@@ -445,7 +444,7 @@ BOOL CUpdateBar::UpdateFeed(CSiteItem *si, BOOL updateOnly) {
 	GetTempFileName(Config.CacheLocation, _T("rsr"), 0, tmpFileName);
 
 	CString sErrMsg;
-	if (Updater->SaveHttpObject(si->Info->XmlUrl, tmpFileName) && Updater->Updated) {
+	if (Downloader->SaveHttpObject(si->Info->XmlUrl, tmpFileName) && Downloader->Updated) {
 		CFeedFile xml;
 		if (xml.LoadFromFile(tmpFileName)) {
 			CFeed *feed = new CFeed;
@@ -491,7 +490,7 @@ BOOL CUpdateBar::UpdateFeed(CSiteItem *si, BOOL updateOnly) {
 		}
 	}
 	else {
-		switch (Updater->Error) {
+		switch (Downloader->Error) {
 			case DOWNLOAD_ERROR_GETTING_FILE:            sErrMsg.LoadString(IDS_ERROR_GETTING_FILE); break;
 			case DOWNLOAD_ERROR_RESPONSE_ERROR:          sErrMsg.LoadString(IDS_RESPONSE_ERROR); break;
 			case DOWNLOAD_ERROR_SENDING_REQUEST:         sErrMsg.LoadString(IDS_ERROR_SENDING_REQUEST); break;
@@ -500,7 +499,7 @@ BOOL CUpdateBar::UpdateFeed(CSiteItem *si, BOOL updateOnly) {
 			case DOWNLOAD_ERROR_AUTHENTICATION_RESPONSE: sErrMsg.LoadString(IDS_INVALID_FEED_FILE); break;
 			case DOWNLOAD_ERROR_UNKNOWN_AUTH_SCHEME:     sErrMsg.LoadString(IDS_UNKNOWN_AUTH_SCHEME); break;
 			case DOWNLOAD_ERROR_NO_LOCATION_HEADER:      sErrMsg.LoadString(IDS_NO_LOCATION_HEADER); break;
-			case DOWNLOAD_ERROR_HTTP_ERROR:              sErrMsg.Format(IDS_HTTP_ERROR, Updater->HttpErrorNo); break;
+			case DOWNLOAD_ERROR_HTTP_ERROR:              sErrMsg.Format(IDS_HTTP_ERROR, Downloader->HttpErrorNo); break;
 			case DOWNLOAD_ERROR_AUTHORIZATION_FAILED:    sErrMsg.LoadString(IDS_AUTHORIZATION_FAILED); break;
 			case DOWNLOAD_ERROR_AUTHENTICATION_ERROR:    sErrMsg.LoadString(IDS_AUTHENTICATION_ERROR); break;
 		}
@@ -954,11 +953,6 @@ END_MESSAGE_MAP()
 
 void CUpdateBar::OnStop() {
 	LOG0(1, "CUpdateBar::OnStop()");
-
-	EnterCriticalSection(&CSUpdater);
-	if (Updater != NULL)
-		Updater->Terminate();
-	LeaveCriticalSection(&CSUpdater);
 
 	EnterCriticalSection(&CSDownloader);
 	if (Downloader != NULL)
