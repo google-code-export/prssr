@@ -1,0 +1,48 @@
+//Microsoft eMbedded Visual C++ generated resource script.
+//
+#include "..\share\resource.h"
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+IDI_LOCK_ALERT          ICON    DISCARDABLE     "res\\lock-alert.ico"
+IDI_WARN                ICON    DISCARDABLE     "res\\warn.ico"
+IDI_OK                  ICON    DISCARDABLE     "res\\ok.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_DIRS                BITMAP  DISCARDABLE     "res\\dirs_hi.bmp"
+IDB_NEWS_ITEMS          BITMAP  DISCARDABLE     "res\\newsitems_hi.bmp"
+IDB_SITE_ITEMS          BITMAP  DISCARDABLE     "res\\siteitems_hi.bmp"
+IDB_CLOSE               BITMAP  DISCARDABLE     "res\\close_hi.bmp"
+IDB_CACHE_ITEMS         BITMAP  DISCARDABLE     "res\\cacheitems_hi.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR DISCARDABLE  32, 32
+BEGIN
+    BUTTON      ID_TOOLS_UPDATECHANNELS
+    BUTTON      ID_TOOLS_UPDATEALLCHANNELS
+    BUTTON      ID_FILE_PROPERTIES
+    BUTTON      ID_TOOLS_SUMMARYVIEW
+END
+
+IDR_NEWS TOOLBAR DISCARDABLE  32, 31
+BEGIN
+    BUTTON      ID_ITEM_PREV
+    BUTTON      ID_ITEM_NEXT
+    SEPARATOR
+    BUTTON      ID_OPEN_MESSAGE
+    SEPARATOR
+    BUTTON      ID_TOGGLE_MESSAGE_FLAG
+END
+
