@@ -1,4 +1,10 @@
 #summary ChangeLog
+#labels Featured
 
 = !ChangeLog =
 ----
+
+== Version 1.4.1 ==
+Released on August 3, 2008
+
+ * Open sourced under GPLv2
