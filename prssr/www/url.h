@@ -41,6 +41,12 @@
 struct CRewriteRule {
 	CString Match;					// matching pattern
 	CString Replace;				// replacing pattern
+
+	CRewriteRule() { }
+	CRewriteRule(const CString &match, const CString &replace) {
+		Match = match;
+		Replace = replace;
+	}
 };
 
 BOOL ParseURL(LPCTSTR pstrURL, DWORD &dwServiceType, CString &strServer, CString &strObject, INTERNET_PORT &nPort);

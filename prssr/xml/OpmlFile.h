@@ -46,6 +46,7 @@ public:
 protected:
 	BOOL ParseOutline(CXmlNode *parent, CSiteItem *item);
 	BOOL ParseHead(CXmlNode *parent, CStringArray &keywords);
+	BOOL ParseRewriteRules(CXmlNode *parent, CSiteItem *item);
 
 #ifdef PRSSR_APP
 	BOOL SaveGroup(CXmlNode *parent, CSiteItem *item);

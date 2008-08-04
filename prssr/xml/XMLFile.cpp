@@ -340,6 +340,12 @@ CXmlNode::CXmlNode(EType type, CXmlNode *parent) {
 	Parent = parent;
 }
 
+CXmlNode::CXmlNode(EType type, CXmlNode *parent, const CString &name) {
+	Type = type;
+	Parent = parent;
+	Text = name;
+}
+
 CXmlNode::CXmlNode(EType type, CXmlNode *parent, const CString &name, CList<CXmlAttr*, CXmlAttr*> &attrList) {
 	Type = type;
 	Parent = parent;
@@ -463,8 +469,7 @@ void CXmlFile::OnStartElement(const char *name, const char **attr) {
 		temp.TrimLeft();
 		temp.TrimRight();
 		if (!temp.IsEmpty()) {
-			CList<CXmlAttr*, CXmlAttr*> arNoAttrs;
-			TempNode->AddChild(new CXmlNode(CXmlNode::Data, TempNode, TempValue, arNoAttrs));
+			TempNode->AddChild(new CXmlNode(CXmlNode::Data, TempNode, TempValue));
 		}
 		TempNode->AddChild(newNode);
 	}
@@ -476,10 +481,8 @@ void CXmlFile::OnStartElement(const char *name, const char **attr) {
 void CXmlFile::OnEndElement(const char *name) {
 //	LOG1(1, "OnEnd('%s')", name);
 
-	CList<CXmlAttr*, CXmlAttr*> arNoAttrs;
-
 	if (TempNode != NULL) {
-		CXmlNode *node = new CXmlNode(CXmlNode::Data, TempNode, TempValue, arNoAttrs);
+		CXmlNode *node = new CXmlNode(CXmlNode::Data, TempNode, TempValue);
 		TempNode->AddChild(node);
 		TempNode = TempNode->GetParentNode();
 	}
