@@ -1518,7 +1518,7 @@ STRINGTABLE DISCARDABLE
 BEGIN
     IDS_EXPORT_OK           "Your feed list was exported successfully."
     IDS_SELECT_FILE_TO_IMPORT "Select OPML file to import"
-    IDS_OVERWRITE_OPML      "Subscription list already exists. Overwrite?\nTap Yes to overwrite.\nTap No to append."
+    IDS_OVERWRITE_OPML      "OPML file already exists.\nOverwrite?"
     IDS_CACHING_REMAIN      "Caching (%d remain)"
     IDS_SELECT_EXPORT_LOCATION "Select destination folder"
     IDS_WARNING             "Warning"
