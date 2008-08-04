@@ -207,7 +207,7 @@ BOOL CSiteManagerDlg::OnInitDialog() {
 
 	AddItem(TVI_ROOT, Root);
 
-	m_ctlSites.Expand(m_ctlSites.GetRootItem(), TVE_EXPAND);	// root must be always expanded 
+	m_ctlSites.Expand(m_ctlSites.GetRootItem(), TVE_EXPAND);	// root must be always expanded
 
 	SetForegroundWindow();
 	UpdateControls();
@@ -270,7 +270,7 @@ void CSiteManagerDlg::OnSelchangedSites(NMHDR* pNMHDR, LRESULT* pResult) {
 	NM_TREEVIEW* pNMTreeView = (NM_TREEVIEW*)pNMHDR;
 
 	UpdateControls();
-	
+
 	*pResult = 0;
 }
 
@@ -373,7 +373,7 @@ void CSiteManagerDlg::OnEndlabeleditSites(NMHDR* pNMHDR, LRESULT* pResult) {
 	}
 
 	m_ctlSites.ModifyStyle(TVS_EDITLABELS, 0);
-	
+
 //	*pResult = 0;
 }
 
@@ -445,7 +445,7 @@ void CSiteManagerDlg::OnMoveToGroup(UINT nID) {
 			return;
 	}
 
-	CreateSiteList(hSelItem, NULL);	
+	CreateSiteList(hSelItem, NULL);
 	DeleteItem(hSelItem, FALSE);
 	AddItem(hDestItem, srcItem);
 
@@ -505,9 +505,9 @@ void CSiteManagerDlg::OnContextMenu(NMHDR *pNMHDR, LRESULT *pResult) {
 			mnuMove.Detach();
 
 			mnu.TrackPopupMenu(TPM_LEFTALIGN, pInfo->ptAction.x, pInfo->ptAction.y, this);
-		}		
+		}
 	}
-	
+
 	*pResult = TRUE; // This is important!
 }
 
@@ -631,7 +631,7 @@ void CSiteManagerDlg::OnAddFeed() {
 			CFeedInfo::EnsureUniqueFileName(info->FileName);
 			info->XmlUrl= dlgAdd.m_strURL;
 			info->TodayShow = ShowNewChannelsOnToday;
-			
+
 			item->Status = CSiteItem::Error;
 			item->Name = dlgAdd.m_strName;
 			item->Info = info;
@@ -680,7 +680,7 @@ void CSiteManagerDlg::OnEdit() {
 	CSiteItem *si = (CSiteItem *) m_ctlSites.GetItemData(hSelItem);
 	if (si->Type == CSiteItem::Site)
 		SiteProperties(si, this);
-}	
+}
 
 void CSiteManagerDlg::OnRemove() {
 	LOG0(1, "CSiteManagerDlg::OnRemove()");
@@ -740,7 +740,7 @@ void CSiteManagerDlg::OnMoveDown() {
 		DeleteItem(hSelItem, FALSE);
 
 		// insert it back to the right place
-		HTREEITEM hInsParent = m_ctlSites.GetParentItem(hNext);		
+		HTREEITEM hInsParent = m_ctlSites.GetParentItem(hNext);
 		HTREEITEM hNewItem = AddItem(hInsParent, item, hNext);
 		m_ctlSites.EnsureVisible(hNewItem);
 		m_ctlSites.SelectItem(hNewItem);
@@ -922,22 +922,28 @@ void CSiteManagerDlg::OnExportOpml() {
 	if (dlg.DoModal() == IDOK) {
 		CString strDestinationFileName = GetCacheFile(FILE_TYPE_OPML, dlg.m_strPath, OPML_FILENAME);
 
-		HTREEITEM hRoot = m_ctlSites.GetRootItem();
-		CreateSiteList(hRoot);
+		BOOL bExport = TRUE;
+		if (FileExists(strDestinationFileName))
+			bExport = AfxMessageBox(IDS_OVERWRITE_OPML, MB_YESNO | MB_ICONQUESTION) == IDYES;
 
-		CSiteItem *root = (CSiteItem *) m_ctlSites.GetItemData(hRoot);
-		CSiteList siteListToExport;
-		siteListToExport.SetRoot(root);
-		siteListToExport.SetKeywords(SiteList.GetKeywords());
+		if (bExport) {
+			HTREEITEM hRoot = m_ctlSites.GetRootItem();
+			CreateSiteList(hRoot);
 
-		COpmlFile opml;
-		if (opml.Export(strDestinationFileName, &siteListToExport)) {
-			AfxMessageBox(IDS_EXPORT_OK);
+			CSiteItem *root = (CSiteItem *) m_ctlSites.GetItemData(hRoot);
+			CSiteList siteListToExport;
+			siteListToExport.SetRoot(root);
+			siteListToExport.SetKeywords(SiteList.GetKeywords());
+
+			COpmlFile opml;
+			if (opml.Export(strDestinationFileName, &siteListToExport)) {
+				AfxMessageBox(IDS_EXPORT_OK);
+			}
+			else {
+				AfxMessageBox(IDS_CANT_EXPORT_FILE);
+			}
+
+			siteListToExport.Detach();
 		}
-		else {
-			AfxMessageBox(IDS_CANT_EXPORT_FILE);
-		}
-
-		siteListToExport.Detach();
 	}
 }
