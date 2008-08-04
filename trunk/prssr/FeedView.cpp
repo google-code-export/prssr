@@ -809,7 +809,7 @@ void CFeedView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 				MoveToPrevChannel();
 
 				CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
-				frame->AddSiteToSave(SiteList.GetAt(oldSiteIdx));
+				frame->AddSiteToSave(oldSiteIdx);
 				frame->PreloadSite(Config.ActSiteIdx);
 			}
 			break;
@@ -820,7 +820,7 @@ void CFeedView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 				MoveToNextChannel();
 
 				CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
-				frame->AddSiteToSave(SiteList.GetAt(oldSiteIdx));
+				frame->AddSiteToSave(oldSiteIdx);
 				frame->PreloadSite(Config.ActSiteIdx);
 			}
 			break;
