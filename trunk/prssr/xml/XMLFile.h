@@ -55,6 +55,7 @@ public:
 	};
 
 	CXmlNode(EType type, CXmlNode *parent);
+	CXmlNode(EType type, CXmlNode *parent, const CString &name);
 	CXmlNode(EType type, CXmlNode *parent, const CString &name, CList<CXmlAttr*, CXmlAttr*> &attrList);
 	virtual ~CXmlNode();
 
