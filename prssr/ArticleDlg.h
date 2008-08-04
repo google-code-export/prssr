@@ -93,7 +93,6 @@ protected:
 	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnDestroy();
 	afx_msg void OnInitMenuPopup(CMenu* pMenu, UINT nIndex, BOOL bSysMenu);
-	afx_msg void OnTimer(UINT nIDEvent);
 	//}}AFX_MSG
 	LRESULT OnHotKey(WPARAM wParam, LPARAM lParam);
 

@@ -123,9 +123,7 @@ void CArticleDlg::DoDataExchange(CDataExchange* pDX) {
 BEGIN_MESSAGE_MAP(CArticleDlg, CCeDialog)
 	//{{AFX_MSG_MAP(CArticleDlg)
 	ON_WM_KEYDOWN()
-	ON_WM_KEYUP()
 	ON_WM_INITMENUPOPUP()
-	ON_WM_TIMER()
 	//}}AFX_MSG_MAP
 	ON_MESSAGE(WM_HOTKEY, OnHotKey)
 
@@ -158,7 +156,7 @@ END_MESSAGE_MAP()
 // CArticleDlg message handlers
 
 BOOL CArticleDlg::OnInitDialog() {
-	LOG0(1, "CArticleDlg::OnInitDialog()");
+	LOG0(3, "CArticleDlg::OnInitDialog()");
 
 	CCeDialog::OnInitDialog();
 	m_strCaption.Empty();
@@ -208,13 +206,13 @@ BOOL CArticleDlg::OnInitDialog() {
 }
 
 void CArticleDlg::OnDestroy() {
-	LOG0(3, "CArticleDlg::OnDestroy()");
+	LOG0(5, "CArticleDlg::OnDestroy()");
 
 	CCeDialog::OnDestroy();
 }
 
 void CArticleDlg::PostNcDestroy() {
-	LOG0(3, "CArticleDlg::PostNcDestroy()");
+	LOG0(5, "CArticleDlg::PostNcDestroy()");
 
 	CFeedView *view = (CFeedView *) m_pParent;
 
@@ -439,11 +437,6 @@ BOOL CArticleDlg::PreTranslateMessage(MSG* pMsg) {
 			return CCeDialog::PreTranslateMessage(pMsg);
 		}
 	}
-	else if (pMsg->message == WM_KEYUP) {
-		TranslateMessage(pMsg);
-		SendMessage(pMsg->message, pMsg->wParam, pMsg->lParam);
-		return TRUE;
-	}
 	else {
 		return CCeDialog::PreTranslateMessage(pMsg);
 	}
@@ -494,13 +487,11 @@ void CArticleDlg::OnScrollDown() {
 }
 
 void CArticleDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
-	LOG0(5, "CArticleDlg::OnKeyDown()");
-
-	LOG3(1, "CArticleDlg::OnKeyDown(%d, %d, %d)", nChar, nRepCnt, nFlags);
+	LOG3(5, "CArticleDlg::OnKeyDown(%d, %d, %d)", nChar, nRepCnt, nFlags);
 
 	switch (nChar) {
 		case VK_RETURN:
-			CCeDialog::OnKeyDown(nChar, nRepCnt, nFlags);
+			OnItemOpen();
 			break;
 
 		case VK_LEFT:
@@ -525,21 +516,6 @@ void CArticleDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 
 		default:
 			CCeDialog::OnKeyDown(nChar, nRepCnt, nFlags);
-			break;
-	}
-}
-
-void CArticleDlg::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
-	LOG3(1, "CArticleDlg::OnKeyUp(%d, %d, %d)", nChar, nRepCnt, nFlags);
-
-	switch (nChar) {
-		case VK_RETURN:
-			OnItemOpen();
-			CCeDialog::OnKeyUp(nChar, nRepCnt, nFlags);
-			break;
-
-		default:
-			CCeDialog::OnKeyUp(nChar, nRepCnt, nFlags);
 			break;
 	}
 }
@@ -669,7 +645,7 @@ void CArticleDlg::OnContextMenu(NM_HTMLCONTEXT *pnmhc) {
 }
 
 void CArticleDlg::ResizeControls() {
-	LOG0(1, "CArticleDlg::ResizeControls()");
+	LOG0(3, "CArticleDlg::ResizeControls()");
 
 	CRect rcClient;
 	GetClientRect(&rcClient);
@@ -712,7 +688,7 @@ LRESULT CArticleDlg::OnHotKey(WPARAM wParam, LPARAM lParam) {
 }
 
 void CArticleDlg::OnInitMenuPopup(CMenu* pMenu, UINT nIndex, BOOL bSysMenu) {
-	LOG0(1, "CArticleDlg::OnInitMenuPopup()");
+	LOG0(3, "CArticleDlg::OnInitMenuPopup()");
 
 	if (bSysMenu)
 		return; // don't support system menu
@@ -1222,8 +1198,4 @@ void CArticleDlg::OnSendByEmail() {
 		link = m_strContextMnuUrl;
 
 	SendByEmail(link);
-}
-
-void CArticleDlg::OnTimer(UINT nIDEvent) {
-	CCeDialog::OnTimer(nIDEvent);
 }
