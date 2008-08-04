@@ -235,7 +235,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 	// top bar
 	DWORD dwStyle = WS_CHILD | WS_VISIBLE | CBRS_ALIGN_TOP | CBRS_BORDER_BOTTOM;
 	CRect rcBorder(0, 0, 0, 0);
-	if (!m_wndTopBar.CreateEx(this, TBSTYLE_FLAT | TBSTYLE_DROPDOWN | TBSTYLE_LIST, dwStyle, 
+	if (!m_wndTopBar.CreateEx(this, TBSTYLE_FLAT | TBSTYLE_DROPDOWN | TBSTYLE_LIST, dwStyle,
 		rcBorder, AFX_IDW_TOOLBAR + 1)) {
 	   	TRACE0("Failed to create Top Bar\n");
 		return -1;      // fail to create
@@ -261,7 +261,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 	btn.iString     = -1;
 	ctlToolBar.InsertButton(0, &btn);
 
-	///	
+	///
 	switch (Config.MainView) {
 		case MAIN_VIEW_FEED_LIST:
 			SetupFeedView();
@@ -281,12 +281,12 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 		return -1;      // fail to create
 	}
 
-	m_wndTopBar.EnableDocking(CBRS_ALIGN_ANY); 
+	m_wndTopBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockControlBar(&m_wndTopBar);
 //	DockControlBar(&m_wndUpdateBar);
 
-	m_wndTopBar.EnableDocking(CBRS_ALIGN_TOP); 
+	m_wndTopBar.EnableDocking(CBRS_ALIGN_TOP);
 //	m_wndUpdateBar.EnableDocking(CBRS_ALIGN_BOTTOM);
 
 //	ShowControlBar(&m_wndUpdateBar, FALSE, FALSE);
@@ -304,7 +304,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 	LoadSites();
 
 
-	int height = GetSystemMetrics(SM_CYSCREEN);	
+	int height = GetSystemMetrics(SM_CYSCREEN);
 	CRect rc;
 	GetClientRect(&rc);
 	SetWindowPos(NULL, 0, SCALEY(26), rc.Width(), height - SCALEY(52), SWP_NOZORDER);
@@ -386,7 +386,7 @@ BOOL CMainFrame::DestroyWindow() {
 
 	// wait for saving thread to terminate
 	if (SiteList.GetCount() > 0) {
-		AddSiteToSave(SiteList.GetAt(Config.ActSiteIdx));
+		AddSiteToSave(Config.ActSiteIdx);
 		if (HSaveSitesThread != NULL)
 			WaitForSingleObject(HSaveSitesThread, INFINITE);
 	}
@@ -734,7 +734,7 @@ void CMainFrame::OnSiteSelected(UINT nID) {
 	int nSite = nID - ID_MENU_SITE_BASE;
 
 	if (Config.ActSiteIdx != nSite)
-		AddSiteToSave(SiteList.GetAt(Config.ActSiteIdx));
+		AddSiteToSave(Config.ActSiteIdx);
 
 	if (View == SummaryView) {
 		SwitchView(FeedView);
@@ -757,7 +757,7 @@ void CMainFrame::OnToolsSummaryview() {
 	if (View == FeedView) {
 		// switch to summary view
 		SwitchView(SummaryView);
-		AddSiteToSave(SiteList.GetAt(Config.ActSiteIdx));
+		AddSiteToSave(Config.ActSiteIdx);
 	}
 	else {
 		SwitchView(FeedView);
@@ -805,7 +805,7 @@ void CMainFrame::SelectSite(int nSite) {
 	}
 	else if (nSite == SITE_UNREAD) {
 		SetTopBarText(IDS_LOADING, TOPBAR_IMAGE_LOADING);
-	
+
 		CWaitCursor wait;
 		CFeed *unreadFeed = new CFeed();
 		for (int i = 0; i < SiteList.GetCount(); i++) {
@@ -837,7 +837,7 @@ void CMainFrame::SelectSite(int nSite) {
 	}
 	else if (nSite == SITE_FLAGGED) {
 		SetTopBarText(IDS_LOADING, TOPBAR_IMAGE_LOADING);
-	
+
 		CWaitCursor wait;
 		CFeed *flaggedFeed = new CFeed();
 		for (int i = 0; i < SiteList.GetCount(); i++) {
@@ -1036,7 +1036,7 @@ void CMainFrame::OnToolsOptions() {
 		}
 
 		// setup daily event
-		if (oldTimeUpdate != Config.TimeUpdate || 
+		if (oldTimeUpdate != Config.TimeUpdate ||
 			oldUat.wHour != Config.UpdateAtTime.wHour || oldUat.wMinute != Config.UpdateAtTime.wMinute || oldUat.wSecond != Config.UpdateAtTime.wSecond)
 		{
 			SYSTEMTIME st;
@@ -1083,7 +1083,7 @@ void CMainFrame::OnToolsErrors() {
 			switch (ei->Type) {
 				case CErrorItem::Site:
 					if (ei->SiteIdx != SITE_INVALID)
-						m_wndUpdateBar.EnqueueSite(SiteList.GetAt(ei->SiteIdx), ei->UpdateOnly);	
+						m_wndUpdateBar.EnqueueSite(SiteList.GetAt(ei->SiteIdx), ei->UpdateOnly);
 					break;
 
 				case CErrorItem::File:
@@ -1098,7 +1098,7 @@ void CMainFrame::OnToolsErrors() {
 		}
 		Errors.Cleanup();
 		Errors.Unlock();
-	
+
 		m_wndUpdateBar.Start();
 		m_wndUpdateBar.Redraw();
 		UpdateMenu();
@@ -1115,7 +1115,7 @@ void CMainFrame::OnToolsErrors() {
 	m_wndUpdateBar.Invalidate();
 }
 
-void CMainFrame::OnToolsMarkAllRead() {	
+void CMainFrame::OnToolsMarkAllRead() {
 	if (View == FeedView) {
 		m_wndFeedView.MarkAllRead();
 
@@ -1277,7 +1277,6 @@ void CMainFrame::SaveSitesThread() {
 	// save everything in the list
 	while (!SitesToSave.IsEmpty()) {
 		CSiteItem *si = SitesToSave.GetHead();
-		LOG1(1, "saving %S", si->Name);
 		SaveSite(si);
 		SitesToSave.RemoveHead();
 	}
@@ -1286,6 +1285,15 @@ void CMainFrame::SaveSitesThread() {
 	HSaveSitesThread = NULL;
 
 	LOG0(1, "CMainFrame::SaveSitesThread() - end");
+}
+
+void CMainFrame::AddSiteToSave(int siteIdx) {
+	if (siteIdx >= 0 && siteIdx < SiteList.GetCount())
+		AddSiteToSave(SiteList.GetAt(siteIdx));
+	else if (siteIdx == SITE_UNREAD)
+		AddSiteToSave(&UnreadItems);
+	else if (siteIdx == SITE_FLAGGED)
+		AddSiteToSave(&FlaggedItems);
 }
 
 void CMainFrame::AddSiteToSave(CSiteItem *si) {
@@ -1321,7 +1329,7 @@ void CMainFrame::OnFileInformation() {
 	HGROUPITEM hItem = m_wndSummaryView.GetSelectedItem();
 	if (hItem == NULL)
 		return;
-	CSiteItem *si = (CSiteItem *) m_wndSummaryView.GetItemData(hItem);	
+	CSiteItem *si = (CSiteItem *) m_wndSummaryView.GetItemData(hItem);
 
 	si->EnsureSiteLoaded();
 
@@ -1344,7 +1352,7 @@ void CMainFrame::OnFileInformation() {
 		pgGeneral.m_nNewItems = 0;
 		pgGeneral.m_nUnreadItems = 0;
 	}
-		
+
 	if (si->Type == CSiteItem::Site) {
 		pgGeneral.m_strSiteName = si->Name;
 
@@ -1410,7 +1418,7 @@ void CMainFrame::OnFileInformation() {
 void CMainFrame::OnUpdateFileInformation(CCmdUI *pCmdUI) {
 	HGROUPITEM hItem = m_wndSummaryView.GetSelectedItem();
 	if (hItem != NULL) {
-		CSiteItem *si = (CSiteItem *) m_wndSummaryView.GetItemData(hItem);	
+		CSiteItem *si = (CSiteItem *) m_wndSummaryView.GetItemData(hItem);
 		pCmdUI->Enable(!Loading && (si->Type == CSiteItem::Site || si->Type == CSiteItem::VFolder));
 	}
 	else
@@ -1422,7 +1430,7 @@ void CMainFrame::OnFileProperties() {
 
 	HGROUPITEM hItem = m_wndSummaryView.GetSelectedItem();
 	if (hItem != NULL) {
-		CSiteItem *si = (CSiteItem *) m_wndSummaryView.GetItemData(hItem);	
+		CSiteItem *si = (CSiteItem *) m_wndSummaryView.GetItemData(hItem);
 		if (si->Type == CSiteItem::Site) {
 			if (SiteProperties(si, this)) {
 				int idx = SiteList.GetIndexOf(si);
@@ -1436,7 +1444,7 @@ void CMainFrame::OnFileProperties() {
 void CMainFrame::OnUpdateFileProperties(CCmdUI *pCmdUI) {
 	HGROUPITEM hItem = m_wndSummaryView.GetSelectedItem();
 	if (hItem != NULL) {
-		CSiteItem *si = (CSiteItem *) m_wndSummaryView.GetItemData(hItem);	
+		CSiteItem *si = (CSiteItem *) m_wndSummaryView.GetItemData(hItem);
 		pCmdUI->Enable(!Loading && si->Type == CSiteItem::Site);
 	}
 	else
@@ -1455,7 +1463,7 @@ void CMainFrame::OnFileWorkOffline() {
 
 	CMenu mnu;
 	mnu.Attach((HMENU) tb.dwData);
-	
+
 	CMenu *pOfflineMnu = mnu.GetSubMenu(2);		// offline menu
 	UINT state = Config.WorkOffline ? MF_CHECKED : MF_UNCHECKED;
 	pOfflineMnu->CheckMenuItem(ID_WORK_OFFLINE, state | MF_BYCOMMAND);
@@ -1473,7 +1481,7 @@ BOOL CMainFrame::CheckOnlineMode() {
 		int res = AfxMessageBox(txt, MB_YESNO);
 		if (res == IDNO)
 			return FALSE;
-		
+
 		Config.WorkOffline = FALSE;
 	}
 
@@ -1784,7 +1792,7 @@ void CMainFrame::OnViewSortbyRead() {
 		}
 		UpdateSort();
 	}
-		
+
 	SaveSiteItem(SiteList.GetAt(Config.ActSiteIdx), Config.ActSiteIdx);
 }
 
@@ -1804,12 +1812,12 @@ void CMainFrame::OnInitMenuPopup(CMenu* pMenu, UINT nIndex, BOOL bSysMenu) {
 
 	if (bSysMenu)
 		return; // don't support system menu
-	
+
 	ASSERT(pMenu != NULL); // check the enabled state of various menu items
 	CCmdUI state;
 	state.m_pMenu = pMenu;
-	ASSERT(state.m_pOther == NULL); 
-	ASSERT(state.m_pParentMenu == NULL); 	
+	ASSERT(state.m_pOther == NULL);
+	ASSERT(state.m_pParentMenu == NULL);
 
 	// determine if menu is popup in top-level menu and set m_pOther to
 	// it if so (m_pParentMenu == NULL indicates that it is secondary popup)
@@ -1818,11 +1826,11 @@ void CMainFrame::OnInitMenuPopup(CMenu* pMenu, UINT nIndex, BOOL bSysMenu) {
 		state.m_pParentMenu = pMenu; // parent == child for tracking popup
 	else if ((hParentMenu = ::WCE_FCTN(GetMenu)(m_hWnd)) != NULL) {
 		CWnd *pParent = GetTopLevelParent(); // child windows don't have menus -- need to go to the top!
-	
+
 		if (pParent != NULL &&
 			(hParentMenu = ::WCE_FCTN(GetMenu)(pParent->m_hWnd)) != NULL)
 		{
-			int nIndexMax = ::WCE_FCTN(GetMenuItemCount)(hParentMenu); 
+			int nIndexMax = ::WCE_FCTN(GetMenuItemCount)(hParentMenu);
 			for (int nIndex = 0; nIndex < nIndexMax; nIndex++) {
 				if (::GetSubMenu(hParentMenu, nIndex) == pMenu->m_hMenu) {
 					// when popup is found, m_pParentMenu is containing menu
@@ -1854,7 +1862,7 @@ void CMainFrame::OnInitMenuPopup(CMenu* pMenu, UINT nIndex, BOOL bSysMenu) {
 		}
 		else {
 			// normal menu item
-			// Auto enable/disable if frame window has 'm_bAutoMenuEnable' 
+			// Auto enable/disable if frame window has 'm_bAutoMenuEnable'
 			// set and command is _not_ a system command.
 			state.m_pSubMenu = NULL;
 			state.DoUpdate(this, TRUE);
@@ -1871,7 +1879,7 @@ void CMainFrame::OnInitMenuPopup(CMenu* pMenu, UINT nIndex, BOOL bSysMenu) {
 			}
 		}
 		state.m_nIndexMax = nCount;
-	} 
+	}
 }
 
 void CMainFrame::PreloadThread() {
@@ -1913,7 +1921,7 @@ void CMainFrame::PreloadSite(int idx) {
 
 	if (SiteList.GetCount() > 0 && (idx >= 0 && idx < SiteList.GetCount())) {
 		idx = idx % SiteList.GetCount();
-		
+
 		int site = idx;
 		do {
 			site = (site + 1) % SiteList.GetCount();

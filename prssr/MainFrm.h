@@ -41,7 +41,7 @@
 class CMainFrame : public CFrameWnd {
 public:
 	CMainFrame();
-protected: 
+protected:
 	DECLARE_DYNAMIC(CMainFrame)
 
 // Attributes
@@ -114,11 +114,8 @@ protected:
 	HANDLE HTerminate;
 
 	// saving
-/*	HANDLE HSaveSiteEvent;
-	HANDLE HSaveSitesThread;
-	CSyncList<CSiteItem *, CSiteItem *> SitesToSave;
-	void SaveSitesThread();
-*/	void AddSiteToSave(CSiteItem *si);
+	void AddSiteToSave(CSiteItem *si);
+	void AddSiteToSave(int siteIdx);
 	void SaveSite(CSiteItem *si);
 	void SaveSitesThread();
 	HANDLE HSaveSitesThread;
@@ -185,7 +182,7 @@ protected:
 	afx_msg void OnEnclosuresOpen();
 	afx_msg void OnEnclosuresGet();
 	afx_msg void OnEnclosuresDelete();
-	
+
 	afx_msg void OnTopBarClick(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnOpenSiteList();
 	afx_msg void OnSiteSelected(UINT nID);

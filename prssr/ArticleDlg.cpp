@@ -863,7 +863,7 @@ void CArticleDlg::OnItemNext() {
 			m_ctlBanner.Invalidate();
 
 			if (oldSite != site)
-				frame->AddSiteToSave(SiteList.GetAt(oldSite));
+				frame->AddSiteToSave(oldSite);
 			// TODO: preload the site with unread items if reading only unread
 			frame->PreloadSite(site);
 		}
@@ -974,7 +974,7 @@ void CArticleDlg::OnItemPrev() {
 			m_ctlBanner.Invalidate();
 
 			if (oldSite != site)
-				frame->AddSiteToSave(SiteList.GetAt(oldSite));
+				frame->AddSiteToSave(oldSite);
 			// TODO: preload the site with unread items if reading only unread
 			frame->PreloadSite(site);
 		}
