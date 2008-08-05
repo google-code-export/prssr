@@ -88,6 +88,7 @@ void COptRetrievalPg::DoDataExchange(CDataExchange *pDX) {
 	DDX_Text(pDX, IDC_UPDATE_INTERVAL, m_nUpdateInterval);
 	DDX_Check(pDX, IDC_CRADLED, m_bCheckNewIfCradled);
 	DDX_Check(pDX, IDC_TIME_UPDATE, m_bTimeUpdate);
+	DDX_Check(pDX, IDC_BKGND_UPDATE, m_bBackgroundUpdate);
 	DDX_Check(pDX, IDC_USE_OPTIMIZER, m_bUseOptimizer);
 	DDX_Text(pDX, IDC_URL, m_strURL);
 	DDX_CBIndex(pDX, IDC_USERAGENT, m_nUserAgent);
@@ -133,7 +134,7 @@ void COptRetrievalPg::UpdateControls() {
 	else {
 		m_ctlTime.EnableWindow(FALSE);
 	}
-	
+
 	//
 	if (m_ctlUseOptimizer.GetCheck() == BST_CHECKED) {
 		m_ctlURL.EnableWindow();
@@ -157,7 +158,7 @@ BOOL COptRetrievalPg::OnInitDialog() {
 
 	m_ctlUpdateIntervalSpin.SendMessage(CCM_SETVERSION, COMCTL32_VERSION);
 	m_ctlUpdateIntervalSpin.SetRange(0, 30000);
-	
+
 	m_ctlUserAgent.AddString(_T("pRSSreader"));
 	m_ctlUserAgent.AddString(_T("Pocket IE"));
 	if (Config.UserAgent.Compare(UA_PRSSREADER) == 0)
@@ -170,7 +171,7 @@ BOOL COptRetrievalPg::OnInitDialog() {
 	}
 
 	UpdateControls();
-	
+
 	return TRUE;
 }
 
@@ -195,7 +196,7 @@ BOOL COptRetrievalPg::OnApply() {
 
 	Config.BackgroundUpdate = m_bBackgroundUpdate;
 
-	// html optimizer	
+	// html optimizer
 	Config.UseHtmlOptimizer = m_bUseOptimizer;
 	Config.HtmlOptimizerURL = m_strURL;
 
@@ -205,7 +206,7 @@ BOOL COptRetrievalPg::OnApply() {
 		case 1: Config.UserAgent = UA_PIE; break;
 		case 2: /* do not destroy user-defined UA string */ break;
 	}
-	
+
 	return CPropertyPage::OnApply();
 }
 
