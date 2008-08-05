@@ -74,7 +74,7 @@ void CProxyProfileDlg::DoDataExchange(CDataExchange* pDX) {
 	DDX_Control(pDX, IDC_PASSWORD, m_ctlPassword);
 	DDX_Control(pDX, IDC_C_USERNAME, m_lblUserName);
 	DDX_Control(pDX, IDC_C_PASSWORD, m_lblPassword);
-	
+
 	DDX_Text(pDX, IDC_NAME, m_strName);
 	DDV_NotEmpty(pDX, m_strName, IDS_EMPTY_NAME);
 //	DDX_CBIndex(pDX, IDC_TYPE, m_nType);
@@ -147,10 +147,11 @@ BOOL CProxyProfileDlg::OnInitDialog() {
 	}
 	if (m_ctlType.GetCurSel() == CB_ERR)
 		m_ctlType.SetCurSel(0);
-	OnSelendokType();
+	if (m_nPort == 0)
+		OnSelendokType();
 
 	UpdateControls();
-	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -170,7 +171,7 @@ void CProxyProfileDlg::OnUseAuthentication() {
 	UpdateControls();
 }
 
-void CProxyProfileDlg::OnOK() {	
+void CProxyProfileDlg::OnOK() {
 	CCeDialog::OnOK();
 
 	m_nType = (EProxyType) m_ctlType.GetItemData(m_ctlType.GetCurSel());
