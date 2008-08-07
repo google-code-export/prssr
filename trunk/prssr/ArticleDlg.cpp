@@ -285,7 +285,7 @@ void CArticleDlg::ShowFeedItem() {
 	m_ctlHTML.Clear();
 	m_ctlHTML.EnableContextMenu(TRUE);
 
-//	m_ctlHTML.EnableClearType(Config.ClearType);
+	m_ctlHTML.EnableClearType(Appearance.ClearType);
 	m_ctlHTML.EnableScripting(FALSE);
 	m_ctlHTML.ZoomLevel(1);
 
