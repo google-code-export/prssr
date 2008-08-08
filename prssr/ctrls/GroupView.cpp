@@ -79,7 +79,7 @@ BOOL CGroupView::Register() {
 	wndcls.style = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW;
 
 	//you can specify your own window procedure
-	wndcls.lpfnWndProc = ::DefWindowProc; 
+	wndcls.lpfnWndProc = ::DefWindowProc;
 	wndcls.hInstance = AfxGetInstanceHandle();
 //	wndcls.hIcon = LoadIcon(IDR_MAINFRAME); // or load a different icon
 //	wndcls.hCursor = LoadCursor( IDC_ARROW );
@@ -140,7 +140,6 @@ BEGIN_MESSAGE_MAP(CGroupView, CView)
 	ON_WM_MOUSEMOVE()
 	ON_WM_TIMER()
 	ON_WM_KEYDOWN()
-	ON_WM_KEYUP()
 	ON_WM_LBUTTONDBLCLK()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
@@ -361,7 +360,7 @@ void CGroupView::OnPaint() {
 	LOG0(5, "CGroupView::OnPaint()");
 
 	CPaintDC dc(this); // device context for painting
-	
+
 	int nSavedDC = dc.SaveDC();
 
 	CRect rc;
@@ -380,7 +379,7 @@ void CGroupView::OnPaint() {
 		int top = rc.top;
 		int ofsY = 0;
 
-		CRect rcItem(rc.left, 0, rc.right, SCALEY(ItemHeight));			
+		CRect rcItem(rc.left, 0, rc.right, SCALEY(ItemHeight));
 		HGROUPITEM hRoot = GetRootItem();
 		while (hRoot != NULL) {
 			DrawItems(dc, rcItem, hRoot);
@@ -701,10 +700,10 @@ BOOL CGroupView::EnsureVisible(HGROUPITEM hItem) {
 		m_nViewTop = y;
 	else if (y + SCALEY(ItemHeight) > m_nViewTop + m_nClientHeight)
 		m_nViewTop = y + SCALEY(ItemHeight) - m_nClientHeight;
-	
+
 	if (i - m_nViewTop)
 		ScrollWindowEx(0, i - m_nViewTop, &m_rcScroll, &m_rcScroll, NULL, NULL, SW_INVALIDATE);
-	
+
 	UpdateScrollBars();
 
 	return TRUE;
@@ -937,19 +936,7 @@ void CGroupView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 		case VK_RIGHT:
 			ExpandItem(m_hSelectedItem);
 			break;
-		
-		case VK_RETURN:
-			CView::OnKeyDown(nChar, nRepCnt, nFlags);
-			break;
 
-		default:
-			CView::OnKeyDown(nChar, nRepCnt, nFlags);
-			break;
-	}
-}
-
-void CGroupView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
-	switch (nChar) {
 		case VK_RETURN:
 			if (Items.GetCount() > 0 && m_hSelectedItem != NULL) {
 				// toggle item state
@@ -958,12 +945,11 @@ void CGroupView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
 				else
 					OnItemClicked();
 			}
-
-			CView::OnKeyUp(nChar, nRepCnt, nFlags);
+			CView::OnKeyDown(nChar, nRepCnt, nFlags);
 			break;
 
 		default:
-			CView::OnKeyUp(nChar, nRepCnt, nFlags);
+			CView::OnKeyDown(nChar, nRepCnt, nFlags);
 			break;
 	}
 }
@@ -994,7 +980,7 @@ void CGroupView::OnTimer(UINT nIDEvent) {
 			ContextMenu(LastCursorPos);
 		}
 	}
-	
+
 	CView::OnTimer(nIDEvent);
 }
 
