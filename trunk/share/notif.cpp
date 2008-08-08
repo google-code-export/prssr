@@ -23,6 +23,9 @@
 #include <notify.h>
 #include "defs.h"
 
+// NOTES: I wonder if one has to call CloseHandle() on the nofitication handles.
+// In examples from SDK, all HANDLEs are local and no CloseHandle() calls.
+
 
 // Cradling Event
 
@@ -47,10 +50,8 @@ static HANDLE GetCradlingEvent() {
 					PCE_NOTIFICATION_INFO_HEADER pnih = (PCE_NOTIFICATION_INFO_HEADER) pBuff;
 					PCE_NOTIFICATION_TRIGGER pNotifTrigger = pnih->pcent;
 					// Notice some events with NULL lpszApplication might be inserted!
-					if (pNotifTrigger && pNotifTrigger->lpszApplication && 
-//						!_tcsicmp(pNotifTrigger->lpszApplication, L"\\windows\\"PRSSRNOT_BIN) &&
+					if (pNotifTrigger && pNotifTrigger->lpszApplication &&
 						!_tcsicmp(pNotifTrigger->lpszApplication, PRSSRNOT_BIN) &&
-//						!_tcsicmp(pNotifTrigger->lpszApplication, CString(Config.InstallDir + _T("\\") + PRSSREADER_BIN)) &&
 						pNotifTrigger->dwEvent == NOTIFICATION_EVENT_RS232_DETECTED)
 					{
 						handle = pnih->hNotification;
@@ -68,18 +69,19 @@ static HANDLE GetCradlingEvent() {
 }
 
 static HANDLE SetCradlingEvent() {
-	// set a CE_NOTIFICATION_TRIGGER
-	CE_NOTIFICATION_TRIGGER notifTrigger;
-	memset(&notifTrigger, 0, sizeof(CE_NOTIFICATION_TRIGGER));
-	notifTrigger.dwSize = sizeof(CE_NOTIFICATION_TRIGGER);
-	notifTrigger.dwType = CNT_EVENT;
-	notifTrigger.dwEvent = NOTIFICATION_EVENT_RS232_DETECTED;
-	notifTrigger.lpszApplication = (LPTSTR) PRSSRNOT_BIN;
-//	notifTrigger.lpszApplication = (LPTSTR) L"\\windows\\"PRSSRNOT_BIN;
-//	notifTrigger.lpszApplication = (LPTSTR) (LPCTSTR) CString(Config.InstallDir + _T("\\") + PRSSREADER_BIN);
-	notifTrigger.lpszArguments = L"AppRunAtRs232Detected";
+	CE_NOTIFICATION_TRIGGER trigger;
+	CE_USER_NOTIFICATION notification;
 
-	return CeSetUserNotificationEx(0, &notifTrigger, NULL);
+	memset(&trigger, 0, sizeof(CE_NOTIFICATION_TRIGGER));
+	memset(&notification, 0, sizeof(CE_USER_NOTIFICATION));
+
+	trigger.dwSize = sizeof(CE_NOTIFICATION_TRIGGER);
+	trigger.dwType = CNT_EVENT;
+	trigger.dwEvent = NOTIFICATION_EVENT_RS232_DETECTED;
+	trigger.lpszApplication = (LPTSTR) PRSSRNOT_BIN;
+	trigger.lpszArguments = L"AppRunAtRs232Detected";
+
+	return CeSetUserNotificationEx(0, &trigger, NULL);
 }
 
 //
@@ -88,13 +90,10 @@ void SetupCradlingEvent(BOOL bEnable) {
 	HANDLE hCradling = GetCradlingEvent();
 	if (hCradling != NULL) {
 		CeClearUserNotification(hCradling);
-		CloseHandle(hCradling);
 	}
 
-	if (bEnable) {
-		// add cradling event
-		CloseHandle(SetCradlingEvent());
-	}
+	if (bEnable)
+		SetCradlingEvent();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -120,11 +119,9 @@ static HANDLE GetUpdateNotification(LPCTSTR args) {
 					PCE_NOTIFICATION_INFO_HEADER pnih = (PCE_NOTIFICATION_INFO_HEADER) pBuff;
 					PCE_NOTIFICATION_TRIGGER pNotifTrigger = pnih->pcent;
 					// Notice some events with NULL lpszApplication might be inserted!
-					if (pNotifTrigger && pNotifTrigger->lpszApplication && 
-//						!_tcsicmp(pNotifTrigger->lpszApplication, L"\\windows\\"PRSSRNOT_BIN) &&
+					if (pNotifTrigger && pNotifTrigger->lpszApplication &&
 						!_tcsicmp(pNotifTrigger->lpszApplication, PRSSRNOT_BIN) &&
-//						!_tcsicmp(pNotifTrigger->lpszApplication, CString(Config.InstallDir + _T("\\") + PRSSREADER_BIN)) &&
-						pNotifTrigger->dwType == CNT_TIME && 
+						pNotifTrigger->dwType == CNT_TIME &&
 						!_tcsicmp(pNotifTrigger->lpszArguments, args))
 					{
 						handle = pnih->hNotification;
@@ -142,18 +139,20 @@ static HANDLE GetUpdateNotification(LPCTSTR args) {
 }
 
 static HANDLE SetUpdateNotification(SYSTEMTIME *st, LPCTSTR args) {
-	// set a CE_NOTIFICATION_TRIGGER
-	CE_NOTIFICATION_TRIGGER notifTrigger;
-	memset(&notifTrigger, 0, sizeof(CE_NOTIFICATION_TRIGGER));
-	notifTrigger.dwSize = sizeof(CE_NOTIFICATION_TRIGGER);
-	notifTrigger.dwType = CNT_TIME;
-	notifTrigger.stStartTime = *st;
-//	notifTrigger.lpszApplication = (LPTSTR) L"\\windows\\"PRSSRNOT_BIN;
-	notifTrigger.lpszApplication = (LPTSTR) PRSSRNOT_BIN;
-//	notifTrigger.lpszApplication = (LPTSTR) (LPCTSTR) CString(Config.InstallDir + _T("\\") + PRSSREADER_BIN);
-	notifTrigger.lpszArguments = (LPTSTR) args;
+	CE_NOTIFICATION_TRIGGER trigger;
+	CE_USER_NOTIFICATION notification;
 
-	return CeSetUserNotificationEx(0, &notifTrigger, NULL);
+	memset(&trigger, 0, sizeof(CE_NOTIFICATION_TRIGGER));
+	memset(&notification, 0, sizeof(CE_USER_NOTIFICATION));
+
+	trigger.dwSize = sizeof(CE_NOTIFICATION_TRIGGER);
+	trigger.dwType = CNT_TIME;
+	trigger.lpszApplication = (LPTSTR) PRSSRNOT_BIN;
+	trigger.lpszArguments = (LPTSTR) args;
+	trigger.stStartTime = *st;
+	trigger.stEndTime = *st;
+
+	return CeSetUserNotificationEx(0, &trigger, &notification);
 }
 
 
@@ -168,59 +167,13 @@ void AddSeconds(SYSTEMTIME &st, DWORD seconds) {
 	FileTimeToSystemTime((FILETIME *) &ft, &st);
 }
 
-/*
-void SetupPeriodicNotification(BOOL bEnable, int updateInterval) {
-	HANDLE hNotif = GetUpdateNotification(L"/periodic");
-
-	if (hNotif != NULL) {
-		CeClearUserNotification(hNotif);
-		CloseHandle(hNotif);
-	}
-
-	if (bEnable) {
-		// add notification
-		SYSTEMTIME st;
-		GetLocalTime(&st);
-		AddSeconds(st, 60 * updateInterval);
-
-		CloseHandle(SetUpdateNotification(&st, L"/periodic"));
-	}
-}
-
-void SetupDailyNotification(BOOL bEnable, SYSTEMTIME &updateTime) {
-	HANDLE hNotif = GetUpdateNotification(L"/daily");
-
-	// delete notification
-	if (hNotif != NULL) {
-		CeClearUserNotification(hNotif);
-		CloseHandle(hNotif);
-	}
-
-	if (bEnable) {
-		// add notification
-		SYSTEMTIME st;
-		GetLocalTime(&st);						// get date
-		st.wHour = updateTime.wHour;
-		st.wMinute = updateTime.wMinute;
-		st.wSecond = updateTime.wSecond;
-
-		AddSeconds(st, 60 * 60 * 24);			// 1 day
-
-		CloseHandle(SetUpdateNotification(&st, L"/daily"));
-	}
-}
-*/
-
 void SetupUpdateEvent(LPCTSTR arg, BOOL bEnable, SYSTEMTIME *updateTime) {
 	HANDLE hNotif = GetUpdateNotification(arg);
 
 	if (hNotif != NULL) {
 		CeClearUserNotification(hNotif);
-		CloseHandle(hNotif);
 	}
 
-	if (bEnable) {
-		// add notification
-		CloseHandle(SetUpdateNotification(updateTime, arg));
-	}
+	if (bEnable)
+		SetUpdateNotification(updateTime, arg);
 }

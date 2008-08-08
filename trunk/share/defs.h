@@ -22,7 +22,7 @@
 #define _DEFS_H_
 
 #define PRSSREADER_BIN						L"prssr.exe"
-#define PRSSRNOT_BIN						L"prssrnot.exe"
+#define PRSSRNOT_BIN						L"\\windows\\prssrnot.exe"
 
 #define UWM_DIALOG_CLOSE					(WM_USER + 0x0001)
 #define UWM_SHOW_UPDATEBAR					(WM_USER + 0x0002)
