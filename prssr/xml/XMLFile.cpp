@@ -531,6 +531,14 @@ void CXmlFile::OnDeclaration(const XML_Char *version, const XML_Char *encoding, 
 	}
 }
 
+int CXmlFile::GetBomLen(char *buffer) {
+	if (strncmp(buffer, "\x00\x00\xFE\xFF", 4) == 0) return 4;			// UTF-32 big-endian
+	else if (strncmp(buffer, "\xFF\xFE\x00\x00", 4) == 0) return 4;	// UTF-32 little-endian
+	else if (strncmp(buffer, "\xFE\xFF", 2) == 0) return 2;			// UTF-16 big-endian
+	else if (strncmp(buffer, "\xFF\xFE", 2) == 0) return 2;				// UTF-16 little-endian
+	else if (strncmp(buffer, "\xEF\xBB\xBF", 3) == 0) return 3;			// UTF-8
+	else return 0;
+}
 
 #define BUFSIZ					16384
 
@@ -577,11 +585,13 @@ BOOL CXmlFile::LoadFromFile(LPCTSTR fileName) {
 	delete RootNode;
 	RootNode = TempNode = NULL;
 
+	int bomLen = 0;
 	// first get the encoding
 	// load first 8K (should be enough to determine the encoding)
 	DWORD read = 0;
 	if (ReadFile(hFile, buf, BUFSIZ, &read, NULL)) {
-		if (!DetermineEncoding(buf, BUFSIZ))
+		bomLen = GetBomLen(buf);
+		if (!DetermineEncoding(buf + bomLen, BUFSIZ))
 			return FALSE;
 	}
 	else
@@ -596,7 +606,7 @@ BOOL CXmlFile::LoadFromFile(LPCTSTR fileName) {
 	XML_SetCharacterDataHandler(parser, charDataHandler);
 	XML_SetUnknownEncodingHandler(parser, unknownEncoding, this);
 
-	SetFilePointer(hFile, 0, NULL, FILE_BEGIN);
+	SetFilePointer(hFile, bomLen, NULL, FILE_BEGIN);
 	// main load loop with the parsing
 	do {
 		DWORD read;
@@ -636,8 +646,9 @@ BOOL CXmlFile::LoadFromMemory(char buffer[], int len) {
 	delete RootNode;
 	RootNode = TempNode = NULL;
 
+	int bomLen = GetBomLen(buffer);		// FIXME: if buffer is small and no BOM is present
 	// first get the encoding
-	if (!DetermineEncoding(buffer, min(BUFSIZ, len)))
+	if (!DetermineEncoding(buffer + bomLen, min(BUFSIZ, len)))
 		return FALSE;
 //	LOG1(7, "Encoding ('%S')", Encoding);
 
@@ -651,7 +662,7 @@ BOOL CXmlFile::LoadFromMemory(char buffer[], int len) {
 	BOOL ret = TRUE;
 	// main load loop with the parsing
 	BOOL done = FALSE;
-	if (XML_Parse(parser, buffer, len, done) == XML_STATUS_ERROR) {
+	if (XML_Parse(parser, buffer + bomLen, len, done) == XML_STATUS_ERROR) {
 		LOG2(7, "Error: %s at line %d",
 			XML_ErrorString(XML_GetErrorCode(parser)),
 			XML_GetCurrentLineNumber(parser));

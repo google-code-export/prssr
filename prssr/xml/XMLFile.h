@@ -122,6 +122,7 @@ protected:
 	virtual void OnDeclaration(const XML_Char *version, const XML_Char *encoding, int standalone);
 //	virtual void OnDefault(const XML_Char *s, int len);
 
+	int GetBomLen(char *buffer);
 	BOOL DetermineEncoding(char buffer[], int len);
 
 	//
