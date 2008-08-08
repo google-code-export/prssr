@@ -137,7 +137,6 @@ BEGIN_MESSAGE_MAP(CFeedView, CWnd)
 	ON_WM_LBUTTONDBLCLK()
 	ON_WM_TIMER()
 	ON_WM_KEYDOWN()
-	ON_WM_KEYUP()
 	//}}AFX_MSG_MAP
 
 	ON_COMMAND(ID_ITEM_OPEN, OnItemOpen)
@@ -826,6 +825,8 @@ void CFeedView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			break;
 
 		case VK_RETURN:
+			if (m_oItems.GetSize() > 0 && m_nSelectFirst >= 0)
+				OpenItem(m_nSelectFirst);
 			break;
 
 		default:
@@ -834,23 +835,6 @@ void CFeedView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	}
 
 	CWnd::OnKeyDown(nChar, nRepCnt, nFlags);
-}
-
-void CFeedView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
-	LOG3(5, "CFeedView::OnKeyUp(%d, %d, %d)", nChar, nRepCnt, nFlags);
-
-	switch (nChar) {
-		case VK_RETURN:
-			if (m_oItems.GetSize() > 0 && m_nSelectFirst >= 0)
-				OpenItem(m_nSelectFirst);
-
-			CWnd::OnKeyUp(nChar, nRepCnt, nFlags);
-			break;
-
-		default:
-			CWnd::OnKeyUp(nChar, nRepCnt, nFlags);
-			break;
-	}
 }
 
 void CFeedView::ContextMenu(CPoint pt) {
