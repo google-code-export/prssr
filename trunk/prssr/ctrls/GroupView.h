@@ -104,36 +104,36 @@ public:
 
 	virtual void OnDraw(CDC *pDC);
 
-	UINT GetCount() const; 
+	UINT GetCount() const;
 
 	void SetImageList(CImageList *il) { m_pImageList = il; }
 	CImageList *GetImageList() const { return m_pImageList; }
 
 //	HGROUPITEM GetNextItem(HGROUPITEM pos, UINT code);
-	BOOL ItemHasChildren(HGROUPITEM hItem) const; 
+	BOOL ItemHasChildren(HGROUPITEM hItem) const;
 	HGROUPITEM GetChildItem(HGROUPITEM hItem) const;
 	HGROUPITEM GetNextSiblingItem(HGROUPITEM hItem) const;
 	HGROUPITEM GetPrevSiblingItem(HGROUPITEM hItem) const;
 	HGROUPITEM GetParentItem(HGROUPITEM hItem) const;
 	HGROUPITEM GetSelectedItem() const { return m_hSelectedItem; }
-	HGROUPITEM GetRootItem() const; 
+	HGROUPITEM GetRootItem() const;
 	HGROUPITEM GetPrevVisibleItem(HGROUPITEM hItem) const;
 	HGROUPITEM GetNextVisibleItem(HGROUPITEM hItem) const;
 
-	UINT GetItemState(HGROUPITEM hItem, UINT nStateMask) const; 
-	BOOL SetItemState(HGROUPITEM hItem, UINT nState, UINT nStateMask); 
+	UINT GetItemState(HGROUPITEM hItem, UINT nStateMask) const;
+	BOOL SetItemState(HGROUPITEM hItem, UINT nState, UINT nStateMask);
 
-	BOOL GetItemImage(HGROUPITEM hItem, int &nImage) const; 
-	BOOL SetItemImage(HGROUPITEM hItem, int nImage); 
+	BOOL GetItemImage(HGROUPITEM hItem, int &nImage) const;
+	BOOL SetItemImage(HGROUPITEM hItem, int nImage);
 
 	CString GetItemText(HGROUPITEM hItem) const;
-	BOOL SetItemText(HGROUPITEM hItem, LPCTSTR lpszItem); 
+	BOOL SetItemText(HGROUPITEM hItem, LPCTSTR lpszItem);
 
 	DWORD GetItemData(HGROUPITEM hItem) const;
 	BOOL SetItemData(HGROUPITEM hItem, DWORD dwData);
 
 	HGROUPITEM InsertItem(LPCTSTR lpszItem, HGROUPITEM hParent = GVI_ROOT, HGROUPITEM hInsertAfter = GVI_LAST);
-	HGROUPITEM InsertItem(LPCTSTR lpszItem, int nImage, HGROUPITEM hParent = GVI_ROOT, HGROUPITEM hInsertAfter = GVI_LAST); 
+	HGROUPITEM InsertItem(LPCTSTR lpszItem, int nImage, HGROUPITEM hParent = GVI_ROOT, HGROUPITEM hInsertAfter = GVI_LAST);
 	BOOL DeleteItem(HGROUPITEM hItem);
 	BOOL DeleteAllItems();
 //	BOOL Expand(HGROUPITEM hItem, UINT nCode);
@@ -160,7 +160,6 @@ protected:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnTimer(UINT nIDEvent);
 	//}}AFX_MSG
 	virtual void ContextMenu(CPoint pt);
