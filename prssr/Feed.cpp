@@ -178,13 +178,13 @@ void CFeedItem::ComputeHash(CString prefix) {
 
 #if defined PRSSR_APP
 
-void CFeedItem::GetItemImages(CStringList &list, const CString &baseUrl) {
+void CFeedItem::GetItemImages(CStringList &list) {
 	LOG0(5, "CFeedItem::GetItemImages()");
 
 	CString html;
 	html.Format(_T("<div>%s</div>"), Description);		// workaround for libsgml
 
-	CLocalHtmlFile h(baseUrl);
+	CLocalHtmlFile h;
 	h.LoadFromMemory(html);
 	h.ExtractImages(list);
 }
@@ -461,8 +461,6 @@ BOOL CFeed::Load(LPCTSTR fileName, CSiteItem *si) {
 #ifdef PRSSR_APP
 		else if (strncmp(hdr.Id, "LINK", 4) == 0)
 			ReadString(file, hdr.Size, HtmlUrl);
-		else if (strncmp(hdr.Id, "BURL", 4) == 0)
-			ReadString(file, hdr.Size, BaseUrl);
 		else if (strncmp(hdr.Id, "DESC", 4) == 0)
 			ReadString(file, hdr.Size, Description);
 		else if (strncmp(hdr.Id, "PUBL", 4) == 0)
@@ -639,7 +637,6 @@ BOOL CFeed::Save(LPCTSTR fileName) {
 	CArchiveFileChunk *head = new CArchiveFileChunk("HEAD");
 	head->Add("TITL", Title);
 	head->Add("LINK", HtmlUrl);
-	head->Add("BURL", BaseUrl);
 	head->Add("DESC", Description);
 	// TODO: image (IMAG)
 	head->Add("UPIN", UpdateInterval);

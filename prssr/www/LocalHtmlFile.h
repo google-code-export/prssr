@@ -31,10 +31,12 @@
 
 class CLocalHtmlFile : public CHtmlFile {
 public:
+	CLocalHtmlFile();
 	CLocalHtmlFile(const CString &baseUrl);
 	virtual ~CLocalHtmlFile();
 
 	void Filter();
+	void RewriteRelativeUrls();
 	void TranslateForOffline();
 	void ExtractImages(CStringList &list);
 
@@ -44,8 +46,11 @@ protected:
 
 	// internal use
 	void Filter(DOM_NODE *node);
+	void RewriteRelativeUrls(DOM_NODE *node);
 	void TranslateForOffline(DOM_NODE *node);
 	void ExtractImages(DOM_NODE *node, CStringList &list);
+
+	void RewriteAttr(DOM_NODE *node, char *attr);
 };
 
 #endif // !defined(_DISCOVER_FEED_HTMLFILE_H__INCLUDED_)

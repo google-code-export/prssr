@@ -101,7 +101,7 @@ public:
 	BOOL HasEnclosure() { return Enclosures.GetCount() > 0; }
 	CList<CEnclosureItem *, CEnclosureItem *> Enclosures;
 
-	void GetItemImages(CStringList &list, const CString &baseUrl);
+	void GetItemImages(CStringList &list);
 #endif
 
 #if defined PRSSR_APP
@@ -164,7 +164,6 @@ public:
 	CString Title;
 
 #ifdef PRSSR_APP
-	CString BaseUrl;
 	CString HtmlUrl;
 	CString Description;
 
