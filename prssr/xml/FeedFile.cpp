@@ -395,8 +395,10 @@ BOOL CFeedFile::RSSFillInfo(CXmlNode *parent, CFeed *feed) {
 #if defined PRSSR_APP
 		else if (name.Compare(_T("description")) == 0)
 			feed->Description = child->GetValue();
-		else if (name.Compare(_T("link")) == 0)
+		else if (name.Compare(_T("link")) == 0) {
 			feed->HtmlUrl = child->GetValue();
+			if (feed->BaseUrl.IsEmpty()) feed->BaseUrl = child->GetValue();
+		}
 		else if (name.Compare(_T("language")) == 0 || name.Compare(_T("dc:language")) == 0)
 			feed->Language = child->GetValue();
 		else if (name.Compare(_T("copyright")) == 0 || name.Compare(_T("dc:rights")) == 0)
@@ -552,6 +554,15 @@ BOOL CFeedFile::RSSFill(CFeed *feed, CSiteItem *si) {
 	LOG0(5, "CFeedFile::RSSFill()");
 
 	BOOL ret = FALSE;
+
+	// root tag is <rss>
+	POSITION pos = RootNode->GetFirstAttrPos();
+	while (pos != NULL) {
+		CXmlAttr *attr = RootNode->GetNextAttr(pos);
+		if (attr->GetName().CompareNoCase(_T("xml:base")) == 0) {
+			feed->BaseUrl = attr->GetValue();
+		}
+	}
 
 	// get channel tag
 	POSITION pos = RootNode->GetFirstChildPos();

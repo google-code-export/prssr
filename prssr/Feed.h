@@ -101,7 +101,7 @@ public:
 	BOOL HasEnclosure() { return Enclosures.GetCount() > 0; }
 	CList<CEnclosureItem *, CEnclosureItem *> Enclosures;
 
-	void GetItemImages(CStringList &list);
+	void GetItemImages(CStringList &list, const CString &baseUrl);
 #endif
 
 #if defined PRSSR_APP
@@ -137,7 +137,7 @@ public:
 	BOOL IsRead()    { return (Flags & MESSAGE_READ_STATE) == MESSAGE_READ; }
 	BOOL IsUnread()  { return (Flags & MESSAGE_READ_STATE) == MESSAGE_UNREAD; }
 	BOOL IsNew()     { return (Flags & MESSAGE_READ_STATE) == MESSAGE_NEW; }
-	
+
 	BOOL IsDeleted() { return Flags & MESSAGE_DELETED; }
 	BOOL IsFlagged() { return Flags & MESSAGE_FLAG; }
 
@@ -164,6 +164,7 @@ public:
 	CString Title;
 
 #ifdef PRSSR_APP
+	CString BaseUrl;
 	CString HtmlUrl;
 	CString Description;
 

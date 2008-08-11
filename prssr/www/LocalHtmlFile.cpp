@@ -46,7 +46,10 @@ static char THIS_FILE[] = __FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CLocalHtmlFile::CLocalHtmlFile() {
+CLocalHtmlFile::CLocalHtmlFile(const CString &baseUrl) {
+	DWORD serviceType;
+	INTERNET_PORT port;
+	ParseURL(baseUrl, serviceType, Server, ActivePath, port);
 }
 
 CLocalHtmlFile::~CLocalHtmlFile() {
@@ -140,7 +143,8 @@ void CLocalHtmlFile::ExtractImages(DOM_NODE *node, CStringList &list) {
 //			LOG1(1, "img: %s", src);
 			if (src != NULL) {
 				CString value = CharToWChar(src);
-				list.AddTail(value);
+				CString url = MakeAbsoluteUrl(value, Server, ActivePath);
+				list.AddTail(url);
 			}
 		}
 	}
