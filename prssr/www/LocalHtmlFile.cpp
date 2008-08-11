@@ -71,6 +71,9 @@ void CLocalHtmlFile::Filter(DOM_NODE *node) {
 			_stricmp(tag, "style") == 0 ||
 			_stricmp(tag, "link") == 0 ||
 			_stricmp(tag, "iframe") == 0 ||
+			_stricmp(tag, "object") == 0 ||
+			_stricmp(tag, "param") == 0 ||
+			_stricmp(tag, "embed") == 0 ||
 			_stricmp(tag, "meta") == 0)
 		{
 			DOM_NODE *prev = domNodeGetPreviousSibling(child);
@@ -107,20 +110,18 @@ void CLocalHtmlFile::RewriteAttr(DOM_NODE *node, char *attr) {
 void CLocalHtmlFile::RewriteRelativeUrls(DOM_NODE *node) {
 	LOG1(5, "CLocalHtmlFile::RewriteRelativeUrls(%p)", node);
 
-	if (node != NULL) {
-		const char *tag = domNodeGetName(node);
-		if (tag != NULL) {
-			if (_stricmp(tag, "img") == 0)
-				RewriteAttr(node, "src");
-			else if (_stricmp(tag, "a") == 0)
-				RewriteAttr(node, "href");
-		}
+	const char *tag = domNodeGetName(node);
+	if (tag != NULL && node != NULL) {
+		if (_stricmp(tag, "img") == 0)
+			RewriteAttr(node, "src");
+		else if (_stricmp(tag, "a") == 0)
+			RewriteAttr(node, "href");
+	}
 
-		DOM_NODE *child = domNodeGetFirstChild(node);
-		while (child != NULL) {
-			RewriteRelativeUrls(child);
-			child = domNodeGetNextSibling(child);
-		}
+	DOM_NODE *child = domNodeGetFirstChild(node);
+	while (child != NULL) {
+		RewriteRelativeUrls(child);
+		child = domNodeGetNextSibling(child);
 	}
 }
 
