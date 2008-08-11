@@ -490,9 +490,9 @@ BOOL CFeedFile::RSSFillItem(CXmlNode *xmlItem, CFeedItem *item) {
 
 #if defined PRSSR_APP
 	if (!sContent.IsEmpty())
-		item->Description = sContent;
+		item->Description = SanitizeHtml(sContent);
 	else
-		item->Description = sDescription;
+		item->Description = SanitizeHtml(sDescription);
 #endif
 
 #if defined PRSSR_APP
@@ -852,9 +852,9 @@ BOOL CFeedFile::AtomFillItem(CXmlNode *xmlItem, CFeedItem *item) {
 #if defined PRSSR_APP
 	// if <content> is empty, then use <summary>
 	if (!content.IsEmpty())
-		item->Description = content;
+		item->Description = SanitizeHtml(content);
 	else
-		item->Description = summary;
+		item->Description = SanitizeHtml(summary);
 #endif
 
 	return TRUE;
