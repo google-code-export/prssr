@@ -75,7 +75,6 @@ void FeedDiff(CFeed *first, CFeed *second, CArray<CFeedItem *, CFeedItem *> *dif
 		for (i = 0; i < first->GetItemCount(); i++) {
 			CFeedItem *fi = first->GetItem(i);
 			if (!cache.InCache(fi->Hash))
-//				diff->Add(new CFeedItem(*fi));
 				diff->Add(fi);
 		}
 }
@@ -89,7 +88,6 @@ void FeedIntersection(CFeed *first, CFeed *second, CArray<CFeedItem *, CFeedItem
 	if (second != NULL)
 		for (i = 0; i < second->GetItemCount(); i++) {
 			CFeedItem *fi = second->GetItem(i);
-//			if (fi->Hash.IsEmpty()) AfxMessageBox(_T("Jak to?"));
 			if (!fi->Hash.IsEmpty())
 				cache.AddItem(fi->Hash);
 		}
@@ -98,7 +96,6 @@ void FeedIntersection(CFeed *first, CFeed *second, CArray<CFeedItem *, CFeedItem
 		for (i = 0; i < first->GetItemCount(); i++) {
 			CFeedItem *fi = first->GetItem(i);
 			if (!fi->Hash.IsEmpty() && cache.InCache(fi->Hash))
-//				diff->Add(new CFeedItem(*fi));
 				diff->Add(fi);
 		}
 }
@@ -181,25 +178,15 @@ void CFeedItem::ComputeHash(CString prefix) {
 
 #if defined PRSSR_APP
 
-void CFeedItem::GetItemImages(CStringList &list) {
+void CFeedItem::GetItemImages(CStringList &list, const CString &baseUrl) {
 	LOG0(5, "CFeedItem::GetItemImages()");
 
 	CString html;
 	html.Format(_T("<div>%s</div>"), Description);		// workaround for libsgml
 
-	CLocalHtmlFile h;
+	CLocalHtmlFile h(baseUrl);
 	h.LoadFromMemory(html);
 	h.ExtractImages(list);
-
-/*	CHtmlExtractor extr(_T(""), _T(""), EXTRACT_IMAGES);
-	if (extr.Parse(Description)) {
-		POSITION pos = extr.Links.GetHeadPosition();
-		while (pos != NULL) {
-			CString s = extr.Links.GetNext(pos);
-			list.AddTail(s);
-		}
-	}
-*/
 }
 
 void CFeedItem::GetEnclosures(CStringList &list, DWORD limit/* = 0*/) {
@@ -216,27 +203,6 @@ void CFeedItem::GetEnclosures(CStringList &list, DWORD limit/* = 0*/) {
 
 
 void CFeedItem::UpdateHiddenFlag() {
-/*	if (Config.HideReadItems) {
-		if (Config.ShowFlaggedItems && IsFlagged())
-			Hidden = FALSE;
-		else {
-			if (IsRead())
-				Hidden = TRUE;
-			else
-				Hidden = FALSE;
-		}
-	}
-	else {
-		if (Config.ShowFlaggedItems) {
-			if (IsFlagged())
-				Hidden = FALSE;
-			else
-				Hidden = TRUE;
-		}
-		else
-			Hidden = FALSE;
-	}
-*/
 	Hidden = FALSE;
 }
 #endif
@@ -280,8 +246,6 @@ CFeed::CFeed() {
 }
 
 CFeed::~CFeed() {
-//	Empty();
-
 	DeleteCriticalSection(&CS);
 }
 
@@ -497,6 +461,8 @@ BOOL CFeed::Load(LPCTSTR fileName, CSiteItem *si) {
 #ifdef PRSSR_APP
 		else if (strncmp(hdr.Id, "LINK", 4) == 0)
 			ReadString(file, hdr.Size, HtmlUrl);
+		else if (strncmp(hdr.Id, "BURL", 4) == 0)
+			ReadString(file, hdr.Size, BaseUrl);
 		else if (strncmp(hdr.Id, "DESC", 4) == 0)
 			ReadString(file, hdr.Size, Description);
 		else if (strncmp(hdr.Id, "PUBL", 4) == 0)
@@ -634,9 +600,6 @@ BOOL CFeed::Load(LPCTSTR fileName, CSiteItem *si) {
 
 #ifdef PRSSR_APP
 			// fill Date
-//			if (feedItem.PubDate.wYear == 0)
-//				GetLocalTime(&feedItem.Date);
-//			else
 			feedItem.Date = feedItem.PubDate;
 			// fill milisecond field (crucial for proper sorting)
 			feedItem.Date.wMilliseconds = (WORD) (GetTickCount() & 0xFFFF);
@@ -676,6 +639,7 @@ BOOL CFeed::Save(LPCTSTR fileName) {
 	CArchiveFileChunk *head = new CArchiveFileChunk("HEAD");
 	head->Add("TITL", Title);
 	head->Add("LINK", HtmlUrl);
+	head->Add("BURL", BaseUrl);
 	head->Add("DESC", Description);
 	// TODO: image (IMAG)
 	head->Add("UPIN", UpdateInterval);
@@ -936,40 +900,12 @@ BOOL CFeed::GenerateM3U(const CString &strFileName, DWORD limit) {
 
 #ifdef PRSSR_APP
 
-/*
-void CFeed::SetKeywordFlags(CStringArray &keywords) {
-	LOG0(5, "CFeed::SetKeywordFlags()");
-
-	for (int i = 0; i < GetItemCount(); i++) {
-		CFeedItem *fi = GetItem(i);
-		fi->SearchKeywords(keywords);
-	}
-}
-*/
-
 void CFeed::UpdateHiddenFlags() {
 	LOG0(5, "CFeed::UpdateHiddenFlags()");
 
 	for (int i = 0; i < GetItemCount(); i++)
 		GetItem(i)->UpdateHiddenFlag();
 }
-
-#endif
-
-/*
-void CFeed::SetFlagsFromRegistry() {
-	LOG0(5, "CFeed::SetFlagsFromRegistry()");
-
-	HKEY hItems = RegOpenItemsKey();
-	if (hItems != NULL) {
-		for (int i = 0; i < GetItemCount(); i++)
-			GetItem(i)->SetFlagsFromRegistry(hItems);
-		RegCloseKey(hItems);
-	}
-}
-*/
-
-#if defined PRSSR_APP
 
 void CFeed::MarkAll(DWORD flag, DWORD mask) {
 	LOG1(5, "CFeed::MarkAll(%d)", flag);
@@ -980,21 +916,5 @@ void CFeed::MarkAll(DWORD flag, DWORD mask) {
 		fi->UpdateHiddenFlag();
 	}
 }
-
-#endif
-
-#if defined PRSSR_APP
-
-/*void CFeed::PurgeRegistryHashes() {
-	LOG0(5, "CFeed::PurgeRegistryHashes()");
-
-	HKEY hItems = RegOpenItemsKey();
-	if (hItems != NULL) {
-		for (int i = 0; i < GetItemCount(); i++)
-			RegDeleteValue(hItems, GetItem(i)->Hash);
-		RegCloseKey(hItems);
-	}
-}
-*/
 
 #endif

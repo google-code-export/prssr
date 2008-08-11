@@ -31,7 +31,7 @@
 
 class CLocalHtmlFile : public CHtmlFile {
 public:
-	CLocalHtmlFile();
+	CLocalHtmlFile(const CString &baseUrl);
 	virtual ~CLocalHtmlFile();
 
 	void Filter();
