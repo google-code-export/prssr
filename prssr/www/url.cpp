@@ -781,4 +781,17 @@ CString StripHtmlTags(const CString &str) {
 	return html.ToString();
 }
 
+CString SanitizeHtml(const CString &html) {
+	// sanitize HTML
+	CLocalHtmlFile file;
+	CString s;
+
+	s.Format(_T("<div>%s</div>"), html);		// libsgml workaround
+	html.LoadFromMemory(s);
+	file.Filter();
+
+	return file.ToString();
+
+}
+
 #endif
