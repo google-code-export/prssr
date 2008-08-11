@@ -30,6 +30,7 @@
 #include "FeedFile.h"
 #include "../../share/helpers.h"
 #include "../Feed.h"
+#include "../www/LocalHtmlFile.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
@@ -261,7 +262,6 @@ BOOL ConvertToSytemTime(LPCTSTR strTime, SYSTEMTIME *time) {
 	return FALSE;
 }
 
-
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -397,7 +397,7 @@ BOOL CFeedFile::RSSFillInfo(CXmlNode *parent, CFeed *feed) {
 			feed->Description = child->GetValue();
 		else if (name.Compare(_T("link")) == 0) {
 			feed->HtmlUrl = child->GetValue();
-			if (feed->BaseUrl.IsEmpty()) feed->BaseUrl = child->GetValue();
+			if (BaseUrl.IsEmpty()) BaseUrl = child->GetValue();
 		}
 		else if (name.Compare(_T("language")) == 0 || name.Compare(_T("dc:language")) == 0)
 			feed->Language = child->GetValue();
@@ -490,9 +490,9 @@ BOOL CFeedFile::RSSFillItem(CXmlNode *xmlItem, CFeedItem *item) {
 
 #if defined PRSSR_APP
 	if (!sContent.IsEmpty())
-		item->Description = SanitizeHtml(sContent);
+		item->Description = SanitizeHtml(sContent, BaseUrl);
 	else
-		item->Description = SanitizeHtml(sDescription);
+		item->Description = SanitizeHtml(sDescription, BaseUrl);
 #endif
 
 #if defined PRSSR_APP
@@ -554,18 +554,19 @@ BOOL CFeedFile::RSSFill(CFeed *feed, CSiteItem *si) {
 	LOG0(5, "CFeedFile::RSSFill()");
 
 	BOOL ret = FALSE;
+	POSITION pos;
 
 	// root tag is <rss>
-	POSITION pos = RootNode->GetFirstAttrPos();
+	pos = RootNode->GetFirstAttrPos();
 	while (pos != NULL) {
 		CXmlAttr *attr = RootNode->GetNextAttr(pos);
 		if (attr->GetName().CompareNoCase(_T("xml:base")) == 0) {
-			feed->BaseUrl = attr->GetValue();
+			BaseUrl = attr->GetValue();
 		}
 	}
 
 	// get channel tag
-	POSITION pos = RootNode->GetFirstChildPos();
+	pos = RootNode->GetFirstChildPos();
 	if (pos != NULL) {
 		CXmlNode *channel = RootNode->GetNextChild(pos);
 
@@ -852,11 +853,28 @@ BOOL CFeedFile::AtomFillItem(CXmlNode *xmlItem, CFeedItem *item) {
 #if defined PRSSR_APP
 	// if <content> is empty, then use <summary>
 	if (!content.IsEmpty())
-		item->Description = SanitizeHtml(content);
+		item->Description = SanitizeHtml(content, BaseUrl);
 	else
-		item->Description = SanitizeHtml(summary);
+		item->Description = SanitizeHtml(summary, BaseUrl);
 #endif
 
 	return TRUE;
 }
 
+#if defined PRSSR_APP
+
+static CString SanitizeHtml(const CString &html, const CString &baseUrl) {
+	// sanitize HTML
+	CLocalHtmlFile file(baseUrl);
+	CString s;
+
+	s.Format(_T("<div>%s</div>"), html);		// libsgml workaround
+	file.LoadFromMemory(s);
+	file.Filter();
+	file.RewriteRelativeUrls();
+
+	return file.ToString();
+
+}
+
+#endif

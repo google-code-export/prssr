@@ -47,9 +47,7 @@ protected:
 		Unknown
 	};
 
-//	CString GetXML(MSXML::IXMLDOMNode *parent);
-//	CString GetNodeAttrs(MSXML::IXMLDOMNode *parent);
-//	CString GetXML(CXmlNode *parent);
+	CString BaseUrl;
 
 private:
 	EType GetType();
@@ -69,7 +67,10 @@ private:
 
 	BOOL AtomFillInfo(CXmlNode *xmlElem, CFeed *feed);
 	BOOL AtomFillItem(CXmlNode *xmlItem, CFeedItem *item);
-//	BOOL AtomFillList(MSXML::IXMLDOMElement *xmlElem, CFeed *feed);
 };
+
+#if defined PRSSR_APP
+CString SanitizeHtml(const CString &html, const CString &baseUrl);
+#endif
 
 #endif // !defined(AFX_FEEDFILE_H__557E1736_30F4_4A2B_9317_B4FF4A57DC74__INCLUDED_)

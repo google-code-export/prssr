@@ -71,7 +71,6 @@ void ReplaceHTMLEntities(CString &str);
 
 #if defined PRSSR_APP
 CString StripHtmlTags(const CString &str);
-CString SanitizeHtml(const CString &html);
 #endif
 
 #endif

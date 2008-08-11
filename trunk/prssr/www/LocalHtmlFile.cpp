@@ -46,6 +46,9 @@ static char THIS_FILE[] = __FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
+CLocalHtmlFile::CLocalHtmlFile() {
+}
+
 CLocalHtmlFile::CLocalHtmlFile(const CString &baseUrl) {
 	DWORD serviceType;
 	INTERNET_PORT port;
@@ -90,8 +93,45 @@ void CLocalHtmlFile::Filter() {
 	Filter(GetDocumentNode());
 }
 
+void CLocalHtmlFile::RewriteAttr(DOM_NODE *node, char *attr) {
+	const char *attrVal = domElementGetAttribute(node, attr);
+	if (attrVal != NULL) {
+		CString value = CharToWChar(attrVal);
+		CString url = MakeAbsoluteUrl(value, Server, ActivePath);
+		char *s = WCharToChar(url);
+		domElementSetAttribute(node, attr, s);
+		delete [] s;
+	}
+}
+
+void CLocalHtmlFile::RewriteRelativeUrls(DOM_NODE *node) {
+	LOG1(5, "CLocalHtmlFile::RewriteRelativeUrls(%p)", node);
+
+	if (node != NULL) {
+		const char *tag = domNodeGetName(node);
+		if (tag != NULL) {
+			if (_stricmp(tag, "img") == 0)
+				RewriteAttr(node, "src");
+			else if (_stricmp(tag, "a") == 0)
+				RewriteAttr(node, "href");
+		}
+
+		DOM_NODE *child = domNodeGetFirstChild(node);
+		while (child != NULL) {
+			RewriteRelativeUrls(child);
+			child = domNodeGetNextSibling(child);
+		}
+	}
+}
+
+void CLocalHtmlFile::RewriteRelativeUrls() {
+	LOG0(3, "CLocalHtmlFile::RewriteRelativeUrls()");
+
+	RewriteRelativeUrls(GetDocumentNode());
+}
+
 void CLocalHtmlFile::TranslateForOffline(DOM_NODE *node) {
-	LOG1(3, "CLocalHtmlFile::TranslateForOffline(%p)", node);
+	LOG1(5, "CLocalHtmlFile::TranslateForOffline(%p)", node);
 
 	//
 	const char *tag = domNodeGetName(node);
@@ -161,5 +201,4 @@ void CLocalHtmlFile::ExtractImages(CStringList &list) {
 
 	ExtractImages(GetDocumentNode(), list);
 }
-
 
