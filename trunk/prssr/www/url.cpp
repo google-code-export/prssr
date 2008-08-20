@@ -338,7 +338,7 @@ CString MakeOfflineUrl(const CString &strRootDir, const CString &strFileName) {
 	LOG0(5, "MakeOfflineUrl()");
 
 	CString strOfflineUrl;
-	strOfflineUrl.Format(_T("file://localhost/%s/%s"), strRootDir, strFileName);
+	strOfflineUrl.Format(_T("file://localhost%s/%s"), strRootDir, strFileName);
 	strOfflineUrl.Replace('\\', '/');
 
 	return strOfflineUrl;
