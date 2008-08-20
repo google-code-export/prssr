@@ -454,8 +454,11 @@ BOOL CFeedFile::RSSFillItem(CXmlNode *xmlItem, CFeedItem *item) {
 
 		CString name = childNode->GetName();
 		CString value = childNode->GetXML();
-		if (name.Compare(_T("title")) == 0)
+		if (name.Compare(_T("title")) == 0) {
+			value.Remove('\r');
+			value.Remove('\n');
 			item->Title = StripHtmlTags(value);
+		}
 #if defined PRSSR_APP
 		else if (name.Compare(_T("description")) == 0)
 			sDescription = value;
@@ -775,7 +778,10 @@ BOOL CFeedFile::AtomFillItem(CXmlNode *xmlItem, CFeedItem *item) {
 		CString name = child->GetName();
 
 		if (name.Compare(_T("title")) == 0) {
-			item->Title = StripHtmlTags(child->GetValue());
+			CString value = child->GetValue();
+			value.Remove('\r');
+			value.Remove('\n');
+			item->Title = StripHtmlTags(value);
 		}
 #if defined PRSSR_APP
 		else if (wcscmp(name, _T("content")) == 0) {
