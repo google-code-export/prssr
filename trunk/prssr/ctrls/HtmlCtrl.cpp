@@ -53,7 +53,7 @@ END_MESSAGE_MAP()
 BOOL CHTMLCtrl::Create(DWORD dwStyle, CRect &rc, HWND parent, UINT id) {
 	HHtmlDLL = LoadLibrary(_T("htmlview.dll"));
 
-	HWnd = ::CreateWindow(_T("DISPLAYCLASS"), NULL, dwStyle, 
+	HWnd = ::CreateWindow(_T("DISPLAYCLASS"), NULL, dwStyle,
 		rc.left, rc.top, rc.Width(), rc.Height(),
 		parent, (HMENU) id, HHtmlDLL, NULL);
 
@@ -98,4 +98,8 @@ BOOL CHTMLCtrl::IsSelection() {
 
 void CHTMLCtrl::CopySelectionToNewIStream(DWORD *rsd, LPSTREAM *stream) {
 	::SendMessage(HWnd, DTM_COPYSELECTIONTONEWISTREAM, (WPARAM) rsd, (LPARAM) stream);
+}
+
+HWND CHTMLCtrl::SetParent(HWND hNewParent) {
+	return ::SetParent(HWnd, hNewParent);
 }
