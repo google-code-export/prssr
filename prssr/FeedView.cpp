@@ -368,8 +368,12 @@ void CFeedView::DrawItem(CDC &dc, CRect &rc, int idx) {
 		clrFg = ::GetSysColor(COLOR_HIGHLIGHTTEXT);
 	}
 	else {
-		clrBg = Appearance.ClrFeedViewBg; //::GetSysColor(COLOR_WINDOW);
-		clrFg = Appearance.ClrFeedViewFg; //::GetSysColor(COLOR_WINDOWTEXT);
+		clrBg = Appearance.ClrFeedViewBg;
+
+		if (item->IsNew() || item->IsUnread())
+			clrFg = Appearance.ClrFeedViewFg;
+		else
+			clrFg = ::GetSysColor(COLOR_3DSHADOW);
 	}
 
 	// background
@@ -395,15 +399,10 @@ void CFeedView::DrawItem(CDC &dc, CRect &rc, int idx) {
 
 	// title
 	CFont *pOldFont;
-//	if (item->IsUnread() || item->IsNew())
-		pOldFont = dc.SelectObject(&m_fntBold);
-//	else
-//		pOldFont = dc.SelectObject(&m_fntBase);
+	pOldFont = dc.SelectObject(&m_fntBold);
 	clrOld = dc.SetTextColor(clrFg);
 	CRect rcTitle = rc;
 	rcTitle.DeflateRect(SCALEX(20), SCALEY(2), SCALEX(4), SCALEY(1));
-//	CString s = _T("Tohle je velmi dlouhy nadpis, ktery se zlomi na vice radku, abych to mohl otestovat");
-//	DrawTextEndEllipsis(dc, s, rcTitle, DT_LEFT | DT_TOP | DT_NOPREFIX);
 
 	CString strTitle = item->Title;
 	ReplaceHTMLEntities(strTitle);
