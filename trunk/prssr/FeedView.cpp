@@ -1153,7 +1153,7 @@ void CFeedView::OpenItem(int item) {
 	SetupArticleDlg(item);
 
 	if (!::IsWindow(m_pArticleDlg->GetSafeHwnd()))
-		m_pArticleDlg->Create(this);
+		m_pArticleDlg->Create(this, NULL);
 	m_pArticleDlg->ShowWindow(SW_SHOW);
 
 	frame->UpdateTopBar();

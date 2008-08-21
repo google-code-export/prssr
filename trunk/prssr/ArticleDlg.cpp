@@ -95,16 +95,17 @@ CArticleDlg::CArticleDlg() {
 	m_pFeedItem = NULL;
 
 	HtmlCached = FALSE;
+	InFullScreen = FALSE;
 }
 
 CArticleDlg::~CArticleDlg() {
 	delete m_pFeedItem;
 }
 
-BOOL CArticleDlg::Create(CWnd *pParentWnd/* = NULL*/) {
+BOOL CArticleDlg::Create(CFeedView *view, CWnd *pParentWnd/* = NULL*/) {
 	LOG0(3, "CArticleDlg::Create()");
 
-	m_pParent = pParentWnd;
+	View = view;
 	return CCeDialog::Create(CArticleDlg::IDD, pParentWnd);
 }
 
@@ -147,6 +148,7 @@ BEGIN_MESSAGE_MAP(CArticleDlg, CCeDialog)
 
 	ON_COMMAND_RANGE(ID_SOCIAL_BOOKMARK_BASE, ID_SOCIAL_BOOKMARK_BASE + 100, OnBookmarkLink)
 	ON_COMMAND(ID_SEND_BY_EMAIL, OnSendByEmail)
+	ON_COMMAND(ID_FULLSCREEN, OnFullscreen)
 
 	ON_COMMAND(ID_VIEW_IMAGE, OnViewImage)
 	ON_COMMAND(ID_COPY_IMAGE_LOCATION, OnCopyImageLocation)
@@ -191,6 +193,7 @@ BOOL CArticleDlg::OnInitDialog() {
 	// bookmark
 	AppendBookmarkMenu(&mnu);
 	AppendMenuFromResource(&mnu, IDR_SEND_BY_EMAIL);
+	AppendMenuFromResource(&mnu, IDR_FULLSCREEN);
 	mnu.AppendMenu(MF_SEPARATOR);
 	AppendMenuFromResource(&mnu, IDR_REFRESH);
 
@@ -214,19 +217,17 @@ void CArticleDlg::OnDestroy() {
 void CArticleDlg::PostNcDestroy() {
 	LOG0(5, "CArticleDlg::PostNcDestroy()");
 
-	CFeedView *view = (CFeedView *) m_pParent;
-
-	if ((view->SiteItem->Type != CSiteItem::VFolder && Config.HideReadItems) ||
-		(view->SiteItem->Type == CSiteItem::VFolder && view->SiteItem->FlagMask == MESSAGE_READ_STATE))
+	if ((View->SiteItem->Type != CSiteItem::VFolder && Config.HideReadItems) ||
+		(View->SiteItem->Type == CSiteItem::VFolder && View->SiteItem->FlagMask == MESSAGE_READ_STATE))
 	{
-		for (int i = view->GetItemCount() - 1; i >= 0; i--) {
-			if (view->GetItem(i)->IsRead())
-				view->DeleteItem(i);
+		for (int i = View->GetItemCount() - 1; i >= 0; i--) {
+			if (View->GetItem(i)->IsRead())
+				View->DeleteItem(i);
 		}
 	}
 
 	CCeDialog::PostNcDestroy();
-	((CFeedView *) m_pParent)->m_pArticleDlg = NULL;
+	View->m_pArticleDlg = NULL;
 	AfxGetMainWnd()->SetFocus();
 
 	delete this;
@@ -235,18 +236,37 @@ void CArticleDlg::PostNcDestroy() {
 void CArticleDlg::OnOK() {
 	LOG0(1, "CArticleDlg::OnOK()");
 
+	ToNormalMode();
 	DestroyWindow();
 }
 
 void CArticleDlg::OnCancel() {
 	LOG0(1, "CArticleDlg::OnCancel()");
 
+	ToNormalMode();
 	DestroyWindow();
 }
 
 void CArticleDlg::NoNewMessage() {
+	// info bar
 	m_ctlInfoBar.SetText(IDS_NO_MORE_MESSAGES);
-	m_ctlInfoBar.ShowWindow(SW_SHOW);
+
+	CRect rcClient;
+	GetClientRect(&rcClient);
+
+//	CRect rcInfo;
+	if (::IsWindow(m_ctlInfoBar.GetSafeHwnd())) {
+//		m_ctlInfoBar.GetClientRect(rcInfo);
+		m_ctlInfoBar.SetWindowPos(&wndTopMost, rcClient.left, rcClient.bottom - SCALEX(20),
+			rcClient.Width(), SCALEX(20), SWP_SHOWWINDOW);
+		m_ctlInfoBar.Invalidate();
+
+		rcClient.bottom -= SCALEX(20);
+		// reposition the html control
+		::SetWindowPos(m_ctlHTML.GetHwnd(), NULL, rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height(), SWP_NOZORDER);
+	}
+
+//	m_ctlInfoBar.ShowWindow(SW_SHOW);
 	m_ctlInfoBar.StartTimer();
 }
 
@@ -638,6 +658,7 @@ void CArticleDlg::OnContextMenu(NM_HTMLCONTEXT *pnmhc) {
 	popup.AppendMenu(MF_SEPARATOR);
 	AppendMenuFromResource(&popup, IDR_ITEM_FLAG);
 	AppendMenuFromResource(&popup, IDR_COPY);
+	AppendMenuFromResource(&popup, IDR_FULLSCREEN);
 
 	//
 	CPoint point = pnmhc->pt;
@@ -762,23 +783,29 @@ void CArticleDlg::OnInitMenuPopup(CMenu* pMenu, UINT nIndex, BOOL bSysMenu) {
 	}
 }
 
+void CArticleDlg::OnActivate(UINT nState, CWnd *pWndOther, BOOL bMinimized) {
+	if (InFullScreen)
+		ToFullScreenMode();
+	else
+		ToNormalMode();
+}
+
 // commands
 
 void CArticleDlg::OnItemNext() {
 	LOG0(1, "CArticleDlg::OnItemNext()");
 
-	if (m_pParent == NULL) return;
-	CFeedView *view = (CFeedView *) m_pParent;
+	if (View == NULL) return;
 
-	if (view->SiteItem != NULL && view->SiteItem->Type == CSiteItem::VFolder) {
+	if (View->SiteItem != NULL && View->SiteItem->Type == CSiteItem::VFolder) {
 		CWaitCursor wait;
 
-		int oldIdx = view->GetSelectedItem();
-		int idx = view->GetSelectedItem();
+		int oldIdx = View->GetSelectedItem();
+		int idx = View->GetSelectedItem();
 
 		BOOL found = FALSE;
 		while (!found) {
-			if (idx < view->GetItemCount() - 1)
+			if (idx < View->GetItemCount() - 1)
 				idx++;
 			else if (Config.WrapAround)
 				idx = 0;
@@ -792,8 +819,8 @@ void CArticleDlg::OnItemNext() {
 			}
 
 			// check
-			if (view->SiteItem->FlagMask == MESSAGE_READ_STATE) {
-				CFeedItem *fi = view->GetItem(idx);
+			if (View->SiteItem->FlagMask == MESSAGE_READ_STATE) {
+				CFeedItem *fi = View->GetItem(idx);
 				if (!fi->IsDeleted() && (fi->IsNew() || fi->IsUnread()))
 					found = TRUE;
 			}
@@ -802,8 +829,8 @@ void CArticleDlg::OnItemNext() {
 		}
 
 		if (found) {
-			view->OpenItem(idx);
-			view->EnsureVisible(idx);
+			View->OpenItem(idx);
+			View->EnsureVisible(idx);
 
 			ShowFeedItem();
 			m_ctlBanner.Invalidate();
@@ -812,15 +839,15 @@ void CArticleDlg::OnItemNext() {
 	else {
 		CWaitCursor wait;
 
-		int oldIdx = view->GetSelectedItem();
+		int oldIdx = View->GetSelectedItem();
 		int oldSite = Config.ActSiteIdx;
 
 		int site = Config.ActSiteIdx;
-		int idx = view->GetSelectedItem();
+		int idx = View->GetSelectedItem();
 
 		BOOL found = FALSE;
 		while (!found) {
-			if (idx < view->GetItemCount() - 1) {
+			if (idx < View->GetItemCount() - 1) {
 				idx++;
 				if (site == oldSite) {
 					// we are back on the original item
@@ -832,7 +859,7 @@ void CArticleDlg::OnItemNext() {
 			}
 			else {
 				int t = site;
-				site = view->MoveToNextChannel();
+				site = View->MoveToNextChannel();
 				if (t == site) {
 					NoNewMessage();
 					break;
@@ -843,9 +870,9 @@ void CArticleDlg::OnItemNext() {
 			}
 
 			// check
-			if (view->GetItemCount() > 0) {
+			if (View->GetItemCount() > 0) {
 				if (Config.MoveToUnread || Config.HideReadItems) {
-					CFeedItem *fi = view->GetItem(idx);
+					CFeedItem *fi = View->GetItem(idx);
 					if (!fi->IsDeleted() && (fi->IsNew() || fi->IsUnread()))
 						found = TRUE;
 				}
@@ -856,8 +883,8 @@ void CArticleDlg::OnItemNext() {
 
 		CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
 		if (found) {
-			view->OpenItem(idx);
-			view->EnsureVisible(idx);
+			View->OpenItem(idx);
+			View->EnsureVisible(idx);
 
 			ShowFeedItem();
 			m_ctlBanner.Invalidate();
@@ -870,7 +897,7 @@ void CArticleDlg::OnItemNext() {
 		else {
 			// get back to original site and item
 			frame->SelectSite(oldSite);
-			view->EnsureVisible(oldIdx);
+			View->EnsureVisible(oldIdx);
 		}
 	}
 }
@@ -878,21 +905,20 @@ void CArticleDlg::OnItemNext() {
 void CArticleDlg::OnItemPrev() {
 	LOG0(1, "CArticleDlg::OnItemPrev()");
 
-	if (m_pParent == NULL) return;
-	CFeedView *view = (CFeedView *) m_pParent;
+	if (View == NULL) return;
 
-	if (view->SiteItem != NULL && view->SiteItem->Type == CSiteItem::VFolder) {
+	if (View->SiteItem != NULL && View->SiteItem->Type == CSiteItem::VFolder) {
 		CWaitCursor wait;
 
-		int oldIdx = view->GetSelectedItem();
-		int idx = view->GetSelectedItem();
+		int oldIdx = View->GetSelectedItem();
+		int idx = View->GetSelectedItem();
 
 		BOOL found = FALSE;
 		while (!found) {
 			if (idx > 0)
 				idx--;
 			else if (Config.WrapAround)
-				idx = view->GetItemCount() - 1;
+				idx = View->GetItemCount() - 1;
 			else
 				idx = oldIdx;
 
@@ -903,8 +929,8 @@ void CArticleDlg::OnItemPrev() {
 			}
 
 			// check
-			if (view->SiteItem->FlagMask == MESSAGE_READ_STATE) {
-				CFeedItem *fi = view->GetItem(idx);
+			if (View->SiteItem->FlagMask == MESSAGE_READ_STATE) {
+				CFeedItem *fi = View->GetItem(idx);
 				if (!fi->IsDeleted() && (fi->IsNew() || fi->IsUnread()))
 					found = TRUE;
 			}
@@ -913,8 +939,8 @@ void CArticleDlg::OnItemPrev() {
 		}
 
 		if (found) {
-			view->OpenItem(idx);
-			view->EnsureVisible(idx);
+			View->OpenItem(idx);
+			View->EnsureVisible(idx);
 
 			ShowFeedItem();
 			m_ctlBanner.Invalidate();
@@ -923,11 +949,11 @@ void CArticleDlg::OnItemPrev() {
 	else {
 		CWaitCursor wait;
 
-		int oldIdx = view->GetSelectedItem();
+		int oldIdx = View->GetSelectedItem();
 		int oldSite = Config.ActSiteIdx;
 
 		int site = Config.ActSiteIdx;
-		int idx = view->GetSelectedItem();
+		int idx = View->GetSelectedItem();
 
 		BOOL found = FALSE;
 		while (!found) {
@@ -943,20 +969,20 @@ void CArticleDlg::OnItemPrev() {
 			}
 			else {
 				int t = site;
-				site = view->MoveToPrevChannel();
+				site = View->MoveToPrevChannel();
 				if (t == site) {
 					NoNewMessage();
 					break;
 				}
 				else {
-					idx = view->GetItemCount() - 1;
+					idx = View->GetItemCount() - 1;
 				}
 			}
 
 			// check
-			if (view->GetItemCount() > 0) {
+			if (View->GetItemCount() > 0) {
 				if (Config.MoveToUnread || Config.HideReadItems) {
-					CFeedItem *fi = view->GetItem(idx);
+					CFeedItem *fi = View->GetItem(idx);
 					if (!fi->IsDeleted() && (fi->IsNew() || fi->IsUnread()))
 						found = TRUE;
 				}
@@ -967,8 +993,8 @@ void CArticleDlg::OnItemPrev() {
 
 		CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
 		if (found) {
-			view->OpenItem(idx);
-			view->EnsureVisible(idx);
+			View->OpenItem(idx);
+			View->EnsureVisible(idx);
 
 			ShowFeedItem();
 			m_ctlBanner.Invalidate();
@@ -981,7 +1007,7 @@ void CArticleDlg::OnItemPrev() {
 		else {
 			// get back to original site and item
 			frame->SelectSite(oldSite);
-			view->EnsureVisible(oldIdx);
+			View->EnsureVisible(oldIdx);
 		}
 	}
 }
@@ -989,16 +1015,15 @@ void CArticleDlg::OnItemPrev() {
 void CArticleDlg::OnItemFlag() {
 	LOG0(1, "CArticleDlg::OnItemFlag()");
 
-	CFeedView *view = (CFeedView *) m_pParent;
-	if (m_pParent != NULL) {
-		int selItem = view->GetSelectedItem();
+	if (View != NULL) {
+		int selItem = View->GetSelectedItem();
 		if (m_pFeedItem->IsFlagged()) {
-			view->UnflagItem(selItem);
+			View->UnflagItem(selItem);
 			m_pFeedItem->SetFlags(0, MESSAGE_FLAG);
 			m_ctlBanner.SetFlagged(-1);
 		}
 		else {
-			view->FlagItem(selItem);
+			View->FlagItem(selItem);
 			m_pFeedItem->SetFlags(MESSAGE_FLAG, MESSAGE_FLAG);
 			m_ctlBanner.SetFlagged(FLAG_ICON);
 		}
@@ -1021,6 +1046,7 @@ void CArticleDlg::OnRefresh() {
 void CArticleDlg::OnItemOpen() {
 	LOG0(1, "CArticleDlg::OnItemOpen()");
 
+	ToNormalMode();
 	if (m_strContextMnuUrl.IsEmpty())
 		OpenOnlineMessage(m_pFeedItem->Link, m_pFeedItem->SiteItem);
 	else
@@ -1033,6 +1059,7 @@ void CArticleDlg::OnEnclosureOpen() {
 
 	if (m_pFeedItem != NULL && m_pFeedItem->HasEnclosure()) {
 		CEnclosureItem *ei = m_pFeedItem->Enclosures.GetHead();
+		ToNormalMode();
 		OpenEnclosure(ei);
 	}
 }
@@ -1133,8 +1160,8 @@ void CArticleDlg::OnUpdateCopy(CCmdUI *pCmdUI) {
 void CArticleDlg::OnLinkOpen() {
 	LOG0(1, "CArticleDlg::OnLinkOpen()");
 
+	ToNormalMode();
 	OpenOnlineMessage(m_strContextMnuUrl, m_pFeedItem->SiteItem);
-
 }
 
 void CArticleDlg::OnLinkDownload() {
@@ -1147,6 +1174,8 @@ void CArticleDlg::OnLinkDownload() {
 }
 
 void CArticleDlg::OnBookmarkLink(UINT nID) {
+	ToNormalMode();
+
 	// link to bookmark
 	CString link;
 	if (m_strContextMnuUrl.IsEmpty() && m_pFeedItem != NULL)
@@ -1191,6 +1220,8 @@ void CArticleDlg::OnCopyImageLocation() {
 }
 
 void CArticleDlg::OnSendByEmail() {
+	ToNormalMode();
+
 	CString link;
 	if (m_strContextMnuUrl.IsEmpty() && m_pFeedItem != NULL)
 		link = m_pFeedItem->Link;
@@ -1199,3 +1230,45 @@ void CArticleDlg::OnSendByEmail() {
 
 	SendByEmail(link);
 }
+
+void CArticleDlg::ToFullScreenMode() {
+	if (!InFullScreen) {
+		HWND hWnd = GetSafeHwnd();
+
+		SHSipPreference(hWnd, SIP_FORCEDOWN);				// hide SIP
+		SetForegroundWindow();
+		SHFullScreen(hWnd, SHFS_HIDETASKBAR | SHFS_HIDESIPBUTTON);
+
+		HDC hDC = ::GetDC(hWnd);
+		::MoveWindow(hWnd, 0, 0, GetDeviceCaps(hDC, HORZRES), GetDeviceCaps(hDC, VERTRES), TRUE);
+		::ReleaseDC(hWnd, hDC);
+
+		InFullScreen = TRUE;
+		ResizeControls();
+	}
+}
+
+void CArticleDlg::ToNormalMode() {
+	if (InFullScreen) {
+		HWND hWnd = GetSafeHwnd();
+
+		SHFullScreen(hWnd, SHFS_SHOWTASKBAR | SHFS_SHOWSIPBUTTON);
+
+#define MENU_HEIGHT 	26
+		RECT rc;
+		::GetWindowRect(hWnd, &rc);
+		::MoveWindow(hWnd, rc.left, rc.top + SCALEY(MENU_HEIGHT), rc.right, rc.bottom - (2 * SCALEY(MENU_HEIGHT)), TRUE);
+
+		InFullScreen = FALSE;
+
+		ResizeControls();
+	}
+}
+
+void CArticleDlg::OnFullscreen() {
+	if (InFullScreen)
+		ToNormalMode();
+	else
+		ToFullScreenMode();
+}
+
