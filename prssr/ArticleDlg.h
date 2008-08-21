@@ -36,6 +36,7 @@
 // CArticleDlg dialog
 
 class CFeedItem;
+class CFeedView;
 class CEnclosureItem;
 
 class CArticleDlg : public CCeDialog {
@@ -44,7 +45,7 @@ public:
 	CArticleDlg();   // standard constructor
 	~CArticleDlg();
 
-	BOOL Create(CWnd *pParentWnd = NULL);
+	BOOL Create(CFeedView *view, CWnd *pParentWnd = NULL);
 
 // Dialog Data
 	enum {
@@ -73,13 +74,16 @@ public:
 
 // Implementation
 protected:
+	CFeedView *View;
 	CImageList m_ilIcons;
-
-	CWnd *m_pParent;
 	BOOL HotSpot;
 	CString m_strContextMnuUrl;
 	CString m_strContextMenuLinkName;
 	CString m_strImageLoc;
+
+	BOOL InFullScreen;
+	void ToNormalMode();
+	void ToFullScreenMode();
 
 	void OnContextMenu(NM_HTMLCONTEXT *pnmhc);
 
@@ -93,6 +97,7 @@ protected:
 	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnDestroy();
 	afx_msg void OnInitMenuPopup(CMenu* pMenu, UINT nIndex, BOOL bSysMenu);
+	afx_msg void OnActivate(UINT nState, CWnd *pWndOther, BOOL bMinimized);
 	//}}AFX_MSG
 	LRESULT OnHotKey(WPARAM wParam, LPARAM lParam);
 
@@ -136,6 +141,7 @@ protected:
 	void OnViewImage();
 	void OnCopyImageLocation();
 	void OnSendByEmail();
+	void OnFullscreen();
 
 	BOOL HtmlCached;
 

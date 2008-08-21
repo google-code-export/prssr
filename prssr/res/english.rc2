@@ -1253,6 +1253,11 @@ BEGIN
     MENUITEM "Send by e-mail",                  ID_SEND_BY_EMAIL
 END
 
+IDR_FULLSCREEN MENU DISCARDABLE
+BEGIN
+    MENUITEM "Fullscreen",                      ID_FULLSCREEN
+END
+
 IDR_SITE_MANAGER MENU DISCARDABLE
 BEGIN
     MENUITEM "Add Feed",                        ID_ADD_FEED

@@ -111,11 +111,12 @@
 #define IDR_SEND_BY_EMAIL               334
 #define IDR_YESNO                       335
 #define IDR_CACHE_MANAGER               336
-#define IDR_ARTICLE_IMAGE				337
-#define IDR_COPY_LINK_URL				338
+#define IDR_ARTICLE_IMAGE               337
+#define IDR_COPY_LINK_URL               338
 #define IDR_REWRITE_CTX                 339
 #define IDR_DONE                        340
 #define IDR_KEYWORD_MANAGER             341
+#define IDR_FULLSCREEN                  342
 
 #define IDS_TODAY                       400
 #define IDS_YESTERDAY                   401
@@ -672,6 +673,7 @@
 #define ID_RETRY                        32876
 #define ID_CACHE                        32877
 #define ID_PURGE_CACHE                  32878
+#define ID_FULLSCREEN                   32879
 
 #define ID_SOCIAL_BOOKMARK_BASE			 33000
 
