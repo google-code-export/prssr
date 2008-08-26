@@ -47,7 +47,7 @@ CAboutPg::CAboutPg() : CCePropertyPage(CAboutPg::IDD) {
 #ifdef SHOW_SVN_REVISION
 	// SVN revision
 	int rev;
-	swscanf(revision, _T("$Rev$"), &rev);
+	swscanf(revision, _T("$Rev: %d"), &rev);
 	m_strRevision.Format(_T(" (rev. %d)"), rev);
 #endif
 
