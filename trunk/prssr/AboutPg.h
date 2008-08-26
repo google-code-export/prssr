@@ -45,6 +45,7 @@ public:
 	CLinkCtrl	m_ctlHomepageLink;
 	CStatic	m_ctlName;
 	//}}AFX_DATA
+	CString	m_strRevision;
 
 
 // Overrides
