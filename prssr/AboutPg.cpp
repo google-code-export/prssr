@@ -43,6 +43,14 @@ CAboutPg::CAboutPg() : CCePropertyPage(CAboutPg::IDD) {
 	//{{AFX_DATA_INIT(CAboutPg)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
+
+#ifdef SHOW_SVN_REVISION
+	// SVN revision
+	int rev;
+	swscanf(revision, _T("$Rev$"), &rev);
+	m_strRevision.Format(_T(" (rev. %d)"), rev);
+#endif
+
 }
 
 CAboutPg::~CAboutPg() {
@@ -60,7 +68,6 @@ void CAboutPg::DoDataExchange(CDataExchange* pDX) {
 BEGIN_MESSAGE_MAP(CAboutPg, CCePropertyPage)
 	//{{AFX_MSG_MAP(CAboutPg)
 	ON_BN_CLICKED(IDC_HOMEPAGE_LINK, OnHomepageLink)
-//	ON_WM_CTLCOLOR()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -85,14 +92,6 @@ BOOL CAboutPg::OnInitDialog() {
 
 	m_ctlHomepageLink.SetFont(&m_fntUnderlined);
 
-#ifdef SHOW_SVN_REVISION
-	// add SVN revision
-	CString sName;
-	m_ctlName.GetWindowText(sName);
-	sName += _T(" ") + revision;
-	m_ctlName.SetWindowText(sName);
-#endif
-
 	return TRUE;
 }
 
@@ -100,28 +99,21 @@ void CAboutPg::OnHomepageLink() {
 	SHELLEXECUTEINFO ei = { 0 };
 	ei.cbSize = sizeof(ei);
 	ei.fMask = SEE_MASK_NOCLOSEPROCESS;
-//	ei.lpFile = _T("iexplore.exe");
 	CString strLink;
 	m_ctlHomepageLink.GetWindowText(strLink);
 	ei.lpFile = strLink;
-//	ei.lpParameters = strLink;
 	ShellExecuteEx(&ei);
 }
-
-/*
-HBRUSH CAboutPg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor) {
-	HBRUSH hbr = CCePropertyPage::OnCtlColor(pDC, pWnd, nCtlColor);
-
-	if (pWnd == &m_ctlHomepageLink) {
-		pDC->SetTextColor(rgbLinkColor);
-	}
-
-	return hbr;
-}
-*/
 
 void CAboutPg::ResizeControls() {
 	RelayoutDialog(AfxGetInstanceHandle(), GetSafeHwnd(), InWideMode() ?
 		MAKEINTRESOURCE(IDD_WIDE) :
 		MAKEINTRESOURCE(IDD));
+
+#ifdef SHOW_SVN_REVISION
+	CString sName;
+	m_ctlName.GetWindowText(sName);
+	sName += CString(m_strRevision);
+	m_ctlName.SetWindowText(sName);
+#endif
 }
