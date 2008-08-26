@@ -32,7 +32,7 @@ static char THIS_FILE[] = __FILE__;
 
 const static COLORREF rgbLinkColor = RGB(0, 0, 0xff);
 
-static TCHAR revision[] = "$Rev$";
+static TCHAR revision[] = _T("$Rev$");
 
 /////////////////////////////////////////////////////////////////////////////
 // CAboutPg property page
@@ -51,6 +51,7 @@ CAboutPg::~CAboutPg() {
 void CAboutPg::DoDataExchange(CDataExchange* pDX) {
 	CCePropertyPage::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CAboutPg)
+	DDX_Control(pDX, IDC_STATIC2, m_ctlName);
 	DDX_Control(pDX, IDC_HOMEPAGE_LINK, m_ctlHomepageLink);
 	//}}AFX_DATA_MAP
 }
@@ -83,6 +84,14 @@ BOOL CAboutPg::OnInitDialog() {
 	VERIFY(m_fntUnderlined.CreateFontIndirect(&lf));
 
 	m_ctlHomepageLink.SetFont(&m_fntUnderlined);
+
+#ifdef SHOW_SVN_REVISION
+	// add SVN revision
+	CString sName;
+	m_ctlName.GetWindowText(sName);
+	sName += _T(" ") + revision;
+	m_ctlName.SetWindowText(sName);
+#endif
 
 	return TRUE;
 }
