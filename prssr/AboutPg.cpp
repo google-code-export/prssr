@@ -32,8 +32,6 @@ static char THIS_FILE[] = __FILE__;
 
 const static COLORREF rgbLinkColor = RGB(0, 0, 0xff);
 
-static TCHAR revision[] = _T("$Rev$");
-
 /////////////////////////////////////////////////////////////////////////////
 // CAboutPg property page
 
@@ -43,14 +41,6 @@ CAboutPg::CAboutPg() : CCePropertyPage(CAboutPg::IDD) {
 	//{{AFX_DATA_INIT(CAboutPg)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
-
-#ifdef SHOW_SVN_REVISION
-	// SVN revision
-	int rev;
-	swscanf(revision, _T("$Rev: %d"), &rev);
-	m_strRevision.Format(_T(" (rev. %d)"), rev);
-#endif
-
 }
 
 CAboutPg::~CAboutPg() {
@@ -59,7 +49,6 @@ CAboutPg::~CAboutPg() {
 void CAboutPg::DoDataExchange(CDataExchange* pDX) {
 	CCePropertyPage::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CAboutPg)
-	DDX_Control(pDX, IDC_STATIC2, m_ctlName);
 	DDX_Control(pDX, IDC_HOMEPAGE_LINK, m_ctlHomepageLink);
 	//}}AFX_DATA_MAP
 }
@@ -109,11 +98,4 @@ void CAboutPg::ResizeControls() {
 	RelayoutDialog(AfxGetInstanceHandle(), GetSafeHwnd(), InWideMode() ?
 		MAKEINTRESOURCE(IDD_WIDE) :
 		MAKEINTRESOURCE(IDD));
-
-#ifdef SHOW_SVN_REVISION
-	CString sName;
-	m_ctlName.GetWindowText(sName);
-	sName += CString(m_strRevision);
-	m_ctlName.SetWindowText(sName);
-#endif
 }
