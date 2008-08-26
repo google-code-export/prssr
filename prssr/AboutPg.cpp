@@ -32,6 +32,8 @@ static char THIS_FILE[] = __FILE__;
 
 const static COLORREF rgbLinkColor = RGB(0, 0, 0xff);
 
+static TCHAR revision[] = "$Rev$";
+
 /////////////////////////////////////////////////////////////////////////////
 // CAboutPg property page
 
@@ -100,7 +102,7 @@ void CAboutPg::OnHomepageLink() {
 /*
 HBRUSH CAboutPg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor) {
 	HBRUSH hbr = CCePropertyPage::OnCtlColor(pDC, pWnd, nCtlColor);
-	
+
 	if (pWnd == &m_ctlHomepageLink) {
 		pDC->SetTextColor(rgbLinkColor);
 	}
