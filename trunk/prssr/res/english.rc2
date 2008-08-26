@@ -803,7 +803,7 @@ BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC1,135,5,21,20
     LTEXT           "pRSSreader 1.4.1",IDC_STATIC2,5,8,115,10
     LTEXT           "Copyright (c) 2005 - 2008",IDC_STATIC3,5,23,115,10
-    LTEXT           "David Andrš",IDC_STATIC4,5,33,115,10
+    LTEXT           "David Andrs",IDC_STATIC4,5,33,115,10
     LTEXT           "Using libexpat 2.0.0, zlib 1.2.3, libsgml 1.1.4, libregex 3.8a",IDC_STATIC5,5,50,115,30
     RTEXT           "http://pda.jasnapaka.com/prssr/",IDC_HOMEPAGE_LINK,5,124,
                     151,10,SS_NOTIFY
@@ -818,7 +818,7 @@ BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC1,185,5,21,20
     LTEXT           "pRSSreader 1.4.1",IDC_STATIC2,5,8,115,10
     LTEXT           "Copyright (c) 2005 - 2008",IDC_STATIC3,5,23,115,10
-    LTEXT           "David Andrš",IDC_STATIC4,5,33,115,10
+    LTEXT           "David Andrs",IDC_STATIC4,5,33,115,10
     LTEXT           "Using libexpat 2.0.0, zlib 1.2.3, libsgml 1.1.4, libregex 3.8a",IDC_STATIC5,5,50,200,20
     RTEXT           "http://pda.jasnapaka.com/prssr/",IDC_HOMEPAGE_LINK,4,
                     73,205,10,SS_NOTIFY
@@ -842,6 +842,28 @@ CAPTION "License"
 FONT 8, "Tahoma"
 BEGIN
     EDITTEXT        IDC_LICENSE,5,5,150,129,ES_MULTILINE | ES_AUTOVSCROLL |
+                    ES_AUTOHSCROLL | NOT WS_BORDER | WS_VSCROLL | WS_HSCROLL |
+                    NOT WS_TABSTOP
+END
+
+IDD_CREDITS DIALOGEX 0, 0, 160, 165
+STYLE DS_MODALFRAME | WS_CHILD | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW | 0x80000000L
+CAPTION "Credits"
+FONT 8, "Tahoma"
+BEGIN
+    EDITTEXT        IDC_CREDITS,5,5,150,129,ES_MULTILINE | ES_AUTOVSCROLL |
+                    ES_AUTOHSCROLL | NOT WS_BORDER | WS_VSCROLL | WS_HSCROLL |
+                    NOT WS_TABSTOP
+END
+
+IDD_CREDITS_WIDE DIALOGEX 0, 0, 210, 100
+STYLE DS_MODALFRAME | WS_CHILD | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW | 0x80000000L
+CAPTION "Credits"
+FONT 8, "Tahoma"
+BEGIN
+    EDITTEXT        IDC_CREDITS,5,5,150,129,ES_MULTILINE | ES_AUTOVSCROLL |
                     ES_AUTOHSCROLL | NOT WS_BORDER | WS_VSCROLL | WS_HSCROLL |
                     NOT WS_TABSTOP
 END
