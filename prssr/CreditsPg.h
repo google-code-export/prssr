@@ -69,4 +69,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(_TMAN_LICENSEPG_H_)
+#endif // !defined(_CREDITSPG_H_)

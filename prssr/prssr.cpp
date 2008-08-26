@@ -129,42 +129,6 @@ void CPrssrApp::OnAppAbout() {
 	sheet.AddPage(&pgCredits);
 	sheet.SetMenu(IDR_CANCEL);
 	sheet.DoModal();
-
-#if 0
-	// testing url download
-/*	CDownloadData dd(
-		_T("http://digiarena.zive.cz/GetThumbNail.aspx?id_file=3224&amp;width=5000&amp;height=140&amp;q=100"),
-		_T("\\program files\\pRSSreader\\a"),
-		1,
-		CDownloadData::Image
-	);
-
-	CWebDownloader wd(_T("\\"), 1);
-	wd.DownloadUrl(&dd);
-*/
-
-	// testing HTML translation for offline browsing
-/*	CDownloadData dd(_T("url"), _T("\\digiarena.html"));
-	CWebDownloader wd(_T("\\"), 1);
-	wd.TranslateHtml(&dd);
-
-	// testing link extraction
-/*	CWebDownloader wd(_T("\\"), 1);
-	CDownloadList list;
-	CCache cache;
-	wd.ExtractLinksHtml(&dd, list, cache);
-	POSITION pos = list.GetHeadPosition();
-	while (pos != NULL) {
-		CDownloadData *d = list.GetNext(pos);
-		LOG1(1, ":%S:", d->URL);
-		delete d;
-	}
-*/
-
-	// testing summary view
-//	AfxGetMainWnd()->PostMessage(UWM_UPDATE_FEED, 0, (LPARAM) SiteList.GetAt(30));
-//	AfxGetMainWnd()->PostMessage(UWM_UPDATE_FEED, 0, (LPARAM) SiteList.GetAt(25));
-#endif
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -275,11 +239,6 @@ BOOL CPrssrApp::InitInstance() {
 		}
 		sPar.ReleaseBuffer();
 	}
-
-
-//	SetupCradlingEvent(Config.CheckOnCradling);
-//	SetupPeriodicNotification(Config.UpdateInterval > 0, Config.UpdateInterval);
-//	SetupDailyNotification(Config.TimeUpdate, Config.UpdateAtTime);
 
 	return TRUE;
 }
