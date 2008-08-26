@@ -73,6 +73,8 @@
 #define IDD_PROP_REWRITING              204
 #define IDD_LICENSE                     205
 #define IDD_LICENSE_WIDE                206
+#define IDD_CREDITS                     207
+#define IDD_CREDITS_WIDE                208
 
 #define IDR_FEEDITEM                    300
 #define IDR_EDIT                        301
@@ -592,6 +594,7 @@
 #define IDC_SITEMAN_LINK                1244
 #define IDC_BKGND_UPDATE                1245
 #define IDC_LICENSE                     1246
+#define IDC_CREDITS                     1247
 
 #define ID_TOOLS_OPTIONS                32774
 #define ID_TOOLS_SITEMANAGER            32775

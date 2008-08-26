@@ -36,6 +36,7 @@
 
 #include "AboutPg.h"
 #include "LicensePg.h"
+#include "CreditsPg.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
@@ -120,10 +121,12 @@ void CPrssrApp::OnAppAbout() {
 
 	CAboutPg pgAbout;
 	CLicensePg pgLicense;
+	CCreditsPg pgCredits;
 
 	CCePropertySheet sheet(IDS_ABOUT);
 	sheet.AddPage(&pgAbout);
 	sheet.AddPage(&pgLicense);
+	sheet.AddPage(&pgCredits);
 	sheet.SetMenu(IDR_CANCEL);
 	sheet.DoModal();
 
