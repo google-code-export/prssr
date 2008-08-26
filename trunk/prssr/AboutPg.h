@@ -43,10 +43,7 @@ public:
 	//{{AFX_DATA(CAboutPg)
 	enum { IDD = IDD_ABOUTBOX, IDD_WIDE = IDD_ABOUTBOX_WIDE };
 	CLinkCtrl	m_ctlHomepageLink;
-	CStatic	m_ctlName;
 	//}}AFX_DATA
-	CString	m_strRevision;
-
 
 // Overrides
 	// ClassWizard generate virtual function overrides
