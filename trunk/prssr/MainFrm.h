@@ -148,6 +148,7 @@ protected:
 	afx_msg void OnUpdateFileInformation(CCmdUI *pCmdUI);
 
 	afx_msg void OnFileWorkOffline();
+	void UpdateWorkOfflineMenu();
 	afx_msg void OnUpdateFileWorkOffline(CCmdUI *pCmdUI);
 	afx_msg void OnFileCacheFlagged();
 	afx_msg void OnFileCacheUnread();
