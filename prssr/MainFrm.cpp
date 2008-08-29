@@ -319,6 +319,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 //	SetThreadPriority(HPreloadThread, THREAD_PRIORITY_LOWEST);
 
 	UpdateMenu();
+	UpdateWorkOfflineMenu();
 
 	return 0;
 }
@@ -1451,12 +1452,7 @@ void CMainFrame::OnUpdateFileProperties(CCmdUI *pCmdUI) {
 		pCmdUI->Enable(FALSE);
 }
 
-void CMainFrame::OnFileWorkOffline() {
-	LOG0(1, "CMainFrame::OnFileWorkOffline()");
-
-	Config.WorkOffline = !Config.WorkOffline;
-	Config.SaveUI();
-
+void CMainFrame::UpdateWorkOfflineMenu() {
 	// mnu
 	TBBUTTON tb;
 	::SendMessage(m_hwndCmdBar, TB_GETBUTTON, 1, (LPARAM) &tb);
@@ -1469,6 +1465,14 @@ void CMainFrame::OnFileWorkOffline() {
 	pOfflineMnu->CheckMenuItem(ID_WORK_OFFLINE, state | MF_BYCOMMAND);
 
 	mnu.Detach();
+}
+
+void CMainFrame::OnFileWorkOffline() {
+	LOG0(1, "CMainFrame::OnFileWorkOffline()");
+
+	Config.WorkOffline = !Config.WorkOffline;
+	Config.SaveUI();
+	UpdateWorkOfflineMenu();
 }
 
 BOOL CMainFrame::CheckOnlineMode() {
