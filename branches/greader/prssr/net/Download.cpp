@@ -126,6 +126,7 @@ void CDownloader::Reset() {
 	ETag.Empty();
 	LastModified.Empty();
 	Charset.Empty();
+	Cookies.RemoveAll();
 }
 
 void CDownloader::SaveHeaders(CHttpResponse *res) {
@@ -665,6 +666,7 @@ BOOL CDownloader::SaveHttpObject(CString &url, const CString &strFileName, LPVOI
 				if (req != NULL) {
 					State = DOWNLOAD_STATE_SENDING_REQUEST;
 					req->AddHeaders(AdditionalHeaders);
+					req->AddCookies(Cookies);
 					OnBeforeSendRequest(req, context);
 					HttpConnection.SendRequest(req, &Config.AdditionalHttpHeaders);
 
@@ -829,4 +831,8 @@ BOOL CDownloader::Post(CString &url, const CString &strBody, CString &response, 
 void CDownloader::FreeAdditionalHeaders() {
 	while (!AdditionalHeaders.IsEmpty())
 		delete AdditionalHeaders.RemoveHead();
+}
+
+void CDownloader::SetCookie(const CString &cookie) {
+	Cookies.AddTail(cookie);	
 }

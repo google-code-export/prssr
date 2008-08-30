@@ -351,6 +351,7 @@
 #define IDS_PURGE_CACHE_WARNING	        650
 #define IDS_AUTHENTICATING              651
 #define IDS_AUTHENTICATION_FAILED       652
+#define IDS_SYNCING                     653
 
 // controls
 #define IDC_HTML                        1000

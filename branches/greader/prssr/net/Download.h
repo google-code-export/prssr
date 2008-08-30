@@ -103,6 +103,8 @@ public:
 
 	CString GetCharset() { return Charset; }
 
+	void SetCookie(const CString &cookie);
+
 	// for Conditional GET
 	CString ETag;
 	CString LastModified;
@@ -146,6 +148,7 @@ protected:
 	CString AuthResponseHeader;				// authorization header used in response to authentication
 
 	CList<CHttpHeader *, CHttpHeader*> AdditionalHeaders;
+	CStringList Cookies;
 
 	HANDLE HTerminate;
 };
