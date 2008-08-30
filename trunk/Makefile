@@ -9,12 +9,27 @@ export LANG
 
 SUBDIRS = prssrenc prssr prssrtoday prssrnot res096 res192 setup
 
-.PHONY: subdirs $(SUBDIRS)
+all: unsvninfo subdirs
 
+devel: svninfo subdirs
+
+
+.PHONY: subdirs $(SUBDIRS)
 subdirs: $(SUBDIRS)
  
 $(SUBDIRS):
 	$(MAKE) -C $@
+
+# svn
+.PHONY: svninfo
+svninfo:
+	@echo SVNinfo
+	@sed s/%Rev%/`svn info 2> /dev/null | grep Revision | cut -d \  -f 2`/ share/svninfo.h.linux > share/svninfo.h
+
+.PHONY: unsvninfo
+unsvninfo:
+	@echo UnSVNinfo
+	cp -f share/svninfo.h.clean share/svninfo.h
 
 # dependency
 prssr: prssrenc

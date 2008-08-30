@@ -94,7 +94,7 @@ $(OUTDIR)/$(BIN): $(OUTDIR) $(OBJ)
 $(OUTDIR)/%.obj: %.cpp
 	@$(CPP) $(CPP_FLAGS) $(INCLUDE) /Fo$@ $<
 
-$(OUTDIR)/%.res: %.rc res/english.rc2
+$(OUTDIR)/%.res: %.rc res/english.rc2 ../share/svninfo.h
 	@echo "RC    $@"
 	@$(RSC) $(RSC_FLAGS) $(RSC_INCLUDE) /fo$@ $<
 
