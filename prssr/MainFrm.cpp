@@ -1487,6 +1487,7 @@ BOOL CMainFrame::CheckOnlineMode() {
 			return FALSE;
 
 		Config.WorkOffline = FALSE;
+		UpdateWorkOfflineMenu();
 	}
 
 	return TRUE;
@@ -1496,6 +1497,7 @@ LRESULT CMainFrame::OnUpdateFinished(WPARAM wParam, LPARAM lParam) {
 	Config.WorkOffline = WorkOffline;
 	PostMessage(WM_CANCELMODE);
 	UpdateMenu();
+	UpdateWorkOfflineMenu();
 
 	return 0;
 }
@@ -1702,6 +1704,7 @@ void CMainFrame::LoadFaviconForSite(int idx, CSiteItem *si) {
 }
 
 LRESULT CMainFrame::OnUpdateAll(WPARAM wParam, LPARAM lParam) {
+	WorkOffline = Config.WorkOffline;
 	if (CheckCachePresence()) {
 		CList<CSiteItem *, CSiteItem *> sites;
 		for (int i = 0; i < SiteList.GetCount(); i++)
