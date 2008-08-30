@@ -1461,8 +1461,10 @@ void CMainFrame::UpdateWorkOfflineMenu() {
 	mnu.Attach((HMENU) tb.dwData);
 
 	CMenu *pOfflineMnu = mnu.GetSubMenu(2);		// offline menu
-	UINT state = Config.WorkOffline ? MF_CHECKED : MF_UNCHECKED;
-	pOfflineMnu->CheckMenuItem(ID_WORK_OFFLINE, state | MF_BYCOMMAND);
+	if (pOfflineMnu != NULL) {
+		UINT state = Config.WorkOffline ? MF_CHECKED : MF_UNCHECKED;
+		pOfflineMnu->CheckMenuItem(ID_WORK_OFFLINE, state | MF_BYCOMMAND);
+	}
 
 	mnu.Detach();
 }
