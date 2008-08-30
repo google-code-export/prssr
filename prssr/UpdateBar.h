@@ -131,10 +131,7 @@ protected:
 	int TotalItems;
 
 	void UpdateThread();
-	BOOL UpdateFeed(CSiteItem *ui, BOOL updateOnly);
 	void UpdateFeeds();
-
-	void SyncGReader();
 
 	void DownloadHtmlPage(CDownloadItem *di);
 	void DownloadFile(CDownloadItem *di);
@@ -148,7 +145,8 @@ protected:
 	enum {
 		UPDATE_STATE_RSS,
 		UPDATE_STATE_CACHING,
-		UPDATE_STATE_AUTHENTICATING
+		UPDATE_STATE_AUTHENTICATING,
+		UPDATE_STATE_SYNCING
 	} State;
 	CString SiteName;
 

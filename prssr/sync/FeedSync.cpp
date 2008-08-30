@@ -1,19 +1,19 @@
-// FeedSyncer.cpp: implementation of the CFeedSyncer class.
+// FeedSync.cpp: implementation of the CFeedSync class.
 //
 //////////////////////////////////////////////////////////////////////
 
 #include "../StdAfx.h"
-#include "FeedSyncer.h"
+#include "FeedSync.h"
 #include "../net/Download.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CFeedSyncer::CFeedSyncer(CDownloader *downloader) {
+CFeedSync::CFeedSync(CDownloader *downloader) {
 	Downloader = downloader;
 }
 
-CFeedSyncer::~CFeedSyncer() {
+CFeedSync::~CFeedSync() {
 
 }

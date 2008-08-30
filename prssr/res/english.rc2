@@ -1582,6 +1582,7 @@ BEGIN
     IDS_DATA_TRANSFER       "Transfering data"
     IDS_UPDATING            "Updating..."
 	IDS_AUTHENTICATING      "Authenticating..."
+	IDS_SYNCING             "Syncing..."
 END
 
 STRINGTABLE DISCARDABLE

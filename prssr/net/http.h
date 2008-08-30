@@ -54,6 +54,7 @@ public:
 	void SetHeader(const CString &name, const CString &value);
 	void SetHeader(const CString &name, int value);
 	void AddHeaders(CList<CHttpHeader *, CHttpHeader *> &headers);
+	void AddCookies(CStringList &cookies);
 
 	void Send(CHttpSocket *socket, CStringArray *addHttpHeaders = NULL);
 

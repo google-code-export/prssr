@@ -771,6 +771,9 @@ BOOL CFeedFile::AtomFillItem(CXmlNode *xmlItem, CFeedItem *item) {
 	SYSTEMTIME published = { 0 };
 	CString summary, content;
 
+	DWORD flagsMask = 0;
+	DWORD flags = 0;
+
 	POSITION pos = xmlItem->GetFirstChildPos();
 	while (pos != NULL) {
 		CXmlNode *child = xmlItem->GetNextChild(pos);
@@ -791,7 +794,36 @@ BOOL CFeedFile::AtomFillItem(CXmlNode *xmlItem, CFeedItem *item) {
 			summary = child->GetXML();
 		}
 		else if (wcscmp(name, _T("author")) == 0) {
-			AtomFillPerson(child, item->Author);
+			BOOL knownAuthor = TRUE;
+
+			POSITION posAttr = child->GetFirstAttrPos();
+			while (posAttr != NULL) {
+				CXmlAttr *attr = child->GetNextAttr(posAttr);
+				CString attrName = attr->GetName();
+				CString attrVal = attr->GetValue();
+
+				if (attrName.Compare(_T("gr:unknown-author")) == 0 && attrVal.CompareNoCase(_T("true")) == 0)
+					knownAuthor = FALSE;
+			}
+
+			if (knownAuthor)
+				AtomFillPerson(child, item->Author);
+		}
+		// GReader specific
+		else if (wcscmp(name, _T("category")) == 0) {
+			CString term, label;
+
+			POSITION posAttr = child->GetFirstAttrPos();
+			while (posAttr != NULL) {
+				CXmlAttr *attr = child->GetNextAttr(posAttr);
+				CString attrName = attr->GetName();
+				if (attrName.Compare(_T("term")) == 0) term = attr->GetValue();
+				else if (attrName.Compare(_T("label")) == 0) label = attr->GetValue();
+			}
+
+			if (term.Right(11).Compare(_T("kept-unread")) == 0 && label.Compare(_T("kept-unread")) == 0) { flagsMask |= MESSAGE_READ_STATE; flags |= MESSAGE_UNREAD; }
+			else if (term.Right(4).Compare(_T("read")) == 0 && label.Compare(_T("read")) == 0) { flagsMask |= MESSAGE_READ_STATE; flags &= ~MESSAGE_READ_STATE; }
+			else if (term.Right(7).Compare(_T("starred")) == 0 && label.Compare(_T("starred")) == 0) { flagsMask |= MESSAGE_FLAG; flags |= MESSAGE_FLAG; }
 		}
 #endif
 		else if (wcscmp(name, _T("link")) == 0) {
@@ -848,6 +880,9 @@ BOOL CFeedFile::AtomFillItem(CXmlNode *xmlItem, CFeedItem *item) {
 	}
 
 #if defined PRSSR_APP
+	if (flagsMask != 0)
+		item->SetFlags(flags, flagsMask);
+
 	// create date for proper sorting
 	if (item->PubDate.wYear == 0)
 		GetSystemTime(&item->PubDate);
