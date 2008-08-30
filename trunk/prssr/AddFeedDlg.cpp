@@ -377,6 +377,7 @@ DWORD CAddFeedDlg::AddThread() {
 			LPTSTR fileName = sFileName.GetBufferSetLength(MAX_PATH + 1);
 			GetTempFileName(Config.CacheLocation, _T("rsr"), 0, fileName);
 
+			Downloader->Reset();
 			if (Downloader->SaveHttpObject(htmlFeedItem->Url, fileName)) {
 				// prepare data structures
 				CSiteItem *item = new CSiteItem(NULL, CSiteItem::Site);
@@ -471,7 +472,7 @@ DWORD CAddFeedDlg::AddThread() {
 			} // save http opbject
 
 			// remove temporary feed file
-			DeleteFile(fileName);
+//			DeleteFile(fileName);
 			delete htmlFeedItem;
 			t++;
 		} // while

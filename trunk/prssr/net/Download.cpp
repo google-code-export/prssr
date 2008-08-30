@@ -122,6 +122,12 @@ CDownloader::~CDownloader() {
 	FreeAdditionalHeaders();
 }
 
+void CDownloader::Reset() {
+	ETag.Empty();
+	LastModified.Empty();
+	Charset.Empty();
+}
+
 void CDownloader::SaveHeaders(CHttpResponse *res) {
 	LOG0(5, "CDownloader::SaveHeaders()");
 
