@@ -279,33 +279,7 @@ BEGIN
                     BS_MULTILINE | WS_TABSTOP,4,16,152,10
     CONTROL         "Clear error log before update",IDC_CLEAR_ERRORLOG,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,28,152,10
-//    CONTROL         "Wrap ",IDC_BKGND_UPDATE,"Button",
-//	                BS_AUTOCHECKBOX | BS_LEFT | BS_TOP | WS_TABSTOP,
-//					9,51,147,10
 END
-
-/*IDD_OPT_ADVANCED DIALOG DISCARDABLE  0, 0, 137, 154
-STYLE DS_MODALFRAME | WS_CHILD | WS_CAPTION
-CAPTION "Advanced"
-FONT 8, "System"
-BEGIN
-    LTEXT           "Read options",IDC_READOPTIONS_LBL,4,4,129,12
-    CONTROL         "Show banner with site name",IDC_SHOW_BANNER,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,4,20,128,10
-    CONTROL         "Left/right buttons move to the previous/next unread item",
-                    IDC_MOVETONEW,"Button",BS_AUTOCHECKBOX | BS_TOP |
-                    BS_MULTILINE | WS_TABSTOP,4,31,129,18
-    CONTROL         "Warn when moving to previous/next channel",
-                    IDC_WARN_FEED_MOVE,"Button",BS_AUTOCHECKBOX | BS_TOP |
-					BS_MULTILINE | WS_TABSTOP,4,50,128,18
-    LTEXT           "Update options",IDC_UPDATEOPTIONS_LBL,4,73,129,12
-    CONTROL         "Clear error log before update",IDC_CLEAR_ERRORLOG,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,89,129,10
-    CONTROL         "Mark new items as unread before update",
-                    IDC_MARKNEWUNREAD,"Button",BS_AUTOCHECKBOX | BS_LEFT |
-                    BS_TOP | BS_MULTILINE | WS_TABSTOP,4,100,129,18
-END
-*/
 
 IDD_OPT_CACHE DIALOG DISCARDABLE  0, 0, 160, 190
 STYLE DS_MODALFRAME | WS_CHILD | WS_CAPTION
@@ -327,26 +301,6 @@ BEGIN
                     IDC_CACHE_ONLINE_CONTENT,"Button",BS_AUTOCHECKBOX |
                     BS_TOP | BS_MULTILINE | WS_TABSTOP,4,74,152,10
 END
-
-/*
-IDD_OPT_ENCLOSURES DIALOG DISCARDABLE  0, 0, 137, 154
-STYLE DS_MODALFRAME | WS_CHILD | WS_CAPTION
-CAPTION "Enclosures"
-FONT 8, "System"
-BEGIN
-    LTEXT           "Location",IDC_LOCATION_LBL,4,4,129,12
-    EDITTEXT        IDC_LOCATION,4,20,129,12,ES_AUTOHSCROLL | ES_READONLY |
-                    NOT WS_TABSTOP
-    PUSHBUTTON      "Browse...",IDC_BROWSE,88,35,45,12
-    LTEXT           "Playlist",IDC_PLAYLIST_LBL,4,77,129,12
-    CONTROL         "Automatically generate playlists",
-                    IDC_GENERATE_PLAYLISTS,"Button",BS_AUTOCHECKBOX |
-                    WS_TABSTOP,4,93,128,10
-    LTEXT           "Format:",IDC_FORMAT,15,107,26,10
-    COMBOBOX        IDC_PLAYLIST_FORMAT,44,106,89,37,CBS_DROPDOWNLIST |
-                    WS_VSCROLL | WS_TABSTOP
-END
-*/
 
 IDD_OPT_RETRIEVAL DIALOG DISCARDABLE  0, 0, 160, 154
 STYLE DS_MODALFRAME | WS_CHILD | WS_CAPTION
@@ -385,53 +339,6 @@ BEGIN
     COMBOBOX        IDC_USERAGENT,56,116,100,30,CBS_DROPDOWNLIST | WS_VSCROLL |
                     WS_TABSTOP
 END
-
-/*
-IDD_OPT_HTML DIALOG DISCARDABLE  0, 0, 137, 154
-STYLE DS_MODALFRAME | WS_CHILD | WS_CAPTION
-CAPTION "HTML"
-FONT 8, "System"
-BEGIN
-    LTEXT           "HTML optimizer",IDC_HTML_LBL,4,4,129,12
-    CONTROL         "Use HTML optimizer",IDC_USE_OPTIMIZER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
-	                4,22,129,10
-    EDITTEXT        IDC_URL,15,34,115,12,ES_AUTOHSCROLL
-END
-*/
-/*
-IDD_OPT_READ DIALOG DISCARDABLE  0, 0, 137, 154
-STYLE DS_MODALFRAME | WS_CHILD | WS_CAPTION
-CAPTION "Reading"
-FONT 8, "System"
-BEGIN
-    LTEXT           "Item options",IDC_READ_LBL,4,4,129,12
-    LTEXT           "Mark item read after",IDC_STATIC,4,21,66,10
-    EDITTEXT        IDC_SECONDS,72,19,33,12,ES_AUTOHSCROLL
-    CONTROL         "Spin1",IDC_SECONDS_SPIN,"msctls_updown32",
-                    UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY |
-                    UDS_ARROWKEYS | UDS_HORZ | UDS_NOTHOUSANDS,117,33,12,14
-    LTEXT           "sec(s)",IDC_STATIC,107,21,25,10
-    LTEXT           "External browser",IDC_EXTERNAL,4,78,129,12
-    EDITTEXT        IDC_EXTERNAL_BROWSER,4,94,129,12,ES_AUTOHSCROLL |
-                    ES_READONLY
-    PUSHBUTTON      "Browse...",IDC_BROWSE,83,109,50,12
-    COMBOBOX        IDC_ACTION_BUTTON,4,57,129,39,CBS_DROPDOWNLIST |
-                    WS_VSCROLL | WS_TABSTOP
-    LTEXT           "D-Pad Action Button",IDC_ACTIONBUTTON_LBL,4,41,129,12
-END
-
-IDD_OPT_HW_KEYS DIALOG DISCARDABLE  0, 0, 137, 154
-STYLE DS_MODALFRAME | WS_CHILD | WS_CAPTION
-CAPTION "HW Keys"
-FONT 8, "System"
-BEGIN
-    CONTROL         "List1",IDC_BUTTONS,"SysListView32",LVS_REPORT |
-                    LVS_NOSORTHEADER | LVS_SHOWSELALWAYS | WS_BORDER | WS_TABSTOP,
-                    4,4,130,100
-    PUSHBUTTON      "Set",IDC_SET,50,109,40,12
-    PUSHBUTTON      "Clear",IDC_CLEAR,94,109,40,12
-END
-*/
 
 IDD_OPT_APPEARANCE DIALOG DISCARDABLE  0, 0, 160, 190
 STYLE DS_MODALFRAME | WS_CHILD | WS_CAPTION
@@ -781,20 +688,8 @@ BEGIN
     LTEXT           "The name on the certificate is invalid or does not match the name of the site.",
                     IDC_STATIC4,45,97,85,25
     CTEXT           "Do you want to proceed?",IDC_STATIC5,6,124,126,10
-//    PUSHBUTTON      "Yes",IDYES,35,135,30,12
-//    DEFPUSHBUTTON   "No",IDNO,70,135,30,12
 END
 
-/*
-IDD_GRAB_KEY DIALOG DISCARDABLE  0, 0, 120, 38
-STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Grab a Key"
-FONT 8, "System"
-BEGIN
-    PUSHBUTTON      "Cancel",IDCANCEL,40,21,40,12
-    LTEXT           "Please, press any HW key to grab",IDC_STATIC,4,4,112,12
-END
-*/
 
 IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 160, 165
 STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
@@ -1476,8 +1371,6 @@ BEGIN
     IDS_TOTAL_ITEMS         "%d total items"
     IDS_UNREAD_ITEMS        "%d unread items"
     IDS_NEW_ITEMS           "%d new items"
-//    IDS_SITE                "Site"
-//    IDS_STATUS              "Status"
     IDS_HIDE                 "Hide"
 	IDS_OPEN                 "Open"
     IDS_PRSSR_NOTIFICATION   "pRSSreader"
@@ -1487,7 +1380,6 @@ END
 
 STRINGTABLE PRELOAD DISCARDABLE
 BEGIN
-//    IDS_WAITING             "Waiting"
     IDS_DOWNLOADING         "Downloading"
     IDS_DONE                "Done"
     IDS_ERROR               "Error"
@@ -1509,14 +1401,7 @@ BEGIN
     IDS_LOCATION_NOT_DIR    "The selected location is not a folder."
     IDS_CANCEL              "Cancel"
     IDS_DIRECTORY_NOT_CREATED "Directory was not created."
-//    IDS_CLEAR_ENCLOSURES    "Delete items that are referred by a feed?"
     IDS_SITENAME_IS_EMPTY   "The site name should not be empty."
-//    IDS_CACHING             "Caching"
-//    IDS_CACHING_IMAGES      "Images (%d remain)"
-//    IDS_EXECUTING           "Executing"
-//    IDS_FINISHED            "Finished"
-//    IDS_CACHING_ONLINE_CONTENT "HTML content (%d remain)"
-//    IDS_SELECT_EXTERNAL_BROWSER "Select external browser"
     IDS_LOADING             "Loading..."
 END
 
@@ -1669,15 +1554,7 @@ END
 STRINGTABLE DISCARDABLE
 BEGIN
     IDS_EXPORT_OPML_FILE    "Export OPML File"
-//    IDS_SEARCH              "Search"
-//    IDS_SEARCH_RESULTS      "Search Results"
     IDS_IMPORT_OPML_FILE    "Import OPML File"
-//    IDS_IMPORT_FEEDS        "Import Feeds"
-//    IDS_NEW_SUBSCRIPTION    "New Subscription"
-//    IDS_ERRORS              "Errors"
-//    IDS_UPDATE_SITES        "Update Channels"
-//    IDS_FEED_INFORMATION    "Channel Info"
-//    IDS_CHOOSE_FEEDS        "Choose Feeds"
 END
 
 //
@@ -1708,7 +1585,6 @@ BEGIN
     IDS_DOWNLOAD_ERROR      "Download error"
     IDS_CANT_CONNECT        "Can not connect"
     IDS_UNKNOWN_AUTH_SCHEME "Unknown authentication scheme"
-//    IDS_UPDATE_FINISHED_ERROR  "%d error(s) occured."
     IDS_BAD_AUTHENTICATION_RESPONSE "Bad authentication response"
     IDS_RESPONSE_ERROR      "Response error"
 	IDS_AUTHORIZATION_FAILED "Authorization failed"
