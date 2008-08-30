@@ -90,6 +90,11 @@ LPCTSTR szTimeUpdate = _T("Time Update");
 LPCTSTR szCacheImages = _T("Cache Images");
 LPCTSTR szCacheHtml = _T("Cache Html");
 
+// sync
+LPCTSTR szSyncSite = _T("Sync Site");
+LPCTSTR szSyncUserName = _T("Sync UserName");
+LPCTSTR szSyncPassword = _T("Sync Password");
+
 // enclosures
 LPCTSTR szGeneratePlaylists = _T("Generate Playlists");
 LPCTSTR szEnclosurePlaylistFormat = _T("Enclosure Playlist Format");
@@ -202,6 +207,8 @@ CConfig::CConfig() {
 	UpdateAtTime.wMinute = 0;
 	UpdateAtTime.wSecond = 0;
 
+	SyncSite = CONFIG_DEFAULT_SYNCSITE;
+
 	// enclosure
 	GeneratePlaylists = CONFIG_DEFAULT_GENERATEPLAYLISTS;
 	EnclosurePlaylistFormat = CONFIG_DEFAULT_ENCLOSUREPLAYLISTFORMAT;
@@ -272,6 +279,11 @@ void CConfig::Save() {
 	reg.Write(szCacheImages, CacheImages);
 	reg.Write(szCacheHtml, CacheHtml);
 
+	// sync
+	reg.Write(szSyncSite, SyncSite);
+	reg.Write(szSyncUserName, SyncUserName);
+	reg.Write(szSyncPassword, SyncPassword);
+
 	// enclosures
 	reg.Write(szGeneratePlaylists, GeneratePlaylists);
 	reg.Write(szEnclosurePlaylistFormat, EnclosurePlaylistFormat);
@@ -326,6 +338,11 @@ void CConfig::Load() {
 	// global caching options
 	CacheImages = reg.Read(szCacheImages, CONFIG_DEFAULT_CACHE_IMAGES);
 	CacheHtml = reg.Read(szCacheHtml, CONFIG_DEFAULT_CACHE_HTML);
+
+	// sync
+	SyncSite = (ESyncSite) reg.Read(szSyncSite, CONFIG_DEFAULT_SYNCSITE);
+	SyncUserName = reg.Read(szSyncUserName, _T(""));
+	SyncPassword = reg.Read(szSyncPassword, _T(""));
 
 	// enclosures
 	GeneratePlaylists = reg.Read(szGeneratePlaylists, CONFIG_DEFAULT_GENERATEPLAYLISTS);
@@ -396,12 +413,12 @@ void CConfig::LoadUI() {
 
 void CConfig::SaveProxyProfiles() {
 	CRegistry::DeleteKey(HKEY_CURRENT_USER, REG_KEY_PROXY_PROFILES);
-	
+
 	CRegistry reg(HKEY_CURRENT_USER, REG_KEY_PROXY_PROFILES);
 	for (int i = 0; i < ProxyProfiles.GetSize(); i++) {
 		CString sNum;
 		sNum.Format(_T("%d"), i);
-		
+
 		CProxyProfile *profile = ProxyProfiles[i];
 		CRegistry regProfile(reg, sNum);
 		regProfile.Write(szName, profile->Name);
@@ -426,7 +443,7 @@ void CConfig::LoadProxyProfiles() {
 	for (DWORD i = 0; i < cSubKeys; i++) {
 		CString sNum;
 		sNum.Format(_T("%d"), i);
-		
+
 		CRegistry regProfile(reg, sNum);
 		CProxyProfile *profile = new CProxyProfile();
 
@@ -450,12 +467,12 @@ void CConfig::LoadProxyProfiles() {
 
 void CConfig::SaveSocialBookmarkingSites() {
 	CRegistry::DeleteKey(HKEY_CURRENT_USER, REG_KEY_SOCIAL_BOOKMARKING_SITES);
-	
+
 	CRegistry reg(HKEY_CURRENT_USER, REG_KEY_SOCIAL_BOOKMARKING_SITES);
 	for (int i = 0; i < SocialBookmarkSites.GetSize(); i++) {
 		CString sNum;
 		sNum.Format(_T("%d"), i);
-		
+
 		CRegistry regProfile(reg, sNum);
 
 		CSocialBookmarkSite *sbs = SocialBookmarkSites[i];
@@ -475,7 +492,7 @@ void CConfig::LoadSocialBookmarkingSites() {
 		for (DWORD i = 0; i < cSubKeys; i++) {
 			CString sNum;
 			sNum.Format(_T("%d"), i);
-			
+
 			CRegistry regProfile(reg, sNum);
 
 			CSocialBookmarkSite *sbs = new CSocialBookmarkSite();

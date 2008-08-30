@@ -75,6 +75,7 @@
 #define IDD_LICENSE_WIDE                206
 #define IDD_CREDITS                     207
 #define IDD_CREDITS_WIDE                208
+#define IDD_OPT_SYNC                    209
 
 #define IDR_FEEDITEM                    300
 #define IDR_EDIT                        301
@@ -595,6 +596,9 @@
 #define IDC_BKGND_UPDATE                1245
 #define IDC_LICENSE                     1246
 #define IDC_CREDITS                     1247
+#define IDC_SYNC_SITE                   1248
+#define IDC_SYNC_USERNAME               1249
+#define IDC_SYNC_PASSWORD               1250
 
 #define ID_TOOLS_OPTIONS                32774
 #define ID_TOOLS_SITEMANAGER            32775
