@@ -1581,6 +1581,7 @@ BEGIN
     IDS_GETTING_RESPONSE    "Receiving response"
     IDS_DATA_TRANSFER       "Transfering data"
     IDS_UPDATING            "Updating..."
+	IDS_AUTHENTICATING      "Authenticating..."
 END
 
 STRINGTABLE DISCARDABLE
@@ -1635,4 +1636,5 @@ BEGIN
 	IDS_EMPTY_HOST_NAME     "The host name can not be empty."
 	IDS_ABOUT               "About"
 	IDS_PURGE_CACHE_WARNING "Purge all cache content?"
+	IDS_AUTHENTICATION_FAILED "Authentication failed."
 END

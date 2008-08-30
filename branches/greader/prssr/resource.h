@@ -348,7 +348,9 @@
 #define IDS_EMPTY_NAME                  647
 #define IDS_EMPTY_HOST_NAME             648
 #define IDS_ABOUT                       649
-#define IDS_PURGE_CACHE_WARNING	         650
+#define IDS_PURGE_CACHE_WARNING	        650
+#define IDS_AUTHENTICATING              651
+#define IDS_AUTHENTICATION_FAILED       652
 
 // controls
 #define IDC_HTML                        1000
