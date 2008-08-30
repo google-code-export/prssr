@@ -302,12 +302,14 @@ CString FormatFilePath(EFileType type, const CString &strPath, const CString &fi
 CString GetCacheFile(EFileType type, const CString &strPath, const CString &url) {
 	CString filePath;
 #if defined PRSSR_APP
+	CString sUrl = url;
+	ReplaceHTMLEntities(sUrl);
 	switch (type) {
-		case FILE_TYPE_FAVICON:	  filePath.Format(_T("%s\\%s.ico"), GetCachePath(type, strPath), url); break;
-		case FILE_TYPE_ENCLOSURE: filePath.Format(_T("%s\\%s"), GetCachePath(type, strPath), UrlToFileName(url, FALSE)); break;
-		case FILE_TYPE_HTML:      filePath.Format(_T("%s\\%s"), GetCachePath(type, strPath), UrlToFileName(url, TRUE)); break;
-		case FILE_TYPE_IMAGE:     filePath.Format(_T("%s\\%s"), GetCachePath(type, strPath), UrlToFileName(url, FALSE)); break;
-		default:				  filePath.Format(_T("%s\\%s"), GetCachePath(type, strPath), url); break;
+		case FILE_TYPE_FAVICON:	  filePath.Format(_T("%s\\%s.ico"), GetCachePath(type, strPath), sUrl); break;
+		case FILE_TYPE_ENCLOSURE: filePath.Format(_T("%s\\%s"), GetCachePath(type, strPath), UrlToFileName(sUrl, FALSE)); break;
+		case FILE_TYPE_HTML:      filePath.Format(_T("%s\\%s"), GetCachePath(type, strPath), UrlToFileName(sUrl, TRUE)); break;
+		case FILE_TYPE_IMAGE:     filePath.Format(_T("%s\\%s"), GetCachePath(type, strPath), UrlToFileName(sUrl, FALSE)); break;
+		default:				  filePath.Format(_T("%s\\%s"), GetCachePath(type, strPath), sUrl); break;
 	}
 #else
 	filePath.Format(_T("%s\\%s"), GetCachePath(type, strPath), url);
@@ -669,8 +671,11 @@ BOOL IsHTMLCached(const CString &link, BOOL addHTMLExt) {
 
 //	CString strTransUrl = UrlToFileName(link, Config.CacheLocation, TRUE);
 //	CString strTransUrl = MakeOfflineUrl(rootPath, UrlToFileName(link, TRUE));
+	CString url = link;
+	ReplaceHTMLEntities(url);
+
 	CString path = GetCachePath(FILE_TYPE_HTML, Config.CacheLocation);
-	CString fileName = UrlToFileName(MakeAbsoluteUrl(link, _T(""), _T("")), addHTMLExt);
+	CString fileName = UrlToFileName(MakeAbsoluteUrl(url, _T(""), _T("")), addHTMLExt);
 	CString strFileName = path + _T("\\") + fileName;
 
 /*	// dont include #part in the file name
