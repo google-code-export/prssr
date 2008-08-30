@@ -712,6 +712,7 @@ void CUpdateBar::DownloadHtmlPage(CDownloadItem *di) {
 		ok = TRUE;
 	else {
 		// optimizing failed -> use original url
+		Downloader->Reset();
 		if (Config.UseHtmlOptimizer && Downloader->SaveHttpObject(di->URL, tmpFileName))
 			ok = TRUE;
 	}
