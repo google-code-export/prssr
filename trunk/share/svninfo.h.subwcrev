@@ -1,0 +1,3 @@
+#define SHOW_SVN_REVISION 			1
+#define SVN_REVISION_TEXT "pRSSreader (rev. $WCREV$$WCMODS?m:$)"
+
