@@ -281,7 +281,7 @@ void CUpdateBar::EnqueueHtml(const CString &url, CSiteItem *siteItem) {
 	if (Config.UseHtmlOptimizer)
 		surl = MakeHtmlOptimizerUrl(surl, Config.HtmlOptimizerURL);
 
-	CString strFileName = GetCacheFile(FILE_TYPE_HTML, Config.CacheLocation, url);
+	CString strFileName = GetCacheFile(FILE_TYPE_HTML, Config.CacheLocation, surl);
 	if (!FileExists(strFileName)) {
 		CDownloadItem *di = new CDownloadItem();
 		di->URL = surl;
@@ -321,7 +321,8 @@ void CUpdateBar::EnqueueEnclosures(CArray<CFeedItem *, CFeedItem *> &items, DWOR
 }
 
 void CUpdateBar::EnqueueItem(const CString &strUrl, EFileType type) {
-	CString strFileName = GetCacheFile(type, Config.CacheLocation, strUrl);
+	CString url = SanitizeUrl(strUrl);
+	CString strFileName = GetCacheFile(type, Config.CacheLocation, url);
 	if (!FileExists(strFileName)) {
 		CDownloadItem *di = new CDownloadItem();
 		di->URL = strUrl;
