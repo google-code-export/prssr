@@ -526,6 +526,7 @@ BOOL CDownloader::OnResponse(CHttpRequest *&req, CHttpResponse *&res, LPVOID con
 	Updated = FALSE;
 	do {
 		statusCode = res->GetStatusCode();
+		LOG1(1, "StausCode: %d", statusCode);
 		switch (statusCode) {
 			case HTTP_STATUS_OK:
 			case HTTP_STATUS_PARTIAL_CONTENT:
@@ -728,6 +729,101 @@ BOOL CDownloader::PartialDownload(CString &url, const CString &strFileName, DWOR
 	AdditionalHeaders.AddTail(new CHttpHeader(_T("Range"), sRange));
 
 	return SaveHttpObject(url, strFileName, context);
+}
+
+BOOL CDownloader::Post(CString &url, const CString &strBody, CString &response, LPVOID context/* = NULL*/) {
+	LOG1(3, "CDownloader::Post('%S')", url);
+
+	Error = DOWNLOAD_ERROR_NONE;
+	URL = url;
+
+	ReplaceHTMLEntities(url);			// there might be entities in the url
+
+	OnConnection(context);
+	CString objectName;
+	if (ParseURL(url, ServiceType, ServerName, objectName, Port)) {
+		State = DOWNLOAD_STATE_CONNECTING;
+
+		DWORD timeout = 3000;			// we start with 3 seconds
+		for (int tries = 0; tries < 3; tries++) {
+			if (HttpConnection.Open(ServiceType, ServerName, Port)) {
+//				CHttpRequest *req = HttpConnection.CreateRequest(objectName, HTTP_METHOD_POST);
+				CHttpRequest *req = HttpConnection.CreateRequest(objectName, HTTP_METHOD_GET);
+				if (req != NULL) {
+					// set the request body
+					req->SetBody(strBody);
+
+					// add necessary headers
+//					req->SetHeader(_T("Content-Type"), _T("appliction/x-www-form-urlencoded"));
+//					req->SetHeader(_T("Content-Length"), strBody.GetLength());
+//					LOG1(1, "Len: %d", strBody.GetLength());
+
+					State = DOWNLOAD_STATE_SENDING_REQUEST;
+					req->AddHeaders(AdditionalHeaders);
+					OnBeforeSendRequest(req, context);
+					HttpConnection.SendRequest(req, &Config.AdditionalHttpHeaders);
+
+					State = DOWNLOAD_STATE_RECEIVING_RESPONSE;
+					CHttpResponse *res = HttpConnection.ReceiveResponse();
+					if (res != NULL) {
+						if (OnResponse(req, res, context)) {
+							if (OnBeforeFileDownload(context)) {
+								State = DOWNLOAD_STATE_DATA_TRANSFER;
+
+								TCHAR tempFileName[MAX_PATH];
+								GetTempFileName(Config.CacheLocation, L"rsr", 0, tempFileName);
+								if (HttpConnection.GetFile(res, tempFileName)) {
+									// ok, we get the response in the file -> read it
+									HANDLE hFile = CreateFile(tempFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
+									if (hFile != INVALID_HANDLE_VALUE) {
+										// suppose the response is short, so that we can read it at once
+										DWORD read;
+										DWORD size = GetFileSize(hFile, NULL);
+										char *buffer = new char [size + 1];
+										ReadFile(hFile, buffer, size, &read, NULL);
+										buffer[size] = '\0';
+										response.Format(_T("%S"), buffer);
+										CloseHandle(hFile);
+									}
+
+									OnFileDownloaded(context);
+								}
+								else {
+									Error = DOWNLOAD_ERROR_GETTING_FILE;
+								}
+//								DeleteFile(tempFileName);
+							}
+						}
+						delete res;
+					}
+					else
+						Error = DOWNLOAD_ERROR_RESPONSE_ERROR;
+
+					delete req;
+				}
+				else
+					Error = DOWNLOAD_ERROR_SENDING_REQUEST;
+
+				HttpConnection.Close();
+
+				return Error == DOWNLOAD_ERROR_NONE;
+			}
+			else {
+				// wait for a while
+				DWORD dwResult = WaitForSingleObject(HTerminate, timeout);
+				if (dwResult == WAIT_OBJECT_0)
+					break;			// terminated
+				else
+					timeout *= 2;	// timed out
+			}
+		}
+
+		Error = DOWNLOAD_ERROR_CONNECTION_ERROR;
+	}
+	else
+		Error = DOWNLOAD_ERROR_MALFORMED_URL;
+
+	return Error == DOWNLOAD_ERROR_NONE;
 }
 
 void CDownloader::FreeAdditionalHeaders() {

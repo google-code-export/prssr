@@ -37,6 +37,8 @@
 #include "www/LocalHtmlFile.h"
 #include "misc/shnotif.h"
 
+#include "sync/GReaderSync.h"
+
 #ifdef MYDEBUG
 #undef THIS_FILE
 static TCHAR THIS_FILE[] = _T(__FILE__);
@@ -348,89 +350,68 @@ void CUpdateBar::Start() {
 	}
 }
 
-BOOL CUpdateBar::UpdateFeeds() {
+void CUpdateBar::UpdateFeeds() {
 	LOG0(1, "CUpdateBar::UpdateFeeds()");
 
-	if (UpdateList.GetCount() <= 0)
-		return FALSE;
+	State = UPDATE_STATE_RSS;
+	UpdateProgressText();
 
-	BOOL updated;
-	BOOL disconnect;
-	if (CheckConnection(Config.AutoConnect, disconnect)) {
-		CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
+	CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
 
-		m_ctlProgress.SetRange(0, UpdateList.GetCount());
+	POSITION pos = UpdateList.GetHeadPosition();
+	while (!Terminate && pos != NULL) {
+		EnterCriticalSection(&CSUpdateList);
+		CUpdateItem *ui = UpdateList.GetNext(pos);
+		CSiteItem *si = ui->SiteItem;
+		LeaveCriticalSection(&CSUpdateList);
 
-		POSITION pos = UpdateList.GetHeadPosition();
-		while (!Terminate && pos != NULL) {
-			EnterCriticalSection(&CSUpdateList);
-			CUpdateItem *ui = UpdateList.GetNext(pos);
-			CSiteItem *si = ui->SiteItem;
-			LeaveCriticalSection(&CSUpdateList);
+		SiteName = si->Name;
+//		CString sTitle;
+//		sTitle.Format(_T("%s: %s"), si->Name, sUpdating);
+//		m_ctlProgress.SetText(sTitle, FALSE);
+		Redraw();
 
-			SiteName = si->Name;
-//			CString sTitle;
-//			sTitle.Format(_T("%s: %s"), si->Name, sUpdating);
-//			m_ctlProgress.SetText(sTitle, FALSE);
-			Redraw();
+		LOG1(3, "Updating %S", si->Name);
 
-			LOG1(3, "Updating %S", si->Name);
+		EnterCriticalSection(&CSDownloader);
+		Downloader = new CDownloader;
+		Downloader->ETag = si->Info->ETag;
+		Downloader->LastModified = si->Info->LastModified;
+		LeaveCriticalSection(&CSDownloader);
 
-			EnterCriticalSection(&CSDownloader);
-			Downloader = new CDownloader;
-			Downloader->ETag = si->Info->ETag;
-			Downloader->LastModified = si->Info->LastModified;
-			LeaveCriticalSection(&CSDownloader);
+		if (UpdateFeed(si, ui->UpdateOnly)) {
+			si->Info->ETag = Downloader->ETag;
+			si->Info->LastModified = Downloader->LastModified;
 
-			if (UpdateFeed(si, ui->UpdateOnly)) {
-				si->Info->ETag = Downloader->ETag;
-				si->Info->LastModified = Downloader->LastModified;
-
-				if (si->CheckFavIcon) {
-					// temp file name
-					CString faviconFileName = GetCacheFile(FILE_TYPE_FAVICON, Config.CacheLocation, si->Info->FileName);
-					// get favicon
-					if (DownloadFavIcon(si->Feed->HtmlUrl, faviconFileName)) {
-						// update favicon in GUI
-						if (frame != NULL) frame->SendMessage(UWM_UPDATE_FAVICON, 0, (LPARAM) si);
-					}
-
-					si->CheckFavIcon = FALSE;
+			if (si->CheckFavIcon) {
+				// temp file name
+				CString faviconFileName = GetCacheFile(FILE_TYPE_FAVICON, Config.CacheLocation, si->Info->FileName);
+				// get favicon
+				if (DownloadFavIcon(si->Feed->HtmlUrl, faviconFileName)) {
+					// update favicon in GUI
+					if (frame != NULL) frame->SendMessage(UWM_UPDATE_FAVICON, 0, (LPARAM) si);
 				}
 
-				// send message to update the feed view
-				if (frame != NULL) frame->SendMessage(UWM_UPDATE_FEED, 0, (LPARAM) si);
-
-				SaveSiteItemUnreadCount(si, SiteList.GetIndexOf(si));
-				SaveSiteItemFlaggedCount(si, SiteList.GetIndexOf(si));
-				// process
+				si->CheckFavIcon = FALSE;
 			}
 
-			EnterCriticalSection(&CSDownloader);
-			delete Downloader;
-			Downloader = NULL;
-			LeaveCriticalSection(&CSDownloader);
+			// send message to update the feed view
+			if (frame != NULL) frame->SendMessage(UWM_UPDATE_FEED, 0, (LPARAM) si);
 
-			m_ctlProgress.SetStep(1);
-			m_ctlProgress.StepIt();
-			m_ctlProgress.Redraw(FALSE);
+			SaveSiteItemUnreadCount(si, SiteList.GetIndexOf(si));
+			SaveSiteItemFlaggedCount(si, SiteList.GetIndexOf(si));
+			// process
 		}
 
-		if (disconnect)
-			Connection.HangupConnection();
+		EnterCriticalSection(&CSDownloader);
+		delete Downloader;
+		Downloader = NULL;
+		LeaveCriticalSection(&CSDownloader);
 
-		updated = TRUE;
+		m_ctlProgress.SetStep(1);
+		m_ctlProgress.StepIt();
+		m_ctlProgress.Redraw(FALSE);
 	}
-	else {
-		Terminate = TRUE;
-		Errors.Add(new CErrorItem(IDS_NO_INTERNET_CONNECTION));
-		updated = FALSE;
-	}
-
-	while (!UpdateList.IsEmpty())
-		delete UpdateList.RemoveHead();
-
-	return updated;
 }
 
 BOOL CUpdateBar::UpdateFeed(CSiteItem *si, BOOL updateOnly) {
@@ -685,6 +666,48 @@ void CUpdateBar::MergeFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
 	}
 }
 
+void CUpdateBar::SyncGReader() {
+	LOG0(1, "CUpdateBar::SyncGReader()");
+
+	EnterCriticalSection(&CSDownloader);
+	Downloader = new CDownloader;
+	LeaveCriticalSection(&CSDownloader);
+
+	CGReaderSync sync(Downloader);
+
+	// authenticate with greader
+	State = UPDATE_STATE_AUTHENTICATING;
+	UpdateProgressText();
+
+	if (sync.Authenticate(Config.SyncUserName, Config.SyncPassword)) {
+		State = UPDATE_STATE_RSS;
+		UpdateProgressText();
+
+		// sync
+		POSITION pos = UpdateList.GetHeadPosition();
+		while (!Terminate && pos != NULL) {
+			EnterCriticalSection(&CSUpdateList);
+			CUpdateItem *ui = UpdateList.GetNext(pos);
+			CSiteItem *si = ui->SiteItem;
+			LeaveCriticalSection(&CSUpdateList);
+
+			LOG1(3, "Syncing %S", si->Name);
+
+			// TODO: sync site
+			Sleep(500);
+
+			
+			m_ctlProgress.SetStep(1);
+			m_ctlProgress.StepIt();
+			m_ctlProgress.Redraw(FALSE);
+		}
+	}
+	else {
+		Errors.Add(new CErrorItem(IDS_AUTHENTICATION_FAILED));
+	}
+}
+
+
 void CUpdateBar::DownloadHtmlPage(CDownloadItem *di) {
 	LOG0(1, "CUpdateBar::DownloadHtmlPage()");
 
@@ -827,6 +850,10 @@ void CUpdateBar::DownloadItems() {
 void CUpdateBar::UpdateThread() {
 	LOG0(3, "CUpdateBar::UpdateThread() - begin");
 
+	if (UpdateList.GetCount() <= 0)
+		return;
+
+	//////
 	CSuspendKiller suspendKiller;
 
 	CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
@@ -834,23 +861,93 @@ void CUpdateBar::UpdateThread() {
 	Terminate = FALSE;
 	ErrorCount = 0;
 
-	// show update bar
+/*	// show update bar
 	m_ctlProgress.ShowWindow(SW_SHOW);
 	m_ctlText.ShowWindow(SW_HIDE);
 
 	CString sUpdating;
 	sUpdating.Format(IDS_UPDATING);
-
 	m_ctlProgress.SetRange(0, 100);
 	m_ctlProgress.SetPos(0);
-	m_ctlProgress.SetText(sUpdating);
+//	m_ctlProgress.SetText(sUpdating);
+	m_ctlProgress.SetText(_T(""));
 	m_ctlProgress.Redraw(FALSE);
 
 	if (frame != NULL) frame->PostMessage(UWM_SHOW_UPDATEBAR, TRUE);
+*/
 
-	State = UPDATE_STATE_RSS;
-	// update and cache items
-	BOOL updated = UpdateFeeds();
+	// update feeds
+
+//	BOOL updated;
+	BOOL disconnect;
+	if (CheckConnection(Config.AutoConnect, disconnect)) {
+		// show update bar
+		m_ctlProgress.ShowWindow(SW_SHOW);
+		m_ctlText.ShowWindow(SW_HIDE);
+		if (frame != NULL) frame->PostMessage(UWM_SHOW_UPDATEBAR, TRUE);
+	
+		m_ctlProgress.SetRange(0, UpdateList.GetCount());
+
+		switch (Config.SyncSite) {
+			case SYNC_SITE_GOOGLE_READER: SyncGReader();  break;
+			default: UpdateFeeds(); break;
+		}
+
+		// download items
+		if (DownloadQueue.GetCount() > 0) {
+			State = UPDATE_STATE_CACHING;
+			DownloadItems();
+
+			// empty download queue
+			while (!DownloadQueue.IsEmpty())
+				delete DownloadQueue.Dequeue();
+		}
+
+		// notify
+//		if (Config.NotifyNew && GetForegroundWindow()->GetSafeHwnd() != frame->GetSafeHwnd() && updated) {
+		if (Config.NotifyNew && GetForegroundWindow()->GetSafeHwnd() != frame->GetSafeHwnd()) {
+			int newItems = 0;
+			for (int i = 0; i < SiteList.GetCount(); i++) {
+				CFeed *feed = SiteList.GetAt(i)->Feed;
+				if (feed != NULL)
+					newItems += feed->GetNewCount();
+			}
+
+			if (newItems > 0) {
+				prssrNotificationRemove();
+				prssrNotification(newItems);
+			}
+		}
+
+		if (disconnect)
+			Connection.HangupConnection();
+
+//		// hide update bar
+//		Sleep(250);
+
+		// done
+		if (Errors.GetCount() > 0) {
+			CString strError;
+			strError.Format(IDS_N_ERRORS, Errors.GetCount());
+			ShowError(strError);
+		}
+		else {
+			if (frame != NULL) frame->SendMessage(UWM_SHOW_UPDATEBAR, FALSE);
+		}
+	}
+	else {
+		Terminate = TRUE;
+		Errors.Add(new CErrorItem(IDS_NO_INTERNET_CONNECTION));
+//		updated = FALSE;
+		if (frame != NULL) frame->PostMessage(UWM_SHOW_UPDATEBAR, TRUE);
+	}
+
+	while (!UpdateList.IsEmpty())
+		delete UpdateList.RemoveHead();
+
+
+/*	// download items
+
 	if (!Terminate) {
 		State = UPDATE_STATE_CACHING;
 		DownloadItems();
@@ -887,6 +984,7 @@ void CUpdateBar::UpdateThread() {
 			prssrNotification(newItems);
 		}
 	}
+*/
 
 	// end
 	CloseHandle(HUpdateThread);
@@ -912,6 +1010,11 @@ void CUpdateBar::UpdateProgressText() {
 			sText.Format(IDS_UPDATING);
 			sTitle.Format(_T("%s: %s"), SiteName, sText);
 			m_ctlProgress.SetText(sTitle);
+			break;
+
+		case UPDATE_STATE_AUTHENTICATING:
+			sText.Format(IDS_AUTHENTICATING);
+			m_ctlProgress.SetText(sText);
 			break;
 
 		default:

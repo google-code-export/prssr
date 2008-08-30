@@ -89,6 +89,7 @@ public:
 
 	virtual BOOL SaveHttpObject(CString &strURL, const CString &strFileName, LPVOID context = NULL);
 	virtual BOOL PartialDownload(CString &strURL, const CString &strFileName, DWORD startOffset, DWORD endOffset = 0, LPVOID context = NULL);
+	virtual BOOL Post(CString &strURL, const CString &strBody, CString &response, LPVOID context = NULL);
 	virtual void Terminate();
 	virtual BOOL IsTerminated();
 

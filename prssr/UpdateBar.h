@@ -132,7 +132,9 @@ protected:
 
 	void UpdateThread();
 	BOOL UpdateFeed(CSiteItem *ui, BOOL updateOnly);
-	BOOL UpdateFeeds();
+	void UpdateFeeds();
+
+	void SyncGReader();
 
 	void DownloadHtmlPage(CDownloadItem *di);
 	void DownloadFile(CDownloadItem *di);
@@ -145,7 +147,8 @@ protected:
 
 	enum {
 		UPDATE_STATE_RSS,
-		UPDATE_STATE_CACHING
+		UPDATE_STATE_CACHING,
+		UPDATE_STATE_AUTHENTICATING
 	} State;
 	CString SiteName;
 
