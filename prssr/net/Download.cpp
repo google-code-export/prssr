@@ -716,6 +716,37 @@ BOOL CDownloader::SaveHttpObject(CString &url, const CString &strFileName, LPVOI
 	return Error == DOWNLOAD_ERROR_NONE;
 }
 
+BOOL CDownloader::GetHttpObject(CString &url, CString &strBody, LPVOID context/* = NULL*/) {
+	TCHAR tempFileName[MAX_PATH];
+	GetTempFileName(Config.CacheLocation, L"rsr", 0, tempFileName);
+
+	BOOL ret =  FALSE;
+	if (SaveHttpObject(url, tempFileName)) {
+		CString response;
+
+		HANDLE hFile = CreateFile(tempFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
+		if (hFile != INVALID_HANDLE_VALUE) {
+			// suppose the response is short, so that we can read it at once
+			DWORD read;
+			DWORD size = GetFileSize(hFile, NULL);
+			char *buffer = new char [size + 1];
+			ReadFile(hFile, buffer, size, &read, NULL);
+			buffer[size] = '\0';
+			CloseHandle(hFile);
+
+			strBody.Format(_T("%S"), buffer);
+
+			delete [] buffer;
+
+			ret = TRUE;
+		}
+	}
+
+	DeleteFile(tempFileName);
+
+	return ret;
+}
+
 //
 // ResumeDownload
 //
@@ -749,19 +780,18 @@ BOOL CDownloader::Post(CString &url, const CString &strBody, CString &response, 
 		DWORD timeout = 3000;			// we start with 3 seconds
 		for (int tries = 0; tries < 3; tries++) {
 			if (HttpConnection.Open(ServiceType, ServerName, Port)) {
-//				CHttpRequest *req = HttpConnection.CreateRequest(objectName, HTTP_METHOD_POST);
-				CHttpRequest *req = HttpConnection.CreateRequest(objectName, HTTP_METHOD_GET);
+				CHttpRequest *req = HttpConnection.CreateRequest(objectName, HTTP_METHOD_POST);
 				if (req != NULL) {
 					// set the request body
 					req->SetBody(strBody);
 
 					// add necessary headers
-//					req->SetHeader(_T("Content-Type"), _T("appliction/x-www-form-urlencoded"));
-//					req->SetHeader(_T("Content-Length"), strBody.GetLength());
-//					LOG1(1, "Len: %d", strBody.GetLength());
+					req->SetHeader(_T("Content-Type"), _T("application/x-www-form-urlencoded"));
+					req->SetHeader(_T("Content-Length"), strBody.GetLength());
 
 					State = DOWNLOAD_STATE_SENDING_REQUEST;
 					req->AddHeaders(AdditionalHeaders);
+					req->AddCookies(Cookies);
 					OnBeforeSendRequest(req, context);
 					HttpConnection.SendRequest(req, &Config.AdditionalHttpHeaders);
 
@@ -793,7 +823,7 @@ BOOL CDownloader::Post(CString &url, const CString &strBody, CString &response, 
 								else {
 									Error = DOWNLOAD_ERROR_GETTING_FILE;
 								}
-//								DeleteFile(tempFileName);
+								DeleteFile(tempFileName);
 							}
 						}
 						delete res;

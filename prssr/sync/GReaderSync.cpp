@@ -9,13 +9,15 @@
 #include "../Config.h"
 #include "../Site.h"
 #include "../xml/FeedFile.h"
+#include "../www/url.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
 CGReaderSync::CGReaderSync(CDownloader *downloader) : CFeedSync(downloader) {
-	BaseUrl = _T("http://www.google.com/reader/");
+	BaseUrl = _T("http://www.google.com/reader");
+	Api0 = _T("http://www.google.com/reader/api/0");
 }
 
 CGReaderSync::~CGReaderSync() {
@@ -33,39 +35,21 @@ BOOL CGReaderSync::Authenticate(const CString &userName, const CString &password
 		TCHAR tempFileName[MAX_PATH];
 		GetTempFileName(Config.CacheLocation, L"rsr", 0, tempFileName);
 
-		CString url;
-		url.Format(_T("https://www.google.com/accounts/ClientLogin?service=reader&Email=%s&Passwd=%s"), UserName, Password);
+		CString url, body, response;
+		url.Format(_T("https://www.google.com/accounts/ClientLogin"), UserName, Password);
+		body.Format(_T("Email=%s&Passwd=%s"), UserName, Password);
 
-		if (Downloader->SaveHttpObject(url, tempFileName)) {
-			CString response;
-	
-			HANDLE hFile = CreateFile(tempFileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
-			if (hFile != INVALID_HANDLE_VALUE) {
-				// suppose the response is short, so that we can read it at once
-				DWORD read;
-				DWORD size = GetFileSize(hFile, NULL);
-				char *buffer = new char [size + 1];
-				ReadFile(hFile, buffer, size, &read, NULL);
-				buffer[size] = '\0';
-				CloseHandle(hFile);
-
-				// process the response
-				char seps[] = "\r\n";
-				char *token = strtok(buffer, seps);
-				while (token != NULL) {
-					char *eqSign = strchr(token, '=');
-					if (eqSign != NULL) {
-						*eqSign = '\0';					// separate the key and its value
-						if (strcmp(token, "SID") == 0)
-							SID.Format(_T("%S"), eqSign + 1);
-					}
-
-					token = strtok(NULL, seps);
+		if (Downloader->Post(url, body, response)) {
+			int npos = response.Find('\n');
+			int start = 0;
+			while (npos != -1) {
+				int eqpos = response.Find('=', start);
+				if (eqpos != -1 && response.Mid(start, eqpos - start).Compare(_T("SID")) == 0) {
+					SID = response.Mid(eqpos + 1, npos - eqpos - 1);
 				}
-
-				delete [] buffer;
+				start = npos + 1;
+				npos = response.Find('\n', start);
 			}
-
 			ret = !SID.IsEmpty();
 		}
 		else
@@ -84,6 +68,54 @@ BOOL CGReaderSync::SyncFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
 
 	BOOL ret = FALSE;
 
+	// phase 1 ////////////////////////////////////////////////////////////////
+	// what is read in prssr will be read in Greader
+	// what is starred in prssr will be starred in Greader
+
+	if (!GetToken()) {
+//		ErrorMsg.LoadString(IDS_ERROR_GETTING_TOKEN);
+		return FALSE;
+	}
+
+	Downloader->Reset();
+	Downloader->SetCookie(FormatSIDCookie(SID));
+
+	CString url, body, response;
+	if (si->Feed != NULL) {
+		for (int i = 0; i < si->Feed->GetItemCount(); i++) {
+			CFeedItem *fi = si->Feed->GetItem(i);
+
+			if (fi->IsRead()) {
+				url.Format(_T("%s/edit-tag"), Api0);
+				body.Format(_T("i=%s&a=%s&T=%s"), fi->Hash, UrlEncode(_T("user/-/state/com.google/read")), Token); 
+				Downloader->Post(url, body, response);
+			}
+		
+/*			if (fi->IsFlagged()) {
+				url.Format(_T("%s/edit-tag"), Api0);
+				body.Format(_T("i=%s&a=%s&T=%s"), fi->Hash, UrlEncode(_T("user/-/state/com.google/starred")), Token); 
+				Downloader->Post(url, body, response);
+			}
+*/
+		}
+	}
+
+/*
+	url.Format(_T("%s/edit-tag"), Api0);
+	body.Format(_T("i=%s&r=%s&T=%s"), _T("tag:google.com,2005:reader/item/b7a7a87e59e8a909"), UrlEncode(_T("user/-/state/com.google/starred")), Token); 
+
+//	url.Format(_T("%s/subscription/edit"), Api0);
+//	body.Format(_T("ac=subscribe&s=feed%%2Fhttp://blisty.cz/rss2.rb&T=%s"), Token); 
+	LOG1(1, "url : %S", url);
+	LOG1(1, "body: %S", body);
+
+	Downloader->Reset();
+	Downloader->SetCookie(FormatSIDCookie(SID));
+	return Downloader->Post(url, body, response);
+*/
+
+	// phase 2 ////////////////////////////////////////////////////////////////
+
 	CString sTmpFileName;
 	LPTSTR tmpFileName = sTmpFileName.GetBufferSetLength(MAX_PATH + 1);
 	GetTempFileName(Config.CacheLocation, _T("rsr"), 0, tmpFileName);
@@ -97,14 +129,7 @@ BOOL CGReaderSync::SyncFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
 	else
 		n = 25;			// fallback
 
-	CString url;
-	url.Format(_T("http://www.google.com/reader/atom/feed/%s?n=%d"), si->Info->XmlUrl, n);
-
-	CString sSIDCookie;
-	sSIDCookie.Format(_T("SID=%s; expires=1600000000; path=/; domain=.google.com"), SID);
-
-	Downloader->Reset();
-	Downloader->SetCookie(sSIDCookie);
+	url.Format(_T("%s/atom/feed/%s?n=%d"), BaseUrl, si->Info->XmlUrl, n);
 	if (Downloader->SaveHttpObject(url, tmpFileName) && Downloader->Updated) {
 		CFeedFile xml;
 		if (xml.LoadFromFile(tmpFileName)) {
@@ -137,3 +162,21 @@ BOOL CGReaderSync::SyncFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
 
 	return ret;
 }
+
+CString CGReaderSync::FormatSIDCookie(const CString &sid) {
+	CString sSIDCookie;
+//	sSIDCookie.Format(_T("SID=%s; expires=1600000000; path=/; domain=.google.com"), sid);
+	sSIDCookie.Format(_T("SID=%s"), sid);
+	return sSIDCookie;
+}
+
+BOOL CGReaderSync::GetToken() {
+	Downloader->Reset();
+	Downloader->SetCookie(FormatSIDCookie(SID));
+
+	Token.Empty();
+	CString url;
+	url.Format(_T("%s/token"), Api0);
+	return Downloader->GetHttpObject(url, Token);
+}
+
