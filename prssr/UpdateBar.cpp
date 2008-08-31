@@ -360,10 +360,8 @@ void CUpdateBar::UpdateFeeds() {
 	Downloader = new CDownloader;
 	CFeedSync *sync = NULL;
 	switch (Config.SyncSite) {
-		case SYNC_SITE_GOOGLE_READER:
-			sync = new CGReaderSync(Downloader);  break;
-		default:
-			sync = new CNetworkSync(Downloader); break;
+		case SYNC_SITE_GOOGLE_READER: sync = new CGReaderSync(Downloader, Config.SyncUserName, Config.SyncPassword);  break;
+		default: sync = new CNetworkSync(Downloader); break;
 	}
 	LeaveCriticalSection(&CSDownloader);
 
@@ -372,7 +370,7 @@ void CUpdateBar::UpdateFeeds() {
 		// authenticate with greader
 		State = UPDATE_STATE_AUTHENTICATING;
 		UpdateProgressText();
-		authenticated = sync->Authenticate(Config.SyncUserName, Config.SyncPassword);
+		authenticated = sync->Authenticate();
 	}
 	else
 		authenticated = TRUE;
@@ -421,8 +419,71 @@ void CUpdateBar::UpdateFeeds() {
 					if (fi->IsNew())
 						fi->SetFlags(MESSAGE_UNREAD, MESSAGE_READ_STATE);
 				}
-				MergeFeed(si, feed, ui->UpdateOnly);
 
+				// merge feed
+				CArray<CFeedItem *, CFeedItem *> newItems;
+				CArray<CFeedItem *, CFeedItem *> itemsToClean;
+				sync->MergeFeed(si, feed, newItems, itemsToClean);
+
+				// save feed
+				CString feedPathName = GetCacheFile(FILE_TYPE_FEED, Config.CacheLocation, si->Info->FileName);
+				CreatePath(feedPathName);
+				si->Feed->Save(feedPathName);
+
+				// set file time
+				HANDLE hFile = CreateFile(feedPathName, GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+				if (hFile != INVALID_HANDLE_VALUE) {
+					FILETIME ftNow;
+					SYSTEMTIME stNow;
+					GetLocalTime(&stNow);
+					SystemTimeToFileTime(&stNow, &ftNow);
+					SetFileTime(hFile, NULL, NULL, &ftNow);
+					CloseHandle(hFile);
+				}
+
+				// notify today plugin
+				NotifyTodayPlugin(CheckFeedsMessage);
+
+				// clean items
+				ClearImages(itemsToClean);
+				ClearHtmlPages(itemsToClean);
+				ClearEnclosures(itemsToClean);
+
+				for (i = 0; i < itemsToClean.GetSize(); i++)
+					delete itemsToClean[i];
+
+				// check keywords in new items
+				for (i = 0; i < newItems.GetSize(); i++)
+					newItems.GetAt(i)->SearchKeywords(SiteList.GetKeywords());
+
+				// cache
+				if (!ui->UpdateOnly) {
+					// enqueue items to cache
+					if (si->Info->UseGlobalCacheOptions) {
+						// cache item images
+						if (Config.CacheImages)
+							EnqueueImages(newItems);
+
+						// cache HTML content
+						if (Config.CacheHtml)
+							EnqueueHtmls(newItems);
+					}
+					else {
+						// cache item images
+						if (si->Info->CacheItemImages)
+							EnqueueImages(newItems);
+
+						// cache HTML content
+						if (si->Info->CacheHtml)
+							EnqueueHtmls(newItems);
+					}
+
+					// cache enclosures
+					if (si->Info->CacheEnclosures)
+						EnqueueEnclosures(newItems, si->Info->EnclosureLimit);
+				}
+
+				// get favicon if neccessary
 				if (si->CheckFavIcon) {
 					// temp file name
 					CString faviconFileName = GetCacheFile(FILE_TYPE_FAVICON, Config.CacheLocation, si->Info->FileName);
@@ -471,166 +532,6 @@ void CUpdateBar::UpdateFeeds() {
 
 	while (!UpdateList.IsEmpty())
 		delete UpdateList.RemoveHead();
-}
-
-void CUpdateBar::MergeFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
-	LOG0(1, "CUpdateBar::MergeFeed()");
-
-	// NOTE: move this function to CSiteItem class (?)
-
-	feed->Lock();
-	// we need to preserve new items for later caching
-	CArray<CFeedItem *, CFeedItem *> newItems;
-	FeedDiff(feed, si->Feed, &newItems);
-
-	CArray<CFeedItem *, CFeedItem *> existingItems;
-	FeedIntersection(feed, si->Feed, &existingItems);
-
-	CArray<CFeedItem *, CFeedItem *> itemsToClean;
-
-	int i;
-	CList<CFeedItem *, CFeedItem *> items;
-	if (si->Info->CacheLimit > 0 || si->Info->CacheLimit == CACHE_LIMIT_DEFAULT) {
-		// add new items
-		for (i = 0; i < newItems.GetSize(); i++)
-			items.AddTail(newItems.GetAt(i));
-
-		int limit;
-		if (si->Info->CacheLimit > 0)
-			limit = si->Info->CacheLimit;
-		else
-			limit = Config.CacheLimit;
-
-		// add flagged
-		for (i = 0; i < si->Feed->GetItemCount(); i++) {
-			CFeedItem *fi = si->Feed->GetItem(i);
-			if (fi->IsFlagged())
-				items.AddTail(fi);
-		}
-
-		// limit the cache
-		int toAdd = limit - items.GetCount();
-		for (i = 0; i < si->Feed->GetItemCount(); i++) {
-			CFeedItem *fi = si->Feed->GetItem(i);
-			if (!fi->IsFlagged()) {
-				if (toAdd > 0) {
-					items.AddTail(fi);
-					toAdd--;
-				}
-				else
-					itemsToClean.Add(fi);							// old item -> delete it!
-			}
-		}
-
-		// free duplicate items
-		for (i = 0; i < existingItems.GetSize(); i++)
-			delete existingItems.GetAt(i);
-	}
-	else if (si->Info->CacheLimit == CACHE_LIMIT_DISABLED) {
-		// add new items
-		for (i = 0; i < newItems.GetSize(); i++)
-			items.AddTail(newItems.GetAt(i));
-
-		// add same items
-		CArray<CFeedItem *, CFeedItem *> sameItems;
-		FeedIntersection(si->Feed, feed, &sameItems);
-		for (i = 0; i < sameItems.GetSize(); i++)
-			items.AddTail(sameItems.GetAt(i));
-
-		CArray<CFeedItem *, CFeedItem *> freeItems;
-		FeedDiff(si->Feed, feed, &freeItems);
-		for (i = 0; i < freeItems.GetSize(); i++) {
-			CFeedItem *fi = freeItems.GetAt(i);
-			if (fi->IsFlagged())
-				items.AddTail(fi);
-			else
-				itemsToClean.Add(fi);							// old item -> delete it!
-		}
-
-		// free duplicate items
-		for (i = 0; i < existingItems.GetSize(); i++)
-			delete existingItems.GetAt(i);
-	}
-	else if (si->Info->CacheLimit == CACHE_LIMIT_UNLIMITED) {
-		// add old items
-		for (i = 0; i < si->Feed->GetItemCount(); i++)
-			items.AddTail(si->Feed->GetItem(i));
-		// add new items
-		for (i = 0; i < newItems.GetSize(); i++)
-			items.AddTail(newItems.GetAt(i));
-
-		// free duplicate items
-		for (i = 0; i < existingItems.GetSize(); i++)
-			delete existingItems.GetAt(i);
-	}
-
-	// set items in the feed
-	i = 0;
-	si->Feed->SetSize(items.GetCount());
-	while (!items.IsEmpty()) {
-		CFeedItem *fi = items.RemoveHead();
-		si->Feed->SetAt(i, fi);
-		i++;
-	}
-	feed->Unlock();
-
-	// save feed
-	CString feedPathName = GetCacheFile(FILE_TYPE_FEED, Config.CacheLocation, si->Info->FileName);
-	CreatePath(feedPathName);
-	si->Feed->Save(feedPathName);
-
-	// set file time
-	HANDLE hFile = CreateFile(feedPathName, GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	if (hFile != INVALID_HANDLE_VALUE) {
-		FILETIME ftNow;
-		SYSTEMTIME stNow;
-		GetLocalTime(&stNow);
-		SystemTimeToFileTime(&stNow, &ftNow);
-		SetFileTime(hFile, NULL, NULL, &ftNow);
-		CloseHandle(hFile);
-	}
-
-	// notify today plugin
-	NotifyTodayPlugin(CheckFeedsMessage);
-
-	// clean items
-	ClearImages(itemsToClean);
-	ClearHtmlPages(itemsToClean);
-	ClearEnclosures(itemsToClean);
-
-	for (i = 0; i < itemsToClean.GetSize(); i++)
-		delete itemsToClean[i];
-
-	// check keywords in new items
-	for (i = 0; i < newItems.GetSize(); i++)
-		newItems.GetAt(i)->SearchKeywords(SiteList.GetKeywords());
-
-	// cache
-	if (!updateOnly) {
-		// enqueue items to cache
-		if (si->Info->UseGlobalCacheOptions) {
-			// cache item images
-			if (Config.CacheImages)
-				EnqueueImages(newItems);
-
-			// cache HTML content
-			if (Config.CacheHtml)
-				EnqueueHtmls(newItems);
-		}
-		else {
-			// cache item images
-			if (si->Info->CacheItemImages)
-				EnqueueImages(newItems);
-
-			// cache HTML content
-			if (si->Info->CacheHtml)
-				EnqueueHtmls(newItems);
-		}
-
-		// cache enclosures
-		if (si->Info->CacheEnclosures)
-			EnqueueEnclosures(newItems, si->Info->EnclosureLimit);
-	}
 }
 
 void CUpdateBar::DownloadHtmlPage(CDownloadItem *di) {

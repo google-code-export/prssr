@@ -37,6 +37,9 @@
 #include "www/HTMLFile.h"
 #include "www/AutoFeedHtmlFile.h"
 
+#include "sync/NetworkSync.h"
+#include "sync/GReaderSync.h"
+
 #ifdef MYDEBUG
 #undef THIS_FILE
 static TCHAR THIS_FILE[] = _T(__FILE__);
@@ -377,9 +380,13 @@ DWORD CAddFeedDlg::AddThread() {
 			LPTSTR fileName = sFileName.GetBufferSetLength(MAX_PATH + 1);
 			GetTempFileName(Config.CacheLocation, _T("rsr"), 0, fileName);
 
+			CFeedSync *sync = NULL;
+			switch (Config.SyncSite) {
+				case SYNC_SITE_GOOGLE_READER: sync = new CGReaderSync(Downloader, Config.SyncUserName, Config.SyncPassword); break;
+				default: sync = new CNetworkSync(Downloader); break;
+			}
 			// TODO: get the feed from greader if we use it
-			Downloader->Reset();
-			if (Downloader->SaveHttpObject(htmlFeedItem->Url, fileName)) {
+			if (sync->DownloadFeed(htmlFeedItem->Url, fileName)) {
 				// prepare data structures
 				CSiteItem *item = new CSiteItem(NULL, CSiteItem::Site);
 

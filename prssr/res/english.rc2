@@ -1638,4 +1638,5 @@ BEGIN
 	IDS_ABOUT               "About"
 	IDS_PURGE_CACHE_WARNING "Purge all cache content?"
 	IDS_AUTHENTICATION_FAILED "Authentication failed."
+	IDS_ERROR_GETTING_TOKEN "Error getting token."
 END

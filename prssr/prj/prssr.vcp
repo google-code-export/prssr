@@ -787,6 +787,7 @@ DEP_CPP_MAINF=\
 	"..\OptConnectionPg.h"\
 	"..\OptGeneralPg.h"\
 	"..\OptRetrievalPg.h"\
+	"..\OptSyncPg.h"\
 	"..\Properties.h"\
 	"..\prssr.h"\
 	"..\Site.h"\
@@ -930,6 +931,28 @@ DEP_CPP_OPTRE=\
 	{$(INCLUDE)}"connmgr.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	{$(INCLUDE)}"notify.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\OptSyncPg.cpp
+DEP_CPP_OPTSY=\
+	"..\..\share\defs.h"\
+	"..\..\share\file.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\Config.h"\
+	"..\ctrls\CeEdit.h"\
+	"..\debug\crtdbg.h"\
+	"..\debug\Logger.h"\
+	"..\Feed.h"\
+	"..\net\proxy.h"\
+	"..\OptSyncPg.h"\
+	"..\prssr.h"\
+	"..\StdAfx.h"\
+	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
 # Begin Source File
@@ -1455,6 +1478,9 @@ DEP_CPP_UPDAT=\
 	"..\StdAfx.h"\
 	"..\SummaryView.h"\
 	"..\SuspendKiller.h"\
+	"..\sync\FeedSync.h"\
+	"..\sync\GReaderSync.h"\
+	"..\sync\NetworkSync.h"\
 	"..\UpdateBar.h"\
 	"..\www\HTMLFile.h"\
 	"..\www\LocalHtmlFile.h"\
@@ -1610,6 +1636,10 @@ SOURCE=..\OptGeneralPg.h
 # Begin Source File
 
 SOURCE=..\OptRetrievalPg.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\OptSyncPg.h
 # End Source File
 # Begin Source File
 
@@ -3050,6 +3080,112 @@ NODEP_CPP_XMLFI=\
 # Begin Source File
 
 SOURCE=..\xml\XMLFile.h
+# End Source File
+# End Group
+# Begin Group "sync"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\sync\FeedSync.cpp
+DEP_CPP_FEEDSY=\
+	"..\..\share\file.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\debug\Logger.h"\
+	"..\net\download.h"\
+	"..\net\http.h"\
+	"..\net\HttpConnection.h"\
+	"..\net\httpsock.h"\
+	"..\net\proxy.h"\
+	"..\StdAfx.h"\
+	"..\sync\FeedSync.h"\
+	{$(INCLUDE)}"connmgr.h"\
+	{$(INCLUDE)}"htmlctrl.h"\
+	
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\sync\FeedSync.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\sync\GReaderSync.cpp
+DEP_CPP_GREAD=\
+	"..\..\libexpat\expat.h"\
+	"..\..\libexpat\expat_external.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\file.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\Config.h"\
+	"..\debug\crtdbg.h"\
+	"..\debug\Logger.h"\
+	"..\Feed.h"\
+	"..\net\download.h"\
+	"..\net\http.h"\
+	"..\net\HttpConnection.h"\
+	"..\net\httpsock.h"\
+	"..\net\proxy.h"\
+	"..\prssr.h"\
+	"..\Site.h"\
+	"..\StdAfx.h"\
+	"..\sync\FeedSync.h"\
+	"..\sync\GReaderSync.h"\
+	"..\www\url.h"\
+	"..\xml\FeedFile.h"\
+	"..\xml\XMLFile.h"\
+	{$(INCLUDE)}"connmgr.h"\
+	{$(INCLUDE)}"htmlctrl.h"\
+	
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\sync\GReaderSync.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\sync\NetworkSync.cpp
+DEP_CPP_NETWO=\
+	"..\..\libexpat\expat.h"\
+	"..\..\libexpat\expat_external.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\file.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\Config.h"\
+	"..\debug\crtdbg.h"\
+	"..\debug\Logger.h"\
+	"..\Feed.h"\
+	"..\net\download.h"\
+	"..\net\http.h"\
+	"..\net\HttpConnection.h"\
+	"..\net\httpsock.h"\
+	"..\net\proxy.h"\
+	"..\prssr.h"\
+	"..\Site.h"\
+	"..\StdAfx.h"\
+	"..\sync\FeedSync.h"\
+	"..\sync\NetworkSync.h"\
+	"..\www\url.h"\
+	"..\xml\FeedFile.h"\
+	"..\xml\XMLFile.h"\
+	{$(INCLUDE)}"connmgr.h"\
+	{$(INCLUDE)}"htmlctrl.h"\
+	
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\sync\NetworkSync.h
 # End Source File
 # End Group
 # End Target

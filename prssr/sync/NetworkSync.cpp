@@ -22,10 +22,6 @@ CNetworkSync::~CNetworkSync() {
 
 }
 
-BOOL CNetworkSync::Authenticate(const CString &userName, const CString &password) {
-	return TRUE;
-}
-
 BOOL CNetworkSync::SyncFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
 	LOG0(1, "CNetworkSync::SyncFeed()");
 
@@ -71,4 +67,110 @@ BOOL CNetworkSync::SyncFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
 	DeleteFile(tmpFileName);
 
 	return ret;
+}
+
+BOOL CNetworkSync::MergeFeed(CSiteItem *si, CFeed *feed, CArray<CFeedItem *, CFeedItem *> &newItems, CArray<CFeedItem *, CFeedItem *> &itemsToClean) {
+	LOG0(1, "CNetworkSync::MergeFeed()");
+
+	feed->Lock();
+
+	FeedDiff(feed, si->Feed, &newItems);
+
+	CArray<CFeedItem *, CFeedItem *> existingItems;
+	FeedIntersection(feed, si->Feed, &existingItems);
+
+	int i;
+	CList<CFeedItem *, CFeedItem *> items;
+	if (si->Info->CacheLimit > 0 || si->Info->CacheLimit == CACHE_LIMIT_DEFAULT) {
+		// add new items
+		for (i = 0; i < newItems.GetSize(); i++)
+			items.AddTail(newItems.GetAt(i));
+
+		int limit;
+		if (si->Info->CacheLimit > 0)
+			limit = si->Info->CacheLimit;
+		else
+			limit = Config.CacheLimit;
+
+		// add flagged
+		for (i = 0; i < si->Feed->GetItemCount(); i++) {
+			CFeedItem *fi = si->Feed->GetItem(i);
+			if (fi->IsFlagged())
+				items.AddTail(fi);
+		}
+
+		// limit the cache
+		int toAdd = limit - items.GetCount();
+		for (i = 0; i < si->Feed->GetItemCount(); i++) {
+			CFeedItem *fi = si->Feed->GetItem(i);
+			if (!fi->IsFlagged()) {
+				if (toAdd > 0) {
+					items.AddTail(fi);
+					toAdd--;
+				}
+				else
+					itemsToClean.Add(fi);							// old item -> delete it!
+			}
+		}
+
+		// free duplicate items
+		for (i = 0; i < existingItems.GetSize(); i++)
+			delete existingItems.GetAt(i);
+	}
+	else if (si->Info->CacheLimit == CACHE_LIMIT_DISABLED) {
+		// add new items
+		for (i = 0; i < newItems.GetSize(); i++)
+			items.AddTail(newItems.GetAt(i));
+
+		// add same items
+		CArray<CFeedItem *, CFeedItem *> sameItems;
+		FeedIntersection(si->Feed, feed, &sameItems);
+		for (i = 0; i < sameItems.GetSize(); i++)
+			items.AddTail(sameItems.GetAt(i));
+
+		CArray<CFeedItem *, CFeedItem *> freeItems;
+		FeedDiff(si->Feed, feed, &freeItems);
+		for (i = 0; i < freeItems.GetSize(); i++) {
+			CFeedItem *fi = freeItems.GetAt(i);
+			if (fi->IsFlagged())
+				items.AddTail(fi);
+			else
+				itemsToClean.Add(fi);							// old item -> delete it!
+		}
+
+		// free duplicate items
+		for (i = 0; i < existingItems.GetSize(); i++)
+			delete existingItems.GetAt(i);
+	}
+	else if (si->Info->CacheLimit == CACHE_LIMIT_UNLIMITED) {
+		// add old items
+		for (i = 0; i < si->Feed->GetItemCount(); i++)
+			items.AddTail(si->Feed->GetItem(i));
+		// add new items
+		for (i = 0; i < newItems.GetSize(); i++)
+			items.AddTail(newItems.GetAt(i));
+
+		// free duplicate items
+		for (i = 0; i < existingItems.GetSize(); i++)
+			delete existingItems.GetAt(i);
+	}
+
+	// set items in the feed
+	i = 0;
+	si->Feed->SetSize(items.GetCount());
+	while (!items.IsEmpty()) {
+		CFeedItem *fi = items.RemoveHead();
+		si->Feed->SetAt(i, fi);
+		i++;
+	}
+	feed->Unlock();
+
+	return TRUE;
+}
+
+BOOL CNetworkSync::DownloadFeed(CString &url, const CString &fileName) {
+	LOG0(1, "CNetworkSync::DownloadFeed()");
+
+	Downloader->Reset();
+	return Downloader->SaveHttpObject(url, fileName);
 }

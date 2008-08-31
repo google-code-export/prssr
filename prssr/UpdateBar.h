@@ -140,8 +140,6 @@ protected:
 
 	CDownloadQueue DownloadQueue;
 
-	void MergeFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly);
-
 	enum {
 		UPDATE_STATE_RSS,
 		UPDATE_STATE_CACHING,

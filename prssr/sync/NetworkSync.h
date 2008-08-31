@@ -17,8 +17,10 @@ public:
 	virtual ~CNetworkSync();
 
 	virtual BOOL NeedAuth() { return FALSE; }
-	virtual BOOL Authenticate(const CString &userName, const CString &password);
+	virtual BOOL Authenticate() { return TRUE; }
 	virtual BOOL SyncFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly);
+	virtual BOOL MergeFeed(CSiteItem *si, CFeed *feed, CArray<CFeedItem *, CFeedItem *> &newItems, CArray<CFeedItem *, CFeedItem *> &itemsToClean);
+	virtual BOOL DownloadFeed(CString &url, const CString &fileName);
 
 protected:
 };
