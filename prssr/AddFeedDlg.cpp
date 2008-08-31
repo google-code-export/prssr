@@ -377,6 +377,7 @@ DWORD CAddFeedDlg::AddThread() {
 			LPTSTR fileName = sFileName.GetBufferSetLength(MAX_PATH + 1);
 			GetTempFileName(Config.CacheLocation, _T("rsr"), 0, fileName);
 
+			// TODO: get the feed from greader if we use it
 			Downloader->Reset();
 			if (Downloader->SaveHttpObject(htmlFeedItem->Url, fileName)) {
 				// prepare data structures
@@ -398,16 +399,6 @@ DWORD CAddFeedDlg::AddThread() {
 					item->Info = info;
 					item->CheckFavIcon = FALSE;
 
-					// date
-/*					feed->Lock();
-					for (int i = 0; i < feed->GetItemCount(); i++) {
-						CFeedItem *fi = feed->GetItem(i);
-						// if the feed item has no date -> set it to the date of download
-						if (fi->PubDate.wYear == 0)
-							GetLocalTime(&fi->PubDate);
-					}
-					feed->Unlock();
-*/
 					CString sFeedFileName = GetCacheFile(FILE_TYPE_FEED, Config.CacheLocation, info->FileName);
 					item->Feed->Save(sFeedFileName);
 
@@ -472,7 +463,7 @@ DWORD CAddFeedDlg::AddThread() {
 			} // save http opbject
 
 			// remove temporary feed file
-//			DeleteFile(fileName);
+			DeleteFile(fileName);
 			delete htmlFeedItem;
 			t++;
 		} // while
