@@ -27,6 +27,13 @@ protected:
 
 	//
 	CString BaseUrl;
+	CString Api0;
+
+	//
+	CString Token;
+
+	BOOL GetToken();
+	CString FormatSIDCookie(const CString &sid);
 };
 
 #endif // !defined(AFX_GREADERSYNC_H__3F7370B7_087C_4D04_9D9A_0F770437B61E__INCLUDED_)

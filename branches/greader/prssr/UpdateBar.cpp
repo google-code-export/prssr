@@ -778,7 +778,6 @@ void CUpdateBar::UpdateThread() {
 	ErrorCount = 0;
 
 	// update feeds
-
 	BOOL disconnect;
 	if (CheckConnection(Config.AutoConnect, disconnect)) {
 		// show update bar
@@ -787,6 +786,7 @@ void CUpdateBar::UpdateThread() {
 		if (frame != NULL) frame->PostMessage(UWM_SHOW_UPDATEBAR, TRUE);
 	
 		m_ctlProgress.SetRange(0, UpdateList.GetCount());
+		m_ctlProgress.SetPos(0);
 
 		// update
 		UpdateFeeds();
