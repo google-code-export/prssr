@@ -165,7 +165,7 @@ CString CHtmlFile::ToString() {
 }
 
 BOOL CHtmlFile::DetectEncoding(DOM_NODE *node) {
-	LOG1(1, "CHtmlFile::DetectEncoding(%p)", node);
+	LOG1(3, "CHtmlFile::DetectEncoding(%p)", node);
 
 	BOOL res = FALSE;
 
@@ -427,7 +427,7 @@ bool setEncoding(const TCHAR *encoding, XML_Encoding *info) {
 }
 
 CString recode(const char *str, XML_Encoding *enc_info) {
-	LOG2(1, "recode('%s', %p)", str, enc_info);
+	LOG2(3, "recode('%s', %p)", str, enc_info);
 
 	CString out;
 
