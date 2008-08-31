@@ -12,6 +12,7 @@
 class CDownloader;
 class CSiteItem;
 class CFeed;
+class CFeedItem;
 
 class CFeedSync {
 public:
@@ -19,8 +20,10 @@ public:
 	virtual ~CFeedSync();
 
 	virtual BOOL NeedAuth() = 0;
-	virtual BOOL Authenticate(const CString &userName, const CString &password) = 0; 
+	virtual BOOL Authenticate() = 0; 
 	virtual BOOL SyncFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) = 0;
+	virtual BOOL MergeFeed(CSiteItem *si, CFeed *feed, CArray<CFeedItem *, CFeedItem *> &newItems, CArray<CFeedItem *, CFeedItem *> &itemsToClean) = 0;
+	virtual BOOL DownloadFeed(CString &url, const CString &fileName) = 0;
 
 	CString GetErrorMsg() { return ErrorMsg; }
 

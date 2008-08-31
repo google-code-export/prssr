@@ -534,12 +534,22 @@ BOOL CCache::InCache(const CString &item) {
 	return res;
 }
 
-BOOL CCache::AddItem(const CString &item) {
+BOOL CCache::InCache(const CString &item, void *&ptr) {
+	LOG0(5, "CCache::InCache()");
+
+	CS.Lock();
+	BOOL res = Items.Lookup(item, ptr);
+	CS.Unlock();
+
+	return res;
+}
+
+BOOL CCache::AddItem(const CString &item, void *ptr/* = NULL*/) {
 	LOG0(5, "CCache::AddItem()");
 
 	if (!InCache(item)) {
 		CS.Lock();
-		Items.SetAt(item, NULL);
+		Items.SetAt(item, ptr);
 		CS.Unlock();
 		return TRUE;
 	}
