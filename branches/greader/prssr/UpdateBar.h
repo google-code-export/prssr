@@ -110,6 +110,7 @@ public:
 
 	void Redraw();
 
+	void ShowErrorCount();
 	void ShowError(UINT nID);
 	void ShowError(const CString &str);
 
