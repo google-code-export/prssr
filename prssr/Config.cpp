@@ -31,6 +31,7 @@
 #include "../share/defs.h"
 #include "../share/reg.h"
 #include "net/proxy.h"
+#include "www/url.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
@@ -112,6 +113,9 @@ LPCTSTR szProxyPassword = _T("Proxy Password");
 // html optimizer
 LPCTSTR szUseHtmlOptimizer = _T("Use HTML Optimizer");
 LPCTSTR szHtmlOptimizerURL = _T("HTML Optimizer URL");
+
+static LPCTSTR szMatch = _T("Match");
+static LPCTSTR szReplace = _T("Replace");
 
 /*
 // template of settings for newly added site
@@ -239,6 +243,8 @@ CConfig::CConfig() {
 }
 
 CConfig::~CConfig() {
+	for (int i = 0; i < RewriteRules.GetSize(); i++)
+		delete RewriteRules[i];
 }
 
 void CConfig::Destroy() {
@@ -516,5 +522,76 @@ void CConfig::LoadSocialBookmarkingSites() {
 
 		// social bookmarking
 		SaveSocialBookmarkingSites();
+	}
+}
+
+void CConfig::SaveKeywords() {
+	LOG0(3, "CConfig::SaveKeywords()");
+
+	// Keywords
+	CRegistry::DeleteKey(HKEY_CURRENT_USER, REG_KEY_KEYWORDS);
+	CRegistry regKeywords(HKEY_CURRENT_USER, REG_KEY_KEYWORDS);
+
+	for (int i = 0; i < Keywords.GetSize(); i++) {
+		CString sNum;
+		sNum.Format(_T("%d"), i + 1);
+
+		CString kw = Keywords.GetAt(i);
+		regKeywords.Write(sNum, kw);
+	}
+}
+
+void CConfig::LoadKeywords() {
+	LOG0(3, "CConfig::LoadKeywords()");
+
+	// read keywords
+	DWORD cKeywords;
+	CRegistry regKeywords(HKEY_CURRENT_USER, REG_KEY_KEYWORDS);
+	regKeywords.QueryValueNumber(&cKeywords);
+
+	for (DWORD k = 1; k <= cKeywords; k++) {
+		CString sNum;
+		sNum.Format(_T("%d"), k);
+
+		CString kword = regKeywords.Read(sNum, _T(""));
+		if (!kword.IsEmpty())
+			Keywords.Add(kword);
+	}
+}
+
+void CConfig::SaveRewriteRules() {
+	LOG0(3, "CConfig::SaveRewriteRules()");
+
+	CRegistry regRewriteRules(HKEY_CURRENT_USER, REG_KEY_REWRITE_RULES);
+	for (int i = 0; i < RewriteRules.GetSize(); i++) {
+		CRewriteRule *rr = RewriteRules[i];
+
+		CString sNum;
+		sNum.Format(_T("%02d"), i);
+		CRegistry regRule(regRewriteRules, sNum);
+		regRule.Write(szMatch, rr->Match);
+		regRule.Write(szReplace, rr->Replace);
+	}
+}
+
+void CConfig::LoadRewriteRules() {
+	LOG0(3, "CConfig::LoadRewriteRules()");
+
+	CRegistry regRewriteRules(HKEY_CURRENT_USER, REG_KEY_REWRITE_RULES);
+	DWORD cSubKeys = 0;
+	regRewriteRules.QuerySubKeyNumber(&cSubKeys);
+	RewriteRules.SetSize(cSubKeys);
+
+	for (DWORD i = 0; i < cSubKeys; i++) {
+		CString sNum;
+		sNum.Format(_T("%02d"), i);
+
+		CRegistry regRule(regRewriteRules, sNum);
+		CRewriteRule *rule = new CRewriteRule();
+
+		rule->Match = regRule.Read(szMatch, _T(""));
+		rule->Replace = regRule.Read(szReplace, _T(""));
+
+		RewriteRules.SetAtGrow(i, rule);
 	}
 }

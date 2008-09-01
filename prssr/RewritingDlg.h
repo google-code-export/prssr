@@ -1,5 +1,5 @@
 /**
- *  PropRewritingPg.h
+ *  RewritingDlg.h
  *
  *  Copyright (C) 2008  David Andrs <pda@jasnapaka.com>
  *
@@ -18,39 +18,37 @@
  *
  */
 
-#if !defined(AFX_PROPREWRITINGPG_H_INCLUDED_)
-#define AFX_PROPREWRITINGPG_H_INCLUDED_
+#if !defined(AFX_REWRITINGDLG_H_INCLUDED_)
+#define AFX_REWRITINGDLG_H_INCLUDED_
 
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
 
 #include "ctrls/CeListCtrl.h"
-#include "ctrls/CePropertyPage.h"
+#include "ctrls/CeDialog.h"
 
 struct CRewriteRule;
 
 /////////////////////////////////////////////////////////////////////////////
-// CPropRewritingPg dialog
+// CRewritingDlg dialog
 
-class CPropRewritingPg : public CCePropertyPage {
-	DECLARE_DYNCREATE(CPropRewritingPg)
-
+class CRewritingDlg : public CCeDialog {
 // Construction
 public:
-	CPropRewritingPg();
-	~CPropRewritingPg();
+	CRewritingDlg();
+	~CRewritingDlg();
 
 // Dialog Data
-	//{{AFX_DATA(CPropRewritingPg)
-	enum { IDD = IDD_PROP_REWRITING };
+	//{{AFX_DATA(CRewritingDlg)
+	enum { IDD = IDD_REWRITING };
 	CCeListCtrl m_ctlRules;
 	//}}AFX_DATA
 	CArray<CRewriteRule *, CRewriteRule *> Rules;
 
 // Overrides
 	// ClassWizard generate virtual function overrides
-	//{{AFX_VIRTUAL(CPropRewritingPg)
+	//{{AFX_VIRTUAL(CRewritingDlg)
 	protected:
 	virtual void DoDataExchange(CDataExchange *pDX);    // DDX/DDV support
 	//}}AFX_VIRTUAL
@@ -63,12 +61,13 @@ protected:
 	void UpdateControls();
 	virtual void ResizeControls();
 	// Generated message map functions
-	//{{AFX_MSG(CPropRewritingPg)
+	//{{AFX_MSG(CRewritingDlg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnKeydownRules(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnClickRules(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnContextMenu(NMHDR *pNMHDR, LRESULT *pResult);
 	//}}AFX_MSG
+	afx_msg void OnNew();
 	afx_msg void OnRemove();
 	afx_msg void OnUpdateRemove(CCmdUI *pCmdUI);
 
@@ -80,4 +79,4 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_PROPREWRITINGPG_H_INCLUDED_)
+#endif // !defined(AFX_REWRITINGDLG_H_INCLUDED_)

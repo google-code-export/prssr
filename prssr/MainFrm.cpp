@@ -57,8 +57,8 @@
 #include "OptAppearancePg.h"
 #include "../share/notif.h"
 
-
-// chace manager
+#include "RewritingDlg.h"
+// cache manager
 #include "CacheMan.h"
 
 #ifdef MYDEBUG
@@ -179,6 +179,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 
 	ON_COMMAND(ID_OPEN, OnOpenPRSSreader)
 	ON_COMMAND(ID_HIDE, OnHide)
+
+	ON_COMMAND(ID_REWRITE_RULES, OnRewriteRules)
 
 	ON_MESSAGE(WM_HIBERNATE, OnHibernate)
 	ON_MESSAGE(UWM_SHOW_UPDATEBAR, OnShowUpdateBar)
@@ -974,19 +976,16 @@ void CMainFrame::OnToolsKeywordManager() {
 
 	CKeywordManagerDlg dlg;
 
-	CStringArray &keywords = SiteList.GetKeywords();
-	for (int i = 0; i < keywords.GetSize(); i++)
-		dlg.Keywords.Add(keywords[i]);
+	for (int i = 0; i < Config.Keywords.GetSize(); i++)
+		dlg.Keywords.Add(Config.Keywords[i]);
 
 	if (dlg.DoModal() == IDOK) {
 		// save keywords
-		keywords.RemoveAll();
+		Config.Keywords.RemoveAll();
 		for (int i = 0; i < dlg.Keywords.GetSize(); i++)
-			keywords.Add(dlg.Keywords.GetAt(i));
+			Config.Keywords.Add(dlg.Keywords.GetAt(i));
 
-		SaveSiteListKeywords();
-
-//		OnRefreshView(0, 0);
+		Config.SaveKeywords();
 	}
 }
 
@@ -1999,4 +1998,33 @@ void CMainFrame::OnHide() {
 void CMainFrame::UpdateMenu() {
 	BOOL fEnableItem = !Loading && !m_wndUpdateBar.IsUpdating() && SiteList.GetCount() > 0;
 	::SendMessage(m_hwndCmdBar, TB_ENABLEBUTTON, (WPARAM) ID_TOOLS_UPDATEALLCHANNELS, (LPARAM) MAKELONG(fEnableItem, 0));
+}
+
+void CMainFrame::OnRewriteRules() {
+	CRewritingDlg dlg;
+
+	// rewrite rules
+	for (int i = 0; i < Config.RewriteRules.GetSize(); i++) {
+		CRewriteRule *rr = Config.RewriteRules[i];
+
+		CRewriteRule *dupRR = new CRewriteRule();
+		*dupRR = *rr;
+		dlg.Rules.SetAtGrow(i, dupRR);
+	}
+
+	if (dlg.DoModal() == IDOK) {
+		// rewrite rules
+		int i;
+		for (i = 0; i < Config.RewriteRules.GetSize(); i++)
+			delete Config.RewriteRules[i];
+		for (i = 0; i < dlg.Rules.GetSize(); i++)
+			Config.RewriteRules.SetAtGrow(i, dlg.Rules[i]);
+
+		Config.SaveRewriteRules();
+	}
+	else {
+		// free previously allocated rewrite rules (duplicates)
+		for (int i = 0; i < dlg.Rules.GetSize(); i++)
+			delete dlg.Rules[i];
+	}
 }

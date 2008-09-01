@@ -152,6 +152,8 @@ enum ESyncSite {
 #include "net/proxy.h"
 #include "../share/helpers.h"
 
+struct CRewriteRule;
+
 struct CProxyProfile {
 	CString Name;
 	CProxy ProxyConfig;
@@ -228,6 +230,9 @@ public:
 	// HTML optimizer
 	BOOL UseHtmlOptimizer;
 	CString HtmlOptimizerURL;
+
+	CStringArray Keywords;
+	CArray<CRewriteRule *, CRewriteRule *> RewriteRules;
 
 	// proxy profiles
 	int ProxyProfileIdx;
@@ -316,6 +321,12 @@ public:
 
 	void SaveSocialBookmarkingSites();
 	void LoadSocialBookmarkingSites();
+
+	void SaveRewriteRules();
+	void LoadRewriteRules();
+
+	void SaveKeywords();
+	void LoadKeywords();
 
 	void SaveUI();
 	void LoadUI();

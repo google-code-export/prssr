@@ -1,5 +1,5 @@
 /**
- *  PropRewritingPg.cpp
+ *  RewritingDlg.cpp
  *
  *  Copyright (C) 2008  David Andrs <pda@jasnapaka.com>
  *
@@ -20,7 +20,7 @@
 
 #include "StdAfx.h"
 #include "prssr.h"
-#include "PropRewritingPg.h"
+#include "RewritingDlg.h"
 #include "Site.h"
 #include "RewriteRuleDlg.h"
 
@@ -38,42 +38,42 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
-// CPropRewritingPg property page
+// CRewritingDlg dialog
 
-IMPLEMENT_DYNCREATE(CPropRewritingPg, CCePropertyPage)
-
-CPropRewritingPg::CPropRewritingPg() : CCePropertyPage(CPropRewritingPg::IDD) {
-	//{{AFX_DATA_INIT(CPropRewritingPg)
+CRewritingDlg::CRewritingDlg() : CCeDialog(CRewritingDlg::IDD) {
+	//{{AFX_DATA_INIT(CRewritingDlg)
 	//}}AFX_DATA_INIT
+	SetMenu(IDR_REWRITING);
 }
 
-CPropRewritingPg::~CPropRewritingPg() {
+CRewritingDlg::~CRewritingDlg() {
 }
 
-void CPropRewritingPg::DoDataExchange(CDataExchange* pDX) {
-	CCePropertyPage::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CPropRewritingPg)
+void CRewritingDlg::DoDataExchange(CDataExchange* pDX) {
+	CCeDialog::DoDataExchange(pDX);
+	//{{AFX_DATA_MAP(CRewritingDlg)
 	DDX_Control(pDX, IDC_RULES, m_ctlRules);
 	//}}AFX_DATA_MAP
 }
 
 
-BEGIN_MESSAGE_MAP(CPropRewritingPg, CCePropertyPage)
-	//{{AFX_MSG_MAP(CPropRewritingPg)
+BEGIN_MESSAGE_MAP(CRewritingDlg, CCeDialog)
+	//{{AFX_MSG_MAP(CRewritingDlg)
 	ON_NOTIFY(LVN_KEYDOWN, IDC_RULES, OnKeydownRules)
 	ON_NOTIFY(NM_CLICK, IDC_RULES, OnClickRules)
 	ON_NOTIFY(GN_CONTEXTMENU, IDC_RULES, OnContextMenu)
 	ON_WM_DESTROY()
 	//}}AFX_MSG_MAP
 	ON_COMMAND(ID_REMOVE, OnRemove)
+	ON_COMMAND(ID_NEW, OnNew)
 	ON_UPDATE_COMMAND_UI(ID_REMOVE, OnUpdateRemove)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CPropRewritingPg message handlers
+// CRewritingDlg message handlers
 
-BOOL CPropRewritingPg::OnInitDialog() {
-	CCePropertyPage::OnInitDialog();
+BOOL CRewritingDlg::OnInitDialog() {
+	CCeDialog::OnInitDialog();
 
 	m_ctlRules.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
@@ -82,7 +82,7 @@ BOOL CPropRewritingPg::OnInitDialog() {
 
 	m_ctlRules.InsertColumn(0, _T("Pattern"), LVCFMT_LEFT, (int) (0.6 * rc.Width()));
 	m_ctlRules.InsertColumn(1, _T("Rewrite to"), LVCFMT_LEFT, (int) (0.4 * rc.Width()));
-	
+
 	CString sText;
 	sText.LoadString(IDS_NEW_RULE);
 	int item = m_ctlRules.InsertItem(0, sText);
@@ -96,18 +96,18 @@ BOOL CPropRewritingPg::OnInitDialog() {
 	return TRUE;
 }
 
-void CPropRewritingPg::InsertRule(int idx, CRewriteRule *rule) {
+void CRewritingDlg::InsertRule(int idx, CRewriteRule *rule) {
 	int newItem = m_ctlRules.InsertItem(idx, rule->Match);
 	m_ctlRules.SetItemText(newItem, 1, rule->Replace);
 	m_ctlRules.SetItemData(newItem, (DWORD) rule);
 }
 
-void CPropRewritingPg::UpdateControls() {
+void CRewritingDlg::UpdateControls() {
 }
 
-void CPropRewritingPg::OnKeydownRules(NMHDR *pNMHDR, LRESULT *pResult) {
+void CRewritingDlg::OnKeydownRules(NMHDR *pNMHDR, LRESULT *pResult) {
 	LV_KEYDOWN *plvkd = (LV_KEYDOWN *) pNMHDR;
-   
+
 	if (plvkd->wVKey == VK_RETURN) {
 		int item = m_ctlRules.GetNextItem(-1, LVNI_SELECTED);
 		if (item != -1)
@@ -117,7 +117,7 @@ void CPropRewritingPg::OnKeydownRules(NMHDR *pNMHDR, LRESULT *pResult) {
 	*pResult = 0;
 }
 
-void CPropRewritingPg::OnContextMenu(NMHDR *pNMHDR, LRESULT *pResult) {
+void CRewritingDlg::OnContextMenu(NMHDR *pNMHDR, LRESULT *pResult) {
 	LOG0(1, "CRewriteRuleDlg::OnContextMenu()");
 
 	// GN_CONTEXTMENU sends NMRGINFO structure through notify struct parameter
@@ -137,7 +137,11 @@ void CPropRewritingPg::OnContextMenu(NMHDR *pNMHDR, LRESULT *pResult) {
 	*pResult = TRUE; // This is important!
 }
 
-void CPropRewritingPg::OnRemove() {
+void CRewritingDlg::OnNew() {
+	EditRule(0);
+}
+
+void CRewritingDlg::OnRemove() {
 	int item = m_ctlRules.GetNextItem(-1, LVNI_SELECTED);
 	if (item != -1) {
 		CRewriteRule *rr = (CRewriteRule *) m_ctlRules.GetItemData(item);
@@ -148,7 +152,7 @@ void CPropRewritingPg::OnRemove() {
 	}
 }
 
-void CPropRewritingPg::OnUpdateRemove(CCmdUI *pCmdUI) {
+void CRewritingDlg::OnUpdateRemove(CCmdUI *pCmdUI) {
 	int item = m_ctlRules.GetNextItem(-1, LVNI_SELECTED);
 	if (item != -1)
 		pCmdUI->Enable(m_ctlRules.GetItemData(item) != 0);
@@ -156,7 +160,7 @@ void CPropRewritingPg::OnUpdateRemove(CCmdUI *pCmdUI) {
 		pCmdUI->Enable(FALSE);
 }
 
-void CPropRewritingPg::OnDestroy() {
+void CRewritingDlg::OnDestroy() {
 	LOG0(1, "CRewriteRuleDlg::OnDestroy()");
 
 	Rules.RemoveAll();
@@ -165,10 +169,10 @@ void CPropRewritingPg::OnDestroy() {
 		Rules.SetAtGrow(i - 1, rr);
 	}
 
-	CCePropertyPage::OnDestroy();
+	CCeDialog::OnDestroy();
 }
 
-void CPropRewritingPg::OnClickRules(NMHDR *pNMHDR, LRESULT *pResult) {
+void CRewritingDlg::OnClickRules(NMHDR *pNMHDR, LRESULT *pResult) {
 	NMLISTVIEW *pnmlv = (NMLISTVIEW *) (pNMHDR);
 
 	int item = m_ctlRules.GetNextItem(-1, LVNI_SELECTED);
@@ -178,7 +182,7 @@ void CPropRewritingPg::OnClickRules(NMHDR *pNMHDR, LRESULT *pResult) {
 	*pResult = 0;
 }
 
-void CPropRewritingPg::EditRule(int item) {
+void CRewritingDlg::EditRule(int item) {
 	BOOL bNew = FALSE;
 	CRewriteRule *rr = (CRewriteRule *) m_ctlRules.GetItemData(item);
 
@@ -208,9 +212,9 @@ void CPropRewritingPg::EditRule(int item) {
 	}
 }
 
-void CPropRewritingPg::ResizeControls() {
+void CRewritingDlg::ResizeControls() {
 	CRect rc;
 	GetClientRect(rc);
 
-	m_ctlRules.SetWindowPos(NULL, 0, 0, rc.Width() - SCALEX(13), rc.bottom - SCALEY(30 + 5), SWP_NOZORDER | SWP_NOMOVE);
+	m_ctlRules.SetWindowPos(NULL, 0, 0, rc.Width() - SCALEX(13), rc.bottom - SCALEY(30 + 5 + 15), SWP_NOZORDER | SWP_NOMOVE);
 }

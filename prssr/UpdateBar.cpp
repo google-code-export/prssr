@@ -280,7 +280,7 @@ void CUpdateBar::EnqueueImages(CArray<CFeedItem *, CFeedItem *> &items) {
 void CUpdateBar::EnqueueHtml(const CString &url, CSiteItem *siteItem) {
 	// URL rewriting
 	CString surl = SanitizeUrl(url);
-	surl = RewriteUrl(surl, siteItem->Info->RewriteRules);
+	surl = RewriteUrl(surl, Config.RewriteRules);
 	if (Config.UseHtmlOptimizer)
 		surl = MakeHtmlOptimizerUrl(surl, Config.HtmlOptimizerURL);
 
@@ -412,7 +412,7 @@ void CUpdateBar::UpdateFeeds() {
 					si->Feed->Title = feed->Title;
 					si->Feed->UpdateInterval = feed->UpdateInterval;
 				}
-				
+
 				// mark all new items in the old feed as unread
 				for (int i = 0; i < si->Feed->GetItemCount(); i++) {
 					CFeedItem *fi = si->Feed->GetItem(i);
@@ -454,7 +454,7 @@ void CUpdateBar::UpdateFeeds() {
 
 				// check keywords in new items
 				for (i = 0; i < newItems.GetSize(); i++)
-					newItems.GetAt(i)->SearchKeywords(SiteList.GetKeywords());
+					newItems.GetAt(i)->SearchKeywords(Config.Keywords);
 
 				// cache
 				if (!ui->UpdateOnly) {
@@ -514,7 +514,7 @@ void CUpdateBar::UpdateFeeds() {
 			}
 
 			delete feed;
-			
+
 			m_ctlProgress.SetStep(1);
 			m_ctlProgress.StepIt();
 			m_ctlProgress.Redraw(FALSE);
@@ -685,7 +685,7 @@ void CUpdateBar::UpdateThread() {
 		m_ctlProgress.ShowWindow(SW_SHOW);
 		m_ctlText.ShowWindow(SW_HIDE);
 		if (frame != NULL) frame->PostMessage(UWM_SHOW_UPDATEBAR, TRUE);
-	
+
 		m_ctlProgress.SetRange(0, UpdateList.GetCount());
 		m_ctlProgress.SetPos(0);
 

@@ -64,7 +64,7 @@ void OpenOnlineMessage(const CString &link, CSiteItem *si) {
 	}
 	else {
 		// first try to rewrite the URL
-		url = RewriteUrl(url, si->Info->RewriteRules);
+		url = RewriteUrl(url, Config.RewriteRules);
 
 		if (Config.UseHtmlOptimizer && Config.OpenMsgWithHtmlOptimizer)
 			url = MakeHtmlOptimizerUrl(url, Config.HtmlOptimizerURL);
@@ -358,7 +358,7 @@ void CArticleDlg::ShowFeedItem() {
 			m_ctlHTML.AddText(L"<p>Keywords: ");
 			for (int i = 0; i < m_pFeedItem->KeywordPos.GetSize(); i++) {
 				if (i > 0) m_ctlHTML.AddText(L", ");
-				m_ctlHTML.AddText(SiteList.GetKeywords().GetAt(i));
+				m_ctlHTML.AddText(Config.Keywords.GetAt(i));
 			}
 			m_ctlHTML.AddText(L"</p>");
 		}

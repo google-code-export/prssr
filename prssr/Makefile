@@ -5,7 +5,7 @@
 OUTDIR=prj/ARMV4Rel
 BIN=prssr.exe
 
-VPATH=../share:base64:ctrls:debug:digest:digest/md5/:gunzip:misc:net:sha1:www:xml
+VPATH=../share:base64:ctrls:debug:digest:digest/md5/:gunzip:misc:net:sha1:www:xml:sync
 SRC=$(wildcard *.cpp)\
 	$(wildcard base64/*.cpp)\
 	$(wildcard ctrls/*.cpp)\
@@ -18,6 +18,7 @@ SRC=$(wildcard *.cpp)\
 	$(wildcard sha1/*.cpp)\
 	$(wildcard www/*.cpp)\
 	$(wildcard xml/*.cpp)\
+	$(wildcard sync/*.cpp)\
 	$(wildcard ../share/*.cpp)\
 	
 RC=prssr.rc
@@ -80,7 +81,7 @@ LINK32_FLAGS=/nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCR
 
 ## --- ##
 
-all: dep $(OUTDIR) $(OUTDIR)/$(BIN)
+all: $(OUTDIR) $(OUTDIR)/$(BIN)
 
 $(OUTDIR):
 	-mkdir "$(OUTDIR)"

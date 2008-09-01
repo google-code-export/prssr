@@ -191,6 +191,8 @@ protected:
 	afx_msg void OnOpenPRSSreader();
 	afx_msg void OnHide();
 
+	afx_msg void OnRewriteRules();
+
 	// sort
 	void UpdateSort();
 	afx_msg void OnSortChange();
