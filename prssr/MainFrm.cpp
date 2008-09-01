@@ -975,19 +975,16 @@ void CMainFrame::OnToolsKeywordManager() {
 
 	CKeywordManagerDlg dlg;
 
-	CStringArray &keywords = SiteList.GetKeywords();
-	for (int i = 0; i < keywords.GetSize(); i++)
-		dlg.Keywords.Add(keywords[i]);
+	for (int i = 0; i < Config.Keywords.GetSize(); i++)
+		dlg.Keywords.Add(Config.Keywords[i]);
 
 	if (dlg.DoModal() == IDOK) {
 		// save keywords
-		keywords.RemoveAll();
+		Config.Keywords.RemoveAll();
 		for (int i = 0; i < dlg.Keywords.GetSize(); i++)
-			keywords.Add(dlg.Keywords.GetAt(i));
+			Config.Keywords.Add(dlg.Keywords.GetAt(i));
 
-		SaveSiteListKeywords();
-
-//		OnRefreshView(0, 0);
+		Config.SaveKeywords();
 	}
 }
 

@@ -508,7 +508,43 @@ void CConfig::LoadSocialBookmarkingSites() {
 	}
 }
 
+void CConfig::SaveKeywords() {
+	LOG0(3, "CConfig::SaveKeywords()");
+
+	// Keywords
+	CRegistry::DeleteKey(HKEY_CURRENT_USER, REG_KEY_KEYWORDS);
+	CRegistry regKeywords(HKEY_CURRENT_USER, REG_KEY_KEYWORDS);
+
+	for (int i = 0; i < Keywords.GetSize(); i++) {
+		CString sNum;
+		sNum.Format(_T("%d"), i + 1);
+
+		CString kw = Keywords.GetAt(i);
+		regKeywords.Write(sNum, kw);
+	}
+}
+
+void CConfig::LoadKeywords() {
+	LOG0(3, "CConfig::LoadKeywords()");
+
+	// read keywords
+	DWORD cKeywords;
+	CRegistry regKeywords(HKEY_CURRENT_USER, REG_KEY_KEYWORDS);
+	regKeywords.QueryValueNumber(&cKeywords);
+
+	for (DWORD k = 1; k <= cKeywords; k++) {
+		CString sNum;
+		sNum.Format(_T("%d"), k);
+
+		CString kword = regKeywords.Read(sNum, _T(""));
+		if (!kword.IsEmpty())
+			Keywords.Add(kword);
+	}
+}
+
 void CConfig::SaveRewriteRules() {
+	LOG0(3, "CConfig::SaveRewriteRules()");
+
 	CRegistry regRewriteRules(HKEY_CURRENT_USER, REG_KEY_REWRITE_RULES);
 	for (int i = 0; i < RewriteRules.GetSize(); i++) {
 		CRewriteRule *rr = RewriteRules[i];
@@ -522,6 +558,8 @@ void CConfig::SaveRewriteRules() {
 }
 
 void CConfig::LoadRewriteRules() {
+	LOG0(3, "CConfig::LoadRewriteRules()");
+
 	CRegistry regRewriteRules(HKEY_CURRENT_USER, REG_KEY_REWRITE_RULES);
 	DWORD cSubKeys = 0;
 	regRewriteRules.QuerySubKeyNumber(&cSubKeys);

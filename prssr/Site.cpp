@@ -86,7 +86,6 @@ CSiteList SiteList;
 CSiteItem UnreadItems(NULL, CSiteItem::VFolder);
 CSiteItem FlaggedItems(NULL, CSiteItem::VFolder);
 
-
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -449,12 +448,14 @@ void CSiteList::Destroy() {
 	Data.RemoveAll();
 }
 
+/*
 void CSiteList::SetKeywords(CStringArray &kws) {
 	Keywords.RemoveAll();
 
 	for (int i = 0; i < kws.GetSize(); i++)
 		Keywords.Add(kws.GetAt(i));
 }
+*/
 
 void CSiteList::CreateFrom(CSiteItem *root) {
 	if (root == NULL)
@@ -624,22 +625,7 @@ BOOL SaveSiteList() {
 	return TRUE;
 }
 
-void SaveSiteListKeywords() {
-	LOG0(3, "SaveSiteListKeywords()");
 
-	// Keywords
-	CRegistry::DeleteKey(HKEY_CURRENT_USER, REG_KEY_KEYWORDS);
-	CRegistry regKeywords(HKEY_CURRENT_USER, REG_KEY_KEYWORDS);
-
-	CStringArray &keywords = SiteList.GetKeywords();
-	for (int i = 0; i < keywords.GetSize(); i++) {
-		CString sNum;
-		sNum.Format(_T("%d"), i + 1);
-
-		CString kw = keywords.GetAt(i);
-		regKeywords.Write(sNum, kw);
-	}
-}
 #endif
 
 // Load //////////
@@ -782,25 +768,10 @@ int LoadSiteList(CSiteList &siteList) {
 		LoadSiteGroup(rootItem, regGroup, sites);
 	}
 
-	// read keywords
-	DWORD cKeywords;
-	CRegistry regKeywords(HKEY_CURRENT_USER, REG_KEY_KEYWORDS);
-	regKeywords.QueryValueNumber(&cKeywords);
-
-	CStringArray keywords;
-	for (DWORD k = 1; k <= cKeywords; k++) {
-		CString sNum;
-		sNum.Format(_T("%d"), k);
-
-		CString kword = regKeywords.Read(sNum, _T(""));
-		if (!kword.IsEmpty())
-			keywords.Add(kword);
-	}
-
 	//
 	siteList.CreateFrom(rootItem);
 	siteList.SetRoot(rootItem);
-	siteList.SetKeywords(keywords);
+//	siteList.SetKeywords(keywords);
 
 	return 0;
 }

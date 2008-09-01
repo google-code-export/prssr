@@ -28,29 +28,27 @@
 #include "XMLFile.h"
 
 class CSiteList;
-class CFeedInfo;
 class CSiteItem;
+struct CRewriteRule;
 
 class COpmlFile : public CXmlFile {
 public:
 	COpmlFile();
 	virtual ~COpmlFile();
 
-	BOOL Parse(CSiteItem *item, CStringArray &keywords);
+	BOOL Parse(CSiteItem *item);
 
 #ifdef PRSSR_APP
-	BOOL Export(LPCTSTR fileName, CSiteList *siteList);
-	virtual BOOL Save(LPCTSTR fileName, CSiteList *siteList);
+	BOOL Export(LPCTSTR fileName, CSiteList &siteList);
+	virtual BOOL Save(LPCTSTR fileName, CSiteList &siteList);
 #endif
 
 protected:
 	BOOL ParseOutline(CXmlNode *parent, CSiteItem *item);
-	BOOL ParseHead(CXmlNode *parent, CStringArray &keywords);
 
 #ifdef PRSSR_APP
 	BOOL SaveGroup(CXmlNode *parent, CSiteItem *item);
 	BOOL SaveSite(CXmlNode *parent, CSiteItem *item);
-	BOOL SaveHead(CXmlNode *parent, CSiteList *siteList);
 #endif
 };
 

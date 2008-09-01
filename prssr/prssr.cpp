@@ -86,6 +86,7 @@ CPrssrApp::CPrssrApp()
 	Config.LoadUI();
 	Config.LoadProxyProfiles();
 	Config.LoadSocialBookmarkingSites();
+	Config.LoadKeywords();
 	Config.LoadRewriteRules();
 
 #ifdef LOGGING
