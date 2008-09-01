@@ -851,12 +851,10 @@ void CSiteManagerDlg::OnImportOpml() {
 		BOOL gotOpml = FALSE;
 		CSiteList siteListToImport;
 		if (opml.LoadFromFile(dlgImport.m_strPath)) {
-			CStringArray keywords;
 			CSiteItem *root = new CSiteItem(NULL, CSiteItem::Group);
-			if (opml.Parse(root, keywords)) {
+			if (opml.Parse(root)) {
 				siteListToImport.CreateFrom(root);
 				siteListToImport.SetRoot(root);
-				siteListToImport.SetKeywords(keywords);
 				gotOpml = TRUE;
 			}
 			else
@@ -933,10 +931,9 @@ void CSiteManagerDlg::OnExportOpml() {
 			CSiteItem *root = (CSiteItem *) m_ctlSites.GetItemData(hRoot);
 			CSiteList siteListToExport;
 			siteListToExport.SetRoot(root);
-			siteListToExport.SetKeywords(SiteList.GetKeywords());
 
 			COpmlFile opml;
-			if (opml.Export(strDestinationFileName, &siteListToExport)) {
+			if (opml.Export(strDestinationFileName, siteListToExport)) {
 				AfxMessageBox(IDS_EXPORT_OK);
 			}
 			else {
