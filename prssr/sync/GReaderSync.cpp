@@ -88,7 +88,7 @@ BOOL CGReaderSync::SyncFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
 		n = 25;			// fallback
 
 	CString url;
-	url.Format(_T("%s/atom/feed/%s?n=%d"), BaseUrl, si->Info->XmlUrl, n);
+	url.Format(_T("%s/atom/feed/%s?n=%d"), BaseUrl, UrlEncode(si->Info->XmlUrl), n);
 	if (Downloader->SaveHttpObject(url, tmpFileName) && Downloader->Updated) {
 		CFeedFile xml;
 		if (xml.LoadFromFile(tmpFileName)) {
@@ -242,14 +242,14 @@ void CGReaderSync::UpdateInGreader() {
 	for (i = 0; i < MarkReadItems.GetSize(); i++) {
 		CFeedItem *fi = MarkReadItems[i];
 		url.Format(_T("%s/edit-tag"), Api0);
-		body.Format(_T("i=%s&a=%s&T=%s"), fi->Hash, UrlEncode(_T("user/-/state/com.google/read")), Token); 
+		body.Format(_T("i=%s&a=%s&T=%s"), fi->Hash, UrlEncode(_T("user/-/state/com.google/read")), Token);
 		Downloader->Post(url, body, response);
 	}
 
 	for (i = 0; i < MarkStarredItems.GetSize(); i++) {
 		CFeedItem *fi = MarkReadItems[i];
 		url.Format(_T("%s/edit-tag"), Api0);
-		body.Format(_T("i=%s&a=%s&T=%s"), fi->Hash, UrlEncode(_T("user/-/state/com.google/starred")), Token); 
+		body.Format(_T("i=%s&a=%s&T=%s"), fi->Hash, UrlEncode(_T("user/-/state/com.google/starred")), Token);
 		Downloader->Post(url, body, response);
 	}
 
@@ -312,14 +312,14 @@ void CGReaderSync::FeedIntersectionEx(CFeed *first, CFeed *second, CArray<CFeedI
 				// update read status
 				if (fa->IsRead() || fb->IsRead()) {
 					if (fb->IsRead() && !fa->IsRead()) // read in prssr, not read in Greader
-						MarkReadItems.Add(fb);	
+						MarkReadItems.Add(fb);
 					fb->SetFlags(MESSAGE_READ, MESSAGE_READ_STATE);
 				}
 
 				// update starred status
 				if (fa->IsFlagged() || fb->IsFlagged())  {
 					if (fb->IsFlagged() && !fa->IsFlagged()) // flagged in prssr, not flagged in Greader
-						MarkReadItems.Add(fb);	
+						MarkReadItems.Add(fb);
 					fb->SetFlags(MESSAGE_FLAG, MESSAGE_FLAG);
 				}
 
