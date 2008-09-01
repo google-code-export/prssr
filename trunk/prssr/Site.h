@@ -75,9 +75,6 @@ public:
 	// authentication
 	CString UserName;			// if empty -> no auth done (and password is ignored)
 	CString Password;
-
-	// URL rewriting
-	CArray<CRewriteRule *, CRewriteRule *> RewriteRules;
 #endif
 
 	CFeedInfo &operator=(const CFeedInfo &o);

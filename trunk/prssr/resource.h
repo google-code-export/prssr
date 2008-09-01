@@ -70,7 +70,7 @@
 #define IDD_PROXY                       200
 #define IDD_CHOOSE_FEEDS                202
 #define IDD_CHOOSE_FEEDS_WIDE           203
-#define IDD_PROP_REWRITING              204
+#define IDD_REWRITING                   204
 #define IDD_LICENSE                     205
 #define IDD_LICENSE_WIDE                206
 #define IDD_CREDITS                     207
@@ -119,6 +119,7 @@
 #define IDR_DONE                        340
 #define IDR_KEYWORD_MANAGER             341
 #define IDR_FULLSCREEN                  342
+#define IDR_REWRITING                   343
 
 #define IDS_TODAY                       400
 #define IDS_YESTERDAY                   401
@@ -677,6 +678,7 @@
 #define ID_CACHE                        32877
 #define ID_PURGE_CACHE                  32878
 #define ID_FULLSCREEN                   32879
+#define ID_REWRITE_RULES                32880
 
 #define ID_SOCIAL_BOOKMARK_BASE			 33000
 

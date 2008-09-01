@@ -1,5 +1,5 @@
 /**
- *  reg.h 
+ *  reg.h
  *
  *  Copyright (C) 2008  David Andrs <pda@jasnapaka.com>
  *
@@ -32,6 +32,7 @@
 #define REG_KEY_GROUPS				REG_KEY_APP L"\\Groups"
 #define REG_KEY_TODAY				REG_KEY_APP L"\\Today"
 #define REG_KEY_SOCIAL_BOOKMARKING_SITES	REG_KEY_APP L"\\BookmarkSites"
+#define REG_KEY_REWRITE_RULES      REG_KEY_APP L"\\RewriteRules"
 
 #define REG_TODAYROOT				L"Software\\Microsoft\\Today\\Items\\pRSSreader"
 //#define REG_SERVICE_ROOT			L"Services\\pRSSreader"

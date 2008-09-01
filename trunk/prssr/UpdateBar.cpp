@@ -277,7 +277,7 @@ void CUpdateBar::EnqueueImages(CArray<CFeedItem *, CFeedItem *> &items) {
 void CUpdateBar::EnqueueHtml(const CString &url, CSiteItem *siteItem) {
 	// URL rewriting
 	CString surl = SanitizeUrl(url);
-	surl = RewriteUrl(surl, siteItem->Info->RewriteRules);
+	surl = RewriteUrl(surl, Config.RewriteRules);
 	if (Config.UseHtmlOptimizer)
 		surl = MakeHtmlOptimizerUrl(surl, Config.HtmlOptimizerURL);
 

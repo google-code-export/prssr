@@ -73,7 +73,6 @@ BOOL COpmlFile::ParseOutline(CXmlNode *parent, CSiteItem *item) {
 			int nUpdateInterval = UPDATE_INTERVAL_GLOBAL;
 			BOOL bCacheEnclosures = FALSE;
 			int nEnclosureLimit = 0;
-			CString strUrlPart, strUrlReplaceWith;
 			CSortInfo sort;
 
 			BOOL bGroup = TRUE;
@@ -161,14 +160,6 @@ BOOL COpmlFile::ParseOutline(CXmlNode *parent, CSiteItem *item) {
 					strPassword = value;
 					bGroup = FALSE;
 				}
-				else if (name.CompareNoCase(_T("urlPart")) == 0) {
-					strUrlPart = value;
-					bGroup = FALSE;
-				}
-				else if (name.CompareNoCase(_T("urlReplaceWith")) == 0) {
-					strUrlReplaceWith = value;
-					bGroup = FALSE;
-				}
 				else if (name.CompareNoCase(_T("sort")) == 0) {
 					if (value.CompareNoCase(_T("read")) == 0)
 						sort.Item = CSortInfo::Read;
@@ -229,9 +220,6 @@ BOOL COpmlFile::ParseOutline(CXmlNode *parent, CSiteItem *item) {
 					info->UserName = strUserName;
 					info->Password = strPassword;
 
-					if (!strUrlPart.IsEmpty(), !strUrlReplaceWith.IsEmpty())
-						info->RewriteRules.SetAtGrow(0, new CRewriteRule(strUrlPart, strUrlReplaceWith));
-
 					item->Sort = sort;
 #endif
 					CSiteItem *newSite = new CSiteItem(item, CSiteItem::Site);
@@ -240,44 +228,7 @@ BOOL COpmlFile::ParseOutline(CXmlNode *parent, CSiteItem *item) {
 					// TODO: last update time
 
 					item->AddItem(newSite);
-
-					ParseRewriteRules(outline, newSite);
 				}
-			}
-		}
-	}
-
-	return TRUE;
-}
-
-BOOL COpmlFile::ParseRewriteRules(CXmlNode *parent, CSiteItem *item) {
-	LOG0(5, "COpmlFile::ParseRewriteRules()");
-
-	POSITION pos = parent->GetFirstChildPos();
-	while (pos != NULL) {
-		CXmlNode *node = parent->GetNextChild(pos);
-		if (node->GetName().Compare(_T("outline")) == 0) {
-			CString strType;
-			CString strMatch, strReplace;
-
-			POSITION posAttr = node->GetFirstAttrPos();
-			while (posAttr != NULL) {
-				CXmlAttr *attr = node->GetNextAttr(posAttr);
-
-				CString name = attr->GetName();
-				CString value = attr->GetValue();
-				if (name.CompareNoCase(_T("type")) == 0)
-					strType = value;
-				else if (name.CompareNoCase(_T("match")) == 0)
-					strMatch = value;
-				else if (name.CompareNoCase(_T("replace")) == 0)
-					strReplace = value;
-			}
-
-			CFeedInfo *info = item->Info;
-			if (strType.CompareNoCase(_T("rewriterule")) == 0 && info != NULL) {
-				if (!strMatch.IsEmpty() && !strReplace.IsEmpty())
-					info->RewriteRules.Add(new CRewriteRule(strMatch, strReplace));
 			}
 		}
 	}
@@ -306,6 +257,25 @@ BOOL COpmlFile::ParseHead(CXmlNode *parent, CStringArray &keywords) {
 					keywords.Add(attr->GetValue());
 				}
 			}
+		}
+		else if (name.Compare(_T("rewrite-rule")) == 0) {
+			CString strType;
+			CString strMatch, strReplace;
+
+			POSITION posAttr = node->GetFirstAttrPos();
+			while (posAttr != NULL) {
+				CXmlAttr *attr = node->GetNextAttr(posAttr);
+
+				CString name = attr->GetName();
+				CString value = attr->GetValue();
+				if (name.CompareNoCase(_T("match")) == 0)
+					strMatch = value;
+				else if (name.CompareNoCase(_T("replace")) == 0)
+					strReplace = value;
+			}
+
+			if (!strMatch.IsEmpty() && !strReplace.IsEmpty())
+				Config.RewriteRules.Add(new CRewriteRule(strMatch, strReplace));
 		}
 	}
 
@@ -356,20 +326,8 @@ BOOL COpmlFile::SaveSite(CXmlNode *parent, CSiteItem *item) {
 		siteAttrs.AddTail(new CXmlAttr(_T("cacheHTML"), info->CacheHtml));
 	}
 
-//	if (info->CacheItemImages)
-//		siteAttrs.AddTail(new CXmlAttr(_T("cacheImages"), 1));
-//	else
-//		siteAttrs.AddTail(new CXmlAttr(_T("store_images"), 0));
-
-//	if (info->CacheHtml)
-//		siteAttrs.AddTail(new CXmlAttr(_T("cacheHTML"), 1));
-//	else
-//		siteAttrs.AddTail(new CXmlAttr(_T("cacheHTML"), 0));
-
 	if (info->TodayShow)
 		siteAttrs.AddTail(new CXmlAttr(_T("today"), 1));
-//	else
-//		siteAttrs.AddTail(new CXmlAttr(_T("today"), 0));
 
 	TCHAR buf[32];
 	swprintf(buf, _T("%d"), info->UpdateInterval);
@@ -377,8 +335,6 @@ BOOL COpmlFile::SaveSite(CXmlNode *parent, CSiteItem *item) {
 
 	if (info->CacheEnclosures)
 		siteAttrs.AddTail(new CXmlAttr(_T("cacheEnclosures"), 1));
-//	else
-//		siteAttrs.AddTail(new CXmlAttr(_T("cacheEnclosures"), 0));
 
 	if (info->CacheEnclosures) {
 		TCHAR buf[32];
@@ -408,21 +364,6 @@ BOOL COpmlFile::SaveSite(CXmlNode *parent, CSiteItem *item) {
 
 	// <outline>
 	CXmlNode *outline = new CXmlNode(CXmlNode::Tag, parent, _T("outline"), siteAttrs);
-
-	// rewriting rules
-	if (info->RewriteRules.GetSize() > 0) {
-		for (int i = 0; i < info->RewriteRules.GetSize(); i++) {
-			CRewriteRule *rr = info->RewriteRules.GetAt(i);
-
-			CList<CXmlAttr *, CXmlAttr *> ruleAttrs;
-			ruleAttrs.AddTail(new CXmlAttr(_T("type"), _T("rewriteRule")));
-			ruleAttrs.AddTail(new CXmlAttr(_T("match"), rr->Match));
-			ruleAttrs.AddTail(new CXmlAttr(_T("replace"), rr->Replace));
-
-			CXmlNode *rule = new CXmlNode(CXmlNode::Tag, outline, _T("outline"), ruleAttrs);
-			outline->AddChild(rule);
-		}
-	}
 
 	// add the <outline> to parent
 	parent->AddChild(outline);
@@ -464,6 +405,20 @@ BOOL COpmlFile::SaveHead(CXmlNode *parent, CSiteList *siteList) {
 		keywordAttrs.AddTail(new CXmlAttr(_T("text"), keyword));
 		CXmlNode *keywordNode = new CXmlNode(CXmlNode::Tag, parent, _T("keyword"), keywordAttrs);
 		parent->AddChild(keywordNode);
+	}
+
+	// rewriting rules
+	if (Config.RewriteRules.GetSize() > 0) {
+		for (int i = 0; i < Config.RewriteRules.GetSize(); i++) {
+			CRewriteRule *rr = Config.RewriteRules.GetAt(i);
+
+			CList<CXmlAttr *, CXmlAttr *> ruleAttrs;
+			ruleAttrs.AddTail(new CXmlAttr(_T("match"), rr->Match));
+			ruleAttrs.AddTail(new CXmlAttr(_T("replace"), rr->Replace));
+
+			CXmlNode *rule = new CXmlNode(CXmlNode::Tag, parent, _T("rewrite-rule"), ruleAttrs);
+			parent->AddChild(rule);
+		}
 	}
 
 	return TRUE;
