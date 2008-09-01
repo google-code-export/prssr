@@ -722,9 +722,7 @@ void CUpdateBar::UpdateThread() {
 
 		// done
 		if (Errors.GetCount() > 0) {
-			CString strError;
-			strError.Format(IDS_N_ERRORS, Errors.GetCount());
-			ShowError(strError);
+			ShowErrorCount();
 		}
 		else {
 			if (frame != NULL) frame->SendMessage(UWM_SHOW_UPDATEBAR, FALSE);
@@ -733,6 +731,7 @@ void CUpdateBar::UpdateThread() {
 	else {
 		Terminate = TRUE;
 		Errors.Add(new CErrorItem(IDS_NO_INTERNET_CONNECTION));
+		ShowErrorCount();
 		if (frame != NULL) frame->PostMessage(UWM_SHOW_UPDATEBAR, TRUE);
 	}
 
@@ -758,7 +757,10 @@ void CUpdateBar::UpdateProgressText() {
 
 		case UPDATE_STATE_RSS:
 			sText.Format(IDS_UPDATING);
-			sTitle.Format(_T("%s: %s"), SiteName, sText);
+			if (SiteName.IsEmpty())
+				sTitle = sText;
+			else
+				sTitle.Format(_T("%s: %s"), SiteName, sText);
 			m_ctlProgress.SetText(sTitle);
 			break;
 
@@ -779,6 +781,12 @@ void CUpdateBar::UpdateProgressText() {
 			break;
 	}
 
+}
+
+void CUpdateBar::ShowErrorCount() {
+	CString strError;
+	strError.Format(IDS_N_ERRORS, Errors.GetCount());
+	ShowError(strError);
 }
 
 void CUpdateBar::ShowError(UINT nID) {
