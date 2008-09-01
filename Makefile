@@ -34,6 +34,17 @@ unsvninfo:
 # dependency
 prssr: prssrenc
 
+# dep
+.PHONY: dep
+dep:
+	$(MAKE) -C prssrenc dep
+	$(MAKE) -C prssr dep
+	$(MAKE) -C prssrtoday dep
+	$(MAKE) -C prssrnot dep
+	$(MAKE) -C res096 dep
+	$(MAKE) -C res192 dep
+	$(MAKE) -C setup dep
+
 # clean
 .PHONY: clean
 clean:

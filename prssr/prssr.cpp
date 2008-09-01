@@ -86,6 +86,7 @@ CPrssrApp::CPrssrApp()
 	Config.LoadUI();
 	Config.LoadProxyProfiles();
 	Config.LoadSocialBookmarkingSites();
+	Config.LoadRewriteRules();
 
 #ifdef LOGGING
 	Logger = new CLogger(Config.LogFile, Config.LogLevel);

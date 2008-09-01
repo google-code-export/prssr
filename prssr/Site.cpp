@@ -56,7 +56,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 
-// registry 
+// registry
 static LPCTSTR szName = _T("Name");
 static LPCTSTR szIdx = _T("Idx");
 
@@ -79,10 +79,6 @@ static LPCTSTR szSortReversed = _T("SortReversed");
 static LPCTSTR szUnreadCount = _T("Unread Count");
 static LPCTSTR szFlaggedCount = _T("Flagged Count");
 static LPCTSTR szCheckFavIcon = _T("Check FavIcon");
-
-static LPCTSTR szRewriteRules = _T("Rewrite Rules");
-static LPCTSTR szMatch = _T("Match");
-static LPCTSTR szReplace = _T("Replace");
 
 //#ifdef PRSSR_APP
 
@@ -126,14 +122,6 @@ CFeedInfo &CFeedInfo::operator=(const CFeedInfo &o) {
 		LastModified = o.LastModified;
 		UserName = o.UserName;
 		Password = o.Password;
-
-		RewriteRules.SetSize(o.RewriteRules.GetSize());
-		for (int i = 0; i < o.RewriteRules.GetSize(); i++) {
-			CRewriteRule *rr = o.RewriteRules[i];
-			CRewriteRule *newRR = new CRewriteRule;
-			*newRR = *rr;
-			RewriteRules.SetAtGrow(i, newRR);
-		}
 #endif
 	}
 
@@ -141,10 +129,6 @@ CFeedInfo &CFeedInfo::operator=(const CFeedInfo &o) {
 }
 
 CFeedInfo::~CFeedInfo() {
-#if defined PRSSR_APP
-	for (int i = 0; i < RewriteRules.GetSize(); i++)
-		delete RewriteRules[i];
-#endif
 }
 
 #ifdef PRSSR_APP
@@ -305,7 +289,7 @@ void CSiteItem::Destroy() {
 			// we do not destroy feed, since vfolder is an array of links to already existing items that are deallocated elsewhere
 			delete Feed; Feed = NULL;
 			break;
-			
+
 		case Group:
 			while (!SubItems.IsEmpty()) {
 				CSiteItem *item = SubItems.RemoveHead();
@@ -333,7 +317,7 @@ void CSiteItem::EnsureSiteLoaded() {
 				feed->UpdateHiddenFlags();
 //				feed->SetKeywordFlags(SiteList.GetKeywords());
 #endif
-				
+
 				if (Feed != NULL) Feed->Destroy();
 				delete Feed;
 				Feed = feed;
@@ -477,7 +461,7 @@ void CSiteList::CreateFrom(CSiteItem *root) {
 		return;
 
 	if (root->Type == CSiteItem::Site) {
-		Data.Add(root);		
+		Data.Add(root);
 	}
 	else if (root->Type == CSiteItem::Group) {
 		POSITION pos = root->SubItems.GetHeadPosition();
@@ -539,18 +523,6 @@ BOOL SaveSiteItem(CSiteItem *item, int idx) {
 		reg.Write(szLastModified, item->Info->LastModified);
 		reg.Write(szUserName, item->Info->UserName);
 		reg.Write(szPassword, item->Info->Password);
-
-		// save rewrite rules
-		CRegistry regRewriteRules(reg, szRewriteRules);
-		for (int i = 0; i < item->Info->RewriteRules.GetSize(); i++) {
-			CRewriteRule *rr = item->Info->RewriteRules[i];
-
-			CString sNum;
-			sNum.Format(_T("%02d"), i);
-			CRegistry regRule(regRewriteRules, sNum);
-			regRule.Write(szMatch, rr->Match);
-			regRule.Write(szReplace, rr->Replace);
-		}
 	}
 
 	reg.Write(szCheckFavIcon, item->CheckFavIcon);
@@ -559,7 +531,7 @@ BOOL SaveSiteItem(CSiteItem *item, int idx) {
 		case CSortInfo::Date: reg.Write(szSort, _T("date")); break;
 		case CSortInfo::Read: reg.Write(szSort, _T("read")); break;
 	}
-	
+
 	if (item->Sort.Type == CSortInfo::Ascending)
 		reg.Write(szSortReversed, FALSE);
 	else
@@ -738,30 +710,11 @@ BOOL LoadSiteItem(CSiteItem *item, int idx) {
 		else
 			item->Sort.Item = CSortInfo::Date;
 
-		BOOL sortReversed = reg.Read(szSortReversed, FALSE);		
+		BOOL sortReversed = reg.Read(szSortReversed, FALSE);
 		if (sortReversed)
 			item->Sort.Type = CSortInfo::Descending;
 		else
 			item->Sort.Type = CSortInfo::Ascending;
-
-		// rewrite rules
-		CRegistry regRewriteRules(reg, szRewriteRules);
-		DWORD cSubKeys = 0;
-		regRewriteRules.QuerySubKeyNumber(&cSubKeys);
-		info->RewriteRules.SetSize(cSubKeys);
-
-		for (DWORD i = 0; i < cSubKeys; i++) {
-			CString sNum;
-			sNum.Format(_T("%02d"), i);
-			
-			CRegistry regRule(regRewriteRules, sNum);
-			CRewriteRule *rule = new CRewriteRule();
-
-			rule->Match = regRule.Read(szMatch, _T(""));
-			rule->Replace = regRule.Read(szReplace, _T(""));
-
-			info->RewriteRules.SetAtGrow(i, rule);
-		}
 
 		//
 		item->CheckFavIcon = reg.Read(szCheckFavIcon, TRUE);

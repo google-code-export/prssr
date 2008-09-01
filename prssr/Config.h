@@ -146,6 +146,8 @@
 #include "net/proxy.h"
 #include "../share/helpers.h"
 
+struct CRewriteRule;
+
 struct CProxyProfile {
 	CString Name;
 	CProxy ProxyConfig;
@@ -224,6 +226,9 @@ public:
 
 	CArray<CSocialBookmarkSite *, CSocialBookmarkSite *> SocialBookmarkSites;
 
+	// URL rewriting
+	CArray<CRewriteRule *, CRewriteRule *> RewriteRules;
+
 	////////
 
 /*	// general
@@ -286,7 +291,7 @@ public:
 
 	CString EmailService;					// email service used for sending emails (ActiveSync by default)
 
-#ifdef PRSSR_APP 
+#ifdef PRSSR_APP
 	// HW keys
 	CMap<int, int, UINT, UINT> HwKeysCmd;		// VirtualKey -> ID_COMMAND
 	CMap<UINT, UINT, int, int> CmdsHwKey;		// ID_COMMAND -> Virtual Key
@@ -306,11 +311,14 @@ public:
 	void SaveSocialBookmarkingSites();
 	void LoadSocialBookmarkingSites();
 
+	void SaveRewriteRules();
+	void LoadRewriteRules();
+
 	void SaveUI();
 	void LoadUI();
 
 protected:
-/*#ifdef PRSSR_APP 
+/*#ifdef PRSSR_APP
 	void LoadKeys(HKEY hApp);
 	void SaveKeys(HKEY hApp);
 

@@ -31,6 +31,7 @@
 #include "../share/defs.h"
 #include "../share/reg.h"
 #include "net/proxy.h"
+#include "www/url.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
@@ -107,6 +108,9 @@ LPCTSTR szProxyPassword = _T("Proxy Password");
 // html optimizer
 LPCTSTR szUseHtmlOptimizer = _T("Use HTML Optimizer");
 LPCTSTR szHtmlOptimizerURL = _T("HTML Optimizer URL");
+
+static LPCTSTR szMatch = _T("Match");
+static LPCTSTR szReplace = _T("Replace");
 
 /*
 // template of settings for newly added site
@@ -232,6 +236,8 @@ CConfig::CConfig() {
 }
 
 CConfig::~CConfig() {
+	for (int i = 0; i < RewriteRules.GetSize(); i++)
+		delete RewriteRules[i];
 }
 
 void CConfig::Destroy() {
@@ -396,12 +402,12 @@ void CConfig::LoadUI() {
 
 void CConfig::SaveProxyProfiles() {
 	CRegistry::DeleteKey(HKEY_CURRENT_USER, REG_KEY_PROXY_PROFILES);
-	
+
 	CRegistry reg(HKEY_CURRENT_USER, REG_KEY_PROXY_PROFILES);
 	for (int i = 0; i < ProxyProfiles.GetSize(); i++) {
 		CString sNum;
 		sNum.Format(_T("%d"), i);
-		
+
 		CProxyProfile *profile = ProxyProfiles[i];
 		CRegistry regProfile(reg, sNum);
 		regProfile.Write(szName, profile->Name);
@@ -426,7 +432,7 @@ void CConfig::LoadProxyProfiles() {
 	for (DWORD i = 0; i < cSubKeys; i++) {
 		CString sNum;
 		sNum.Format(_T("%d"), i);
-		
+
 		CRegistry regProfile(reg, sNum);
 		CProxyProfile *profile = new CProxyProfile();
 
@@ -450,12 +456,12 @@ void CConfig::LoadProxyProfiles() {
 
 void CConfig::SaveSocialBookmarkingSites() {
 	CRegistry::DeleteKey(HKEY_CURRENT_USER, REG_KEY_SOCIAL_BOOKMARKING_SITES);
-	
+
 	CRegistry reg(HKEY_CURRENT_USER, REG_KEY_SOCIAL_BOOKMARKING_SITES);
 	for (int i = 0; i < SocialBookmarkSites.GetSize(); i++) {
 		CString sNum;
 		sNum.Format(_T("%d"), i);
-		
+
 		CRegistry regProfile(reg, sNum);
 
 		CSocialBookmarkSite *sbs = SocialBookmarkSites[i];
@@ -475,7 +481,7 @@ void CConfig::LoadSocialBookmarkingSites() {
 		for (DWORD i = 0; i < cSubKeys; i++) {
 			CString sNum;
 			sNum.Format(_T("%d"), i);
-			
+
 			CRegistry regProfile(reg, sNum);
 
 			CSocialBookmarkSite *sbs = new CSocialBookmarkSite();
@@ -499,5 +505,38 @@ void CConfig::LoadSocialBookmarkingSites() {
 
 		// social bookmarking
 		SaveSocialBookmarkingSites();
+	}
+}
+
+void CConfig::SaveRewriteRules() {
+	CRegistry regRewriteRules(HKEY_CURRENT_USER, REG_KEY_REWRITE_RULES);
+	for (int i = 0; i < RewriteRules.GetSize(); i++) {
+		CRewriteRule *rr = RewriteRules[i];
+
+		CString sNum;
+		sNum.Format(_T("%02d"), i);
+		CRegistry regRule(regRewriteRules, sNum);
+		regRule.Write(szMatch, rr->Match);
+		regRule.Write(szReplace, rr->Replace);
+	}
+}
+
+void CConfig::LoadRewriteRules() {
+	CRegistry regRewriteRules(HKEY_CURRENT_USER, REG_KEY_REWRITE_RULES);
+	DWORD cSubKeys = 0;
+	regRewriteRules.QuerySubKeyNumber(&cSubKeys);
+	RewriteRules.SetSize(cSubKeys);
+
+	for (DWORD i = 0; i < cSubKeys; i++) {
+		CString sNum;
+		sNum.Format(_T("%02d"), i);
+
+		CRegistry regRule(regRewriteRules, sNum);
+		CRewriteRule *rule = new CRewriteRule();
+
+		rule->Match = regRule.Read(szMatch, _T(""));
+		rule->Replace = regRule.Read(szReplace, _T(""));
+
+		RewriteRules.SetAtGrow(i, rule);
 	}
 }
