@@ -655,7 +655,7 @@ void CUpdateBar::MergeFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
 
 	// check keywords in new items
 	for (i = 0; i < newItems.GetSize(); i++)
-		newItems.GetAt(i)->SearchKeywords(SiteList.GetKeywords());
+		newItems.GetAt(i)->SearchKeywords(Config.Keywords);
 
 	// cache
 	if (!updateOnly) {

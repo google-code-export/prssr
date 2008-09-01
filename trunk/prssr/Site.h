@@ -174,9 +174,6 @@ public:
 
 	int GetIndexOf(CSiteItem *item);
 
-	CStringArray &GetKeywords() { return Keywords; }
-	void SetKeywords(CStringArray &keywords);
-
 	void CreateFrom(CSiteItem *root);
 
 protected:
@@ -186,7 +183,6 @@ protected:
 	// if TRUE, Data array is inconsistent (it is being loaded)
 	CArray<CSiteItem*, CSiteItem*> Data;
 	CSiteItem *Root;
-	CStringArray Keywords;
 };
 
 extern CSiteList SiteList;
@@ -207,7 +203,6 @@ BOOL LoadSiteItemFlaggedCount(CSiteItem *item, int idx);
 #ifdef PRSSR_APP
 
 BOOL SaveSiteList();
-void SaveSiteListKeywords();
 BOOL SaveSiteItemUnreadCount(CSiteItem *item, int idx);
 BOOL SaveSiteItemFlaggedCount(CSiteItem *item, int idx);
 

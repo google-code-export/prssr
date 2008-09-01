@@ -80,7 +80,7 @@ LINK32_FLAGS=/nologo /base:"0x00010000" /stack:0x10000,0x1000 /entry:"wWinMainCR
 
 ## --- ##
 
-all: dep $(OUTDIR) $(OUTDIR)/$(BIN)
+all: $(OUTDIR) $(OUTDIR)/$(BIN)
 
 $(OUTDIR):
 	-mkdir "$(OUTDIR)"

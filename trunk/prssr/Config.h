@@ -220,14 +220,14 @@ public:
 	BOOL UseHtmlOptimizer;
 	CString HtmlOptimizerURL;
 
+	CStringArray Keywords;
+	CArray<CRewriteRule *, CRewriteRule *> RewriteRules;
+
 	// proxy profiles
 	int ProxyProfileIdx;
 	CArray<CProxyProfile *, CProxyProfile *> ProxyProfiles;
 
 	CArray<CSocialBookmarkSite *, CSocialBookmarkSite *> SocialBookmarkSites;
-
-	// URL rewriting
-	CArray<CRewriteRule *, CRewriteRule *> RewriteRules;
 
 	////////
 
@@ -313,6 +313,9 @@ public:
 
 	void SaveRewriteRules();
 	void LoadRewriteRules();
+
+	void SaveKeywords();
+	void LoadKeywords();
 
 	void SaveUI();
 	void LoadUI();
