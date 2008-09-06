@@ -380,6 +380,7 @@ BOOL CUpdateBar::UpdateFeeds() {
 			Downloader = new CDownloader;
 			Downloader->ETag = si->Info->ETag;
 			Downloader->LastModified = si->Info->LastModified;
+			Downloader->SetAuthenticationInfo(si->Info->UserName, si->Info->Password);
 			LeaveCriticalSection(&CSDownloader);
 
 			if (UpdateFeed(si, ui->UpdateOnly)) {
@@ -503,6 +504,7 @@ BOOL CUpdateBar::UpdateFeed(CSiteItem *si, BOOL updateOnly) {
 			case DOWNLOAD_ERROR_HTTP_ERROR:              sErrMsg.Format(IDS_HTTP_ERROR, Downloader->HttpErrorNo); break;
 			case DOWNLOAD_ERROR_AUTHORIZATION_FAILED:    sErrMsg.LoadString(IDS_AUTHORIZATION_FAILED); break;
 			case DOWNLOAD_ERROR_AUTHENTICATION_ERROR:    sErrMsg.LoadString(IDS_AUTHENTICATION_ERROR); break;
+			default: LOG1(1, "Unhandled download error");
 		}
 	}
 
