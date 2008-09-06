@@ -37,7 +37,7 @@
 
 #include "Connection.h"
 #if defined PRSSR_APP
-//	#include "CePropertySheet.h"
+	#include "../ctrls/CePropertySheet.h"
 	#include "../AuthenticationDlg.h"
 //	#include "..\MainFrm.h"
 #endif
@@ -161,13 +161,12 @@ BOOL CDownloader::OnAuthentication(LPVOID context) {
 		return TRUE;	// user predefined values
 	}
 	else {
-/*
 #if defined PRSSR_APP
 		// in pRSSreader main app, we ask user for auth details
 		// get username/password
 		CCePropertySheet sheet(IDS_AUTHENTICATION, theApp.m_pMainWnd);
 		CAuthenticationPg pgAuth;
-		sheet.SetMenu(IDR_CANCEL);
+		sheet.SetMenu(IDR_DONE);
 		sheet.AddPage(&pgAuth);
 
 		pgAuth.m_strSite = ServerName;
@@ -181,12 +180,9 @@ BOOL CDownloader::OnAuthentication(LPVOID context) {
 		}
 		else
 			return FALSE;
-#elif defined PRSSR_SERVICE || defined PRSSR_SRVSTUB
-		// in service, if we do not know how to authenticate -> do not disturb the user
+#else
 		return FALSE;
 #endif
-*/
-		return FALSE;
 	}
 }
 

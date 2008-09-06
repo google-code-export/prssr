@@ -390,7 +390,11 @@ DWORD CAddFeedDlg::AddThread() {
 					info->FileName = CFeedInfo::GenerateFileNameFromTitle(feed->Title);
 					CFeedInfo::EnsureUniqueFileName(info->FileName);
 					info->XmlUrl = htmlFeedItem->Url;
-					// TODO: set auth info (if it was entered)
+					// If the authentication was not required, SavePassword is FALSE
+					if (Downloader->GetSavePassword()) {
+						info->UserName = Downloader->GetUserName();
+						info->Password = Downloader->GetPassword();
+					}
 
 					item->Status = CSiteItem::Ok;
 					item->Name = feed->Title;
