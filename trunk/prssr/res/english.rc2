@@ -700,12 +700,12 @@ BEGIN
 #if SHOW_SVN_REVISION
     LTEXT           SVN_REVISION_TEXT,IDC_STATIC2,5,8,115,10
 #else
-    LTEXT           "pRSSreader 1.4.1",IDC_STATIC2,5,8,115,10
+    LTEXT           "pRSSreader 1.4.2",IDC_STATIC2,5,8,115,10
 #endif
     LTEXT           "Copyright (c) 2005 - 2008",IDC_STATIC3,5,23,115,10
     LTEXT           "David Andrs",IDC_STATIC4,5,33,115,10
     LTEXT           "Using libexpat 2.0.0, zlib 1.2.3, libsgml 1.1.4, libregex 3.8a",IDC_STATIC5,5,50,115,30
-    RTEXT           "http://pda.jasnapaka.com/prssr/",IDC_HOMEPAGE_LINK,5,124,
+    RTEXT           "http://prssr.googlecode.com/",IDC_HOMEPAGE_LINK,5,124,
                     151,10,SS_NOTIFY
 END
 
@@ -719,12 +719,12 @@ BEGIN
 #if SHOW_SVN_REVISION
     LTEXT           SVN_REVISION_TEXT,IDC_STATIC2,5,8,115,10
 #else
-    LTEXT           "pRSSreader 1.4.1",IDC_STATIC2,5,8,115,10
+    LTEXT           "pRSSreader 1.4.2",IDC_STATIC2,5,8,115,10
 #endif
     LTEXT           "Copyright (c) 2005 - 2008",IDC_STATIC3,5,23,115,10
     LTEXT           "David Andrs",IDC_STATIC4,5,33,115,10
     LTEXT           "Using libexpat 2.0.0, zlib 1.2.3, libsgml 1.1.4, libregex 3.8a",IDC_STATIC5,5,50,200,20
-    RTEXT           "http://pda.jasnapaka.com/prssr/",IDC_HOMEPAGE_LINK,4,
+    RTEXT           "http://prssr.googlecode.com/",IDC_HOMEPAGE_LINK,4,
                     73,205,10,SS_NOTIFY
 END
 
