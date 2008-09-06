@@ -470,6 +470,12 @@ BOOL CUpdateBar::UpdateFeed(CSiteItem *si, BOOL updateOnly) {
 					si->Feed->UpdateInterval = feed->UpdateInterval;
 				}
 
+				// If the authentication was not required, SavePassword is FALSE
+				if (Downloader->GetSavePassword()) {
+					si->Info->UserName = Downloader->GetUserName();
+					si->Info->Password = Downloader->GetPassword();
+				}
+
 				// mark all new items in the old feed as unread
 				for (int i = 0; i < si->Feed->GetItemCount(); i++) {
 					CFeedItem *fi = si->Feed->GetItem(i);
@@ -504,7 +510,7 @@ BOOL CUpdateBar::UpdateFeed(CSiteItem *si, BOOL updateOnly) {
 			case DOWNLOAD_ERROR_HTTP_ERROR:              sErrMsg.Format(IDS_HTTP_ERROR, Downloader->HttpErrorNo); break;
 			case DOWNLOAD_ERROR_AUTHORIZATION_FAILED:    sErrMsg.LoadString(IDS_AUTHORIZATION_FAILED); break;
 			case DOWNLOAD_ERROR_AUTHENTICATION_ERROR:    sErrMsg.LoadString(IDS_AUTHENTICATION_ERROR); break;
-			default: LOG1(1, "Unhandled download error");
+			default: LOG0(1, "Unhandled download error");
 		}
 	}
 
