@@ -217,6 +217,7 @@ BOOL CDownloader::DoBasicAuthentication(CHttpRequest *&req, CHttpResponse *&res,
 				if (res != NULL) {
 					if (res->GetStatusCode() == HTTP_STATUS_OK) {
 						State = DOWNLOAD_STATE_AUTHENTICATED;
+						Updated = TRUE;
 					}
 					else {
 						if (AuthSet) {
@@ -371,6 +372,7 @@ BOOL CDownloader::DoDigestAuthentication(CHttpRequest *&req, CHttpResponse *&res
 				if (res != NULL) {
 					if (res->GetStatusCode() == HTTP_STATUS_OK) {
 						State = DOWNLOAD_STATE_AUTHENTICATED;
+						Updated = TRUE;
 					}
 					else {
 						if (AuthSet) {
