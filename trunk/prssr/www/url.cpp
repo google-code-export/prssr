@@ -240,8 +240,6 @@ CString UrlToFileName(const CString &url, BOOL addHTMLExt/* = FALSE*/) {
 	CString strServer, strObject;
 	ParseURL(url, serviceType, strServer, strObject, port);
 
-	// remove '?'s
-//	strObject.Remove('?');
 	// remove #text
 	int hashPos = strObject.ReverseFind('#');
 	CString strHash;
@@ -282,14 +280,6 @@ CString UrlToFileName(const CString &url, BOOL addHTMLExt/* = FALSE*/) {
 	//
 	strPars.Replace('?', '_');
 	strPars.Replace(',', '_');
-
-	strPars.Remove('&');
-	strPars.Remove('=');
-	strPars.Remove('%');
-	strPars.Remove('"');
-	strPars.Remove('\'');
-	strPars.Remove(';');
-	strPars.Remove(':');
 	strPars.Remove('/');
 	strPars.Remove('\\');
 
@@ -299,6 +289,14 @@ CString UrlToFileName(const CString &url, BOOL addHTMLExt/* = FALSE*/) {
 
 	CString strFileNamePath;
 	strFileNamePath.Format(_T("%s%s%s%s%s"), strServer, strPath, strFileName, strPars, strExt);
+
+	strFileNamePath.Remove('&');
+	strFileNamePath.Remove('=');
+	strFileNamePath.Remove('%');
+	strFileNamePath.Remove('\'');
+	strFileNamePath.Remove('"');
+	strFileNamePath.Remove(';');
+	strFileNamePath.Remove(':');
 
 	// truncate the file name to MAX_PATH (limit for filenames), because some URLs are longer than MAX_PATH
 	strFileNamePath = strFileNamePath.Left(MAX_PATH - 10);
@@ -438,7 +436,7 @@ CString UrlEncode(const CString &url) {
 	CString encoded;
 	for (int i = 0; i < url.GetLength(); i++) {
 		TCHAR ch = url.GetAt(i);
-		if ((ch >= 0x00 && ch <= 0x20) || (ch >= 0x22 && ch <= 0x26) ||
+		if ((ch >= 0x00 && ch <= 0x26) ||
 			ch == 0x2B || ch == 0x2C || ch == 0x2F ||
 			(ch >= 0x3A && ch <= 0x40) || (ch >= 0x7B && ch <= 0x7E) || (ch >= 0x5B && ch <= 0x5E) ||
 			ch == 0x60 || (ch >= 0x80 && ch <= 0xFF))
