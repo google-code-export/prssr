@@ -354,6 +354,9 @@ void CUpdateBar::Start() {
 void CUpdateBar::UpdateFeeds() {
 	LOG0(1, "CUpdateBar::UpdateFeeds()");
 
+	m_ctlProgress.SetRange(0, UpdateList.GetCount());
+	m_ctlProgress.SetPos(0);
+
 	CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
 
 	EnterCriticalSection(&CSDownloader);
@@ -630,51 +633,47 @@ void CUpdateBar::DownloadFile(CDownloadItem *di) {
 void CUpdateBar::DownloadItems() {
 	LOG0(1, "CUpdateBar::DownloadItems()");
 
-	BOOL disconnect;
-	if (CheckConnection(Config.AutoConnect, disconnect)) {
-		while (!Terminate && !DownloadQueue.IsEmpty()) {
-			CDownloadItem *di = DownloadQueue.Dequeue();
+	State = UPDATE_STATE_CACHING;
 
-			EnterCriticalSection(&CSDownloader);
-			Downloader = new CDownloader();
-			m_ctlProgress.SetDownloader(Downloader);
-			LeaveCriticalSection(&CSDownloader);
+	while (!Terminate && !DownloadQueue.IsEmpty()) {
+		CDownloadItem *di = DownloadQueue.Dequeue();
 
-			m_ctlProgress.SetPos(0);
-			UpdateProgressText();
-			m_ctlProgress.Redraw(TRUE);
+		EnterCriticalSection(&CSDownloader);
+		Downloader = new CDownloader();
+		m_ctlProgress.SetDownloader(Downloader);
+		LeaveCriticalSection(&CSDownloader);
 
-			switch (di->Type) {
-				case FILE_TYPE_HTML: DownloadHtmlPage(di); break;
-				default: DownloadFile(di); break;
-			}
+		m_ctlProgress.SetPos(0);
+		UpdateProgressText();
+		m_ctlProgress.Redraw(TRUE);
 
-			DownloadQueue.FinishedItems++;
-			int lo, hi;
-			m_ctlProgress.GetRange(lo, hi);
-			m_ctlProgress.SetPos(hi);
-			m_ctlProgress.Redraw(FALSE);
-
-			EnterCriticalSection(&CSDownloader);
-			m_ctlProgress.SetDownloader(NULL);
-			delete Downloader;
-			Downloader = NULL;
-			LeaveCriticalSection(&CSDownloader);
-
-			delete di;
+		switch (di->Type) {
+			case FILE_TYPE_HTML: DownloadHtmlPage(di); break;
+			default: DownloadFile(di); break;
 		}
+
+		DownloadQueue.FinishedItems++;
+		int lo, hi;
+		m_ctlProgress.GetRange(lo, hi);
+		m_ctlProgress.SetPos(hi);
+		m_ctlProgress.Redraw(FALSE);
+
+		EnterCriticalSection(&CSDownloader);
+		m_ctlProgress.SetDownloader(NULL);
+		delete Downloader;
+		Downloader = NULL;
+		LeaveCriticalSection(&CSDownloader);
+
+		delete di;
 	}
-	else {
-		Terminate = TRUE;
-		Errors.Add(new CErrorItem(IDS_NO_INTERNET_CONNECTION));
-	}
+
+	// empty download queue
+	while (!DownloadQueue.IsEmpty())
+		delete DownloadQueue.Dequeue();
 }
 
 void CUpdateBar::UpdateThread() {
 	LOG0(3, "CUpdateBar::UpdateThread() - begin");
-
-	if (UpdateList.GetCount() <= 0)
-		return;
 
 	//////
 	CSuspendKiller suspendKiller;
@@ -692,21 +691,12 @@ void CUpdateBar::UpdateThread() {
 		m_ctlText.ShowWindow(SW_HIDE);
 		if (frame != NULL) frame->PostMessage(UWM_SHOW_UPDATEBAR, TRUE);
 
-		m_ctlProgress.SetRange(0, UpdateList.GetCount());
-		m_ctlProgress.SetPos(0);
-
-		// update
-		UpdateFeeds();
+		if (UpdateList.GetCount() > 0)
+			UpdateFeeds();
 
 		// download items
-		if (DownloadQueue.GetCount() > 0) {
-			State = UPDATE_STATE_CACHING;
+		if (DownloadQueue.GetCount() > 0)
 			DownloadItems();
-
-			// empty download queue
-			while (!DownloadQueue.IsEmpty())
-				delete DownloadQueue.Dequeue();
-		}
 
 		// notify
 		if (Config.NotifyNew && GetForegroundWindow()->GetSafeHwnd() != frame->GetSafeHwnd()) {
