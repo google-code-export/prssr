@@ -1,0 +1,163 @@
+//Microsoft Developer Studio generated resource script.
+//
+
+#include "resource.h"
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_DISPLAYICON         ICON    DISCARDABLE     "../prssr/res/main.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// CEUX
+//
+
+HI_RES_AWARE CEUX DISCARDABLE 
+BEGIN
+    0x0001
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,4,1,0
+ PRODUCTVERSION 1,4,1,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x21L
+#else
+ FILEFLAGS 0x20L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "David Andrs\0"
+            VALUE "FileDescription", "pRSSreader Today Plugin\0"
+            VALUE "FileVersion", "1, 4, 1, 0\0"
+            VALUE "InternalName", "prssrtoday\0"
+            VALUE "LegalCopyright", "Copyright © 2005 - 2008\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "prssrtoday.dll\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "pRSSreader Today Plugin\0"
+            VALUE "ProductVersion", "1, 4, 1, 0\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+#if defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res/english.rc2"
+
+/////////////////////////////////////////////////////////////////////////////
+// Czech resources
+#elif defined(AFX_TARG_CSY)
+#ifdef _WIN32
+LANGUAGE LANG_CZECH, SUBLANG_DEFAULT
+#pragma code_page(1250)
+#endif //_WIN32
+#include "res/czech.rc2"
+
+/////////////////////////////////////////////////////////////////////////////
+// Spanish resources
+#elif defined(AFX_TARG_ESP)
+#ifdef _WIN32
+LANGUAGE LANG_SPANISH, SUBLANG_SPANISH
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res/spanish.rc2"
+
+/////////////////////////////////////////////////////////////////////////////
+// German resources
+#elif defined(AFX_TARG_DEU)
+#ifdef _WIN32
+LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res/german.rc2"
+
+/////////////////////////////////////////////////////////////////////////////
+// French resources
+#elif defined(AFX_TARG_FRA)
+#ifdef _WIN32
+LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res/french.rc2"
+
+/////////////////////////////////////////////////////////////////////////////
+// Dutch resources
+#elif defined(AFX_TARG_NLD)
+#ifdef _WIN32
+LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res/dutch.rc2"
+
+/////////////////////////////////////////////////////////////////////////////
+// Russian resources
+#elif defined(AFX_TARG_RUS)
+#ifdef _WIN32
+LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
+#pragma code_page(1251)
+#endif //_WIN32
+#include "res/russian.rc2"
+
+/////////////////////////////////////////////////////////////////////////////
+// Polish resources
+#elif defined(AFX_TARG_PLK)
+#ifdef _WIN32
+LANGUAGE LANG_POLISH, SUBLANG_DEFAULT
+#pragma code_page(1250)
+#endif //_WIN32
+#include "res/polish.rc2"
+
+/////////////////////////////////////////////////////////////////////////////
+// Italian resources
+#elif defined(AFX_TARG_ITA)
+#ifdef _WIN32
+LANGUAGE LANG_ITALIAN, SUBLANG_ITALIAN
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res/italian.rc2"
+
+/////////////////////////////////////////////////////////////////////////////
+// Brazil portuguese resources
+#elif defined(AFX_TARG_PTB)
+#ifdef _WIN32
+LANGUAGE LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res/portuguese-brazil.rc2"
+
+#endif
+
