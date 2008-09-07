@@ -91,6 +91,11 @@ LPCTSTR szTimeUpdate = _T("Time Update");
 LPCTSTR szCacheImages = _T("Cache Images");
 LPCTSTR szCacheHtml = _T("Cache Html");
 
+// sync
+LPCTSTR szSyncSite = _T("Sync Site");
+LPCTSTR szSyncUserName = _T("Sync UserName");
+LPCTSTR szSyncPassword = _T("Sync Password");
+
 // enclosures
 LPCTSTR szGeneratePlaylists = _T("Generate Playlists");
 LPCTSTR szEnclosurePlaylistFormat = _T("Enclosure Playlist Format");
@@ -206,6 +211,8 @@ CConfig::CConfig() {
 	UpdateAtTime.wMinute = 0;
 	UpdateAtTime.wSecond = 0;
 
+	SyncSite = CONFIG_DEFAULT_SYNCSITE;
+
 	// enclosure
 	GeneratePlaylists = CONFIG_DEFAULT_GENERATEPLAYLISTS;
 	EnclosurePlaylistFormat = CONFIG_DEFAULT_ENCLOSUREPLAYLISTFORMAT;
@@ -278,6 +285,11 @@ void CConfig::Save() {
 	reg.Write(szCacheImages, CacheImages);
 	reg.Write(szCacheHtml, CacheHtml);
 
+	// sync
+	reg.Write(szSyncSite, SyncSite);
+	reg.Write(szSyncUserName, SyncUserName);
+	reg.Write(szSyncPassword, SyncPassword);
+
 	// enclosures
 	reg.Write(szGeneratePlaylists, GeneratePlaylists);
 	reg.Write(szEnclosurePlaylistFormat, EnclosurePlaylistFormat);
@@ -332,6 +344,11 @@ void CConfig::Load() {
 	// global caching options
 	CacheImages = reg.Read(szCacheImages, CONFIG_DEFAULT_CACHE_IMAGES);
 	CacheHtml = reg.Read(szCacheHtml, CONFIG_DEFAULT_CACHE_HTML);
+
+	// sync
+	SyncSite = (ESyncSite) reg.Read(szSyncSite, CONFIG_DEFAULT_SYNCSITE);
+	SyncUserName = reg.Read(szSyncUserName, _T(""));
+	SyncPassword = reg.Read(szSyncPassword, _T(""));
 
 	// enclosures
 	GeneratePlaylists = reg.Read(szGeneratePlaylists, CONFIG_DEFAULT_GENERATEPLAYLISTS);

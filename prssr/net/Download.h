@@ -88,7 +88,10 @@ public:
 	void Reset();
 
 	virtual BOOL SaveHttpObject(CString &strURL, const CString &strFileName, LPVOID context = NULL);
+	virtual BOOL GetHttpObject(CString &strURL, CString &strBody, LPVOID context = NULL);
+
 	virtual BOOL PartialDownload(CString &strURL, const CString &strFileName, DWORD startOffset, DWORD endOffset = 0, LPVOID context = NULL);
+	virtual BOOL Post(CString &strURL, const CString &strBody, CString &response, LPVOID context = NULL);
 	virtual void Terminate();
 	virtual BOOL IsTerminated();
 
@@ -101,6 +104,8 @@ public:
 	DWORD GetDownloadedFileSize() { return HttpConnection.GetDownloadedFileSize(); }
 
 	CString GetCharset() { return Charset; }
+
+	void SetCookie(const CString &cookie);
 
 	// for Conditional GET
 	CString ETag;
@@ -145,6 +150,7 @@ protected:
 	CString AuthResponseHeader;				// authorization header used in response to authentication
 
 	CList<CHttpHeader *, CHttpHeader*> AdditionalHeaders;
+	CStringList Cookies;
 
 	HANDLE HTerminate;
 };

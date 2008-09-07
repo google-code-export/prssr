@@ -340,6 +340,21 @@ BEGIN
                     WS_TABSTOP
 END
 
+IDD_OPT_SYNC DIALOG DISCARDABLE  0, 0, 160, 154
+STYLE DS_MODALFRAME | WS_CHILD | WS_CAPTION
+CAPTION "Sync"
+FONT 8, "Tahoma"
+BEGIN
+    LTEXT           "Sync with:",IDC_STATIC,4,6,50,10
+    COMBOBOX        IDC_SYNC_SITE,55,4,100,60,CBS_DROPDOWNLIST |
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Username:",IDC_C_USERNAME,14,22,40,10
+    EDITTEXT        IDC_SYNC_USERNAME,55,20,100,12,ES_AUTOHSCROLL
+    LTEXT           "Password:",IDC_C_PASSWORD,14,36,40,10
+    EDITTEXT        IDC_SYNC_PASSWORD,55,34,100,12,ES_PASSWORD |
+                    ES_AUTOHSCROLL
+END
+
 IDD_OPT_APPEARANCE DIALOG DISCARDABLE  0, 0, 160, 190
 STYLE DS_MODALFRAME | WS_CHILD | WS_CAPTION
 CAPTION "Appearance"
@@ -671,7 +686,6 @@ BEGIN
 
     LTEXT           "You can use regular expressions to create general rules.",IDC_STATIC3,5,90,152,21
 END
-
 
 IDD_ACCEPT_CERTIFICATE DIALOG DISCARDABLE  0, 0, 135, 57
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
@@ -1571,6 +1585,8 @@ BEGIN
     IDS_GETTING_RESPONSE    "Receiving response"
     IDS_DATA_TRANSFER       "Transfering data"
     IDS_UPDATING            "Updating..."
+	IDS_AUTHENTICATING      "Authenticating..."
+	IDS_SYNCING             "Syncing..."
 END
 
 STRINGTABLE DISCARDABLE
@@ -1625,4 +1641,6 @@ BEGIN
 	IDS_EMPTY_HOST_NAME     "The host name can not be empty."
 	IDS_ABOUT               "About"
 	IDS_PURGE_CACHE_WARNING "Purge all cache content?"
+	IDS_AUTHENTICATION_FAILED "Authentication failed."
+	IDS_ERROR_GETTING_TOKEN "Error getting token."
 END

@@ -75,6 +75,7 @@
 #define IDD_LICENSE_WIDE                206
 #define IDD_CREDITS                     207
 #define IDD_CREDITS_WIDE                208
+#define IDD_OPT_SYNC                    209
 
 #define IDR_FEEDITEM                    300
 #define IDR_EDIT                        301
@@ -348,7 +349,11 @@
 #define IDS_EMPTY_NAME                  647
 #define IDS_EMPTY_HOST_NAME             648
 #define IDS_ABOUT                       649
-#define IDS_PURGE_CACHE_WARNING	         650
+#define IDS_PURGE_CACHE_WARNING	        650
+#define IDS_AUTHENTICATING              651
+#define IDS_AUTHENTICATION_FAILED       652
+#define IDS_SYNCING                     653
+#define IDS_ERROR_GETTING_TOKEN         654
 
 // controls
 #define IDC_HTML                        1000
@@ -596,6 +601,9 @@
 #define IDC_BKGND_UPDATE                1245
 #define IDC_LICENSE                     1246
 #define IDC_CREDITS                     1247
+#define IDC_SYNC_SITE                   1248
+#define IDC_SYNC_USERNAME               1249
+#define IDC_SYNC_PASSWORD               1250
 
 #define ID_TOOLS_OPTIONS                32774
 #define ID_TOOLS_SITEMANAGER            32775

@@ -110,6 +110,7 @@ public:
 
 	void Redraw();
 
+	void ShowErrorCount();
 	void ShowError(UINT nID);
 	void ShowError(const CString &str);
 
@@ -131,8 +132,7 @@ protected:
 	int TotalItems;
 
 	void UpdateThread();
-	BOOL UpdateFeed(CSiteItem *ui, BOOL updateOnly);
-	BOOL UpdateFeeds();
+	void UpdateFeeds();
 
 	void DownloadHtmlPage(CDownloadItem *di);
 	void DownloadFile(CDownloadItem *di);
@@ -141,11 +141,11 @@ protected:
 
 	CDownloadQueue DownloadQueue;
 
-	void MergeFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly);
-
 	enum {
 		UPDATE_STATE_RSS,
-		UPDATE_STATE_CACHING
+		UPDATE_STATE_CACHING,
+		UPDATE_STATE_AUTHENTICATING,
+		UPDATE_STATE_SYNCING
 	} State;
 	CString SiteName;
 

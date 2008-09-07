@@ -37,6 +37,9 @@
 #include "www/LocalHtmlFile.h"
 #include "misc/shnotif.h"
 
+#include "sync/GReaderSync.h"
+#include "sync/NetworkSync.h"
+
 #ifdef MYDEBUG
 #undef THIS_FILE
 static TCHAR THIS_FILE[] = _T(__FILE__);
@@ -348,19 +351,38 @@ void CUpdateBar::Start() {
 	}
 }
 
-BOOL CUpdateBar::UpdateFeeds() {
+void CUpdateBar::UpdateFeeds() {
 	LOG0(1, "CUpdateBar::UpdateFeeds()");
 
-	if (UpdateList.GetCount() <= 0)
-		return FALSE;
+	CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
 
-	BOOL updated;
-	BOOL disconnect;
-	if (CheckConnection(Config.AutoConnect, disconnect)) {
-		CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
+	EnterCriticalSection(&CSDownloader);
+	Downloader = new CDownloader;
+	CFeedSync *sync = NULL;
+	switch (Config.SyncSite) {
+		case SYNC_SITE_GOOGLE_READER: sync = new CGReaderSync(Downloader, Config.SyncUserName, Config.SyncPassword);  break;
+		default: sync = new CNetworkSync(Downloader); break;
+	}
+	LeaveCriticalSection(&CSDownloader);
 
-		m_ctlProgress.SetRange(0, UpdateList.GetCount());
+	BOOL authenticated;
+	if (sync->NeedAuth()) {
+		// authenticate with greader
+		State = UPDATE_STATE_AUTHENTICATING;
+		UpdateProgressText();
+		authenticated = sync->Authenticate();
+	}
+	else
+		authenticated = TRUE;
 
+	if (authenticated) {
+		if (Config.SyncSite == 0)
+			State = UPDATE_STATE_RSS;
+		else
+			State = UPDATE_STATE_SYNCING;
+		UpdateProgressText();
+
+		// sync
 		POSITION pos = UpdateList.GetHeadPosition();
 		while (!Terminate && pos != NULL) {
 			EnterCriticalSection(&CSUpdateList);
@@ -369,94 +391,15 @@ BOOL CUpdateBar::UpdateFeeds() {
 			LeaveCriticalSection(&CSUpdateList);
 
 			SiteName = si->Name;
-//			CString sTitle;
-//			sTitle.Format(_T("%s: %s"), si->Name, sUpdating);
-//			m_ctlProgress.SetText(sTitle, FALSE);
 			Redraw();
 
-			LOG1(3, "Updating %S", si->Name);
+			LOG1(3, "Syncing %S", si->Name);
+			si->EnsureSiteLoaded();
 
-			EnterCriticalSection(&CSDownloader);
-			Downloader = new CDownloader;
-			Downloader->ETag = si->Info->ETag;
-			Downloader->LastModified = si->Info->LastModified;
-			Downloader->SetAuthenticationInfo(si->Info->UserName, si->Info->Password);
-			LeaveCriticalSection(&CSDownloader);
-
-			if (UpdateFeed(si, ui->UpdateOnly)) {
-				si->Info->ETag = Downloader->ETag;
-				si->Info->LastModified = Downloader->LastModified;
-
-				if (si->CheckFavIcon) {
-					// temp file name
-					CString faviconFileName = GetCacheFile(FILE_TYPE_FAVICON, Config.CacheLocation, si->Info->FileName);
-					// get favicon
-					if (DownloadFavIcon(si->Feed->HtmlUrl, faviconFileName)) {
-						// update favicon in GUI
-						if (frame != NULL) frame->SendMessage(UWM_UPDATE_FAVICON, 0, (LPARAM) si);
-					}
-
-					si->CheckFavIcon = FALSE;
-				}
-
-				// send message to update the feed view
-				if (frame != NULL) frame->SendMessage(UWM_UPDATE_FEED, 0, (LPARAM) si);
-
-				SaveSiteItemUnreadCount(si, SiteList.GetIndexOf(si));
-				SaveSiteItemFlaggedCount(si, SiteList.GetIndexOf(si));
-				// process
-			}
-
-			EnterCriticalSection(&CSDownloader);
-			delete Downloader;
-			Downloader = NULL;
-			LeaveCriticalSection(&CSDownloader);
-
-			m_ctlProgress.SetStep(1);
-			m_ctlProgress.StepIt();
-			m_ctlProgress.Redraw(FALSE);
-		}
-
-		if (disconnect)
-			Connection.HangupConnection();
-
-		updated = TRUE;
-	}
-	else {
-		Terminate = TRUE;
-		Errors.Add(new CErrorItem(IDS_NO_INTERNET_CONNECTION));
-		updated = FALSE;
-	}
-
-	while (!UpdateList.IsEmpty())
-		delete UpdateList.RemoveHead();
-
-	return updated;
-}
-
-BOOL CUpdateBar::UpdateFeed(CSiteItem *si, BOOL updateOnly) {
-	LOG0(1, "CUpdateBar::UpdateFeed()");
-
-	BOOL ret = FALSE;
-
-	si->EnsureSiteLoaded();
-
-	CString sTmpFileName;
-	LPTSTR tmpFileName = sTmpFileName.GetBufferSetLength(MAX_PATH + 1);
-	GetTempFileName(Config.CacheLocation, _T("rsr"), 0, tmpFileName);
-
-	CString sErrMsg;
-	if (Downloader->SaveHttpObject(si->Info->XmlUrl, tmpFileName) && Downloader->Updated) {
-		CFeedFile xml;
-		if (xml.LoadFromFile(tmpFileName)) {
+			// sync feed
 			CFeed *feed = new CFeed;
-			if (xml.Parse(feed, si)) {
+			if (sync->SyncFeed(si, feed, ui->UpdateOnly)) {
 				si->Status = CSiteItem::Ok;
-
-/*				SYSTEMTIME st;
-				GetLocalTime(&st);
-				SystemTimeToFileTime(&st, &(si->LastUpdate));
-*/
 
 				if (si->Feed == NULL) {
 					si->Feed = new CFeed();
@@ -483,224 +426,122 @@ BOOL CUpdateBar::UpdateFeed(CSiteItem *si, BOOL updateOnly) {
 						fi->SetFlags(MESSAGE_UNREAD, MESSAGE_READ_STATE);
 				}
 
-				MergeFeed(si, feed, updateOnly);
+				// merge feed
+				CArray<CFeedItem *, CFeedItem *> newItems;
+				CArray<CFeedItem *, CFeedItem *> itemsToClean;
+				sync->MergeFeed(si, feed, newItems, itemsToClean);
 
-				ret = TRUE;
+				// save feed
+				CString feedPathName = GetCacheFile(FILE_TYPE_FEED, Config.CacheLocation, si->Info->FileName);
+				CreatePath(feedPathName);
+				si->Feed->Save(feedPathName);
+
+				// set file time
+				HANDLE hFile = CreateFile(feedPathName, GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+				if (hFile != INVALID_HANDLE_VALUE) {
+					FILETIME ftNow;
+					SYSTEMTIME stNow;
+					GetLocalTime(&stNow);
+					SystemTimeToFileTime(&stNow, &ftNow);
+					SetFileTime(hFile, NULL, NULL, &ftNow);
+					CloseHandle(hFile);
+				}
+
+				// notify today plugin
+				NotifyTodayPlugin(CheckFeedsMessage);
+
+				// clean items
+				ClearImages(itemsToClean);
+				ClearHtmlPages(itemsToClean);
+				ClearEnclosures(itemsToClean);
+
+				for (i = 0; i < itemsToClean.GetSize(); i++)
+					delete itemsToClean[i];
+
+				// check keywords in new items
+				for (i = 0; i < newItems.GetSize(); i++)
+					newItems.GetAt(i)->SearchKeywords(Config.Keywords);
+
+				// cache
+				if (!ui->UpdateOnly) {
+					// enqueue items to cache
+					if (si->Info->UseGlobalCacheOptions) {
+						// cache item images
+						if (Config.CacheImages)
+							EnqueueImages(newItems);
+
+						// cache HTML content
+						if (Config.CacheHtml)
+							EnqueueHtmls(newItems);
+					}
+					else {
+						// cache item images
+						if (si->Info->CacheItemImages)
+							EnqueueImages(newItems);
+
+						// cache HTML content
+						if (si->Info->CacheHtml)
+							EnqueueHtmls(newItems);
+					}
+
+					// cache enclosures
+					if (si->Info->CacheEnclosures)
+						EnqueueEnclosures(newItems, si->Info->EnclosureLimit);
+				}
+
+				// get favicon if neccessary
+				if (si->CheckFavIcon) {
+					// temp file name
+					CString faviconFileName = GetCacheFile(FILE_TYPE_FAVICON, Config.CacheLocation, si->Info->FileName);
+					// get favicon
+					if (DownloadFavIcon(si->Feed->HtmlUrl, faviconFileName)) {
+						// update favicon in GUI
+						if (frame != NULL) frame->SendMessage(UWM_UPDATE_FAVICON, 0, (LPARAM) si);
+					}
+
+					si->CheckFavIcon = FALSE;
+				}
+
+				// send message to update the feed view
+				if (frame != NULL) frame->SendMessage(UWM_UPDATE_FEED, 0, (LPARAM) si);
+
+				SaveSiteItemUnreadCount(si, SiteList.GetIndexOf(si));
+				SaveSiteItemFlaggedCount(si, SiteList.GetIndexOf(si));
+				// process
 			}
 			else {
-				sErrMsg.LoadString(IDS_ERROR_PARSING_FEED_FILE);
+				CString sMsg;
+				sMsg.Format(_T("%s: %s"), si->Name, sync->GetErrorMsg());
+				CErrorItem *ei = new CErrorItem(sMsg);
+				ei->Type = CErrorItem::Site;
+				ei->SiteIdx = SiteList.GetIndexOf(si);
+				ei->UpdateOnly = ui->UpdateOnly;
+				Errors.Add(ei);
 			}
 
 			delete feed;
-		}
-		else {
-			sErrMsg.LoadString(IDS_INVALID_FEED_FILE);
+
+			m_ctlProgress.SetStep(1);
+			m_ctlProgress.StepIt();
+			m_ctlProgress.Redraw(FALSE);
 		}
 	}
 	else {
-		switch (Downloader->Error) {
-			case DOWNLOAD_ERROR_GETTING_FILE:            sErrMsg.LoadString(IDS_ERROR_GETTING_FILE); break;
-			case DOWNLOAD_ERROR_RESPONSE_ERROR:          sErrMsg.LoadString(IDS_RESPONSE_ERROR); break;
-			case DOWNLOAD_ERROR_SENDING_REQUEST:         sErrMsg.LoadString(IDS_ERROR_SENDING_REQUEST); break;
-			case DOWNLOAD_ERROR_CONNECTION_ERROR:        sErrMsg.LoadString(IDS_ERROR_CONNECT); break;
-			case DOWNLOAD_ERROR_MALFORMED_URL:           sErrMsg.LoadString(IDS_MALFORMED_URL); break;
-			case DOWNLOAD_ERROR_AUTHENTICATION_RESPONSE: sErrMsg.LoadString(IDS_INVALID_FEED_FILE); break;
-			case DOWNLOAD_ERROR_UNKNOWN_AUTH_SCHEME:     sErrMsg.LoadString(IDS_UNKNOWN_AUTH_SCHEME); break;
-			case DOWNLOAD_ERROR_NO_LOCATION_HEADER:      sErrMsg.LoadString(IDS_NO_LOCATION_HEADER); break;
-			case DOWNLOAD_ERROR_HTTP_ERROR:              sErrMsg.Format(IDS_HTTP_ERROR, Downloader->HttpErrorNo); break;
-			case DOWNLOAD_ERROR_AUTHORIZATION_FAILED:    sErrMsg.LoadString(IDS_AUTHORIZATION_FAILED); break;
-			case DOWNLOAD_ERROR_AUTHENTICATION_ERROR:    sErrMsg.LoadString(IDS_AUTHENTICATION_ERROR); break;
-			default: LOG0(1, "Unhandled download error");
-		}
+		Errors.Add(new CErrorItem(IDS_AUTHENTICATION_FAILED));
 	}
 
-	if (!sErrMsg.IsEmpty()) {
-		CString sMsg;
-		sMsg.Format(_T("%s: %s"), si->Name, sErrMsg);
-		CErrorItem *ei = new CErrorItem(sMsg);
-		ei->Type = CErrorItem::Site;
-		ei->SiteIdx = SiteList.GetIndexOf(si);
-		ei->UpdateOnly = updateOnly;
-		Errors.Add(ei);
-	}
+	EnterCriticalSection(&CSDownloader);
+	delete sync;
+	delete Downloader;
+	Downloader = NULL;
+	LeaveCriticalSection(&CSDownloader);
 
-	DeleteFile(tmpFileName);
-
-	return ret;
-}
-
-void CUpdateBar::MergeFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
-	LOG0(1, "CUpdateBar::MergeFeed()");
-
-	// NOTE: move this function to CSiteItem class (?)
-
-	feed->Lock();
-	// we need to preserve new items for later caching
-	CArray<CFeedItem *, CFeedItem *> newItems;
-	FeedDiff(feed, si->Feed, &newItems);
-
-	CArray<CFeedItem *, CFeedItem *> existingItems;
-	FeedIntersection(feed, si->Feed, &existingItems);
-
-	CArray<CFeedItem *, CFeedItem *> itemsToClean;
-
-	int i;
-	CList<CFeedItem *, CFeedItem *> items;
-	if (si->Info->CacheLimit > 0 || si->Info->CacheLimit == CACHE_LIMIT_DEFAULT) {
-		// add new items
-		for (i = 0; i < newItems.GetSize(); i++)
-			items.AddTail(newItems.GetAt(i));
-
-		int limit;
-		if (si->Info->CacheLimit > 0)
-			limit = si->Info->CacheLimit;
-		else
-			limit = Config.CacheLimit;
-
-		// add flagged
-		for (i = 0; i < si->Feed->GetItemCount(); i++) {
-			CFeedItem *fi = si->Feed->GetItem(i);
-			if (fi->IsFlagged())
-				items.AddTail(fi);
-		}
-
-		// limit the cache
-		int toAdd = limit - items.GetCount();
-		for (i = 0; i < si->Feed->GetItemCount(); i++) {
-			CFeedItem *fi = si->Feed->GetItem(i);
-			if (!fi->IsFlagged()) {
-				if (toAdd > 0) {
-					items.AddTail(fi);
-					toAdd--;
-				}
-				else
-					itemsToClean.Add(fi);							// old item -> delete it!
-			}
-		}
-
-		// free duplicate items
-		for (i = 0; i < existingItems.GetSize(); i++)
-			delete existingItems.GetAt(i);
-	}
-	else if (si->Info->CacheLimit == CACHE_LIMIT_DISABLED) {
-		// add new items
-		for (i = 0; i < newItems.GetSize(); i++)
-			items.AddTail(newItems.GetAt(i));
-
-		// add same items
-		CArray<CFeedItem *, CFeedItem *> sameItems;
-		FeedIntersection(si->Feed, feed, &sameItems);
-		for (i = 0; i < sameItems.GetSize(); i++)
-			items.AddTail(sameItems.GetAt(i));
-
-		CArray<CFeedItem *, CFeedItem *> freeItems;
-		FeedDiff(si->Feed, feed, &freeItems);
-		for (i = 0; i < freeItems.GetSize(); i++) {
-			CFeedItem *fi = freeItems.GetAt(i);
-			if (fi->IsFlagged())
-				items.AddTail(fi);
-			else
-				itemsToClean.Add(fi);							// old item -> delete it!
-		}
-
-		// free duplicate items
-		for (i = 0; i < existingItems.GetSize(); i++)
-			delete existingItems.GetAt(i);
-	}
-	else if (si->Info->CacheLimit == CACHE_LIMIT_UNLIMITED) {
-		// add old items
-		for (i = 0; i < si->Feed->GetItemCount(); i++)
-			items.AddTail(si->Feed->GetItem(i));
-		// add new items
-		for (i = 0; i < newItems.GetSize(); i++)
-			items.AddTail(newItems.GetAt(i));
-
-		// free duplicate items
-		for (i = 0; i < existingItems.GetSize(); i++)
-			delete existingItems.GetAt(i);
-	}
-
-	// set items in the feed
-	i = 0;
-	si->Feed->SetSize(items.GetCount());
-	while (!items.IsEmpty()) {
-		CFeedItem *fi = items.RemoveHead();
-//		// if the feed item has no date -> set it to the date of download
-//		if (fi->PubDate.wYear == 0)
-//			GetLocalTime(&fi->PubDate);
-
-		si->Feed->SetAt(i, fi);
-		i++;
-	}
-	feed->Unlock();
-
-	// save feed
-	CString feedPathName = GetCacheFile(FILE_TYPE_FEED, Config.CacheLocation, si->Info->FileName);
-	CreatePath(feedPathName);
-	si->Feed->Save(feedPathName);
-
-	// set file time
-	HANDLE hFile = CreateFile(feedPathName, GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	if (hFile != INVALID_HANDLE_VALUE) {
-		FILETIME ftNow;
-		SYSTEMTIME stNow;
-		GetLocalTime(&stNow);
-		SystemTimeToFileTime(&stNow, &ftNow);
-		SetFileTime(hFile, NULL, NULL, &ftNow);
-		CloseHandle(hFile);
-	}
-
-	// notify today plugin
-	NotifyTodayPlugin(CheckFeedsMessage);
-
-	// clean items
-	ClearImages(itemsToClean);
-	ClearHtmlPages(itemsToClean);
-	ClearEnclosures(itemsToClean);
-
-	for (i = 0; i < itemsToClean.GetSize(); i++)
-		delete itemsToClean[i];
-
-	// check keywords in new items
-	for (i = 0; i < newItems.GetSize(); i++)
-		newItems.GetAt(i)->SearchKeywords(Config.Keywords);
-
-	// cache
-	if (!updateOnly) {
-		// enqueue items to cache
-		if (si->Info->UseGlobalCacheOptions) {
-			// cache item images
-			if (Config.CacheImages)
-				EnqueueImages(newItems);
-
-			// cache HTML content
-			if (Config.CacheHtml)
-				EnqueueHtmls(newItems);
-		}
-		else {
-			// cache item images
-			if (si->Info->CacheItemImages)
-				EnqueueImages(newItems);
-
-			// cache HTML content
-			if (si->Info->CacheHtml)
-				EnqueueHtmls(newItems);
-		}
-
-		// cache enclosures
-		if (si->Info->CacheEnclosures)
-			EnqueueEnclosures(newItems, si->Info->EnclosureLimit);
-	}
+	while (!UpdateList.IsEmpty())
+		delete UpdateList.RemoveHead();
 }
 
 void CUpdateBar::DownloadHtmlPage(CDownloadItem *di) {
 	LOG0(1, "CUpdateBar::DownloadHtmlPage()");
-
-/*	CString tmpFileName = di->FileName + _T(".part");
-	if (FileExists(tmpFileName)) {
-		TranslateForOfflineReading(tmpFileName, di->FileName);
-	}
-*/
 
 	if (FileExists(di->FileName))
 		return;						// file already exists
@@ -741,8 +582,6 @@ void CUpdateBar::DownloadHtmlPage(CDownloadItem *di) {
 		ei->Url = di->URL;
 		ei->FileType = FILE_TYPE_HTML;
 		Errors.Add(ei);
-
-//		Errors.Add(new CErrorItem(sErrMsg));
 	}
 }
 
@@ -785,7 +624,6 @@ void CUpdateBar::DownloadFile(CDownloadItem *di) {
 		ei->Url = di->URL;
 		ei->FileType = di->Type;
 		Errors.Add(ei);
-//		Errors.Add(new CErrorItem(sErrMsg));
 	}
 }
 
@@ -835,6 +673,10 @@ void CUpdateBar::DownloadItems() {
 void CUpdateBar::UpdateThread() {
 	LOG0(3, "CUpdateBar::UpdateThread() - begin");
 
+	if (UpdateList.GetCount() <= 0)
+		return;
+
+	//////
 	CSuspendKiller suspendKiller;
 
 	CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
@@ -842,58 +684,61 @@ void CUpdateBar::UpdateThread() {
 	Terminate = FALSE;
 	ErrorCount = 0;
 
-	// show update bar
-	m_ctlProgress.ShowWindow(SW_SHOW);
-	m_ctlText.ShowWindow(SW_HIDE);
+	// update feeds
+	BOOL disconnect;
+	if (CheckConnection(Config.AutoConnect, disconnect)) {
+		// show update bar
+		m_ctlProgress.ShowWindow(SW_SHOW);
+		m_ctlText.ShowWindow(SW_HIDE);
+		if (frame != NULL) frame->PostMessage(UWM_SHOW_UPDATEBAR, TRUE);
 
-	CString sUpdating;
-	sUpdating.Format(IDS_UPDATING);
+		m_ctlProgress.SetRange(0, UpdateList.GetCount());
+		m_ctlProgress.SetPos(0);
 
-	m_ctlProgress.SetRange(0, 100);
-	m_ctlProgress.SetPos(0);
-	m_ctlProgress.SetText(sUpdating);
-	m_ctlProgress.Redraw(FALSE);
+		// update
+		UpdateFeeds();
 
-	if (frame != NULL) frame->PostMessage(UWM_SHOW_UPDATEBAR, TRUE);
+		// download items
+		if (DownloadQueue.GetCount() > 0) {
+			State = UPDATE_STATE_CACHING;
+			DownloadItems();
 
-	State = UPDATE_STATE_RSS;
-	// update and cache items
-	BOOL updated = UpdateFeeds();
-	if (!Terminate) {
-		State = UPDATE_STATE_CACHING;
-		DownloadItems();
-	}
+			// empty download queue
+			while (!DownloadQueue.IsEmpty())
+				delete DownloadQueue.Dequeue();
+		}
 
-	// empty download queue
-	while (!DownloadQueue.IsEmpty())
-		delete DownloadQueue.Dequeue();
+		// notify
+		if (Config.NotifyNew && GetForegroundWindow()->GetSafeHwnd() != frame->GetSafeHwnd()) {
+			int newItems = 0;
+			for (int i = 0; i < SiteList.GetCount(); i++) {
+				CFeed *feed = SiteList.GetAt(i)->Feed;
+				if (feed != NULL)
+					newItems += feed->GetNewCount();
+			}
 
-	// hide update bar
-	Sleep(250);
+			if (newItems > 0) {
+				prssrNotificationRemove();
+				prssrNotification(newItems);
+			}
+		}
 
-	// done
-	if (Errors.GetCount() > 0) {
-		CString strError;
-		strError.Format(IDS_N_ERRORS, Errors.GetCount());
-		ShowError(strError);
+		if (disconnect)
+			Connection.HangupConnection();
+
+		// done
+		if (Errors.GetCount() > 0) {
+			ShowErrorCount();
+		}
+		else {
+			if (frame != NULL) frame->SendMessage(UWM_SHOW_UPDATEBAR, FALSE);
+		}
 	}
 	else {
-		if (frame != NULL) frame->SendMessage(UWM_SHOW_UPDATEBAR, FALSE);
-	}
-
-	// notify
-	if (Config.NotifyNew && GetForegroundWindow()->GetSafeHwnd() != frame->GetSafeHwnd() && updated) {
-		int newItems = 0;
-		for (int i = 0; i < SiteList.GetCount(); i++) {
-			CFeed *feed = SiteList.GetAt(i)->Feed;
-			if (feed != NULL)
-				newItems += feed->GetNewCount();
-		}
-
-		if (newItems > 0) {
-			prssrNotificationRemove();
-			prssrNotification(newItems);
-		}
+		Terminate = TRUE;
+		Errors.Add(new CErrorItem(IDS_NO_INTERNET_CONNECTION));
+		ShowErrorCount();
+		if (frame != NULL) frame->PostMessage(UWM_SHOW_UPDATEBAR, TRUE);
 	}
 
 	// end
@@ -918,6 +763,20 @@ void CUpdateBar::UpdateProgressText() {
 
 		case UPDATE_STATE_RSS:
 			sText.Format(IDS_UPDATING);
+			if (SiteName.IsEmpty())
+				sTitle = sText;
+			else
+				sTitle.Format(_T("%s: %s"), SiteName, sText);
+			m_ctlProgress.SetText(sTitle);
+			break;
+
+		case UPDATE_STATE_AUTHENTICATING:
+			sText.Format(IDS_AUTHENTICATING);
+			m_ctlProgress.SetText(sText);
+			break;
+
+		case UPDATE_STATE_SYNCING:
+			sText.Format(IDS_SYNCING);
 			sTitle.Format(_T("%s: %s"), SiteName, sText);
 			m_ctlProgress.SetText(sTitle);
 			break;
@@ -928,6 +787,12 @@ void CUpdateBar::UpdateProgressText() {
 			break;
 	}
 
+}
+
+void CUpdateBar::ShowErrorCount() {
+	CString strError;
+	strError.Format(IDS_N_ERRORS, Errors.GetCount());
+	ShowError(strError);
 }
 
 void CUpdateBar::ShowError(UINT nID) {
@@ -994,14 +859,6 @@ void CUpdateBar::OnPaint() {
 		CRect	rc;
 		GetClientRect(&rc);
 		pDC->FillSolidRect(rc, ::GetSysColor(COLOR_3DFACE));
-
-//		if (ErrorCount <= 0) {
-//			m_ctlProgress.Invalidate();
-//		}
-//		else {
-//			m_ctlText.Invalidate();
-//		}
-//		m_ctlStopBtn.Invalidate();
 	}
 
 	ReleaseDC(pDC);

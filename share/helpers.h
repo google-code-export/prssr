@@ -81,7 +81,8 @@ public:
 	virtual ~CCache();
 
 	BOOL InCache(const CString &item);
-	BOOL AddItem(const CString &item);
+	BOOL InCache(const CString &item, void *&ptr);
+	BOOL AddItem(const CString &item, void *ptr = NULL);
 	void Empty();
 
 protected:
