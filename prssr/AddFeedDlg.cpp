@@ -380,11 +380,7 @@ DWORD CAddFeedDlg::AddThread() {
 			LPTSTR fileName = sFileName.GetBufferSetLength(MAX_PATH + 1);
 			GetTempFileName(Config.CacheLocation, _T("rsr"), 0, fileName);
 
-			CFeedSync *sync = NULL;
-			switch (Config.SyncSite) {
-				case SYNC_SITE_GOOGLE_READER: sync = new CGReaderSync(Downloader, Config.SyncUserName, Config.SyncPassword); break;
-				default: sync = new CNetworkSync(Downloader); break;
-			}
+			CFeedSync *sync = new CNetworkSync(Downloader);
 			// TODO: get the feed from greader if we use it
 			if (sync->DownloadFeed(htmlFeedItem->Url, fileName)) {
 				// prepare data structures
@@ -472,6 +468,7 @@ DWORD CAddFeedDlg::AddThread() {
 
 				m_pProgress->PosOffset = m_pProgress->m_ctlProgress.GetPos();
 			} // save http opbject
+			delete sync;
 
 			// remove temporary feed file
 			DeleteFile(fileName);
