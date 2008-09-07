@@ -280,14 +280,16 @@ void CUpdateBar::EnqueueImages(CArray<CFeedItem *, CFeedItem *> &items) {
 void CUpdateBar::EnqueueHtml(const CString &url, CSiteItem *siteItem) {
 	// URL rewriting
 	CString surl = SanitizeUrl(url);
-	surl = RewriteUrl(surl, Config.RewriteRules);
+	CString rurl;
 	if (Config.UseHtmlOptimizer)
-		surl = MakeHtmlOptimizerUrl(surl, Config.HtmlOptimizerURL);
+		rurl = MakeHtmlOptimizerUrl(surl, Config.HtmlOptimizerURL);
+	else
+		rurl = RewriteUrl(surl, Config.RewriteRules);
 
 	CString strFileName = GetCacheFile(FILE_TYPE_HTML, Config.CacheLocation, surl);
 	if (!FileExists(strFileName)) {
 		CDownloadItem *di = new CDownloadItem();
-		di->URL = surl;
+		di->URL = rurl;
 		di->Type = FILE_TYPE_HTML;
 		di->Try = DOWNLOAD_TRIES;
 		di->FileName = strFileName;
