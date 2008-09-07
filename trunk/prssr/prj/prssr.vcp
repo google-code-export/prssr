@@ -218,6 +218,9 @@ DEP_CPP_ADDFE=\
 	"..\prssr.h"\
 	"..\Site.h"\
 	"..\StdAfx.h"\
+	"..\sync\FeedSync.h"\
+	"..\sync\GReaderSync.h"\
+	"..\sync\NetworkSync.h"\
 	"..\www\AutoFeedHtmlFile.h"\
 	"..\www\HTMLFile.h"\
 	"..\www\url.h"\
@@ -419,6 +422,7 @@ DEP_CPP_CONFI=\
 	"..\net\proxy.h"\
 	"..\prssr.h"\
 	"..\StdAfx.h"\
+	"..\www\url.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -790,6 +794,7 @@ DEP_CPP_MAINF=\
 	"..\OptSyncPg.h"\
 	"..\Properties.h"\
 	"..\prssr.h"\
+	"..\RewritingDlg.h"\
 	"..\Site.h"\
 	"..\SiteManagerDlg.h"\
 	"..\StdAfx.h"\
@@ -1038,8 +1043,6 @@ DEP_CPP_PROPE=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\ctrls\CeEdit.h"\
-	"..\ctrls\CeListCtrl.h"\
-	"..\ctrls\CePropertyPage.h"\
 	"..\ctrls\CePropertySheet.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
@@ -1049,7 +1052,6 @@ DEP_CPP_PROPE=\
 	"..\PropCachingPg.h"\
 	"..\Properties.h"\
 	"..\PropGeneralPg.h"\
-	"..\PropRewritingPg.h"\
 	"..\PropUpdatingPg.h"\
 	"..\prssr.h"\
 	"..\Site.h"\
@@ -1072,33 +1074,6 @@ DEP_CPP_PROPG=\
 	"..\PropGeneralPg.h"\
 	"..\prssr.h"\
 	"..\StdAfx.h"\
-	{$(INCLUDE)}"htmlctrl.h"\
-	
-# End Source File
-# Begin Source File
-
-SOURCE=..\PropRewritingPg.cpp
-DEP_CPP_PROPR=\
-	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
-	"..\..\share\helpers.h"\
-	"..\..\share\reg.h"\
-	"..\..\share\shguim.h"\
-	"..\..\share\UIHelper.h"\
-	"..\..\share\wnd.h"\
-	"..\ctrls\CeDialog.h"\
-	"..\ctrls\CeEdit.h"\
-	"..\ctrls\CeListCtrl.h"\
-	"..\ctrls\CePropertyPage.h"\
-	"..\debug\crtdbg.h"\
-	"..\debug\Logger.h"\
-	"..\Feed.h"\
-	"..\PropRewritingPg.h"\
-	"..\prssr.h"\
-	"..\RewriteRuleDlg.h"\
-	"..\Site.h"\
-	"..\StdAfx.h"\
-	"..\www\url.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -1210,6 +1185,32 @@ DEP_CPP_REWRI=\
 	"..\prssr.h"\
 	"..\RewriteRuleDlg.h"\
 	"..\StdAfx.h"\
+	{$(INCLUDE)}"htmlctrl.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\RewritingDlg.cpp
+DEP_CPP_REWRIT=\
+	"..\..\share\defs.h"\
+	"..\..\share\file.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\ctrls\CeDialog.h"\
+	"..\ctrls\CeEdit.h"\
+	"..\ctrls\CeListCtrl.h"\
+	"..\debug\crtdbg.h"\
+	"..\debug\Logger.h"\
+	"..\Feed.h"\
+	"..\prssr.h"\
+	"..\RewriteRuleDlg.h"\
+	"..\RewritingDlg.h"\
+	"..\Site.h"\
+	"..\StdAfx.h"\
+	"..\www\url.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -1667,10 +1668,6 @@ SOURCE=..\PropGeneralPg.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\PropRewritingPg.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\PropUpdatingPg.h
 # End Source File
 # Begin Source File
@@ -1688,6 +1685,10 @@ SOURCE=..\resource.h
 # Begin Source File
 
 SOURCE=..\RewriteRuleDlg.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\RewritingDlg.h
 # End Source File
 # Begin Source File
 
@@ -2503,6 +2504,7 @@ DEP_CPP_DOWNL=\
 	"..\Config.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeEdit.h"\
+	"..\ctrls\CePropertySheet.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
 	"..\digest\digcalc.h"\
