@@ -52,6 +52,7 @@
 #include "OptGeneralPg.h"
 #include "OptCachePg.h"
 #include "OptRetrievalPg.h"
+#include "OptSyncPg.h"
 #include "OptConnectionPg.h"
 #include "OptAppearancePg.h"
 #include "../share/notif.h"
@@ -1004,6 +1005,7 @@ void CMainFrame::OnToolsOptions() {
 	COptGeneralPg pgGeneral;
 	COptCachePg pgCache;
 	COptRetrievalPg pgRetreival;
+	COptSyncPg pgSync;
 	COptConnectionPg pgConnection;
 	COptAppearancePg pgAppearance;
 
@@ -1011,6 +1013,7 @@ void CMainFrame::OnToolsOptions() {
 	sheet.AddPage(&pgGeneral);
 	sheet.AddPage(&pgCache);
 	sheet.AddPage(&pgRetreival);
+	sheet.AddPage(&pgSync);
 	sheet.AddPage(&pgConnection);
 	sheet.AddPage(&pgAppearance);
 	sheet.SetMenu(IDR_OPTIONS);

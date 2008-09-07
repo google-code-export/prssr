@@ -25,10 +25,12 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-/*// action button
-#define ACTION_BUTTON_RETURN		0
-#define ACTION_BUTTON_OPEN			1
-*/
+
+enum ESyncSite {
+	SYNC_SITE_NONE,
+	SYNC_SITE_GOOGLE_READER
+};
+
 
 #define UA_PRSSREADER					_T("Bitevni kocka pitypacka")
 #define UA_PIE							_T("Mozilla/4.0 (compatible; MSIE 4.01; Windows CE; PPC; 240x320)")
@@ -74,6 +76,8 @@
 
 #define CONFIG_DEFAULT_CACHE_IMAGES					FALSE
 #define CONFIG_DEFAULT_CACHE_HTML					FALSE
+
+#define CONFIG_DEFAULT_SYNCSITE						SYNC_SITE_NONE
 
 #define CONFIG_DEFAULT_GENERATEPLAYLISTS			FALSE
 #define CONFIG_DEFAULT_ENCLOSUREPLAYLISTFORMAT		PLAYLIST_FORMAT_ASX
@@ -143,6 +147,8 @@
 	#endif
 #endif
 
+
+
 #include "net/proxy.h"
 #include "../share/helpers.h"
 
@@ -211,6 +217,11 @@ public:
 	//
 	BOOL CacheImages;
 	BOOL CacheHtml;
+
+	// sync
+	ESyncSite SyncSite;
+	CString SyncUserName;
+	CString SyncPassword;
 
 	// enclosures
 	BOOL GeneratePlaylists;

@@ -507,6 +507,8 @@ BOOL CFeedFile::RSSFillItem(CXmlNode *xmlItem, CFeedItem *item) {
 	Sleep(1);
 #endif
 
+	item->ComputeHash();
+
 	return TRUE;
 }
 
@@ -531,10 +533,8 @@ BOOL CFeedFile::RDFFill(CFeed *feed, CSiteItem *si) {
 		}
 		else if (tagName.Compare(_T("item")) == 0) {
 			CFeedItem *item = new CFeedItem(si);
-			if (RSSFillItem(child, item)) {
-				item->ComputeHash();
+			if (RSSFillItem(child, item))
 				feedList.AddTail(item);
-			}
 			else
 				delete item;
 		}
@@ -586,10 +586,8 @@ BOOL CFeedFile::RSSFill(CFeed *feed, CSiteItem *si) {
 				CString tagName = child->GetName();
 				if (tagName.Compare(_T("item")) == 0) {
 					CFeedItem *item = new CFeedItem(si);
-					if (RSSFillItem(child, item)) {
-						item->ComputeHash();
+					if (RSSFillItem(child, item))
 						feedList.AddTail(item);
-					}
 					else
 						delete item;
 				}
@@ -678,10 +676,8 @@ BOOL CFeedFile::AtomFill(CFeed *feed, CSiteItem *si) {
 		CString tagName = child->GetName();
 		if (tagName.Compare(_T("entry")) == 0) {
 			CFeedItem *item = new CFeedItem(si);
-			if (AtomFillItem(child, item)) {
-				item->ComputeHash();
+			if (AtomFillItem(child, item))
 				feedList.AddTail(item);
-			}
 			else
 				delete item;
 		}
@@ -770,6 +766,10 @@ BOOL CFeedFile::AtomFillItem(CXmlNode *xmlItem, CFeedItem *item) {
 	SYSTEMTIME updated = { 0 };
 	SYSTEMTIME published = { 0 };
 	CString summary, content;
+	CString itemId;
+
+	DWORD flagsMask = 0;
+	DWORD flags = 0;
 
 	POSITION pos = xmlItem->GetFirstChildPos();
 	while (pos != NULL) {
@@ -791,7 +791,41 @@ BOOL CFeedFile::AtomFillItem(CXmlNode *xmlItem, CFeedItem *item) {
 			summary = child->GetXML();
 		}
 		else if (wcscmp(name, _T("author")) == 0) {
-			AtomFillPerson(child, item->Author);
+			BOOL knownAuthor = TRUE;
+
+			POSITION posAttr = child->GetFirstAttrPos();
+			while (posAttr != NULL) {
+				CXmlAttr *attr = child->GetNextAttr(posAttr);
+				CString attrName = attr->GetName();
+				CString attrVal = attr->GetValue();
+
+				// GoogleReader specific
+				if (attrName.Compare(_T("gr:unknown-author")) == 0 && attrVal.CompareNoCase(_T("true")) == 0)
+					knownAuthor = FALSE;
+			}
+
+			if (knownAuthor)
+				AtomFillPerson(child, item->Author);
+		}
+		// GoogleReader specific
+		else if (wcscmp(name, _T("category")) == 0) {
+			CString term, label;
+
+			POSITION posAttr = child->GetFirstAttrPos();
+			while (posAttr != NULL) {
+				CXmlAttr *attr = child->GetNextAttr(posAttr);
+				CString attrName = attr->GetName();
+				if (attrName.Compare(_T("term")) == 0) term = attr->GetValue();
+				else if (attrName.Compare(_T("label")) == 0) label = attr->GetValue();
+			}
+
+			if (term.Right(11).Compare(_T("kept-unread")) == 0 && label.Compare(_T("kept-unread")) == 0) { flagsMask |= MESSAGE_READ_STATE; flags |= MESSAGE_UNREAD; }
+			else if (term.Right(4).Compare(_T("read")) == 0 && label.Compare(_T("read")) == 0) { flagsMask |= MESSAGE_READ_STATE; flags &= ~MESSAGE_READ_STATE; }
+			else if (term.Right(7).Compare(_T("starred")) == 0 && label.Compare(_T("starred")) == 0) { flagsMask |= MESSAGE_FLAG; flags |= MESSAGE_FLAG; }
+		}
+		// GoogleReader specific
+		else if (wcscmp(name, _T("id")) == 0) {
+			itemId = child->GetValue();
 		}
 #endif
 		else if (wcscmp(name, _T("link")) == 0) {
@@ -848,6 +882,15 @@ BOOL CFeedFile::AtomFillItem(CXmlNode *xmlItem, CFeedItem *item) {
 	}
 
 #if defined PRSSR_APP
+	// GoogleReader specific
+	if (flagsMask != 0)
+		item->SetFlags(flags, flagsMask);
+	if (itemId.IsEmpty())
+		item->ComputeHash();
+	else
+		item->Hash = itemId;
+
+
 	// create date for proper sorting
 	if (item->PubDate.wYear == 0)
 		GetSystemTime(&item->PubDate);

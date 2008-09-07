@@ -94,6 +94,14 @@ void CHttpRequest::AddHeaders(CList<CHttpHeader *, CHttpHeader *> &headers) {
 	}
 }
 
+void CHttpRequest::AddCookies(CStringList &cookies) {
+	POSITION pos = cookies.GetHeadPosition();
+	while (pos != NULL) {
+		CString c = cookies.GetNext(pos);
+		Headers.AddTail(new CHttpHeader(_T("Cookie"), c));
+	}
+}
+
 void CHttpRequest::Send(CHttpSocket *socket, CStringArray *addHttpHeaders/* = NULL*/) {
 	char *buffer;
 

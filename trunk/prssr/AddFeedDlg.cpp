@@ -37,6 +37,9 @@
 #include "www/HTMLFile.h"
 #include "www/AutoFeedHtmlFile.h"
 
+#include "sync/NetworkSync.h"
+#include "sync/GReaderSync.h"
+
 #ifdef MYDEBUG
 #undef THIS_FILE
 static TCHAR THIS_FILE[] = _T(__FILE__);
@@ -377,8 +380,13 @@ DWORD CAddFeedDlg::AddThread() {
 			LPTSTR fileName = sFileName.GetBufferSetLength(MAX_PATH + 1);
 			GetTempFileName(Config.CacheLocation, _T("rsr"), 0, fileName);
 
-			Downloader->Reset();
-			if (Downloader->SaveHttpObject(htmlFeedItem->Url, fileName)) {
+			CFeedSync *sync = NULL;
+			switch (Config.SyncSite) {
+				case SYNC_SITE_GOOGLE_READER: sync = new CGReaderSync(Downloader, Config.SyncUserName, Config.SyncPassword); break;
+				default: sync = new CNetworkSync(Downloader); break;
+			}
+			// TODO: get the feed from greader if we use it
+			if (sync->DownloadFeed(htmlFeedItem->Url, fileName)) {
 				// prepare data structures
 				CSiteItem *item = new CSiteItem(NULL, CSiteItem::Site);
 
@@ -402,16 +410,6 @@ DWORD CAddFeedDlg::AddThread() {
 					item->Info = info;
 					item->CheckFavIcon = FALSE;
 
-					// date
-/*					feed->Lock();
-					for (int i = 0; i < feed->GetItemCount(); i++) {
-						CFeedItem *fi = feed->GetItem(i);
-						// if the feed item has no date -> set it to the date of download
-						if (fi->PubDate.wYear == 0)
-							GetLocalTime(&fi->PubDate);
-					}
-					feed->Unlock();
-*/
 					CString sFeedFileName = GetCacheFile(FILE_TYPE_FEED, Config.CacheLocation, info->FileName);
 					item->Feed->Save(sFeedFileName);
 
@@ -476,7 +474,7 @@ DWORD CAddFeedDlg::AddThread() {
 			} // save http opbject
 
 			// remove temporary feed file
-//			DeleteFile(fileName);
+			DeleteFile(fileName);
 			delete htmlFeedItem;
 			t++;
 		} // while
