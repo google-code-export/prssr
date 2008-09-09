@@ -81,12 +81,12 @@
 	libregex.dll,,,0x80000000
 	zlib1.dll,,,0x80000000
 	prssrenc.dll,,,0x40000000
+	prssrnot.exe,,,0x40000000
 
 [Files.App.ARM]
 	prssr.exe,,,0x40000000
 	res.096.dll,res096.dll,,0x40000000
 	res.192.dll,res192.dll,,0x40000000
-	prssrnot.exe,,,0x40000000
 
 [Files.TodayPlugin.ARM]
 	prssrtoday.dll,,,0x40000000
