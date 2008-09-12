@@ -733,7 +733,7 @@ void CFeedView::OnMouseMove(UINT nFlags, CPoint pt) {
 			Invalidate(FALSE);
 //		}
 
-		if (pt.x != LastCursorPos.x || pt.y != LastCursorPos.y)
+		if (abs(pt.x - LastCursorPos.x) > SCALEX(2) || abs(pt.y - LastCursorPos.y) > SCALEX(2))
 			m_bClick = FALSE;
 	}
 
