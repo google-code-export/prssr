@@ -606,49 +606,44 @@ BOOL CFeedFile::RSSFill(CFeed *feed, CSiteItem *si) {
 
 #if defined PRSSR_APP
 
+static EEnclosureType GetEnclosureType(const CString &type) {
+	int nPos = type.Find('/');
+	if (nPos != -1) {
+		CString sType = type.Left(nPos);
+		if (sType.CompareNoCase(_T("video")) == 0) return ENCLOSURE_TYPE_VIDEO;
+		else if (sType.CompareNoCase(_T("audio")) == 0) return ENCLOSURE_TYPE_AUDIO;
+		else if (sType.CompareNoCase(_T("image")) == 0) return ENCLOSURE_TYPE_IMAGE;
+		else return ENCLOSURE_TYPE_UNKNOWN;
+	}
+	else return ENCLOSURE_TYPE_UNKNOWN;
+}
+
 BOOL CFeedFile::RSSFillEnclosure(CXmlNode *xmlElem, CEnclosureItem *enclosure) {
 	LOG0(5, "CFeedFile::RSSFillEnclosure()");
 
 	BOOL ret = FALSE;
 
-	CString url, length, type;
+	CString url, type;
+	long length = 0;
 	POSITION pos = xmlElem->GetFirstAttrPos();
 	while (pos != NULL) {
 		CXmlAttr *attr = xmlElem->GetNextAttr(pos);
 
 		CString attrName = attr->GetName();
-		if (attrName.Compare(_T("url")) == 0) {
+		if (attrName.Compare(_T("url")) == 0)
 			url = attr->GetValue();
-		}
-		else if (attrName.Compare(_T("length")) == 0) {
-			length = attr->GetValue();
-		}
-		else if (attrName.Compare(_T("type")) == 0) {
+		else if (attrName.Compare(_T("length")) == 0)
+			swscanf(attr->GetValue(), _T("%ld"), &length);
+		else if (attrName.Compare(_T("type")) == 0)
 			type = attr->GetValue();
-		}
-
 	}
-
-	if (length.IsEmpty())
-		length = _T("0");
 
 	// set read values
 	if (!url.IsEmpty() && !type.IsEmpty()) {
 		enclosure->URL = url;
-		long l;
-		swscanf(length, _T("%ld"), &l);
-		if (l == -1) l = 0;
-		enclosure->Length = l;
-
-		int nPos = type.Find('/');
-		if (nPos != -1) {
-			CString sType = type.Left(nPos);
-			if (sType.CompareNoCase(_T("video")) == 0) enclosure->Type = ENCLOSURE_TYPE_VIDEO;
-			else if (sType.CompareNoCase(_T("audio")) == 0) enclosure->Type = ENCLOSURE_TYPE_AUDIO;
-			else if (sType.CompareNoCase(_T("image")) == 0) enclosure->Type = ENCLOSURE_TYPE_IMAGE;
-			else enclosure->Type = ENCLOSURE_TYPE_UNKNOWN;
-		}
-		else enclosure->Type = ENCLOSURE_TYPE_UNKNOWN;
+		if (length < 0) length = 0;
+		enclosure->Length = length;
+		enclosure->Type = GetEnclosureType(type);
 
 		ret = TRUE;
 	}
@@ -748,9 +743,8 @@ BOOL CFeedFile::AtomFillPerson(CXmlNode *xmlItem, CString &name) {
 		CXmlNode *child = xmlItem->GetNextChild(pos);
 
 		CString tag = child->GetName();
-		if (tag.Compare(_T("name")) == 0) {
+		if (tag.Compare(_T("name")) == 0)
 			name = child->GetValue();
-		}
 	}
 
 	return TRUE;
@@ -830,6 +824,7 @@ BOOL CFeedFile::AtomFillItem(CXmlNode *xmlItem, CFeedItem *item) {
 #endif
 		else if (wcscmp(name, _T("link")) == 0) {
 			CString rel, type, href;
+			long length;
 			POSITION posAttr = child->GetFirstAttrPos();
 			while (posAttr != NULL) {
 				CXmlAttr *attr = child->GetNextAttr(posAttr);
@@ -841,45 +836,48 @@ BOOL CFeedFile::AtomFillItem(CXmlNode *xmlItem, CFeedItem *item) {
 					type = attr->GetValue();
 				else if (attrName.Compare(_T("href")) == 0)
 					href = attr->GetValue();
+				else if (attrName.Compare(_T("length")) == 0)
+					swscanf(attr->GetValue(), _T("%ld"), &length);
 			}
 
 
 			// href value of tag with attributes rel="alternate" and type="text/html"
 			if (rel.Compare(_T("alternate")) == 0 && type.Compare(_T("text/html")) == 0)
 				item->Link = href;
+			else if (rel.Compare(_T("enclosure")) == 0) {
+				if (!href.IsEmpty() && !type.IsEmpty()) {
+					CEnclosureItem *enclosure = new CEnclosureItem;
+
+					enclosure->URL = href;
+					if (length < 0) length = 0;
+					enclosure->Length = length;
+					enclosure->Type = GetEnclosureType(type);
+					item->Enclosures.AddTail(enclosure);
+				}
+			}
 		}
-		else if (name.Compare(_T("issued")) == 0) {
+		else if (name.Compare(_T("issued")) == 0)
 			ConvertToSytemTime(child->GetValue(), &issued);
-		}
-		else if (name.Compare(_T("updated")) == 0) {
+		else if (name.Compare(_T("updated")) == 0)
 			ConvertToSytemTime(child->GetValue(), &updated);
-		}
-		else if (name.Compare(_T("modified")) == 0) {
+		else if (name.Compare(_T("modified")) == 0)
 			ConvertToSytemTime(child->GetValue(), &modified);
-		}
-		else if (name.Compare(_T("created")) == 0) {
+		else if (name.Compare(_T("created")) == 0)
 			ConvertToSytemTime(child->GetValue(), &created);
-		}
-		else if (name.Compare(_T("published")) == 0) {
+		else if (name.Compare(_T("published")) == 0)
 			ConvertToSytemTime(child->GetValue(), &published);
-		}
 	}
 
-	if (issued.wYear != 0) {
+	if (issued.wYear != 0)
 		item->PubDate = issued;
-	}
-	else if (updated.wYear != 0) {
+	else if (updated.wYear != 0)
 		item->PubDate = updated;
-	}
-	else if (modified.wYear != 0) {
+	else if (modified.wYear != 0)
 		item->PubDate = modified;
-	}
-	else if (published.wYear != 0) {
+	else if (published.wYear != 0)
 		item->PubDate = updated;
-	}
-	else if (created.wYear != 0) {
+	else if (created.wYear != 0)
 		item->PubDate = created;
-	}
 
 #if defined PRSSR_APP
 	// GoogleReader specific
