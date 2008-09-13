@@ -855,7 +855,8 @@ void CGroupView::OnLButtonDown(UINT nFlags, CPoint point) {
 }
 
 void CGroupView::OnMouseMove(UINT nFlags, CPoint pt) {
-	KillTimer(TapAndHoldTimer);
+	if (abs(pt.x - LastCursorPos.x) > SCALEX(2) || abs(pt.y - LastCursorPos.y) > SCALEX(2))
+		KillTimer(TapAndHoldTimer);
 
 //	CView::OnMouseMove(nFlags, point);
 }
