@@ -83,6 +83,49 @@ void CLocalHtmlFile::Filter(DOM_NODE *node) {
 			else
 				child = domNodeGetNextSibling(prev);
 		}
+		else if (_strnicmp(tag, "![", 2) == 0) {
+			DOM_NODE *prev = domNodeGetPreviousSibling(child);
+
+			for (DOM_NODE *curr = child->firstChild; curr; curr = curr->nextSibling)
+				curr->parent = node;
+
+			DOM_NODE *firstChild = child->firstChild;
+			if (firstChild != NULL) {
+				child->firstChild->prevSibling = prev;
+				child->lastChild->nextSibling = child->nextSibling;
+				if (child->nextSibling != NULL)
+					child->nextSibling->prevSibling = child->lastChild;
+				else
+					child->lastChild->nextSibling = NULL;
+
+				if (prev == NULL)
+					node->firstChild = child->firstChild;
+				else
+					prev->nextSibling = child->firstChild;
+
+
+			}
+			else {
+				firstChild = child->nextSibling;
+
+				if (prev == NULL)
+					node->firstChild = child->nextSibling;
+				else
+					prev->nextSibling = child->nextSibling;
+
+				if (child->nextSibling != NULL)
+					child->nextSibling->prevSibling = prev;
+				else
+					node->firstChild = NULL;
+			}
+
+			domNodeDestroy(child->attributes);
+			if (child->name) free(child->name);
+			if (child->value) free(child->value);
+			free(child);
+
+			child = firstChild;
+		}
 		else {
 			Filter(child);
 			child = domNodeGetNextSibling(child);
