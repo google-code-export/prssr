@@ -885,7 +885,7 @@ void CMainFrame::OnToolsSiteManager() {
 		selRSS = SiteList.GetAt(actSite)->Info->XmlUrl;
 
 	CSiteManagerDlg dlg;
-	dlg.Root = SiteList.GetRoot()->Duplicate(NULL);
+	dlg.Root = SiteList.GetRoot();
 	// new items on today
 	CRegistry regToday(HKEY_CURRENT_USER, REG_KEY_TODAY);
 	dlg.ShowNewChannelsOnToday = regToday.Read(szShowNewChannels, CONFIG_DEFAULT_SHOWNEWCHANNELS);
@@ -895,10 +895,9 @@ void CMainFrame::OnToolsSiteManager() {
 		CWaitCursor wait;
 
 		// save the structure
-		SiteList.Destroy();
+		SiteList.Detach();
 		SiteList.CreateFrom(dlg.Root);
 		SiteList.SetRoot(dlg.Root);
-
 		SaveSiteList();
 
 		if (SiteList.GetCount() > 0) {

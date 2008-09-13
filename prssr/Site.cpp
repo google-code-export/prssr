@@ -253,26 +253,6 @@ CSiteItem::~CSiteItem() {
 	DeleteCriticalSection(&CSLoadFeed);
 }
 
-CSiteItem *CSiteItem::Duplicate(CSiteItem *parent) {
-	LOG0(5, "CSiteItem::Duplicate()");
-
-	CSiteItem *dup = new CSiteItem(parent, this);
-
-	if (Type == Group) {
-		POSITION pos = SubItems.GetHeadPosition();
-		while (pos != NULL) {
-			CSiteItem *si = SubItems.GetNext(pos);
-
-			dup->SubItems.AddTail(si->Duplicate(dup));
-		}
-	}
-
-	InitializeCriticalSection(&CSLoadFeed);
-
-	return dup;
-}
-
-
 void CSiteItem::Destroy() {
 	LOG1(5, "CSiteItem::Destroy(%S)", Name);
 

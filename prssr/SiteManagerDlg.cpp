@@ -529,7 +529,7 @@ void CSiteManagerDlg::DeleteItem(HTREEITEM hItem, BOOL free/* = TRUE*/) {
 		MapUrlToTreeItem.RemoveKey(item->Info->XmlUrl);
 
 	if (free) {
-		delete item->Info; item->Info = NULL;
+		item->Destroy();
 		delete item;
 	}
 }
