@@ -82,31 +82,32 @@ BOOL CNetworkSync::MergeFeed(CSiteItem *si, CFeed *feed, CArray<CFeedItem *, CFe
 	int i;
 	CList<CFeedItem *, CFeedItem *> items;
 	if (si->Info->CacheLimit > 0 || si->Info->CacheLimit == CACHE_LIMIT_DEFAULT) {
-		// add new items
-		for (i = 0; i < newItems.GetSize(); i++)
-			items.AddTail(newItems.GetAt(i));
-
 		int limit;
 		if (si->Info->CacheLimit > 0)
 			limit = si->Info->CacheLimit;
 		else
 			limit = Config.CacheLimit;
 
-		// add flagged
+		// add new items (up to the limit)
+		for (i = 0; i < newItems.GetSize(); i++) {
+			CFeedItem *fi = newItems.GetAt(i);
+			if (limit > 0) {
+				items.AddTail(fi);
+				limit--;
+			}
+			else
+				existingItems.Add(fi);	// add to existing items, that are deleted after the merge
+		}
+
+		// add flagged items (we do not want to lose them)
 		for (i = 0; i < si->Feed->GetItemCount(); i++) {
 			CFeedItem *fi = si->Feed->GetItem(i);
 			if (fi->IsFlagged())
 				items.AddTail(fi);
-		}
-
-		// limit the cache
-		int toAdd = limit - items.GetCount();
-		for (i = 0; i < si->Feed->GetItemCount(); i++) {
-			CFeedItem *fi = si->Feed->GetItem(i);
-			if (!fi->IsFlagged()) {
-				if (toAdd > 0) {
+			else {
+				if (limit > 0) {
 					items.AddTail(fi);
-					toAdd--;
+					limit--;
 				}
 				else
 					itemsToClean.Add(fi);							// old item -> delete it!
