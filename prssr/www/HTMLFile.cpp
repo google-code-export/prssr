@@ -459,16 +459,30 @@ CString recode(const char *str, XML_Encoding *enc_info) {
 void CHtmlFile::Recode(DOM_NODE *node) {
 	LOG1(5, "CHtmlFile::Recode(%p)", node);
 
+	DOM_NODE *curr;
+	CString str;
+
 	//
-	if (node != NULL && node->type == DOM_NODE_TYPE_TEXT) {
-		LOG1(1, "or: %s", node->value);
-		CString str = recode(node->value, &EncInfo);
-		LOG1(1, "wd: %S", str);
-		if (node->value)
-			free(node->value);
-		node->value = WCharToChar(str, CP_UTF8);
-		LOG1(1, "re: %s", node->value);
-	}
+	if (node == NULL) return;
+
+	switch (node->type) {
+		case DOM_NODE_TYPE_TEXT:
+			str = recode(node->value, &EncInfo);
+			if (node->value)
+				free(node->value);
+			node->value = WCharToChar(str, CP_UTF8);
+			break;
+
+		case DOM_NODE_TYPE_ELEMENT:		
+			for (curr = node->attributes; curr; curr = curr->nextSibling) {
+				if (curr->value && *curr->value) {
+					str = recode(curr->value, &EncInfo);
+					if (curr->value) free(curr->value);
+					curr->value = WCharToChar(str, CP_UTF8);
+				}
+			}
+			break;
+	} // switch
 
 	DOM_NODE *child = domNodeGetFirstChild(node);
 	while (child != NULL) {
