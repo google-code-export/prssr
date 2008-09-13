@@ -94,7 +94,6 @@ public:
 	CSiteItem(CSiteItem *parent, CSiteItem *siteItem);
 	~CSiteItem();
 
-	CSiteItem *Duplicate(CSiteItem *parent);
 	void Destroy();
 
 	void SetUpdatedFeed(CFeed *feed);
