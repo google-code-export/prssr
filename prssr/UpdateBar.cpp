@@ -783,7 +783,18 @@ void CUpdateBar::UpdateProgressText() {
 
 void CUpdateBar::ShowErrorCount() {
 	CString strError;
-	strError.Format(IDS_N_ERRORS, Errors.GetCount());
+	if (Errors.GetCount() > 1)
+		strError.Format(IDS_N_ERRORS, Errors.GetCount());
+	else {
+		POSITION pos = Errors.GetFirstPos();
+		if (pos != NULL) {
+			CErrorItem *ei = Errors.GetNext(pos);
+			strError.Format(_T("%S"), ei->Message);
+		}
+		else 
+			strError.Format(IDS_N_ERRORS, Errors.GetCount());			// this sould not happend, but for sure
+	}
+
 	ShowError(strError);
 }
 
