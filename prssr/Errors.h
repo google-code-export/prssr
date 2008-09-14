@@ -33,10 +33,10 @@ struct CErrorItem {
 	enum {
 		Site,
 		File,
+		System,
 		Other
 	} Type;
 	SYSTEMTIME Time;
-//	CString SiteName;
 	CString Message;
 
 	union {
@@ -49,14 +49,6 @@ struct CErrorItem {
 	};
 	int SiteIdx;
 	CString Url;			// url of the file to download
-
-//	CErrorItem(SYSTEMTIME *time, const CString &siteName, const CString &errorMsg) {
-/*	CErrorItem(SYSTEMTIME *time, const CString &errorMsg) {
-		Time = *time;
-//		SiteName = siteName;
-		ErrorMsg = errorMsg;
-	}
-*/
 
 	CErrorItem(const CString &errorMsg, SYSTEMTIME *time = NULL) {
 		if (time == NULL)

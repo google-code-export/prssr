@@ -514,14 +514,23 @@ void CUpdateBar::UpdateFeeds() {
 				SaveSiteItemFlaggedCount(si, SiteList.GetIndexOf(si));
 				// process
 			}
-			else {
-				CString sMsg;
-				sMsg.Format(_T("%s: %s"), si->Name, sync->GetErrorMsg());
-				CErrorItem *ei = new CErrorItem(sMsg);
-				ei->Type = CErrorItem::Site;
-				ei->SiteIdx = SiteList.GetIndexOf(si);
-				ei->UpdateOnly = ui->UpdateOnly;
-				Errors.Add(ei);
+			else {			
+				if (Downloader->Error == DOWNLOAD_ERROR_DISK_FULL) {
+					CErrorItem *ei = new CErrorItem(IDS_DISK_FULL);
+					ei->Type = CErrorItem::System;
+					Errors.Add(ei);
+
+					Terminate = TRUE;
+				}
+				else {
+					CString sMsg;
+					sMsg.Format(_T("%s: %s"), si->Name, sync->GetErrorMsg());
+					CErrorItem *ei = new CErrorItem(sMsg);
+					ei->Type = CErrorItem::Site;
+					ei->SiteIdx = SiteList.GetIndexOf(si);
+					ei->UpdateOnly = ui->UpdateOnly;
+					Errors.Add(ei);
+				}
 			}
 
 			delete feed;
@@ -565,28 +574,37 @@ void CUpdateBar::DownloadHtmlPage(CDownloadItem *di) {
 	if (Downloader->SaveHttpObject(url, tmpFileName))
 		ok = TRUE;
 	else {
-		// optimizing failed -> use original url
-		Downloader->Reset();
-		if (Config.UseHtmlOptimizer && Downloader->SaveHttpObject(di->URL, tmpFileName))
-			ok = TRUE;
+		if (Downloader->Error != DOWNLOAD_ERROR_DISK_FULL) {
+			// optimizing failed -> use original url
+			Downloader->Reset();
+			if (Config.UseHtmlOptimizer && Downloader->SaveHttpObject(di->URL, tmpFileName))
+				ok = TRUE;
+		}
 	}
 
-
 	if (ok) {
-		if (!TranslateForOfflineReading(tmpFileName, di->FileName, Downloader->GetCharset())) {
+		if (!TranslateForOfflineReading(tmpFileName, di->FileName, Downloader->GetCharset()))
 			DeleteFile(di->FileName);
-		}
 		DeleteFile(tmpFileName);
 	}
 	else {
-		CString sErrMsg;
-		sErrMsg.Format(IDS_ERROR_DOWNLOADING_FILE, di->URL);
-		CErrorItem *ei = new CErrorItem(sErrMsg);
-		ei->Type = CErrorItem::File;
-		ei->SiteIdx = di->SiteIdx;
-		ei->Url = di->URL;
-		ei->FileType = FILE_TYPE_HTML;
-		Errors.Add(ei);
+		if (Downloader->Error == DOWNLOAD_ERROR_DISK_FULL) {
+			CErrorItem *ei = new CErrorItem(IDS_DISK_FULL);
+			ei->Type = CErrorItem::System;
+			Errors.Add(ei);
+
+			Terminate = TRUE;
+		}
+		else {
+			CString sErrMsg;
+			sErrMsg.Format(IDS_ERROR_DOWNLOADING_FILE, di->URL);
+			CErrorItem *ei = new CErrorItem(sErrMsg);
+			ei->Type = CErrorItem::File;
+			ei->SiteIdx = di->SiteIdx;
+			ei->Url = di->URL;
+			ei->FileType = FILE_TYPE_HTML;
+			Errors.Add(ei);
+		}
 	}
 }
 
@@ -603,32 +621,39 @@ void CUpdateBar::DownloadFile(CDownloadItem *di) {
 	if (file == INVALID_HANDLE_VALUE) {
 		// not exists
 		CreatePath(tmpFileName);
-		if (Downloader->SaveHttpObject(di->URL, tmpFileName)) {
+		if (Downloader->SaveHttpObject(di->URL, tmpFileName))
 			ok = TRUE;
-		}
 	}
 	else {
 		// file exists => resume download
 		DWORD fileSize = GetFileSize(file, NULL);
 		CloseHandle(file);
 
-		if (Downloader->PartialDownload(di->URL, tmpFileName, fileSize)) {
+		if (Downloader->PartialDownload(di->URL, tmpFileName, fileSize))
 			ok = TRUE;
-		}
 	}
 
 	if (ok) {
 		MoveFile(tmpFileName, di->FileName);
 	}
 	else {
-		CString sErrMsg;
-		sErrMsg.Format(IDS_ERROR_DOWNLOADING_FILE, di->URL);
-		CErrorItem *ei = new CErrorItem(sErrMsg);
-		ei->Type = CErrorItem::File;
-		ei->SiteIdx = SITE_INVALID;
-		ei->Url = di->URL;
-		ei->FileType = di->Type;
-		Errors.Add(ei);
+		if (Downloader->Error == DOWNLOAD_ERROR_DISK_FULL) {
+			CErrorItem *ei = new CErrorItem(IDS_DISK_FULL);
+			ei->Type = CErrorItem::System;
+			Errors.Add(ei);
+
+			Terminate = TRUE;
+		}
+		else {
+			CString sErrMsg;
+			sErrMsg.Format(IDS_ERROR_DOWNLOADING_FILE, di->URL);
+			CErrorItem *ei = new CErrorItem(sErrMsg);
+			ei->Type = CErrorItem::File;
+			ei->SiteIdx = SITE_INVALID;
+			ei->Url = di->URL;
+			ei->FileType = di->Type;
+			Errors.Add(ei);
+		}
 	}
 }
 
@@ -789,7 +814,7 @@ void CUpdateBar::ShowErrorCount() {
 		POSITION pos = Errors.GetFirstPos();
 		if (pos != NULL) {
 			CErrorItem *ei = Errors.GetNext(pos);
-			strError.Format(_T("%S"), ei->Message);
+			strError = ei->Message;
 		}
 		else 
 			strError.Format(IDS_N_ERRORS, Errors.GetCount());			// this sould not happend, but for sure

@@ -71,6 +71,7 @@ public:
 
 	DWORD GetTotalFileSize() { return ResponseBodySize; }
 	DWORD GetDownloadedFileSize() { return ResponseBodyDownloaded; }
+	DWORD GetSysError() { return SysError; }
 
 protected:
 	BOOL ReceiveLine(CString &sLine);
@@ -92,6 +93,8 @@ protected:
 
 	BOOL ChunkedTransfer;
 	DWORD ChunkRemain;
+
+	DWORD SysError;
 };
 
 

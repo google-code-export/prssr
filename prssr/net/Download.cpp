@@ -678,7 +678,10 @@ BOOL CDownloader::SaveHttpObject(CString &url, const CString &strFileName, LPVOI
 									OnFileDownloaded(context);
 								}
 								else {
-									Error = DOWNLOAD_ERROR_GETTING_FILE;
+									if (HttpConnection.GetSysError() == ERROR_DISK_FULL)
+										Error = DOWNLOAD_ERROR_DISK_FULL;
+									else
+										Error = DOWNLOAD_ERROR_GETTING_FILE;
 								}
 							}
 						}
@@ -819,7 +822,10 @@ BOOL CDownloader::Post(CString &url, const CString &strBody, CString &response, 
 									OnFileDownloaded(context);
 								}
 								else {
-									Error = DOWNLOAD_ERROR_GETTING_FILE;
+									if (HttpConnection.GetSysError() == ERROR_DISK_FULL)
+										Error = DOWNLOAD_ERROR_DISK_FULL;
+									else
+										Error = DOWNLOAD_ERROR_GETTING_FILE;
 								}
 								DeleteFile(tempFileName);
 							}
