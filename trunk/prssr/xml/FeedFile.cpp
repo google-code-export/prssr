@@ -459,6 +459,9 @@ BOOL CFeedFile::RSSFillItem(CXmlNode *xmlItem, CFeedItem *item) {
 			value.Remove('\n');
 			item->Title = StripHtmlTags(value);
 		}
+		else if (wcscmp(name, _T("guid")) == 0) {
+			item->Hash = value;
+		}
 #if defined PRSSR_APP
 		else if (name.Compare(_T("description")) == 0)
 			sDescription = value;
@@ -504,10 +507,11 @@ BOOL CFeedFile::RSSFillItem(CXmlNode *xmlItem, CFeedItem *item) {
 		GetSystemTime(&item->PubDate);
 
 	item->Date = item->PubDate;
-	Sleep(1);
+	Sleep(1);				// ensure that items in a feed will differ at least by 1 ms
 #endif
 
-	item->ComputeHash();
+	if (item->Hash.IsEmpty())
+		item->ComputeHash();
 
 	return TRUE;
 }
