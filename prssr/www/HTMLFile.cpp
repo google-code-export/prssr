@@ -339,12 +339,31 @@ eucKrEncodingConvert(void *data, const char *p) {
 	return c;
 }
 
+static int XMLCALL
+gbkEncodingConvert(void *data, const char *p) {
+	int c;
+
+	BYTE *cs = (BYTE *) p;
+	if (cs[0] < 0x80) 					// single byte
+		c = cs[0];
+	else if (cs[0] == 0x80)
+		c = 0x20AC;						// euro sign
+	else {
+		// two bytes (the first is the index of the subtable, the second is the character inside the subtable)
+		int idx = ((cs[0] - 0x81) * 0xC0) + (cs[1] - 0x40);			// size of the subtable is 0x0C, each subtable starts with char 0x40
+		c = cpGBK[idx];
+	}
+
+	return c;
+}
+
 
 bool setEncoding(const TCHAR *encoding, XML_Encoding *info) {
 	LOG1(7, "setEncoding(, '%S', )", encoding);
 
+	int i;
+
 	if (wcscmp(encoding, _T("big5")) == 0) {
-		int i;
 		// first 0x80 bytes are single byte
 		for (i = 0; i < 0x80; i++) info->map[i] = i;
 		// the rest is 2-byte
@@ -352,7 +371,6 @@ bool setEncoding(const TCHAR *encoding, XML_Encoding *info) {
 		info->convert = big5EncodingConvert;
 	}
 	else if (wcsncmp(encoding, _T("euc-jp"), 6) == 0) {
-		int i;
 		// first 0x80 bytes are single byte
 		for (i = 0; i <= 0x8D; i++) info->map[i] = i;
 		info->map[0x8E] = -2;
@@ -367,7 +385,6 @@ bool setEncoding(const TCHAR *encoding, XML_Encoding *info) {
 	else if (wcsncmp(encoding, _T("euc-kr"), 6) == 0 ||
 		wcsncmp(encoding, _T("ks_c_5601-1987"), 14) == 0)
 	{
-		int i;
 		// first 0x80 bytes are single byte
 		for (i = 0; i <= 0x7E; i++) info->map[i] = i;
 		info->map[0x7F] = -1;
@@ -376,22 +393,22 @@ bool setEncoding(const TCHAR *encoding, XML_Encoding *info) {
 		info->map[0xFF] = -1;
 		info->convert = eucKrEncodingConvert;
 	}
+	else if (wcsncmp(encoding, _T("gb"), 2) == 0) {	// gbk encoding
+		// first 0x80 bytes are single byte
+		for (i = 0x00; i <= 0x80; i++) info->map[i] = i;
+		for (i = 0x81; i <= 0xFF; i++) info->map[i] = -2;
+		info->convert = gbkEncodingConvert;
+	}
 	else if (wcscmp(encoding, _T("utf-8")) == 0) {
-		int i;
-		for (i = 0; i < 0xc0; i++)
-			info->map[i] = i;
-		for (i = 0xc0; i < 0xe0; i++)
-			info->map[i] = -2;
-		for (i = 0xe0; i < 0xf0; i++)
-			info->map[i] = -3;
-		for (i = 0xf0; i <= 0xf4; i++)
-			info->map[i] = -4;
-		for (i = 0xf5; i <= 0xff; i++)
-			info->map[i] = i;
+		for (i = 0; i < 0xc0; i++) info->map[i] = i;
+		for (i = 0xc0; i <  0xe0; i++) info->map[i] = -2;
+		for (i = 0xe0; i <  0xf0; i++) info->map[i] = -3;
+		for (i = 0xf0; i <= 0xf4; i++) info->map[i] = -4;
+		for (i = 0xf5; i <= 0xff; i++) info->map[i] = i;
 		info->convert = utf8EncodingConvert;
 	}
 	else {
-		int *map;
+		WORD *map;
 		if (wcscmp(encoding, _T("iso-8859-2")) == 0) map = cpISO_8859_2;
 		else if (wcscmp(encoding, _T("iso-8859-3")) == 0) map = cpISO_8859_3;
 		else if (wcscmp(encoding, _T("iso-8859-4")) == 0) map = cpISO_8859_4;
@@ -418,7 +435,7 @@ bool setEncoding(const TCHAR *encoding, XML_Encoding *info) {
 		else if (wcscmp(encoding, _T("koi8-r")) == 0) map = cpKOI8_R;
 		else map = cpCP1252; // fallback encoding
 
-		for (int i = 0; i < 256; i++)
+		for (i = 0; i < 256; i++)
 			info->map[i] = map[i];
 		info->convert = unknownEncodingConvert;
 	}

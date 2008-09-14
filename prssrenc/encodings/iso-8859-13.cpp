@@ -24,7 +24,7 @@
 
 #include "../codepages.h"
 
-DLLEXT int cpISO_8859_13[256] = {
+DLLEXT WORD cpISO_8859_13[256] = {
 	0x0000,
 	0x0001,
 	0x0002,

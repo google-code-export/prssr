@@ -103,25 +103,6 @@ unknownEncodingConvert(void *data, const char *p) {
 	return '?';
 }
 
-/*
-static int XMLCALL
-eucEncodingConvert(void *data, const char *p) {
-	unsigned short c;
-
-	BYTE *a = (BYTE *) p;
-	if (a[0] < 0x80) {
-		// single byte
-		c = a[0];
-	}
-	else {
-		// two bytes
-		c = ((a[0] - 0xA0) << 8) | (a[1] - 0xA0);
-	}
-
-	return c;
-}
-*/
-
 static int XMLCALL
 big5EncodingConvert(void *data, const char *p) {
 	int c;
@@ -207,6 +188,23 @@ eucKrEncodingConvert(void *data, const char *p) {
 	return c;
 }
 
+static int XMLCALL
+gbkEncodingConvert(void *data, const char *p) {
+	int c;
+
+	BYTE *cs = (BYTE *) p;
+	if (cs[0] < 0x80) 					// single byte
+		c = cs[0];
+	else if (cs[0] == 0x80)
+		c = 0x20AC;						// euro sign
+	else {
+		// two bytes (the first is the index of the subtable, the second is the character inside the subtable)
+		int idx = ((cs[0] - 0x81) * 0xC0) + (cs[1] - 0x40);			// size of the subtable is 0x0C, each subtable starts with char 0x40
+		c = cpGBK[idx];
+	}
+
+	return c;
+}
 
 static int XMLCALL
 unknownEncoding(void *userData, const XML_Char *name, XML_Encoding *info) {
@@ -215,9 +213,9 @@ unknownEncoding(void *userData, const XML_Char *name, XML_Encoding *info) {
 	CXmlFile *xml = (CXmlFile *) userData;
 
 	char *encoding = xml->Encoding;
+	int i;
 
 	if (strcmp(encoding, "big5") == 0) {
-		int i;
 		// first 0x80 bytes are single byte
 		for (i = 0; i < 0x80; i++) info->map[i] = i;
 		// the rest is 2-byte
@@ -225,7 +223,6 @@ unknownEncoding(void *userData, const XML_Char *name, XML_Encoding *info) {
 		info->convert = big5EncodingConvert;
 	}
 	else if (strncmp(encoding, "euc-jp", 6) == 0) {
-		int i;
 		// first 0x80 bytes are single byte
 		for (i = 0; i <= 0x8D; i++) info->map[i] = i;
 		info->map[0x8E] = -2;
@@ -240,7 +237,6 @@ unknownEncoding(void *userData, const XML_Char *name, XML_Encoding *info) {
 	else if (strncmp(encoding, "euc-kr", 6) == 0 ||
 		strncmp(encoding, "ks_c_5601-1987", 14) == 0)
 	{
-		int i;
 		// first 0x80 bytes are single byte
 		for (i = 0; i <= 0x7E; i++) info->map[i] = i;
 		info->map[0x7F] = -1;
@@ -249,22 +245,22 @@ unknownEncoding(void *userData, const XML_Char *name, XML_Encoding *info) {
 		info->map[0xFF] = -1;
 		info->convert = eucKrEncodingConvert;
 	}
+	else if (strncmp(encoding, "gb", 2) == 0) {	// gbk encoding
+		// first 0x80 bytes are single byte
+		for (i = 0x00; i <= 0x80; i++) info->map[i] = i;
+		for (i = 0x81; i <= 0xFF; i++) info->map[i] = -2;
+		info->convert = gbkEncodingConvert;
+	}
 	else if (strcmp(encoding, "utf-8") == 0) {
-		int i;
-		for (i = 0; i < 0xc0; i++)
-			info->map[i] = i;
-		for (i = 0xc0; i < 0xe0; i++)
-			info->map[i] = -2;
-		for (i = 0xe0; i < 0xf0; i++)
-			info->map[i] = -3;
-		for (i = 0xf0; i <= 0xf4; i++)
-			info->map[i] = -4;
-		for (i = 0xf5; i <= 0xff; i++)
-			info->map[i] = i;
+		for (i = 0; i < 0xc0; i++) info->map[i] = i;
+		for (i = 0xc0; i <  0xe0; i++) info->map[i] = -2;
+		for (i = 0xe0; i <  0xf0; i++) info->map[i] = -3;
+		for (i = 0xf0; i <= 0xf4; i++) info->map[i] = -4;
+		for (i = 0xf5; i <= 0xff; i++) info->map[i] = i;
 		info->convert = utf8EncodingConvert;
 	}
 	else {
-		int *map;
+		WORD *map;
 		if (strcmp(encoding, "iso-8859-2") == 0) map = cpISO_8859_2;
 		else if (strcmp(encoding, "iso-8859-3") == 0) map = cpISO_8859_3;
 		else if (strcmp(encoding, "iso-8859-4") == 0) map = cpISO_8859_4;
@@ -291,7 +287,7 @@ unknownEncoding(void *userData, const XML_Char *name, XML_Encoding *info) {
 		else if (strcmp(encoding, "koi8-r") == 0) map = cpKOI8_R;
 		else map = cpCP1252;
 
-		for (int i = 0; i < 256; i++)
+		for (i = 0; i < 256; i++)
 			info->map[i] = map[i];
 		info->convert = unknownEncodingConvert;
 	}
@@ -614,7 +610,7 @@ BOOL CXmlFile::LoadFromFile(LPCTSTR fileName) {
 		if (ReadFile(hFile, buf, BUFSIZ, &read, NULL)) {
 			done = read < BUFSIZ;
 			if (XML_Parse(parser, buf, read, done) == XML_STATUS_ERROR) {
-				LOG2(7, "Error: %s at line %d",
+				LOG2(1, "Error: %s at line %d",
 					XML_ErrorString(XML_GetErrorCode(parser)),
 					XML_GetCurrentLineNumber(parser));
 				ret = FALSE;
