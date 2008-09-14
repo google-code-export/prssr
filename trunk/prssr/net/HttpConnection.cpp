@@ -620,6 +620,7 @@ BOOL CHttpConnection::GetFile(CHttpResponse *res, const CString &fileName) {
 	LOG0(5, "CHttpConnection::GetFile()");
 
 	BOOL ret = FALSE;
+	SysError = 0;
 
 	// check response headers
 
@@ -672,7 +673,12 @@ BOOL CHttpConnection::GetFile(CHttpResponse *res, const CString &fileName) {
 				break;
 		}
 
+		if (!ret) SysError = GetLastError();
+
 		file.Close();
+	}
+	else {
+		SysError = GetLastError();
 	}
 
 	return ret;

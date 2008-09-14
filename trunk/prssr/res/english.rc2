@@ -1643,4 +1643,5 @@ BEGIN
 	IDS_PURGE_CACHE_WARNING "Purge all cache content?"
 	IDS_AUTHENTICATION_FAILED "Authentication failed."
 	IDS_ERROR_GETTING_TOKEN "Error getting token."
+	IDS_DISK_FULL           "No space left on the device."
 END
