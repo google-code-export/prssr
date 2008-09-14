@@ -40,7 +40,7 @@
 
 #include "../codepages.h"
 
-DLLEXT int cpBig5_1[0x5E * 0x3F] = {
+DLLEXT WORD cpBig5_1[0x5E * 0x3F] = {
 	0x3000,
 	0xFF0C,
 	0x3001,
@@ -5965,7 +5965,7 @@ DLLEXT int cpBig5_1[0x5E * 0x3F] = {
 	-1,
 };
 
-DLLEXT int cpBig5_2[0x5E * 0x5E] = {
+DLLEXT WORD cpBig5_2[0x5E * 0x5E] = {
 	0xFE5B,
 	0xFE5C,
 	0xFE5D,

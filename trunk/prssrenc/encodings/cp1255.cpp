@@ -24,7 +24,7 @@
 
 #include "../codepages.h"
 
-DLLEXT int cpCP1255[256] = {
+DLLEXT WORD cpCP1255[256] = {
 	0x0000,
 	0x0001,
 	0x0002,

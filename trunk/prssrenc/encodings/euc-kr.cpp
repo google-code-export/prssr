@@ -24,7 +24,7 @@
 
 #include "../codepages.h"
 
-DLLEXT int cpEUC_KR1[0x7E * 0x1A] = {
+DLLEXT WORD cpEUC_KR1[0x7E * 0x1A] = {
 	0xAC02,
 	0xAC03,
 	0xAC05,
@@ -3302,7 +3302,7 @@ DLLEXT int cpEUC_KR1[0x7E * 0x1A] = {
 	-1,
 	-1,
 };
-DLLEXT int cpEUC_KR2[0x7E * 0x1A] = {
+DLLEXT WORD cpEUC_KR2[0x7E * 0x1A] = {
 	0xAC35,
 	0xAC36,
 	0xAC37,
@@ -6580,7 +6580,7 @@ DLLEXT int cpEUC_KR2[0x7E * 0x1A] = {
 	-1,
 	-1,
 };
-DLLEXT int cpEUC_KR3[0x7E * 0x7E] = {
+DLLEXT WORD cpEUC_KR3[0x7E * 0x7E] = {
 	0xAC56,
 	0xAC57,
 	0xAC59,

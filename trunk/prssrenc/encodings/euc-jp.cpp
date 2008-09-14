@@ -24,7 +24,7 @@
 
 #include "../codepages.h"
 
-DLLEXT int cpEUC_JP[0x5E * 0x5E] = {
+DLLEXT WORD cpEUC_JP[0x5E * 0x5E] = {
 	0x3000,
 	0x3001,
 	0x3002,
