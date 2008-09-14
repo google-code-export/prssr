@@ -249,6 +249,14 @@ DEP_CPP_EUC_K=\
 # End Source File
 # Begin Source File
 
+SOURCE=..\encodings\gbk.cpp
+DEP_CPP_GBK_C=\
+	"..\codepages.h"\
+	
+# SUBTRACT CPP /YX
+# End Source File
+# Begin Source File
+
 SOURCE="..\encodings\iso-8859-10.cpp"
 DEP_CPP_ISO_8=\
 	"..\codepages.h"\
