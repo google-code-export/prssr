@@ -160,9 +160,12 @@ protected:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnTimer(UINT nIDEvent);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	//}}AFX_MSG
-	virtual void ContextMenu(CPoint pt);
+	virtual void ContextMenu(CPoint *pt);
 	virtual void OnItemClicked();
 
 	DECLARE_MESSAGE_MAP()
@@ -209,6 +212,10 @@ protected:
 
 	HGROUPITEM ItemFromPoint(CPoint pt);
 	void AdjustViewTop();
+
+	UINT KeyTimer;
+	BOOL ReturnPressed;
+
 
 //	void UpdateScroll();
 

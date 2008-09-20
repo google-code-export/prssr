@@ -278,7 +278,7 @@ void CSummaryView::OnItemClicked() {
 	}
 }
 
-void CSummaryView::ContextMenu(CPoint pt) {
+void CSummaryView::ContextMenu(CPoint *pt) {
 	LOG0(3, "CSummaryView::ContextMenu()");
 
 	HGROUPITEM hItem = GetSelectedItem();
@@ -289,8 +289,7 @@ void CSummaryView::ContextMenu(CPoint pt) {
 		mnu.LoadMenu(IDR_SUMMARY_VIEW_CONTEXT_MENU);
 		CMenu *popup = mnu.GetSubMenu(0);
 
-		ClientToScreen(&pt);
-		popup->TrackPopupMenu(TPM_TOPALIGN | TPM_LEFTALIGN, pt.x, pt.y, AfxGetMainWnd());		
+		popup->TrackPopupMenu(TPM_TOPALIGN | TPM_LEFTALIGN, pt->x, pt->y, AfxGetMainWnd());		
 	}
 }
 
