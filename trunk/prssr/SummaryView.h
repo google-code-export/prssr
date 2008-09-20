@@ -62,7 +62,7 @@ protected:
 
 	virtual void OnDrawItem(CDC &dc, CRect &rc, HGROUPITEM hItem, BOOL selected);
 	virtual void OnItemClicked();
-	virtual void ContextMenu(CPoint pt);
+	virtual void ContextMenu(CPoint *pt);
 
 	// Generated message map functions
 	//{{AFX_MSG(CSummaryView)

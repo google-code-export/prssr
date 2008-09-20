@@ -114,6 +114,9 @@ CGroupView::CGroupView() {
 	m_hSelectedItem = NULL;
 
 	TapAndHoldTimer = 1;
+	KeyTimer = 2;
+
+	ReturnPressed = FALSE;
 
 	m_hClickedItem = NULL;
 
@@ -140,6 +143,8 @@ BEGIN_MESSAGE_MAP(CGroupView, CView)
 	ON_WM_MOUSEMOVE()
 	ON_WM_TIMER()
 	ON_WM_KEYDOWN()
+	ON_WM_KEYUP()
+	ON_WM_CHAR()
 	ON_WM_LBUTTONDBLCLK()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
@@ -898,7 +903,7 @@ void CGroupView::OnLButtonDblClk(UINT nFlags, CPoint point) {
 //}
 
 void CGroupView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
-	LOG3(5, "CGroupView::OnKeyDown(%d, %d, %d)", nChar, nRepCnt, nFlags);
+	LOG3(1, "CGroupView::OnKeyDown(%d, %d, %d)", nChar, nRepCnt, nFlags);
 
 	HGROUPITEM hItem;
 	switch (nChar) {
@@ -939,14 +944,13 @@ void CGroupView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			break;
 
 		case VK_RETURN:
-			if (Items.GetCount() > 0 && m_hSelectedItem != NULL) {
-				// toggle item state
-				if (ItemHasChildren(m_hSelectedItem))
-					ToggleItem(m_hSelectedItem);
-				else
-					OnItemClicked();
+			if (!ReturnPressed && Items.GetCount() > 0 && m_hSelectedItem != NULL) {
+				ReturnPressed = TRUE;
+//				SetCapture();
+				KillTimer(KeyTimer);
+				SetTimer(KeyTimer, 700, NULL);
+				CView::OnKeyDown(nChar, nRepCnt, nFlags);
 			}
-			CView::OnKeyDown(nChar, nRepCnt, nFlags);
 			break;
 
 		default:
@@ -955,7 +959,50 @@ void CGroupView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	}
 }
 
-void CGroupView::ContextMenu(CPoint pt) {
+void CGroupView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
+	LOG3(1, "CGroupView::OnKeyUp(%d, %d, %d)", nChar, nRepCnt, nFlags);
+
+	switch (nChar) {
+		case VK_RETURN:
+			if (ReturnPressed) {
+//				ReleaseCapture();
+				KillTimer(KeyTimer);
+				if (Items.GetCount() > 0 && m_hSelectedItem != NULL) {
+					// toggle item state
+					if (ItemHasChildren(m_hSelectedItem))
+						ToggleItem(m_hSelectedItem);
+					else
+						OnItemClicked();
+				}
+				ReturnPressed = FALSE;
+			}
+			CView::OnKeyUp(nChar, nRepCnt, nFlags);
+			break;
+
+		default:
+			CView::OnKeyUp(nChar, nRepCnt, nFlags);
+			break;
+	}
+}
+
+void CGroupView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
+	LOG3(1, "CGroupView::OnChar(%d, %d, %d)", nChar, nRepCnt, nFlags);
+
+	switch (nChar) {
+		case VK_RETURN:
+			if (ReturnPressed) {
+			}
+			else
+				CView::OnChar(nChar, nRepCnt, nFlags);
+			break;
+
+		default:
+			CView::OnChar(nChar, nRepCnt, nFlags);
+			break;
+	}
+}
+
+void CGroupView::ContextMenu(CPoint *pt) {
 	LOG0(5, "CGroupView::ContextMenu()");
 
 }
@@ -978,7 +1025,25 @@ void CGroupView::OnTimer(UINT nIDEvent) {
 		shrg.dwFlags = SHRG_NOTIFYPARENT | SHRG_RETURNCMD;
 
 		if (::SHRecognizeGesture(&shrg) == GN_CONTEXTMENU) {
-			ContextMenu(LastCursorPos);
+			CPoint pt = LastCursorPos;
+			ClientToScreen(&pt);
+			ContextMenu(&pt);
+		}
+	}
+	else if (nIDEvent == KeyTimer) {
+		KillTimer(KeyTimer);
+		ReturnPressed = FALSE;
+
+//		SendMessage(WM_KEYUP, VK_RETURN, (0xCA05 << 16 | 1));
+//		ReleaseCapture();
+
+		if (Items.GetCount() > 0 && m_hSelectedItem != NULL) {
+			GVITEM *gi = Items.GetAt(m_hSelectedItem);
+		
+			CPoint pt(100, gi->yTop - m_nViewTop + SCALEY(ItemHeight / 2));
+			ClientToScreen(&pt);
+			LOG0(1, "CGroupView::Context()");
+			ContextMenu(&pt);
 		}
 	}
 
@@ -1091,4 +1156,15 @@ void CGroupView::UpdateItemHeight() {
 	CreateFonts();
 	UpdateScrollBars();
 	Invalidate();
+}
+
+BOOL CGroupView::PreTranslateMessage(MSG *pMsg) {
+	if (ReturnPressed && (pMsg->message == WM_KEYDOWN || pMsg->message == WM_CHAR)) {
+		LOG0(1, "CGroupView::PreTranslateMessage()");
+		TranslateMessage(pMsg);
+		return TRUE;
+	}
+	else {
+		return CView::PreTranslateMessage(pMsg);
+	}
 }
