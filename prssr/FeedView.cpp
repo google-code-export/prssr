@@ -281,9 +281,11 @@ void CFeedView::DeselectAllItems() {
 }
 
 void CFeedView::MarkItem(int item, DWORD mask) {
-	m_oItems.GetAt(item)->SetFlags(mask, MESSAGE_READ_STATE);
-//	if (Config.HideReadItems)
-//		m_nTotalHeight -= SCALEY(ItemHeight);
+	CFeedItem *fi = m_oItems.GetAt(item);
+	fi->SetFlags(mask, MESSAGE_READ_STATE);
+
+	CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
+	frame->SyncItem(fi);
 }
 
 void CFeedView::MarkAllRead() {
@@ -1172,13 +1174,20 @@ void CFeedView::OpenItem(CFeedItem *feedItem) {
 void CFeedView::FlagItem(int item) {
 	LOG1(3, "CFeedView::FlagItem(%d)", item);
 
-	m_oItems.GetAt(item)->SetFlags(MESSAGE_FLAG, MESSAGE_FLAG);
+	CFeedItem *fi = m_oItems.GetAt(item);
+	fi->SetFlags(MESSAGE_FLAG, MESSAGE_FLAG);
+	
+	CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
+	frame->SyncItem(fi);
 }
 
 void CFeedView::UnflagItem(int item) {
 	LOG1(3, "CFeedView::UnflagItem(%d)", item);
 
-	m_oItems.GetAt(item)->SetFlags(0, MESSAGE_FLAG);
+	CFeedItem *fi = m_oItems.GetAt(item);
+	fi->SetFlags(0, MESSAGE_FLAG);
+	CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
+	frame->SyncItem(fi);
 }
 
 void CFeedView::OnCopyUrl() {

@@ -79,27 +79,6 @@ void FeedDiff(CFeed *first, CFeed *second, CArray<CFeedItem *, CFeedItem *> *dif
 		}
 }
 
-void FeedIntersection(CFeed *first, CFeed *second, CArray<CFeedItem *, CFeedItem *> *diff) {
-	LOG0(5, "FeedIntersection()");
-
-	CCache cache;
-	int i;
-
-	if (second != NULL)
-		for (i = 0; i < second->GetItemCount(); i++) {
-			CFeedItem *fi = second->GetItem(i);
-			if (!fi->Hash.IsEmpty())
-				cache.AddItem(fi->Hash);
-		}
-
-	if (first != NULL)
-		for (i = 0; i < first->GetItemCount(); i++) {
-			CFeedItem *fi = first->GetItem(i);
-			if (!fi->Hash.IsEmpty() && cache.InCache(fi->Hash))
-				diff->Add(fi);
-		}
-}
-
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

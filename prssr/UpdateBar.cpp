@@ -37,9 +37,6 @@
 #include "www/LocalHtmlFile.h"
 #include "misc/shnotif.h"
 
-#include "sync/GReaderSync.h"
-#include "sync/NetworkSync.h"
-
 #ifdef MYDEBUG
 #undef THIS_FILE
 static TCHAR THIS_FILE[] = _T(__FILE__);
@@ -362,12 +359,15 @@ void CUpdateBar::UpdateFeeds() {
 	CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
 
 	EnterCriticalSection(&CSDownloader);
-	Downloader = new CDownloader;
+/*	Downloader = new CDownloader;
 	CFeedSync *sync = NULL;
 	switch (Config.SyncSite) {
 		case SYNC_SITE_GOOGLE_READER: sync = new CGReaderSync(Downloader, Config.SyncUserName, Config.SyncPassword);  break;
 		default: sync = new CNetworkSync(Downloader); break;
 	}
+*/
+	Downloader = &frame->Downloader;
+	CFeedSync *sync = frame->Syncer;
 	LeaveCriticalSection(&CSDownloader);
 
 	BOOL authenticated;
@@ -545,8 +545,8 @@ void CUpdateBar::UpdateFeeds() {
 	}
 
 	EnterCriticalSection(&CSDownloader);
-	delete sync;
-	delete Downloader;
+//	delete sync;
+//	delete Downloader;
 	Downloader = NULL;
 	LeaveCriticalSection(&CSDownloader);
 

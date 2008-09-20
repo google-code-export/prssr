@@ -61,6 +61,10 @@
 // cache manager
 #include "CacheMan.h"
 
+#include "sync/GReaderSync.h"
+#include "sync/NetworkSync.h"
+#include "net/Connection.h"
+
 #ifdef MYDEBUG
 #undef THIS_FILE
 static TCHAR THIS_FILE[] = _T(__FILE__);
@@ -109,6 +113,12 @@ DWORD WINAPI SaveSitesStubProc(LPVOID lpParameter) {
 DWORD WINAPI PreloadSitesStubProc(LPVOID lpParameter) {
 	CMainFrame *frame = (CMainFrame *) lpParameter;
 	frame->PreloadThread();
+	return 0;
+}
+
+DWORD WINAPI SyncItemsStubProc(LPVOID lpParameter) {
+	CMainFrame *frame = (CMainFrame *) lpParameter;
+	frame->SyncItemsThread();
 	return 0;
 }
 
@@ -207,12 +217,23 @@ CMainFrame::CMainFrame() {
 	HPreloadSiteEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
 	HSaveSitesThread = NULL;
+	HSyncItemsThread = NULL;
+	Syncer = NULL;
 }
 
 CMainFrame::~CMainFrame() {
 	CloseHandle(HTerminate);
 //	CloseHandle(HSaveSiteEvent);
 	CloseHandle(HPreloadSiteEvent);
+
+	delete Syncer;
+}
+
+void CMainFrame::CreateSyncer() {
+	switch (Config.SyncSite) {
+		case SYNC_SITE_GOOGLE_READER: Syncer = new CGReaderSync(&Downloader, Config.SyncUserName, Config.SyncPassword);  break;
+		default: Syncer = new CNetworkSync(&Downloader); break;
+	}
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
@@ -321,6 +342,9 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 	HPreloadThread = CreateThread(NULL, 0, PreloadSitesStubProc, this, 0, NULL);
 //	SetThreadPriority(HPreloadThread, THREAD_PRIORITY_LOWEST);
 
+	CreateSyncer();
+	HSyncItemsThread = CreateThread(NULL, 0, SyncItemsStubProc, this, 0, NULL);
+
 	UpdateMenu();
 	UpdateWorkOfflineMenu();
 
@@ -385,6 +409,7 @@ BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO*
 BOOL CMainFrame::DestroyWindow() {
 	LOG0(1, "CMainFrame::DestroyWindow()");
 
+	Downloader.Terminate();
 	if (m_wndUpdateBar.IsUpdating())
 		m_wndUpdateBar.OnStop();
 
@@ -396,9 +421,8 @@ BOOL CMainFrame::DestroyWindow() {
 	}
 
 	SetEvent(HTerminate);
-	if (HPreloadThread != NULL) {
-		WaitForSingleObject(HPreloadThread, INFINITE);
-	}
+	if (HPreloadThread != NULL) WaitForSingleObject(HPreloadThread, INFINITE);
+	if (HSyncItemsThread != NULL) WaitForSingleObject(HSyncItemsThread, INFINITE);
 
 	prssrNotificationRemove();
 
@@ -1061,6 +1085,9 @@ void CMainFrame::OnToolsOptions() {
 			else
 				SetupUpdateEvent(_T("/daily"), FALSE, NULL);			// delete the event
 		}
+
+		delete Syncer;
+		CreateSyncer();
 
 		//
 		NotifyTodayPlugin(ReadConfigMessage);
@@ -2026,4 +2053,51 @@ void CMainFrame::OnRewriteRules() {
 		for (int i = 0; i < dlg.Rules.GetSize(); i++)
 			delete dlg.Rules[i];
 	}
+}
+
+void CMainFrame::SyncItemsThread() {
+	LOG0(1, "CMainFrame::SyncItemsThread() - start");
+
+	HANDLE handles[] = { HTerminate, HSyncItemEvent };
+	BOOL terminated = FALSE;
+	while (!terminated) {
+		DWORD dwResult = WaitForMultipleObjects(countof(handles), handles, FALSE, INFINITE);
+		if (dwResult == WAIT_OBJECT_0) {
+			// terminate
+			terminated = TRUE;
+		}
+		else if (dwResult == WAIT_OBJECT_0 + 1) {
+			// got connection?
+			if (Connection.IsAvailable() == S_OK && Config.SyncSite != SYNC_SITE_NONE) {
+				// sync items in the list
+				while (!ItemsToSync.IsEmpty()) {
+					CFeedItem *fi = ItemsToSync.GetHead();
+					Syncer->SyncItem(fi, MESSAGE_MASK_ALL);
+					ItemsToSync.RemoveHead();
+
+					if (WaitForSingleObject(HTerminate, 0) == WAIT_OBJECT_0) {
+						terminated = TRUE;
+						break;
+					}
+				}
+			}
+			else {
+				// no connection -> empty the list
+				while (!ItemsToSync.IsEmpty())
+					ItemsToSync.RemoveHead();
+			}
+
+			ResetEvent(HSyncItemEvent);
+		}
+	}
+
+	CloseHandle(HSyncItemsThread);
+	HSyncItemsThread = NULL;
+
+	LOG0(1, "CMainFrame::SyncItemsThread() - end");
+}
+
+void CMainFrame::SyncItem(CFeedItem *fi) {
+	ItemsToSync.AddTail(fi);
+	SetEvent(HSyncItemEvent);
 }
