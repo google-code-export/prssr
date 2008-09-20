@@ -86,6 +86,7 @@ class CSiteItem;
 #define MESSAGE_NEW								0x0002
 #define MESSAGE_FLAG							0x0004
 //#define MESSAGE_STICKY						0x0008
+#define MESSAGE_SYNC							0x0040
 
 #define MESSAGE_DELETED							0x0080
 
@@ -140,6 +141,7 @@ public:
 
 	BOOL IsDeleted() { return Flags & MESSAGE_DELETED; }
 	BOOL IsFlagged() { return Flags & MESSAGE_FLAG; }
+	BOOL IsSynced()  { return Flags & MESSAGE_SYNC; }
 
 protected:
 	// flag

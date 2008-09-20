@@ -22,6 +22,27 @@ CNetworkSync::~CNetworkSync() {
 
 }
 
+void CNetworkSync::FeedIntersection(CFeed *first, CFeed *second, CArray<CFeedItem *, CFeedItem *> *diff) {
+	LOG0(5, "CNetworkSync::FeedIntersection()");
+
+	CCache cache;
+	int i;
+
+	if (second != NULL)
+		for (i = 0; i < second->GetItemCount(); i++) {
+			CFeedItem *fi = second->GetItem(i);
+			if (!fi->Hash.IsEmpty())
+				cache.AddItem(fi->Hash);
+		}
+
+	if (first != NULL)
+		for (i = 0; i < first->GetItemCount(); i++) {
+			CFeedItem *fi = first->GetItem(i);
+			if (!fi->Hash.IsEmpty() && cache.InCache(fi->Hash))
+				diff->Add(fi);
+		}
+}
+
 BOOL CNetworkSync::SyncFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
 	LOG0(1, "CNetworkSync::SyncFeed()");
 
@@ -70,109 +91,18 @@ BOOL CNetworkSync::SyncFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
 	return ret;
 }
 
+/*
 BOOL CNetworkSync::MergeFeed(CSiteItem *si, CFeed *feed, CArray<CFeedItem *, CFeedItem *> &newItems, CArray<CFeedItem *, CFeedItem *> &itemsToClean) {
-	LOG0(1, "CNetworkSync::MergeFeed()");
-
-	feed->Lock();
-
-	FeedDiff(feed, si->Feed, &newItems);
-
-	CArray<CFeedItem *, CFeedItem *> existingItems;
-	FeedIntersection(feed, si->Feed, &existingItems);
-
-	int i;
-	CList<CFeedItem *, CFeedItem *> items;
-	if (si->Info->CacheLimit > 0 || si->Info->CacheLimit == CACHE_LIMIT_DEFAULT) {
-		int limit;
-		if (si->Info->CacheLimit > 0)
-			limit = si->Info->CacheLimit;
-		else
-			limit = Config.CacheLimit;
-
-		// add new items (up to the limit)
-		for (i = 0; i < newItems.GetSize(); i++) {
-			CFeedItem *fi = newItems.GetAt(i);
-			if (limit > 0) {
-				items.AddTail(fi);
-				limit--;
-			}
-			else
-				existingItems.Add(fi);	// add to existing items, that are deleted after the merge
-		}
-
-		// add flagged items (we do not want to lose them)
-		for (i = 0; i < si->Feed->GetItemCount(); i++) {
-			CFeedItem *fi = si->Feed->GetItem(i);
-			if (fi->IsFlagged())
-				items.AddTail(fi);
-			else {
-				if (limit > 0) {
-					items.AddTail(fi);
-					limit--;
-				}
-				else
-					itemsToClean.Add(fi);							// old item -> delete it!
-			}
-		}
-
-		// free duplicate items
-		for (i = 0; i < existingItems.GetSize(); i++)
-			delete existingItems.GetAt(i);
-	}
-	else if (si->Info->CacheLimit == CACHE_LIMIT_DISABLED) {
-		// add new items
-		for (i = 0; i < newItems.GetSize(); i++)
-			items.AddTail(newItems.GetAt(i));
-
-		// add same items
-		CArray<CFeedItem *, CFeedItem *> sameItems;
-		FeedIntersection(si->Feed, feed, &sameItems);
-		for (i = 0; i < sameItems.GetSize(); i++)
-			items.AddTail(sameItems.GetAt(i));
-
-		CArray<CFeedItem *, CFeedItem *> freeItems;
-		FeedDiff(si->Feed, feed, &freeItems);
-		for (i = 0; i < freeItems.GetSize(); i++) {
-			CFeedItem *fi = freeItems.GetAt(i);
-			if (fi->IsFlagged())
-				items.AddTail(fi);
-			else
-				itemsToClean.Add(fi);							// old item -> delete it!
-		}
-
-		// free duplicate items
-		for (i = 0; i < existingItems.GetSize(); i++)
-			delete existingItems.GetAt(i);
-	}
-	else if (si->Info->CacheLimit == CACHE_LIMIT_UNLIMITED) {
-		// add old items
-		for (i = 0; i < si->Feed->GetItemCount(); i++)
-			items.AddTail(si->Feed->GetItem(i));
-		// add new items
-		for (i = 0; i < newItems.GetSize(); i++)
-			items.AddTail(newItems.GetAt(i));
-
-		// free duplicate items
-		for (i = 0; i < existingItems.GetSize(); i++)
-			delete existingItems.GetAt(i);
-	}
-
-	// set items in the feed
-	i = 0;
-	si->Feed->SetSize(items.GetCount());
-	while (!items.IsEmpty()) {
-		CFeedItem *fi = items.RemoveHead();
-		si->Feed->SetAt(i, fi);
-		i++;
-	}
-	feed->Unlock();
-
-	return TRUE;
 }
+*/
 
 BOOL CNetworkSync::DownloadFeed(CString &url, const CString &fileName) {
 	LOG0(1, "CNetworkSync::DownloadFeed()");
 
 	Downloader->Reset();
 	return Downloader->SaveHttpObject(url, fileName);
+}
+
+BOOL CNetworkSync::SyncItem(CFeedItem *fi, DWORD mask) {
+	return TRUE;
 }

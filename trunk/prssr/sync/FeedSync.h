@@ -22,13 +22,15 @@ public:
 	virtual BOOL NeedAuth() = 0;
 	virtual BOOL Authenticate() = 0; 
 	virtual BOOL SyncFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) = 0;
-	virtual BOOL MergeFeed(CSiteItem *si, CFeed *feed, CArray<CFeedItem *, CFeedItem *> &newItems, CArray<CFeedItem *, CFeedItem *> &itemsToClean) = 0;
+	virtual BOOL MergeFeed(CSiteItem *si, CFeed *feed, CArray<CFeedItem *, CFeedItem *> &newItems, CArray<CFeedItem *, CFeedItem *> &itemsToClean);
 	virtual BOOL DownloadFeed(CString &url, const CString &fileName) = 0;
+	virtual BOOL SyncItem(CFeedItem *fi, DWORD mask) = 0;
 
 	CString GetErrorMsg() { return ErrorMsg; }
 
 protected:
 	CDownloader *Downloader;
+	virtual void FeedIntersection(CFeed *first, CFeed *second, CArray<CFeedItem *, CFeedItem *> *diff) = 0;
 
 	/// error
 	CString ErrorMsg;

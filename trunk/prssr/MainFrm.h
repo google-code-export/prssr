@@ -33,6 +33,7 @@
 
 #include "FeedView.h"
 #include "SummaryView.h"
+#include "sync/FeedSync.h"
 
 #define MF_NUM_TOOLTIPS				6
 
@@ -134,6 +135,15 @@ protected:
 
 	void UpdateMenu();
 
+	CDownloader Downloader;
+	CFeedSync *Syncer;
+	HANDLE HSyncItemsThread;
+	HANDLE HSyncItemEvent;
+	CSyncList<CFeedItem *, CFeedItem *> ItemsToSync;
+	void SyncItemsThread();
+	void CreateSyncer();
+	void SyncItem(CFeedItem *fi);
+
 	//{{AFX_MSG(CMainFrame)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnSetFocus(CWnd *pOldWnd);
@@ -219,9 +229,11 @@ protected:
 	friend class CCacheManPg;
 	friend class CCacheManHtmlPg;
 	friend class CCacheManEnclosuresPg;
+	friend class CUpdateBar;
 	friend DWORD WINAPI LoadSitesStubProc(LPVOID lpParameter);
 	friend DWORD WINAPI SaveSitesStubProc(LPVOID lpParameter);
 	friend DWORD WINAPI PreloadSitesStubProc(LPVOID lpParameter);
+	friend DWORD WINAPI SyncItemsStubProc(LPVOID lpParameter);
 };
 
 /////////////////////////////////////////////////////////////////////////////

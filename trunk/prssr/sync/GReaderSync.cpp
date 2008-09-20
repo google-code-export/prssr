@@ -22,19 +22,23 @@ CString CGReaderSync::Api0 = _T("http://www.google.com/reader/api/0");
 CGReaderSync::CGReaderSync(CDownloader *downloader, const CString &userName, const CString &password) : CFeedSync(downloader) {
 	UserName = userName;
 	Password = password;
+
+	InitializeCriticalSection(&CS);
 }
 
 CGReaderSync::~CGReaderSync() {
-
+	DeleteCriticalSection(&CS);
 }
 
 BOOL CGReaderSync::Authenticate() {
 	LOG0(1, "CGReaderSync::Authenticate()");
 
+	EnterCriticalSection(&CS);
+
 	SID.Empty();
 
+	BOOL ret = FALSE;
 	if (Downloader != NULL) {
-		BOOL ret = FALSE;
 
 		TCHAR tempFileName[MAX_PATH];
 		GetTempFileName(Config.CacheLocation, L"rsr", 0, tempFileName);
@@ -56,19 +60,19 @@ BOOL CGReaderSync::Authenticate() {
 			}
 			ret = !SID.IsEmpty();
 		}
-		else
-			ret =  FALSE;
 
 		DeleteFile(tempFileName);
-
-		return ret;
 	}
-	else
-		return FALSE;
+
+	LeaveCriticalSection(&CS);
+	
+	return ret;
 }
 
 BOOL CGReaderSync::SyncFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
 	LOG0(1, "CGReaderSync::SyncFeed()");
+
+	EnterCriticalSection(&CS);
 
 	BOOL ret = FALSE;
 	Downloader->Reset();
@@ -120,15 +124,19 @@ BOOL CGReaderSync::SyncFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
 
 	DeleteFile(tmpFileName);
 
+	LeaveCriticalSection(&CS);
+
 	return ret;
 }
 
 BOOL CGReaderSync::MergeFeed(CSiteItem *si, CFeed *feed, CArray<CFeedItem *, CFeedItem *> &newItems, CArray<CFeedItem *, CFeedItem *> &itemsToClean) {
 	LOG0(1, "CGReaderSync::MergeFeed()");
 
+	EnterCriticalSection(&CS);
+
 	MarkReadItems.RemoveAll();
 	MarkStarredItems.RemoveAll();
-
+/*
 	feed->Lock();
 
 	FeedDiff(feed, si->Feed, &newItems);
@@ -222,9 +230,13 @@ BOOL CGReaderSync::MergeFeed(CSiteItem *si, CFeed *feed, CArray<CFeedItem *, CFe
 		i++;
 	}
 
+	feed->Unlock();
+*/
+	BOOL ret = CFeedSync::MergeFeed(si, feed, newItems, itemsToClean);
+
 	UpdateInGreader();
 
-	feed->Unlock();
+	LeaveCriticalSection(&CS);
 
 	return TRUE;
 }
@@ -233,7 +245,6 @@ void CGReaderSync::UpdateInGreader() {
 	LOG0(1, "CGReaderSync::DownloadFeed()");
 
 	int i;
-	CString url, body, response;
 
 	// get token for these operations
 	if (!GetToken()) {
@@ -241,27 +252,62 @@ void CGReaderSync::UpdateInGreader() {
 		return;
 	}
 
-	for (i = 0; i < MarkReadItems.GetSize(); i++) {
-		CFeedItem *fi = MarkReadItems[i];
-		url.Format(_T("%s/edit-tag"), Api0);
-		body.Format(_T("i=%s&a=%s&T=%s"), fi->Hash, UrlEncode(_T("user/-/state/com.google/read")), Token);
-		Downloader->Post(url, body, response);
-	}
-
-	for (i = 0; i < MarkStarredItems.GetSize(); i++) {
-		CFeedItem *fi = MarkReadItems[i];
-		url.Format(_T("%s/edit-tag"), Api0);
-		body.Format(_T("i=%s&a=%s&T=%s"), fi->Hash, UrlEncode(_T("user/-/state/com.google/starred")), Token);
-		Downloader->Post(url, body, response);
-	}
-
 	// send status to Greader
+	for (i = 0; i < MarkReadItems.GetSize(); i++)
+		SyncItem(MarkReadItems[i], MESSAGE_READ_STATE);
+
+	for (i = 0; i < MarkStarredItems.GetSize(); i++)
+		SyncItem(MarkStarredItems[i], MESSAGE_FLAG);
+
 	MarkReadItems.RemoveAll();
 	MarkStarredItems.RemoveAll();
 }
 
+BOOL CGReaderSync::SyncItem(CFeedItem *fi, DWORD mask) {
+	LOG0(1, "CGReaderSync::SyncItem()");
+	
+	EnterCriticalSection(&CS);
+
+	CString url, body, response;
+	BOOL ret = TRUE;
+
+	if (SID.IsEmpty()) ret = Authenticate();
+	if (ret) {
+		if (Token.IsEmpty()) ret = GetToken();
+		if (ret) {
+			url.Format(_T("%s/edit-tag"), Api0);
+			if (mask & MESSAGE_READ_STATE) {
+				if (fi->IsRead())
+					body.Format(_T("i=%s&a=%s&T=%s"), fi->Hash, UrlEncode(_T("user/-/state/com.google/read")), Token);
+				else if (fi->IsUnread())
+					body.Format(_T("i=%s&a=%s&T=%s"), fi->Hash, UrlEncode(_T("user/-/state/com.google/kept-unread")), Token);
+				else if (fi->IsNew())
+					body.Format(_T("i=%s&r=%s&T=%s"), fi->Hash, UrlEncode(_T("user/-/state/com.google/read")), Token);
+				Downloader->Post(url, body, response);
+			}
+
+			if (mask & MESSAGE_FLAG) {
+				if (fi->IsFlagged())
+					body.Format(_T("i=%s&a=%s&T=%s"), fi->Hash, UrlEncode(_T("user/-/state/com.google/starred")), Token);
+				else
+					body.Format(_T("i=%s&r=%s&T=%s"), fi->Hash, UrlEncode(_T("user/-/state/com.google/starred")), Token);
+				Downloader->Post(url, body, response);
+			}
+
+			// TODO: set this accoring to the return state of the POST operation
+			fi->SetFlags(MESSAGE_SYNC, MESSAGE_SYNC);
+		}
+	}
+
+	LeaveCriticalSection(&CS);
+
+	return ret;
+}
+
 BOOL CGReaderSync::DownloadFeed(CString &url, const CString &fileName) {
 	LOG0(1, "CGReaderSync::DownloadFeed()");
+
+	EnterCriticalSection(&CS);
 
 	Downloader->Reset();
 	if (SID.IsEmpty()) Authenticate();
@@ -270,7 +316,11 @@ BOOL CGReaderSync::DownloadFeed(CString &url, const CString &fileName) {
 	u.Format(_T("%s/atom/feed/%s"), BaseUrl, url);
 
 	Downloader->SetCookie(FormatSIDCookie(SID));
-	return Downloader->SaveHttpObject(u, fileName);
+	BOOL ret = Downloader->SaveHttpObject(u, fileName);
+
+	LeaveCriticalSection(&CS);
+
+	return ret;
 }
 
 CString CGReaderSync::FormatSIDCookie(const CString &sid) {
@@ -283,17 +333,23 @@ CString CGReaderSync::FormatSIDCookie(const CString &sid) {
 BOOL CGReaderSync::GetToken() {
 	LOG0(5, "CGReaderSync::GetToken()");
 
+	EnterCriticalSection(&CS);
+
 	Downloader->Reset();
 	Downloader->SetCookie(FormatSIDCookie(SID));
 
 	Token.Empty();
 	CString url;
 	url.Format(_T("%s/token"), Api0);
-	return Downloader->GetHttpObject(url, Token);
+	BOOL ret = Downloader->GetHttpObject(url, Token);
+
+	LeaveCriticalSection(&CS);
+
+	return ret;
 }
 
-void CGReaderSync::FeedIntersectionEx(CFeed *first, CFeed *second, CArray<CFeedItem *, CFeedItem *> *diff) {
-	LOG0(5, "CGReaderSync::FeedIntersectionEx()");
+void CGReaderSync::FeedIntersection(CFeed *first, CFeed *second, CArray<CFeedItem *, CFeedItem *> *diff) {
+	LOG0(5, "CGReaderSync::FeedIntersection()");
 
 	CCache cache;
 	int i;
@@ -313,15 +369,17 @@ void CGReaderSync::FeedIntersectionEx(CFeed *first, CFeed *second, CArray<CFeedI
 				CFeedItem *fb = (CFeedItem *) ptr;
 				// update read status
 				if (fa->IsRead() || fb->IsRead()) {
-					if (fb->IsRead() && !fa->IsRead()) // read in prssr, not read in Greader
-						MarkReadItems.Add(fb);
+					if (fb->IsRead() && !fa->IsRead())	// read in prssr, not read in Greader
+						if (!fb->IsSynced())			// update status in Greader only if not synced yet
+							MarkReadItems.Add(fb);
 					fb->SetFlags(MESSAGE_READ, MESSAGE_READ_STATE);
 				}
 
 				// update starred status
 				if (fa->IsFlagged() || fb->IsFlagged())  {
-					if (fb->IsFlagged() && !fa->IsFlagged()) // flagged in prssr, not flagged in Greader
-						MarkReadItems.Add(fb);
+					if (fb->IsFlagged() && !fa->IsFlagged())	// flagged in prssr, not flagged in Greader
+						if (!fb->IsSynced())					// update status in Greader only if not synced yet
+							MarkStarredItems.Add(fb);
 					fb->SetFlags(MESSAGE_FLAG, MESSAGE_FLAG);
 				}
 

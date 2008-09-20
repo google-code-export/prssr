@@ -328,10 +328,13 @@ void CSummaryView::SetReadState(CSiteItem *si, DWORD state) {
 	si->EnsureSiteLoaded();
 	CFeed *feed = si->Feed;
 	if (feed != NULL) {
-		for (int i = 0; i < feed->GetItemCount(); i++)
-			feed->GetItem(i)->SetFlags(state, MESSAGE_READ_STATE);
-
 		CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
+		for (int i = 0; i < feed->GetItemCount(); i++) {
+			CFeedItem *fi = feed->GetItem(i);
+			fi->SetFlags(state, MESSAGE_READ_STATE);
+			frame->SyncItem(fi);
+		}
+
 		frame->AddSiteToSave(si);
 	}
 }
