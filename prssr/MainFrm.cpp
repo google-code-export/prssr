@@ -219,12 +219,14 @@ CMainFrame::CMainFrame() {
 	HSaveSitesThread = NULL;
 	HSyncItemsThread = NULL;
 	Syncer = NULL;
+	HSyncItemEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 }
 
 CMainFrame::~CMainFrame() {
 	CloseHandle(HTerminate);
 //	CloseHandle(HSaveSiteEvent);
 	CloseHandle(HPreloadSiteEvent);
+	CloseHandle(HSyncItemEvent);
 
 	delete Syncer;
 }
