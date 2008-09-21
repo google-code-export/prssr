@@ -24,6 +24,8 @@ public:
 	virtual BOOL SyncItem(CFeedItem *fi, DWORD mask);
 
 	virtual BOOL GetSubscriptions(CSiteList &siteList) { return FALSE; }
+	virtual BOOL AddSubscription(const CString &url, const CString &title) { return FALSE; }
+	virtual BOOL RemoveSubscription(const CString &url) { return FALSE; }
 
 protected:
 	virtual void FeedIntersection(CFeed *first, CFeed *second, CArray<CFeedItem *, CFeedItem *> *diff);

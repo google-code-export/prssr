@@ -245,6 +245,8 @@ CSiteManagerDlg::CSiteManagerDlg(CWnd* pParent /*=NULL*/)
 	m_nMenuID = IDR_SITE_MANAGER;
 //	m_strCaption.LoadString(IDS_SITE_MANAGER);
 	ShowNewChannelsOnToday = CONFIG_DEFAULT_SHOWNEWCHANNELS;
+
+	Syncer = NULL; 
 }
 
 CSiteManagerDlg::~CSiteManagerDlg() {
@@ -726,6 +728,13 @@ void CSiteManagerDlg::OnAddFeed() {
 				CSiteItem *si = dlgAdd.SiteItemsToAdd.GetNext(pos);
 				// add site item to the list
 				AddItem(hParent, si);
+
+				// update subscription in syncer
+				if (Syncer != NULL) {
+					CWaitCursor wait;
+					Syncer->AddSubscription(si->Info->XmlUrl, si->Name);
+				}
+
 			}
 			m_ctlSites.Expand(hParent, TVE_EXPAND);
 		}
@@ -799,6 +808,13 @@ void CSiteManagerDlg::OnRemove() {
 
 	if (AfxMessageBox(IDS_DELETE_ITEMS, MB_YESNO | MB_ICONQUESTION) == IDYES) {
 		CSiteItem *si = (CSiteItem *) m_ctlSites.GetItemData(hSelItem);
+
+		// update subscription in syncer
+		if (Syncer != NULL && Connection.IsAvailable() == S_OK) {
+			CWaitCursor wait;
+			Syncer->RemoveSubscription(si->Info->XmlUrl);
+		}
+
 		DeleteItem(hSelItem, TRUE);
 		UpdateControls();
 	}
@@ -1056,21 +1072,15 @@ void CSiteManagerDlg::OnExportOpml() {
 void CSiteManagerDlg::OnSyncSubscriptions() {
 	LOG0(1, "CSiteManagerDlg::OnSyncSubscriptions()");
 
-	CDownloader downloader;
-	CSyncProgressDlg progress(&downloader, this);
-	progress.OpenDialog(IDS_DOWNLOADING_FEED, this);
+	if (Syncer != NULL) {
+		CSyncProgressDlg progress(Syncer->Downloader, this);
+		progress.OpenDialog(IDS_DOWNLOADING_FEED, this);
 
-	BOOL bOK = FALSE;
-	BOOL disconnect;
-	if (CheckConnection(Config.AutoConnect, disconnect)) {
-		CFeedSync *syncer = NULL; 
-		switch (Config.SyncSite) {
-			case SYNC_SITE_GOOGLE_READER: syncer = new CGReaderSync(&downloader, Config.SyncUserName, Config.SyncPassword);  break;
-		}
-		
-		if (syncer != NULL) {
+		BOOL bOK = FALSE;
+		BOOL disconnect;
+		if (CheckConnection(Config.AutoConnect, disconnect)) {		
 			CSiteList siteListToImport;
-			if (syncer->GetSubscriptions(siteListToImport)) {
+			if (Syncer->GetSubscriptions(siteListToImport)) {
 				// append
 				HTREEITEM hRoot = m_ctlSites.GetRootItem();
 
@@ -1091,16 +1101,16 @@ void CSiteManagerDlg::OnSyncSubscriptions() {
 			else {
 				// TODO: report an error
 			}
+
+			if (disconnect)
+				Connection.HangupConnection();
+		}
+		else {
+			// error: can not connect to the Internet
 		}
 
-		if (disconnect)
-			Connection.HangupConnection();
+		progress.CloseDialog();
 	}
-	else {
-		// error: can not connect to the Internet
-	}
-
-	progress.CloseDialog();
 }
 
 void CSiteManagerDlg::OnUpdateSyncSubscriptions(CCmdUI *pCmdUI) {

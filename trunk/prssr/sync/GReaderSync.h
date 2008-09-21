@@ -24,6 +24,8 @@ public:
 	virtual BOOL SyncItem(CFeedItem *fi, DWORD mask);
 
 	virtual BOOL GetSubscriptions(CSiteList &siteList);
+	virtual BOOL AddSubscription(const CString &url, const CString &title);
+	virtual BOOL RemoveSubscription(const CString &url);
 
 protected:
 	// auth

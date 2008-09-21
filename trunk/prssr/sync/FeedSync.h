@@ -28,11 +28,14 @@ public:
 	virtual BOOL SyncItem(CFeedItem *fi, DWORD mask) = 0;
 
 	virtual BOOL GetSubscriptions(CSiteList &siteList) = 0;
+	virtual BOOL AddSubscription(const CString &url, const CString &title) = 0;
+	virtual BOOL RemoveSubscription(const CString &url) = 0;
 
 	CString GetErrorMsg() { return ErrorMsg; }
 
-protected:
 	CDownloader *Downloader;
+
+protected:
 	virtual void FeedIntersection(CFeed *first, CFeed *second, CArray<CFeedItem *, CFeedItem *> *diff) = 0;
 
 	/// error
