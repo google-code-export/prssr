@@ -1211,8 +1211,12 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Search...",                   ID_SEARCH_FOR_FEEDS
         MENUITEM SEPARATOR
-        MENUITEM "Import OPML File...",         ID_IMPORT_OPML_FILE
-        MENUITEM "Export OPML File...",         ID_EXPORT_OPML_FILE
+        MENUITEM "Sync Subscriptions...",       ID_SYNC_SUBSCRIPTIONS
+        POPUP "OPML File"
+        BEGIN
+            MENUITEM "Import...",               ID_IMPORT_OPML_FILE
+            MENUITEM "Export...",               ID_EXPORT_OPML_FILE
+		END
         MENUITEM SEPARATOR
         MENUITEM "Close",                       IDOK
     END
@@ -1390,11 +1394,11 @@ BEGIN
     IDS_TOTAL_ITEMS         "%d total items"
     IDS_UNREAD_ITEMS        "%d unread items"
     IDS_NEW_ITEMS           "%d new items"
-    IDS_HIDE                 "Hide"
-	IDS_OPEN                 "Open"
-    IDS_PRSSR_NOTIFICATION   "pRSSreader"
-    IDS_LINK_TO_ARTICLE      "Link to the article"
-	IDS_NOTHING_TO_DISPLAY   "Nothing to display"
+    IDS_HIDE                "Hide"
+	IDS_OPEN                "Open"
+    IDS_PRSSR_NOTIFICATION  "pRSSreader"
+    IDS_LINK_TO_ARTICLE     "Link to the article"
+	IDS_NOTHING_TO_DISPLAY  "Nothing to display"
 END
 
 STRINGTABLE PRELOAD DISCARDABLE

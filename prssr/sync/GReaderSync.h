@@ -23,6 +23,8 @@ public:
 	virtual BOOL DownloadFeed(CString &url, const CString &fileName);
 	virtual BOOL SyncItem(CFeedItem *fi, DWORD mask);
 
+	virtual BOOL GetSubscriptions(CSiteList &siteList);
+
 protected:
 	// auth
 	CString UserName, Password;		// username & password (needed to getting auth token)

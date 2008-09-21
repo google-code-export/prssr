@@ -23,6 +23,8 @@ public:
 	virtual BOOL DownloadFeed(CString &url, const CString &fileName);
 	virtual BOOL SyncItem(CFeedItem *fi, DWORD mask);
 
+	virtual BOOL GetSubscriptions(CSiteList &siteList) { return FALSE; }
+
 protected:
 	virtual void FeedIntersection(CFeed *first, CFeed *second, CArray<CFeedItem *, CFeedItem *> *diff);
 };

@@ -118,6 +118,8 @@ protected:
 	afx_msg void OnSelchangedSites(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnEndlabeleditSites(NMHDR* pNMHDR, LRESULT* pResult);
 	virtual void OnCancel();
+	afx_msg void OnSyncSubscriptions();
+	afx_msg void OnUpdateSyncSubscriptions(CCmdUI *pCmdUI);
 	//}}AFX_MSG
 	afx_msg void OnAddFeed();
 	afx_msg void OnAddGroup();

@@ -318,47 +318,6 @@ void CAddFeedDlg::OnOK() {
 
 DWORD CAddFeedDlg::AddThread() {
 	LOG0(1, "CAddFeedDlg::AddThread() - start");
-/*
-	BOOL bOK = FALSE;
-
-	CString fileName;
-//	fileName.Format(_T("%s\\%s"), Config.CacheLocation, _T("rsr4521.tmp"));
-//	fileName.Format(_T("%s\\%s"), Config.CacheLocation, _T("jp.xml"));
-
-			// prepare data structures
-			CSiteItem *item = new CSiteItem(NULL, CSiteItem::Site);
-
-			// process downloaded feed file
-			CFeedFile xml;
-			CFeed *feed = new CFeed;
-			if (xml.LoadFromFile(fileName) && xml.Parse(feed, item)) {
-				CFeedInfo *info = new CFeedInfo();
-				info->FileName = CFeedInfo::GenerateFileNameFromTitle(feed->Title);
-				CFeedInfo::EnsureUniqueFileName(info->FileName);
-				info->XmlUrl = m_strURL;
-				// TODO: set auth info (if it was entered)
-
-				item->Status = CSiteItem::Ok;
-				item->Name = feed->Title;
-				item->Feed = feed;
-				item->Info = info;
-				item->CheckFavIcon = FALSE;
-
-				CString sFeedFileName = FormatFilePath(FILE_TYPE_FEED, Config.CacheLocation, info->FileName);
-				item->Feed->Save(sFeedFileName);
-
-				SiteItemsToAdd.AddTail(item);
-
-				bOK = TRUE;
-			}
-			else {
-				// TODO: start auto feed discovery
-
-				// for now
-				delete feed;
-				delete item;
-			}
-*/
 
 	CList<CHtmlFeed *, CHtmlFeed *> lFeeds;
 	lFeeds.AddTail(new CHtmlFeed(_T(""), m_strURL));
