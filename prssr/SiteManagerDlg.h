@@ -32,6 +32,8 @@
 
 class CSiteItem;
 class CSiteList;
+class CFeedSync;
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CSiteTreeCtrl control
@@ -68,6 +70,7 @@ public:
 	//}}AFX_DATA
 	CSiteItem *Root;
 	BOOL ShowNewChannelsOnToday;
+	CFeedSync *Syncer; 
 
 // Overrides
 	// ClassWizard generated virtual function overrides

@@ -911,6 +911,7 @@ void CMainFrame::OnToolsSiteManager() {
 		selRSS = SiteList.GetAt(actSite)->Info->XmlUrl;
 
 	CSiteManagerDlg dlg;
+	dlg.Syncer = Syncer;
 	dlg.Root = SiteList.GetRoot();
 	// new items on today
 	CRegistry regToday(HKEY_CURRENT_USER, REG_KEY_TODAY);

@@ -425,3 +425,49 @@ BOOL CGReaderSync::GetSubscriptions(CSiteList &siteList) {
 
 	return ret;
 }
+
+BOOL CGReaderSync::AddSubscription(const CString &feedUrl, const CString &title) {
+	LOG0(1, "CGReaderSync::AddSubscription()");
+	
+	EnterCriticalSection(&CS);
+
+	CString url, body, response;
+	BOOL ret = TRUE;
+
+	if (SID.IsEmpty()) ret = Authenticate();
+	if (ret) {
+		if (Token.IsEmpty()) ret = GetToken();
+		if (ret) {
+			url.Format(_T("%s/subscription/edit"), Api0);
+			body.Format(_T("s=feed/%s&ac=subscribe&t=%s&T=%s"), feedUrl, title, Token);
+			ret = Downloader->Post(url, body, response);
+		}
+	}
+
+	LeaveCriticalSection(&CS);
+
+	return ret;
+}
+
+BOOL CGReaderSync::RemoveSubscription(const CString &feedUrl) {
+	LOG0(1, "CGReaderSync::RemoveSubscription()");
+	
+	EnterCriticalSection(&CS);
+
+	CString url, body, response;
+	BOOL ret = TRUE;
+
+	if (SID.IsEmpty()) ret = Authenticate();
+	if (ret) {
+		if (Token.IsEmpty()) ret = GetToken();
+		if (ret) {
+			url.Format(_T("%s/subscription/edit"), Api0);
+			body.Format(_T("s=feed/%s&ac=unsubscribe&T=%s"), feedUrl, Token);
+			ret = Downloader->Post(url, body, response);
+		}
+	}
+
+	LeaveCriticalSection(&CS);
+
+	return ret;
+}
