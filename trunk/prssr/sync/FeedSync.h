@@ -10,6 +10,7 @@
 #endif // _MSC_VER > 1000
 
 class CDownloader;
+class CSiteList;
 class CSiteItem;
 class CFeed;
 class CFeedItem;
@@ -25,6 +26,8 @@ public:
 	virtual BOOL MergeFeed(CSiteItem *si, CFeed *feed, CArray<CFeedItem *, CFeedItem *> &newItems, CArray<CFeedItem *, CFeedItem *> &itemsToClean);
 	virtual BOOL DownloadFeed(CString &url, const CString &fileName) = 0;
 	virtual BOOL SyncItem(CFeedItem *fi, DWORD mask) = 0;
+
+	virtual BOOL GetSubscriptions(CSiteList &siteList) = 0;
 
 	CString GetErrorMsg() { return ErrorMsg; }
 

@@ -136,102 +136,7 @@ BOOL CGReaderSync::MergeFeed(CSiteItem *si, CFeed *feed, CArray<CFeedItem *, CFe
 
 	MarkReadItems.RemoveAll();
 	MarkStarredItems.RemoveAll();
-/*
-	feed->Lock();
 
-	FeedDiff(feed, si->Feed, &newItems);
-
-	CArray<CFeedItem *, CFeedItem *> existingItems;
-	FeedIntersectionEx(feed, si->Feed, &existingItems);
-
-	int i;
-	CList<CFeedItem *, CFeedItem *> items;
-	if (si->Info->CacheLimit > 0 || si->Info->CacheLimit == CACHE_LIMIT_DEFAULT) {
-		int limit;
-		if (si->Info->CacheLimit > 0)
-			limit = si->Info->CacheLimit;
-		else
-			limit = Config.CacheLimit;
-
-		// add new items (up to the limit)
-		for (i = 0; i < newItems.GetSize(); i++) {
-			CFeedItem *fi = newItems.GetAt(i);
-			if (limit > 0) {
-				items.AddTail(fi);
-				limit--;
-			}
-			else
-				existingItems.Add(fi);	// add to existing items, that are deleted after the merge
-		}
-
-		// add flagged items (we do not want to lose them)
-		for (i = 0; i < si->Feed->GetItemCount(); i++) {
-			CFeedItem *fi = si->Feed->GetItem(i);
-			if (fi->IsFlagged())
-				items.AddTail(fi);
-			else {
-				if (limit > 0) {
-					items.AddTail(fi);
-					limit--;
-				}
-				else
-					itemsToClean.Add(fi);							// old item -> delete it!
-			}
-		}
-
-		// free duplicate items
-		for (i = 0; i < existingItems.GetSize(); i++)
-			delete existingItems.GetAt(i);
-	}
-	else if (si->Info->CacheLimit == CACHE_LIMIT_DISABLED) {
-		// add new items
-		for (i = 0; i < newItems.GetSize(); i++)
-			items.AddTail(newItems.GetAt(i));
-
-		// add same items
-		CArray<CFeedItem *, CFeedItem *> sameItems;
-		FeedIntersectionEx(si->Feed, feed, &sameItems);
-		for (i = 0; i < sameItems.GetSize(); i++)
-			items.AddTail(sameItems.GetAt(i));
-
-		CArray<CFeedItem *, CFeedItem *> freeItems;
-		FeedDiff(si->Feed, feed, &freeItems);
-		for (i = 0; i < freeItems.GetSize(); i++) {
-			CFeedItem *fi = freeItems.GetAt(i);
-			if (fi->IsFlagged())
-				items.AddTail(fi);
-			else
-				itemsToClean.Add(fi);							// old item -> delete it!
-		}
-
-		// free duplicate items
-		for (i = 0; i < existingItems.GetSize(); i++)
-			delete existingItems.GetAt(i);
-	}
-	else if (si->Info->CacheLimit == CACHE_LIMIT_UNLIMITED) {
-		// add old items
-		for (i = 0; i < si->Feed->GetItemCount(); i++)
-			items.AddTail(si->Feed->GetItem(i));
-		// add new items
-		for (i = 0; i < newItems.GetSize(); i++)
-			items.AddTail(newItems.GetAt(i));
-
-		// free duplicate items
-		for (i = 0; i < existingItems.GetSize(); i++)
-			delete existingItems.GetAt(i);
-	}
-
-	// set items in the feed
-	i = 0;
-	si->Feed->SetSize(items.GetCount());
-	while (!items.IsEmpty()) {
-		CFeedItem *fi = items.RemoveHead();
-		si->Feed->SetAt(i, fi);
-		i++;
-	}
-
-	feed->Unlock();
-*/
 	BOOL ret = CFeedSync::MergeFeed(si, feed, newItems, itemsToClean);
 
 	UpdateInGreader();
@@ -386,4 +291,137 @@ void CGReaderSync::FeedIntersection(CFeed *first, CFeed *second, CArray<CFeedIte
 				diff->Add(fa);
 			}
 		}
+}
+
+static BOOL ParseSubscriptionObject(CXmlNode *object, CSiteItem *&siteItem) {
+	LOG0(5, "ParseSubscriptionObject");
+
+	CString url, title;
+
+	POSITION posObject = object->GetFirstChildPos();
+	while (posObject != NULL) {
+		CXmlNode *string = object->GetNextChild(posObject);
+		CString tagName = string->GetName();
+		
+		if (tagName.Compare(_T("string")) == 0) {
+			// find attribute name=""
+			CString attrName;
+			POSITION posAttr = string->GetFirstAttrPos();
+			while (posAttr != NULL) {
+				CXmlAttr *attr = string->GetNextAttr(posAttr);
+				if (attr->GetName().CompareNoCase(_T("name")) == 0)
+					attrName = attr->GetValue();
+			}
+
+			if (attrName.CompareNoCase(_T("id")) == 0) {
+				url = string->GetValue();
+				if (url.Left(5).CompareNoCase(_T("feed/")) == 0)	// strip the feed/ prefix
+					url = url.Mid(5);
+			}
+			else if (attrName.CompareNoCase(_T("title")) == 0) title = string->GetValue();
+		}
+	}
+
+	if (!url.IsEmpty() && !title.IsEmpty()) {
+		// prepare data structures
+		CSiteItem *item = new CSiteItem(NULL, CSiteItem::Site);
+
+		// add site offline
+		CFeedInfo *info = new CFeedInfo();
+		info->FileName = CFeedInfo::GenerateFileNameFromTitle(title);
+		CFeedInfo::EnsureUniqueFileName(info->FileName);
+		info->XmlUrl= url;
+		info->TodayShow = CONFIG_DEFAULT_SHOWNEWCHANNELS;
+
+		item->Status = CSiteItem::Error;
+		item->Name = title;
+		item->Info = info;
+		item->CheckFavIcon = TRUE;
+
+		siteItem = item;
+
+		return TRUE;
+	}
+	else
+		return FALSE;
+}
+
+static  BOOL ParseList(CXmlNode *parent, CSiteList &siteList) {
+	LOG0(5, "ParseList");
+
+	CSiteItem *rootItem = new CSiteItem(NULL, CSiteItem::Group);
+
+	CXmlNode *list = parent;
+	
+	// process <object> nodes
+	POSITION pos = list->GetFirstChildPos();
+	while (pos != NULL) {
+		CXmlNode *object = list->GetNextChild(pos);
+		CString tagName = object->GetName();
+		if (tagName.Compare(_T("object")) == 0) {
+			// process <object> nodes
+			CSiteItem *siteItem = NULL;
+			if (ParseSubscriptionObject(object, siteItem));
+				rootItem->AddItem(siteItem);
+		}
+	}
+	
+	siteList.SetRoot(rootItem);
+
+	return TRUE;
+}
+
+static BOOL ParseSubscriptions(CXmlNode *parent, CSiteList &siteList) {
+	LOG0(5, "ParseSubscriptions");
+
+	// start with the root node
+	POSITION posParent = parent->GetFirstChildPos();
+	while (posParent != NULL) {
+		CXmlNode *child = parent->GetNextChild(posParent);
+
+		if (child->GetName().Compare(_T("list")) == 0) {
+			// find attribute name=""
+			CString attrName;
+			POSITION posAttr = child->GetFirstAttrPos();
+			while (posAttr != NULL) {
+				CXmlAttr *attr = child->GetNextAttr(posAttr);
+				if (attr->GetName().CompareNoCase(_T("name")) == 0)
+					attrName = attr->GetValue();
+			}
+
+			if (attrName.CompareNoCase(_T("subscriptions")) == 0)
+				ParseList(child, siteList);
+		}
+	}
+
+	return TRUE;
+}
+
+BOOL CGReaderSync::GetSubscriptions(CSiteList &siteList) {
+	LOG0(5, "CGReaderSync::GetSubscriptions()");
+
+	EnterCriticalSection(&CS);
+
+	Downloader->Reset();
+	if (SID.IsEmpty()) Authenticate();
+
+	CString url;
+	url.Format(_T("%s/subscription/list?output=xml"), Api0);
+
+	TCHAR fileName[MAX_PATH];
+	GetTempFileName(Config.CacheLocation, L"rsr", 0, fileName);
+
+	Downloader->SetCookie(FormatSIDCookie(SID));
+	BOOL ret = FALSE;
+	if (Downloader->SaveHttpObject(url, fileName)) {
+		CXmlFile xml;
+		if (xml.LoadFromFile(fileName))
+			ret = ParseSubscriptions(xml.GetRootNode(), siteList);
+	}
+
+	DeleteFile(fileName);
+
+	LeaveCriticalSection(&CS);
+
+	return ret;
 }

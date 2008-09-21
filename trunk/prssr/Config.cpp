@@ -185,7 +185,7 @@ CConfig::CConfig() {
 #ifdef LOGGING
 	LogFile = reg.Read(szLogFile, CONFIG_DEFAULT_LOGFILE);
 	LogLevel = reg.Read(szLogLevel, CONFIG_DEFAULT_LOGLEVEL);
-//	LogLevel = 7;
+	LogLevel = 1;
 #endif
 
 	// ////

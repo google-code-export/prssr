@@ -41,6 +41,12 @@
 
 #include "../share/helpers.h"
 
+#include "ProgressDlg.h"
+#include "net/Download.h"
+#include "net/Connection.h"
+#include "sync/NetworkSync.h"
+#include "sync/GReaderSync.h"
+
 #ifdef MYDEBUG
 #undef THIS_FILE
 static TCHAR THIS_FILE[] = _T(__FILE__);
@@ -120,6 +126,106 @@ void CExportDlg::OnExport() {
 
 
 /////////////////////////////////////////////////////////////////////////////
+// CSyncProgressDlg dialog
+
+class CSyncProgressDlg : public CProgressDlg {
+public:
+	CSyncProgressDlg(CDownloader *downloader, CDialog *parent);
+	virtual ~CSyncProgressDlg();
+
+protected:
+	UINT Timer;
+	UINT ProgressRefreshTimer;
+	EDownloadState State;
+	CDownloader *Downloader;
+	CDialog *Parent;
+
+	int RangeHi, PosOffset;
+
+    //{{AFX_MSG(CSyncProgressDlg)
+	afx_msg void OnTimer(UINT nIDEvent);
+	afx_msg void OnDestroy();
+	//}}AFX_MSG
+	virtual BOOL OnInitDialog();
+
+	virtual void OnCancel();
+
+	DECLARE_MESSAGE_MAP()
+
+	friend class CSyncFeedsDlg;
+};
+
+CSyncProgressDlg::CSyncProgressDlg(CDownloader *downloader, CDialog *parent) {
+	Downloader = downloader;
+	State = DOWNLOAD_STATE_NONE;
+	Timer = 1;
+	ProgressRefreshTimer = 2;
+
+	Parent = parent;
+	RangeHi = 160000;
+	PosOffset = 0;
+}
+
+CSyncProgressDlg::~CSyncProgressDlg() {
+}
+
+BEGIN_MESSAGE_MAP(CSyncProgressDlg, CProgressDlg)
+	//{{AFX_MSG_MAP(CSyncProgressDlg)
+	ON_WM_TIMER()
+	ON_WM_DESTROY()
+	//}}AFX_MSG_MAP
+END_MESSAGE_MAP()
+
+BOOL CSyncProgressDlg::OnInitDialog() {
+	LOG0(3, "CSyncProgressDlg::OnInitDialog()");
+
+	SetTimer(Timer, 500, NULL);
+	SetTimer(ProgressRefreshTimer, 700, NULL);
+	CProgressDlg::OnInitDialog();
+
+	SetRange(0, RangeHi);
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+	              // EXCEPTION: OCX Property Pages should return FALSE
+}
+
+void CSyncProgressDlg::OnDestroy() {
+	KillTimer(Timer);
+	KillTimer(ProgressRefreshTimer);
+
+	CProgressDlg::OnDestroy();
+}
+
+void CSyncProgressDlg::OnTimer(UINT nIDEvent) {
+	if (nIDEvent == Timer) {
+	}
+	else if (nIDEvent == ProgressRefreshTimer) {
+		if (Downloader != NULL) {
+			int newPos = PosOffset + (int) Downloader->GetDownloadedFileSize();
+			if (newPos > RangeHi) {
+				RangeHi *= 10;
+				SetRange(0, RangeHi);
+			}
+			SetPos(newPos);
+		}
+	}
+
+	CWnd::OnTimer(nIDEvent);
+}
+
+void CSyncProgressDlg::OnCancel() {
+	LOG0(3, "CSyncProgressDlg::OnCancel()");
+
+	KillTimer(ProgressRefreshTimer);
+	KillTimer(Timer);
+
+	if (Downloader != NULL)
+		Downloader->Terminate();
+
+	CProgressDlg::OnCancel();
+}
+
+/////////////////////////////////////////////////////////////////////////////
 // CSiteManagerDlg dialog
 
 #define ID_MOVE_TO_GROUP_BASE				0xA000
@@ -173,6 +279,8 @@ BEGIN_MESSAGE_MAP(CSiteManagerDlg, CCeDialog)
 	ON_COMMAND(ID_SEARCH_FOR_FEEDS, OnSearch)
 	ON_COMMAND(ID_IMPORT_OPML_FILE, OnImportOpml)
 	ON_COMMAND(ID_EXPORT_OPML_FILE, OnExportOpml)
+	ON_COMMAND(ID_SYNC_SUBSCRIPTIONS, OnSyncSubscriptions)
+	ON_UPDATE_COMMAND_UI(ID_SYNC_SUBSCRIPTIONS, OnUpdateSyncSubscriptions)
 
 	ON_COMMAND(IDCANCEL, OnCancel)
 	ON_NOTIFY(GN_CONTEXTMENU, IDC_SITES, OnContextMenu)
@@ -943,4 +1051,60 @@ void CSiteManagerDlg::OnExportOpml() {
 			siteListToExport.Detach();
 		}
 	}
+}
+
+void CSiteManagerDlg::OnSyncSubscriptions() {
+	LOG0(1, "CSiteManagerDlg::OnSyncSubscriptions()");
+
+	CDownloader downloader;
+	CSyncProgressDlg progress(&downloader, this);
+	progress.OpenDialog(IDS_DOWNLOADING_FEED, this);
+
+	BOOL bOK = FALSE;
+	BOOL disconnect;
+	if (CheckConnection(Config.AutoConnect, disconnect)) {
+		CFeedSync *syncer = NULL; 
+		switch (Config.SyncSite) {
+			case SYNC_SITE_GOOGLE_READER: syncer = new CGReaderSync(&downloader, Config.SyncUserName, Config.SyncPassword);  break;
+		}
+		
+		if (syncer != NULL) {
+			CSiteList siteListToImport;
+			if (syncer->GetSubscriptions(siteListToImport)) {
+				// append
+				HTREEITEM hRoot = m_ctlSites.GetRootItem();
+
+				// insert new items
+				CSiteItem *root = siteListToImport.GetRoot();
+				POSITION pos = root->SubItems.GetHeadPosition();
+				while (pos != NULL) {
+					CSiteItem *si = root->SubItems.GetNext(pos);
+					MergeItem(hRoot, si);
+				}
+
+				delete root;		// free root node which was not added
+
+				m_ctlSites.Expand(m_ctlSites.GetRootItem(), TVE_EXPAND);
+				
+				UpdateControls();
+			}
+			else {
+				// TODO: report an error
+			}
+		}
+
+		if (disconnect)
+			Connection.HangupConnection();
+	}
+	else {
+		// error: can not connect to the Internet
+	}
+
+	progress.CloseDialog();
+}
+
+void CSiteManagerDlg::OnUpdateSyncSubscriptions(CCmdUI *pCmdUI) {
+	LOG0(3, "CSiteManagerDlg::OnUpdateSyncSubscriptions()");
+	
+	pCmdUI->Enable(Config.SyncSite != SYNC_SITE_NONE);
 }
