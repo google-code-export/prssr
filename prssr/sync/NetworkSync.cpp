@@ -53,6 +53,7 @@ BOOL CNetworkSync::SyncFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
 	GetTempFileName(Config.CacheLocation, _T("rsr"), 0, tmpFileName);
 
 	Downloader->Reset();
+	Downloader->SetAuthenticationInfo(si->Info->UserName, si->Info->Password);
 	if (Downloader->SaveHttpObject(si->Info->XmlUrl, tmpFileName) && Downloader->Updated) {
 		CFeedFile xml;
 		if (xml.LoadFromFile(tmpFileName)) {
