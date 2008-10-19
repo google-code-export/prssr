@@ -295,6 +295,7 @@ DEP_CPP_ARTIC=\
 	"..\Site.h"\
 	"..\StdAfx.h"\
 	"..\SummaryView.h"\
+	"..\sync\FeedSync.h"\
 	"..\UpdateBar.h"\
 	"..\www\HTMLFile.h"\
 	"..\www\LocalHtmlFile.h"\
@@ -357,6 +358,7 @@ DEP_CPP_CACHE=\
 	"..\Site.h"\
 	"..\StdAfx.h"\
 	"..\SummaryView.h"\
+	"..\sync\FeedSync.h"\
 	"..\UpdateBar.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"connmgr.h"\
@@ -596,6 +598,7 @@ DEP_CPP_FEEDV=\
 	"..\Site.h"\
 	"..\StdAfx.h"\
 	"..\SummaryView.h"\
+	"..\sync\FeedSync.h"\
 	"..\UpdateBar.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"connmgr.h"\
@@ -781,6 +784,7 @@ DEP_CPP_MAINF=\
 	"..\MainFrm.h"\
 	"..\misc\icon.h"\
 	"..\misc\shnotif.h"\
+	"..\net\Connection.h"\
 	"..\net\download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
@@ -799,10 +803,14 @@ DEP_CPP_MAINF=\
 	"..\SiteManagerDlg.h"\
 	"..\StdAfx.h"\
 	"..\SummaryView.h"\
+	"..\sync\FeedSync.h"\
+	"..\sync\GReaderSync.h"\
+	"..\sync\NetworkSync.h"\
 	"..\UpdateBar.h"\
 	"..\UpdateSitesDlg.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"connmgr.h"\
+	{$(INCLUDE)}"connmgr_proxy.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -1157,6 +1165,7 @@ DEP_CPP_PRSSR=\
 	"..\Site.h"\
 	"..\StdAfx.h"\
 	"..\SummaryView.h"\
+	"..\sync\FeedSync.h"\
 	"..\UpdateBar.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"connmgr.h"\
@@ -1349,11 +1358,14 @@ DEP_CPP_SITEM=\
 	"..\Feed.h"\
 	"..\FeedsTreeCtrl.h"\
 	"..\ImportFeedsDlg.h"\
+	"..\net\Connection.h"\
+	"..\net\download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
 	"..\net\proxy.h"\
 	"..\net\Searcher.h"\
+	"..\ProgressDlg.h"\
 	"..\Properties.h"\
 	"..\prssr.h"\
 	"..\SearchDlg.h"\
@@ -1361,11 +1373,15 @@ DEP_CPP_SITEM=\
 	"..\Site.h"\
 	"..\SiteManagerDlg.h"\
 	"..\StdAfx.h"\
+	"..\sync\FeedSync.h"\
+	"..\sync\GReaderSync.h"\
+	"..\sync\NetworkSync.h"\
 	"..\www\url.h"\
 	"..\xml\FeedFile.h"\
 	"..\xml\OpmlFile.h"\
 	"..\xml\XMLFile.h"\
 	{$(INCLUDE)}"connmgr.h"\
+	{$(INCLUDE)}"connmgr_proxy.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -1414,6 +1430,7 @@ DEP_CPP_SUMMA=\
 	"..\Site.h"\
 	"..\StdAfx.h"\
 	"..\SummaryView.h"\
+	"..\sync\FeedSync.h"\
 	"..\UpdateBar.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"connmgr.h"\
@@ -1480,8 +1497,6 @@ DEP_CPP_UPDAT=\
 	"..\SummaryView.h"\
 	"..\SuspendKiller.h"\
 	"..\sync\FeedSync.h"\
-	"..\sync\GReaderSync.h"\
-	"..\sync\NetworkSync.h"\
 	"..\UpdateBar.h"\
 	"..\www\HTMLFile.h"\
 	"..\www\LocalHtmlFile.h"\
@@ -3091,17 +3106,24 @@ SOURCE=..\xml\XMLFile.h
 
 SOURCE=..\sync\FeedSync.cpp
 DEP_CPP_FEEDSY=\
+	"..\..\share\defs.h"\
 	"..\..\share\file.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
+	"..\Config.h"\
 	"..\debug\Logger.h"\
+	"..\Feed.h"\
 	"..\net\download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
 	"..\net\proxy.h"\
+	"..\Site.h"\
 	"..\StdAfx.h"\
 	"..\sync\FeedSync.h"\
+	"..\www\url.h"\
 	{$(INCLUDE)}"connmgr.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	

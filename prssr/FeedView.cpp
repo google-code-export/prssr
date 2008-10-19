@@ -50,15 +50,11 @@ static char THIS_FILE[] = __FILE__;
 #define SCROLL_SPEED					1
 #define SCROLL_MAXSPEED					60
 
-//static BOOL reg = CFeedView::Register();
-
 const int CFeedView::LABEL_MARGIN = 2;
 const int CFeedView::LABEL_X_PADDING = 3;
 const int CFeedView::LABEL_Y_PADDING = 1;
 const int CFeedView::LABEL_MSG_SKIP = 2;
 const int CFeedView::ITEM_MARGIN = 22;
-//const int CFeedView::INTERMSG_SKIP = 2;
-//const int CFeedView::ITEM_HEIGHT = 27;
 
 BOOL CFeedView::Register() {
 	// Register your unique class name that you wish to use
@@ -103,9 +99,6 @@ CFeedView::CFeedView() {
 	m_nSelectStart = m_nSelectEnd = -1;		// none
 	m_nSelectFirst = -1;
 	m_bSelecting = FALSE;
-	m_bContextMenu = FALSE;
-
-	TapAndHoldTimer = 1;
 
 	m_bScrolling = FALSE;
 
@@ -128,7 +121,6 @@ BEGIN_MESSAGE_MAP(CFeedView, CWnd)
 	//{{AFX_MSG_MAP(CFeedView)
 	ON_WM_CREATE()
 	ON_WM_PAINT()
-//	ON_WM_ERASEBKGND()
 	ON_WM_VSCROLL()
 	ON_WM_SIZE()
 	ON_WM_LBUTTONDOWN()
@@ -469,7 +461,6 @@ void CFeedView::OnPaint() {
 	if (m_oItems.GetSize() > 0) {
 		CRect rcClip;
 		dc.GetClipBox(rcClip);
-//		LOG4(1, "Clip = (%d, %d, %d, %d)", rcClip.left, rcClip.top, rcClip.right, rcClip.bottom);
 
 		if (m_oVScrollBar.IsWindowVisible()) {
 			CRect rcVScroll;
@@ -478,8 +469,6 @@ void CFeedView::OnPaint() {
 		}
 
 		int y = rc.top;
-
-//		LOG1(1, "ViewTop = %d", m_nViewTop);
 
 		int wd = rc.Width();
 		int ht = SCALEY(ItemHeight);
@@ -514,7 +503,6 @@ void CFeedView::OnPaint() {
 
 		// delete the rest of the window
 		CRect rcRest(rc.left, y, rc.right, rc.bottom);
-//		dc.FillSolidRect(rcRest, ::GetSysColor(COLOR_WINDOW));
 		dc.FillSolidRect(rcRest, Appearance.ClrFeedViewBg);
 	}
 	else {
@@ -522,7 +510,6 @@ void CFeedView::OnPaint() {
 		sText.LoadString(IDS_NO_ITEMS_TO_DISPLAY);
 
 		dc.FillSolidRect(rc, Appearance.ClrFeedViewBg);
-//		dc.FillSolidRect(rc, ::GetSysColor(COLOR_WINDOW));
 
 		rc.DeflateRect(SCALEX(8), SCALEY(8));
 
@@ -581,13 +568,8 @@ void CFeedView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar) {
 
 	AdjustViewTop();
 
-//	CRect rcScroll;
-//	GetClientRect(rcScroll);
-
 	ScrollWindowEx(0, i - m_nViewTop, &m_rcScroll, &m_rcScroll, NULL, NULL, SW_INVALIDATE);
 	m_oVScrollBar.SetScrollPos(m_nViewTop, TRUE);
-
-//	CWnd::OnVScroll(nSBCode, nPos, pScrollBar);
 }
 
 void CFeedView::UpdateScrollBars() {
@@ -647,32 +629,49 @@ void CFeedView::OnLButtonDown(UINT nFlags, CPoint point) {
 
 	int item = ItemFromPoint(point);
 	if (item >= 0 && item < m_oItems.GetSize()) {
-		SetCapture();
-
 		CRect rcClient;
 		GetClientRect(rcClient);
 
 		if (point.x >= 0 && point.x <= SCALEY(20)) {
+			m_nFlagItem = item;
+		}
+
+		if (m_nSelectStart <= item && item <= m_nSelectEnd) {
 			m_nSelectFirst = item;
+		}
+		else {
+			// deselect
+			m_nSelectFirst = m_nSelectStart = m_nSelectEnd = item;
+			Invalidate(FALSE);
+		}
+
+		m_bSelecting = TRUE;
+		m_bClick = TRUE;
+
+		LastCursorPos = point;
+
+		// tap and hold
+		SHRGINFO  shrg;
+		shrg.cbSize = sizeof(shrg);
+		shrg.hwndClient = GetSafeHwnd();
+		shrg.ptDown.x = LastCursorPos.x;
+		shrg.ptDown.y = LastCursorPos.y;
+		shrg.dwFlags = SHRG_NOTIFYPARENT | SHRG_RETURNCMD;
+
+		if (::SHRecognizeGesture(&shrg) == GN_CONTEXTMENU) {
+			Invalidate(FALSE);
+
+			CPoint pt = point;
+			ClientToScreen(&pt);
+			ContextMenu(&pt);
+
+			m_nFlagItem = -1;
 			m_bSelecting = FALSE;
 		}
 		else {
-			if (m_nSelectStart <= item && item <= m_nSelectEnd) {
-				m_nSelectFirst = item;
-			}
-			else {
-				// deselect
-				m_nSelectFirst = m_nSelectStart = m_nSelectEnd = item;
-				Invalidate(FALSE);
-			}
-
-			m_bSelecting = TRUE;
-			m_bClick = TRUE;
+			SetCapture();
+			Default();
 		}
-
-		LastCursorPos = point;
-		KillTimer(TapAndHoldTimer);	// for sure
-		SetTimer(TapAndHoldTimer, 100, NULL);
 	}
 	else {
 		// tap out of items (deselect all)
@@ -680,8 +679,6 @@ void CFeedView::OnLButtonDown(UINT nFlags, CPoint point) {
 		m_bSelecting = FALSE;
 		Invalidate(FALSE);
 	}
-
-	m_bContextMenu = FALSE;
 }
 
 void CFeedView::OnMouseMove(UINT nFlags, CPoint pt) {
@@ -713,72 +710,56 @@ void CFeedView::OnMouseMove(UINT nFlags, CPoint pt) {
 			m_bScrolling = FALSE;
 	}
 
-	if (!m_bContextMenu && m_bSelecting) {
-		KillTimer(TapAndHoldTimer);
-
+	if (m_bSelecting) {
 		int item = ItemFromPoint(pt);
-		if (item < 0)
-			item = 0;
-		if (item >= m_oItems.GetSize())
-			item = m_oItems.GetSize() - 1;
+		if (item < 0) item = 0;
+		if (item >= m_oItems.GetSize()) item = m_oItems.GetSize() - 1;
 
-//		if (item != -1) {
-			if (item <= m_nSelectFirst) {
-				m_nSelectStart = item;
-				m_nSelectEnd = m_nSelectFirst;
-			}
-			if (item >= m_nSelectFirst) {
-				m_nSelectStart = m_nSelectFirst;
-				m_nSelectEnd = item;
-			}
+		if (item <= m_nSelectFirst) {
+			m_nSelectStart = item;
+			m_nSelectEnd = m_nSelectFirst;
+		}
+		if (item >= m_nSelectFirst) {
+			m_nSelectStart = m_nSelectFirst;
+			m_nSelectEnd = item;
+		}
 
-			Invalidate(FALSE);
-//		}
+		Invalidate(FALSE);
 
 		if (abs(pt.x - LastCursorPos.x) > SCALEX(2) || abs(pt.y - LastCursorPos.y) > SCALEX(2))
 			m_bClick = FALSE;
 	}
 
-//	if (!m_bSelecting)
-//		m_bSelecting = TRUE;
-
 	m_nOldKeys = nFlags;
 	m_ptOldCursorPos = pt;
-
-//	CWnd::OnMouseMove(nFlags, point);
 }
 
 void CFeedView::OnLButtonUp(UINT nFlags, CPoint point) {
 	ReleaseCapture();
 
-	if (!m_bContextMenu) {
-		int item = ItemFromPoint(point);
-		if (item >= 0 && item < m_oItems.GetSize()) {
-			if (point.x >= 0 && point.x <= SCALEY(20)) {
-				if (GetItem(item)->IsFlagged())
-					UnflagItem(item);
-				else
-					FlagItem(item);
+	int item = ItemFromPoint(point);
+	if (item >= 0 && item < m_oItems.GetSize()) {
+		if (item == m_nFlagItem && point.x >= 0 && point.x <= SCALEY(20)) {
+			if (GetItem(item)->IsFlagged())
+				UnflagItem(item);
+			else
+				FlagItem(item);
 
-				m_nSelectFirst = item;
-				m_nSelectStart = m_nSelectEnd = -1;
+			m_nSelectFirst = item;
+			m_nSelectStart = m_nSelectEnd = item;
 
+			Invalidate(FALSE);
+		}
+		else if (m_bSelecting) {
+			if (item == m_nSelectFirst && m_bClick) {
+				OpenItem(item);
 				Invalidate(FALSE);
-			}
-			else if (m_bSelecting) {
-				if (item == m_nSelectFirst && m_bClick) {
-					OpenItem(item);
-					Invalidate(FALSE);
-				}
 			}
 		}
 	}
 
 	m_bScrolling = FALSE;
 	m_bSelecting = FALSE;
-	m_bContextMenu = FALSE;
-
-//	CWnd::OnLButtonUp(nFlags, point);
 }
 
 void CFeedView::OnLButtonDblClk(UINT nFlags, CPoint point) {
@@ -831,14 +812,13 @@ void CFeedView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			break;
 
 		default:
-//			CWnd::OnKeyDown(nChar, nRepCnt, nFlags);
 			break;
 	}
 
 	CWnd::OnKeyDown(nChar, nRepCnt, nFlags);
 }
 
-void CFeedView::ContextMenu(CPoint pt) {
+void CFeedView::ContextMenu(CPoint *pt) {
 	LOG0(5, "CFeedView::ContextMenu()");
 
 	if (m_nSelectFirst != -1) {
@@ -856,37 +836,12 @@ void CFeedView::ContextMenu(CPoint pt) {
 		AppendMenuFromResource(&popup, IDR_ITEM_OPER);
 
 		// track popup menu
-		ClientToScreen(&pt);
-		popup.TrackPopupMenu(TPM_TOPALIGN | TPM_LEFTALIGN, pt.x, pt.y, AfxGetMainWnd());
+		popup.TrackPopupMenu(TPM_TOPALIGN | TPM_LEFTALIGN, pt->x, pt->y, AfxGetMainWnd());
 	}
 }
 
 void CFeedView::OnTimer(UINT nIDEvent) {
 	LOG0(5, "CFeedView::OnTimer()");
-
-	if (nIDEvent == TapAndHoldTimer) {
-		KillTimer(TapAndHoldTimer);
-
-		ReleaseCapture();
-		m_bSelecting = FALSE;
-		m_bContextMenu = TRUE;
-
-		// tap and hold
-		SHRGINFO  shrg;
-		shrg.cbSize = sizeof(shrg);
-		shrg.hwndClient = GetSafeHwnd();
-		shrg.ptDown.x = LastCursorPos.x;
-		shrg.ptDown.y = LastCursorPos.y;
-		shrg.dwFlags = SHRG_NOTIFYPARENT | SHRG_RETURNCMD;
-
-		if (::SHRecognizeGesture(&shrg) == GN_CONTEXTMENU) {
-			if (m_nSelectStart == -1 || m_nSelectEnd == -1) {
-				m_nSelectStart = m_nSelectEnd = m_nSelectFirst;
-				InvalidateItem(m_nSelectFirst, FALSE);
-			}
-			ContextMenu(LastCursorPos);
-		}
-	}
 
 	CWnd::OnTimer(nIDEvent);
 }
