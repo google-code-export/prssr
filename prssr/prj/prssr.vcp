@@ -274,6 +274,7 @@ DEP_CPP_ARTIC=\
 	"..\Config.h"\
 	"..\ctrls\Banner.h"\
 	"..\ctrls\CeDialog.h"\
+	"..\ctrls\CeScrollBar.h"\
 	"..\ctrls\CeToolBar.h"\
 	"..\ctrls\EnclosureBar.h"\
 	"..\ctrls\GroupView.h"\
@@ -338,6 +339,7 @@ DEP_CPP_CACHE=\
 	"..\Config.h"\
 	"..\ctrls\CePropertyPage.h"\
 	"..\ctrls\CePropertySheet.h"\
+	"..\ctrls\CeScrollBar.h"\
 	"..\ctrls\CeToolBar.h"\
 	"..\ctrls\CeTreeCtrl.h"\
 	"..\ctrls\GroupView.h"\
@@ -577,6 +579,7 @@ DEP_CPP_FEEDV=\
 	"..\Config.h"\
 	"..\ctrls\Banner.h"\
 	"..\ctrls\CeDialog.h"\
+	"..\ctrls\CeScrollBar.h"\
 	"..\ctrls\CeToolBar.h"\
 	"..\ctrls\EnclosureBar.h"\
 	"..\ctrls\GroupView.h"\
@@ -764,6 +767,7 @@ DEP_CPP_MAINF=\
 	"..\ctrls\CeListCtrl.h"\
 	"..\ctrls\CePropertyPage.h"\
 	"..\ctrls\CePropertySheet.h"\
+	"..\ctrls\CeScrollBar.h"\
 	"..\ctrls\CeToolBar.h"\
 	"..\ctrls\CeTreeCtrl.h"\
 	"..\ctrls\ColorButton.h"\
@@ -1144,6 +1148,7 @@ DEP_CPP_PRSSR=\
 	"..\CreditsPg.h"\
 	"..\ctrls\CePropertyPage.h"\
 	"..\ctrls\CePropertySheet.h"\
+	"..\ctrls\CeScrollBar.h"\
 	"..\ctrls\CeToolBar.h"\
 	"..\ctrls\GroupView.h"\
 	"..\ctrls\InfoBar.h"\
@@ -1411,6 +1416,7 @@ DEP_CPP_SUMMA=\
 	"..\..\share\wnd.h"\
 	"..\Appearance.h"\
 	"..\Config.h"\
+	"..\ctrls\CeScrollBar.h"\
 	"..\ctrls\CeToolBar.h"\
 	"..\ctrls\GroupView.h"\
 	"..\ctrls\LinkCtrl.h"\
@@ -1475,6 +1481,7 @@ DEP_CPP_UPDAT=\
 	"..\..\share\wnd.h"\
 	"..\Appearance.h"\
 	"..\Config.h"\
+	"..\ctrls\CeScrollBar.h"\
 	"..\ctrls\CeToolBar.h"\
 	"..\ctrls\GroupView.h"\
 	"..\ctrls\LinkCtrl.h"\
@@ -2021,6 +2028,27 @@ SOURCE=..\ctrls\CePropertySheet.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\ctrls\CeScrollBar.cpp
+DEP_CPP_CESCR=\
+	"..\..\share\defs.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\ctrls\CeScrollBar.h"\
+	"..\debug\crtdbg.h"\
+	"..\debug\Logger.h"\
+	"..\prssr.h"\
+	"..\StdAfx.h"\
+	{$(INCLUDE)}"htmlctrl.h"\
+	
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\ctrls\CeScrollBar.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\ctrls\CeToolbar.cpp
 DEP_CPP_CETOO=\
 	"..\..\share\reg.h"\
@@ -2165,6 +2193,7 @@ DEP_CPP_GROUP=\
 	"..\..\share\wnd.h"\
 	"..\Appearance.h"\
 	"..\Config.h"\
+	"..\ctrls\CeScrollBar.h"\
 	"..\ctrls\GroupView.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
