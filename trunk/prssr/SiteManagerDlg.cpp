@@ -151,8 +151,6 @@ protected:
 	virtual void OnCancel();
 
 	DECLARE_MESSAGE_MAP()
-
-	friend class CSyncFeedsDlg;
 };
 
 CSyncProgressDlg::CSyncProgressDlg(CDownloader *downloader, CDialog *parent) {

@@ -25,35 +25,15 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include "CeScrollBar.h"
+
 /////////////////////////////////////////////////////////////////////////////
 // CGroupView window
-
-/*
-enum EGVIT {
-	GVIT_ITEM = 0,
-	GVIT_GROUP_EXPANDED = 1,
-	GVIT_GROUP_COLLAPSED = 2
-};
-*/
 
 enum EGVIS {
 	GVIS_EXPANDED = 0,
 	GVIS_COLLAPSED = 1
 };
-
-/*enum EGVI {
-	GVI_ROOT,
-	GVI_LAST
-};
-*/
-
-/*
-enum EGVE {
-	GVE_COLLAPSE = 0,
-	GVE_EXPAND = 1,
-	GVE_TOGGLE = 2
-};
-*/
 
 
 #define GVI_ROOT						((HGROUPITEM) 0xFFFF0001)
@@ -157,7 +137,6 @@ protected:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
@@ -179,10 +158,7 @@ protected:
 
 	//
 	CRect m_rcScroll;
-/*	BOOL m_bScrolling;
-	int m_nScrollDelta;
-*/
-	CScrollBar m_oVScrollBar;
+	CCeScrollBar m_oVScrollBar;
 //	UINT m_nOldKeys;
 //	CPoint m_ptOldCursorPos;
 
@@ -196,7 +172,6 @@ protected:
 	CFont m_fntBold;
 	CImageList m_oIcons;
 
-	UINT TapAndHoldTimer;
 	CPoint LastCursorPos;
 
 	HGROUPITEM m_hClickedItem;
@@ -216,19 +191,7 @@ protected:
 	UINT KeyTimer;
 	BOOL ReturnPressed;
 
-
-//	void UpdateScroll();
-
 protected:
-/*
-	static const int LABEL_MARGIN;
-	static const int LABEL_X_PADDING;
-	static const int LABEL_Y_PADDING;
-	static const int LABEL_MSG_SKIP;
-	static const int INTERMSG_SKIP;
-
-*/
-//	static const int ITEM_HEIGHT;
 	static const int ITEM_MARGIN;
 	int ItemHeight;
 

@@ -25,6 +25,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include "ctrls/CeScrollBar.h"
+
 class CSiteItem;
 class CFeedItem;
 class CArticleDlg;
@@ -110,7 +112,7 @@ protected:
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnTimer(UINT nIDEvent);
 	//}}AFX_MSG
-	void ContextMenu(CPoint pt);
+	void ContextMenu(CPoint *pt);
 
 	afx_msg void OnItemOpen();
 	afx_msg void OnItemMarkRead();
@@ -135,7 +137,7 @@ protected:
 	CRect m_rcScroll;
 	BOOL m_bScrolling;
 	int m_nScrollDelta;
-	CScrollBar m_oVScrollBar;
+	CCeScrollBar m_oVScrollBar;
 	UINT m_nOldKeys;
 	CPoint m_ptOldCursorPos;
 
@@ -147,15 +149,14 @@ protected:
 	int m_nSelectEnd;
 	int m_nSelectFirst;
 	BOOL m_bSelecting;
-	BOOL m_bContextMenu;
 	BOOL m_bClick;
+	int m_nFlagItem;
 
 	CFont m_fntBase;
 	CFont m_fntBold;
 	CFont m_fntSmall;
 	CImageList m_oIcons;
 
-	UINT TapAndHoldTimer;
 	CPoint LastCursorPos;
 
 	void CreateFonts();
@@ -165,8 +166,6 @@ protected:
 
 	int ItemFromPoint(CPoint pt);
 	void AdjustViewTop();
-
-//	void UpdateMsgHeights();
 
 	int GetSelectedItem() { return m_nSelectFirst; }
 
@@ -199,11 +198,7 @@ protected:
 	static const int LABEL_X_PADDING;
 	static const int LABEL_Y_PADDING;
 	static const int LABEL_MSG_SKIP;
-//	static const int INTERMSG_SKIP;
 	static const int ITEM_MARGIN;
-
-//	// FIXME: heiht should be adjusted according to the base font size
-//	static const int ITEM_HEIGHT;
 
 	friend DWORD WINAPI ScrollThread(LPVOID lpParam);
 	friend class CArticleDlg;
