@@ -629,6 +629,7 @@ void CSiteManagerDlg::DeleteItem(HTREEITEM hItem, BOOL free/* = TRUE*/) {
 	}
 
 	CSiteItem *item = (CSiteItem *) m_ctlSites.GetItemData(hItem);
+	HTREEITEM hSelItem = m_ctlSites.GetPrevVisibleItem(hItem);
 	m_ctlSites.DeleteItem(hItem);
 
 	if (item->Type == CSiteItem::Group)
@@ -640,6 +641,9 @@ void CSiteManagerDlg::DeleteItem(HTREEITEM hItem, BOOL free/* = TRUE*/) {
 		item->Destroy();
 		delete item;
 	}
+
+	m_ctlSites.SelectItem(hSelItem);
+	m_ctlSites.EnsureVisible(hSelItem);
 }
 
 void CSiteManagerDlg::ResizeControls() {
