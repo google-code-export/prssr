@@ -60,6 +60,40 @@ CLocalHtmlFile::~CLocalHtmlFile() {
 
 ///
 
+void CLocalHtmlFile::FixTree(DOM_NODE *node) {
+	DOM_NODE *child = domNodeGetFirstChild(node);
+	while (child != NULL) {
+		const char *tag = domNodeGetName(child);		
+		if (_strnicmp(tag, "!]]", 3) == 0) {
+			// move all childs one level up in the tree
+			DOM_NODE *next = domNodeGetNextSibling(node);
+
+			for (DOM_NODE *curr = child->firstChild; curr; curr = curr->nextSibling)
+				curr->parent = node->parent;
+
+			DOM_NODE *firstChild = child->firstChild;
+			if (firstChild != NULL) {
+				child->firstChild->prevSibling = node;
+				child->lastChild->nextSibling = node->nextSibling;
+
+				if (node->nextSibling != NULL)
+					node->nextSibling->prevSibling = child->lastChild;
+				node->nextSibling = child->firstChild;
+
+				child->firstChild = NULL;
+			}
+			else {
+				// no nothing
+			}
+			child = domNodeGetNextSibling(child);
+		}
+		else {
+			FixTree(child);
+			child = domNodeGetNextSibling(child);
+		}
+	}
+}
+
 void CLocalHtmlFile::Filter(DOM_NODE *node) {
 	LOG1(5, "CLocalHtmlFile::Filter(%p)", node);
 
@@ -136,6 +170,7 @@ void CLocalHtmlFile::Filter(DOM_NODE *node) {
 void CLocalHtmlFile::Filter() {
 	LOG0(3, "CLocalHtmlFile::Filter()");
 
+	FixTree(GetDocumentNode());
 	Filter(GetDocumentNode());
 }
 
