@@ -205,7 +205,7 @@ BOOL CUpdateBar::Create(CWnd *pParentWnd) {
 	ret = CWnd::Create(NULL, NULL, WS_CHILD, rect, pParentWnd, AFX_IDW_TOOLBAR + 2);
 
 	m_ctlProgress.Create(WS_CHILD | WS_VISIBLE | PBS_SMOOTH, CRect(0, 0, 0, 0), this, IDC_UPDATE_PROGRESS);
-	m_ctlText.Create(_T(""), WS_CHILD | SS_NOTIFY | SS_NOPREFIX, CRect(0, 0, 0, 0), this, IDC_UPDATE_TEXT);
+	m_ctlText.Create(_T(""), WS_CHILD | SS_LEFTNOWORDWRAP | SS_NOTIFY | SS_NOPREFIX, CRect(0, 0, 0, 0), this, IDC_UPDATE_TEXT);
 	m_ctlText.SetFont(&Appearance.BaseFont);
 
 	m_ctlStopBtn.Create(NULL, WS_CHILD | WS_VISIBLE | BS_OWNERDRAW, CRect(0, 0, 0, 0), this, IDC_UPDATE_STOP);
