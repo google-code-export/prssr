@@ -49,4 +49,14 @@ See FAQ: How to use Skweezer with pRSSreader.
   # Enter {{{http://www.skweezer.net/skweeze.aspx?q=[%URL%]&i=1}}} (if you do not want images to be cached, omit '&i=1').
        
 
+*Cached pages are displayed in incorrect encoding. What should I do?*
+
+Every page that is cached by pRSSreader is converted to UTF-8 encoding. The reason is to prevent annoying switching of code pages.
+
+On Wm2003 in PIE, go *Tools | Options*, *General* page, set *Default character set*
+to *Unicode (UTF-8)*, tap Ok and do not forget to *reload* the page.
+
+TODO: The same for WM6
+
+
 TODO: localization info
