@@ -355,6 +355,7 @@
 #define IDS_SYNCING                     653
 #define IDS_ERROR_GETTING_TOKEN         654
 #define IDS_DISK_FULL                   655
+#define IDS_NO_UNREAD_ITEMS             656
 
 // controls
 #define IDC_HTML                        1000

@@ -56,6 +56,9 @@ public:
 // Implementation
 protected:
 	CLinkCtrl m_ctlSiteManLink;
+	CFont m_fntSmall;
+
+	void CreateFonts();
 
 	// apperance
 	void SetReadState(CSiteItem *si, DWORD state);
