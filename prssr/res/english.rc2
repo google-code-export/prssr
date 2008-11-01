@@ -1399,6 +1399,7 @@ BEGIN
     IDS_PRSSR_NOTIFICATION  "pRSSreader"
     IDS_LINK_TO_ARTICLE     "Link to the article"
 	IDS_NOTHING_TO_DISPLAY  "Nothing to display"
+    IDS_NO_UNREAD_ITEMS     "No unread items"
 END
 
 STRINGTABLE PRELOAD DISCARDABLE
