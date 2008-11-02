@@ -137,15 +137,23 @@ protected:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnTimer(UINT nIDEvent);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	//}}AFX_MSG
 	virtual void ContextMenu(CPoint *pt);
 	virtual void OnItemClicked();
+
+	void OnLButtonDownTouch(UINT nFlags, CPoint point);
+	void OnLButtonUpTouch(UINT nFlags, CPoint point);
+	void OnMouseMoveTouch(UINT nFlags, CPoint point);
+
+	void OnLButtonDownNormal(UINT nFlags, CPoint point);
+	void OnLButtonUpNormal(UINT nFlags, CPoint point);
+	void OnMouseMoveNormal(UINT nFlags, CPoint point);
 
 	DECLARE_MESSAGE_MAP()
 

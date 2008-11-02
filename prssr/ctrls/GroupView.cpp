@@ -112,11 +112,12 @@ BEGIN_MESSAGE_MAP(CGroupView, CView)
 	ON_WM_SIZE()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
+	ON_WM_MOUSEMOVE()
 	ON_WM_TIMER()
 	ON_WM_KEYDOWN()
 	ON_WM_KEYUP()
 	ON_WM_CHAR()
-	ON_WM_LBUTTONDBLCLK()
+//	ON_WM_LBUTTONDBLCLK()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -763,7 +764,9 @@ HGROUPITEM CGroupView::ItemFromPoint(CPoint pt) {
 	return NULL;
 }
 
-void CGroupView::OnLButtonDown(UINT nFlags, CPoint point) {
+// Normal
+
+void CGroupView::OnLButtonDownNormal(UINT nFlags, CPoint point) {
 	SetFocus();
 
 	HGROUPITEM item = ItemFromPoint(point);
@@ -802,7 +805,7 @@ void CGroupView::OnLButtonDown(UINT nFlags, CPoint point) {
 	}
 }
 
-void CGroupView::OnLButtonUp(UINT nFlags, CPoint point) {
+void CGroupView::OnLButtonUpNormal(UINT nFlags, CPoint point) {
 	HGROUPITEM hItem = ItemFromPoint(point);
 	if (m_hClickedItem != NULL && hItem != NULL && hItem == m_hClickedItem) {
 		if (ItemHasChildren(m_hClickedItem))
@@ -813,13 +816,112 @@ void CGroupView::OnLButtonUp(UINT nFlags, CPoint point) {
 	m_hClickedItem = NULL;
 }
 
-void CGroupView::OnLButtonDblClk(UINT nFlags, CPoint point) {
-	LOG0(5, "CGroupView::OnLButtonDblClk()");
+// TOUCH
+
+void CGroupView::OnLButtonDownTouch(UINT nFlags, CPoint point) {
+	HGROUPITEM item = ItemFromPoint(point);
+	if (item != NULL) {
+		m_hClickedItem = item;
+		LastCursorPos = point;
+
+		SHRGINFO shrgi = { 0 };
+		shrgi.cbSize        = sizeof(SHRGINFO);
+		shrgi.hwndClient    = m_hWnd;
+		shrgi.ptDown.x      = point.x;
+		shrgi.ptDown.y      = point.y;
+		shrgi.dwFlags       = SHRG_RETURNCMD;
+
+		if (GN_CONTEXTMENU == ::SHRecognizeGesture(&shrgi)) {
+			HGROUPITEM hOldItem = m_hSelectedItem;
+			SelectItem(m_hClickedItem);
+			InvalidateItem(hOldItem, FALSE);
+			InvalidateItem(m_hClickedItem, FALSE);
+
+			CPoint pt = point;
+			ClientToScreen(&pt);
+			ContextMenu(&pt);
+
+			m_hClickedItem = NULL;
+		}
+		else {
+			SetCapture();
+			Default();
+		}
+	}
+	else {
+		// tap out of items (deselect all)
+		HGROUPITEM hOldItem = m_hSelectedItem;
+
+		m_hSelectedItem = NULL;
+		InvalidateItem(hOldItem, FALSE);
+	}
+}
+
+void CGroupView::OnMouseMoveTouch(UINT nFlags, CPoint pt) {
+	if (abs(pt.x - LastCursorPos.x) > SCALEX(3) || abs(pt.y - LastCursorPos.y) > SCALEX(3))
+		m_hClickedItem = NULL;
+
+	// Scrolling
+	if (m_nTotalHeight > m_nClientHeight && GetCapture() == this) {
+		int delta = LastCursorPos.y - pt.y;
+
+		int top = m_nViewTop;
+		m_nViewTop += delta;
+
+		AdjustViewTop();
+
+		ScrollWindowEx(0, top - m_nViewTop, &m_rcScroll, &m_rcScroll, NULL, NULL, SW_INVALIDATE);
+		m_oVScrollBar.SetScrollPos(m_nViewTop, TRUE);
+
+		LastCursorPos = pt;
+	}
+}
+
+void CGroupView::OnLButtonUpTouch(UINT nFlags, CPoint point) {
+	ReleaseCapture();
 
 	HGROUPITEM hItem = ItemFromPoint(point);
-	if (hItem != NULL)
-		ToggleItem(hItem);
+	if (m_hClickedItem != NULL) {
+		if (hItem != NULL && hItem == m_hClickedItem) {
+			SelectItem(m_hClickedItem);
+
+			if (ItemHasChildren(m_hClickedItem))
+				ToggleItem(m_hClickedItem);
+			else
+				OnItemClicked();
+		}
+		else {
+
+		}
+	}
+	m_hClickedItem = NULL;
 }
+
+void CGroupView::OnLButtonDown(UINT nFlags, CPoint point) {
+	switch (Config.NavigationType) {
+		case NAVIGATION_NORMAL: OnLButtonDownNormal(nFlags, point); break;
+		default:
+		case NAVIGATION_TOUCH: OnLButtonDownTouch(nFlags, point); break;
+	}
+}
+
+void CGroupView::OnMouseMove(UINT nFlags, CPoint pt) {
+	switch (Config.NavigationType) {
+		case NAVIGATION_NORMAL: CView::OnMouseMove(nFlags, pt); break;
+		default:
+		case NAVIGATION_TOUCH: OnMouseMoveTouch(nFlags, pt); break;
+	}
+}
+
+void CGroupView::OnLButtonUp(UINT nFlags, CPoint point) {
+	switch (Config.NavigationType) {
+		case NAVIGATION_NORMAL: OnLButtonUpNormal(nFlags, point); break;
+		default:
+		case NAVIGATION_TOUCH: OnLButtonUpTouch(nFlags, point); break;
+	}
+}
+
+// keys
 
 void CGroupView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	LOG3(1, "CGroupView::OnKeyDown(%d, %d, %d)", nChar, nRepCnt, nFlags);

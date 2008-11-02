@@ -42,7 +42,9 @@ public:
 	BOOL	m_bNotifyNew;
 	BOOL	m_bMoveToUnread;
 	BOOL	m_bClearErrorLog;
+	int		m_nNavigation;
 	//}}AFX_DATA
+	CComboBox m_ctlNavigation;
 
 
 // Overrides

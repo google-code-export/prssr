@@ -279,6 +279,8 @@ BEGIN
                     BS_MULTILINE | WS_TABSTOP,4,16,152,10
     CONTROL         "Clear error log before update",IDC_CLEAR_ERRORLOG,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,28,152,10
+    COMBOBOX        IDC_NAVIGATION,55,40,100,60,CBS_DROPDOWNLIST |
+                    WS_VSCROLL | WS_TABSTOP
 END
 
 IDD_OPT_CACHE DIALOG DISCARDABLE  0, 0, 160, 190
@@ -1464,6 +1466,8 @@ BEGIN
     IDS_NEVER               "never"
     IDS_SELECT_ENCLOSURES_LOCATION "Select enclosures location"
     IDS_CACHING_ENCLOSURES  "Enclosures (%d remain)"
+    IDS_NAVIGATION_TOUCH    "Touch friendly"
+    IDS_NAVIGATION_NORMAL   "WM standard"
 END
 
 STRINGTABLE DISCARDABLE
