@@ -2240,7 +2240,18 @@ void CMainFrame::SyncItem(CFeedItem *fi) {
 }
 
 void CMainFrame::OnFeedListView() {
+	// moving from article view to feed list view
+
 	SwitchView(FeedView);
+	// remove read items if needed
+	if ((m_wndFeedView.SiteItem->Type != CSiteItem::VFolder && Config.HideReadItems) ||
+		(m_wndFeedView.SiteItem->Type == CSiteItem::VFolder && m_wndFeedView.SiteItem->FlagMask == MESSAGE_READ_STATE))
+	{
+		for (int i = m_wndFeedView.GetItemCount() - 1; i >= 0; i--) {
+			if (m_wndFeedView.GetItem(i)->IsRead())
+				m_wndFeedView.DeleteItem(i);
+		}
+	}
 	UpdateTopBar();
 }
 
