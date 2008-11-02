@@ -44,13 +44,6 @@ enum ESyncSite {
 #define MAIN_VIEW_SUMMARY_VIEW						1
 #define MAIN_VIEW_ARTICLE							2
 
-/*// feed preload
-#define FEED_PRELOAD_SINGLE							1
-#define FEED_PRELOAD_NEIGHBOURS						2
-#define FEED_PRELOAD_GROUP							3
-#define FEED_PRELOAD_ALL							4
-*/
-
 #define NAVIGATION_TOUCH							0
 #define NAVIGATION_NORMAL							1
 
@@ -112,38 +105,6 @@ enum ESyncSite {
 #define CONFIG_DEFAULT_EMAIL_SERVICE				_T("ActiveSync")
 #define CONFIG_DEFAULT_WRAPAROUND					FALSE
 
-/*
-
-#define CONFIG_DEFAULT_MARKNEWUNREAD				TRUE
-#define CONFIG_DEFAULT_CACHEHTMLIMAGES				TRUE
-
-//#define CONFIG_DEFAULT_MAINWNDFONT					FALSE
-#define CONFIG_DEFAULT_TRUNCATEITEMTITLES			FALSE
-#define CONFIG_DEFAULT_DOWNLOADTHREADS				3
-#define CONFIG_DEFAULT_MOVECHANNEL					TRUE
-#define CONFIG_DEFAULT_NEWSECONDS					2
-#define CONFIG_DEFAULT_SHOWSITENAME					TRUE
-#define CONFIG_DEFAULT_ACTIONBUTTON					0
-
-#define CONFIG_DEFAULT_HIDEREADITEMS				FALSE
-#define CONFIG_DEFAULT_HIDEREADFEEDS				FALSE
-#define CONFIG_DEFAULT_CACHEMANPAGE					0
-#define CONFIG_DEFAULT_HIDEGROUPS					FALSE
-
-#define CONFIG_DEFAULT_WARN_FEED_MOVE               TRUE
-
-
-*/
-
-// Default values for site settings
-/*#define SITE_DEFAULT_CACHE_IMAGES					FALSE
-#define SITE_DEFAULT_CACHE_HTML						FALSE
-#define SITE_DEFAULT_TODAY_SHOW						TRUE
-#define SITE_DEFAULT_UPDATE_INTERVAL				UPDATE_INTERVAL_GLOBAL
-#define SITE_DEFAULT_CACHE_ENCLOSURES				FALSE
-#define SITE_DEFAULT_ENCLOSURE_LIMIT				0
-#define SITE_DEFAULT_CACHE_LIMIT					CACHE_LIMIT_DEFAULT
-*/
 
 #ifdef LOGGING
 	#if defined PRSSR_APP
@@ -247,51 +208,6 @@ public:
 
 	CArray<CSocialBookmarkSite *, CSocialBookmarkSite *> SocialBookmarkSites;
 
-	////////
-
-/*	// general
-	BOOL ShowRelativeTimes;
-	BOOL TruncateItemTitles;
-	BOOL GMTTimes;
-	int DownloadThreads;
-	BOOL MoveChannel;
-	BOOL WarnFeedMove;
-
-	// read options
-	int NewSeconds;
-	BOOL ShowSiteName;				// show banner
-	int ActionButton;
-
-	// Cache Manager
-	int CacheManPage;
-	BOOL HideGroups;
-	///
-
-	// retrieval
-	BOOL MarkNewUnread;
-	BOOL CacheHtmlImages;
-
-	// enclosures
-	CString EnclosuresLocation;
-
-*/
-
-/*	// default settings for new sites
-	struct CSite {
-		BOOL CacheImages;
-		BOOL CacheHtml;
-		BOOL TodayShow;
-		int UpdateInterval;
-		BOOL CacheEnclosures;
-		int EnclosureLimit;
-		int CacheLimit;
-
-		CSite();
-		void Save(HKEY hApp);
-		void Load(HKEY hApp);
-	} Site;
-*/
-
 	// TWEAKS
 	CString DateFormat;						// custom date format
 	int SearchLimit;						// number of items in search results
@@ -300,8 +216,6 @@ public:
 	BOOL SetPropertiesAfterSiteAdded;		// site man
 	BOOL ShowMainToolbar;					// show toolbar on the main window
 	BOOL CheckCertificates;					// check certificates when connection to secured sites
-//	BOOL StartInSummaryView;				// start pRSSreader in summary view
-//	int FeedPreload;
 	DWORD Timeout;
 	BOOL ReportErrorsAfterUpdate;			// Report errors after update if there are any
 	BOOL OpenMsgWithHtmlOptimizer;
@@ -319,7 +233,6 @@ public:
 	virtual ~CConfig();
 	void Destroy();
 
-//	void SaveUiSettings();
 	void Save();
 	void Load();
 
@@ -337,36 +250,8 @@ public:
 
 	void SaveUI();
 	void LoadUI();
-
-protected:
-/*#ifdef PRSSR_APP
-	void LoadKeys(HKEY hApp);
-	void SaveKeys(HKEY hApp);
-
-	void LoadOptions(HKEY hApp);
-	void SaveOptions(HKEY hApp);
-
-
-	void LoadColors(HKEY hApp);
-	void SaveColors(HKEY hApp);
-#endif
-*/
-
 };
 
 extern CConfig Config;
-
-/*extern LPCTSTR szConfig;
-
-extern LPCTSTR szNewItems;
-extern LPCTSTR szUnreadItems;
-extern LPCTSTR szTotalItems;
-
-//
-void RegWriteDword(HKEY hKey, LPCTSTR valueName, DWORD value);
-void RegWriteString(HKEY hKey, LPCTSTR valueName, LPCTSTR value);
-DWORD RegReadDword(HKEY hKey, LPCTSTR valueName, DWORD defaultValue);
-CString RegReadString(HKEY hKey, LPCTSTR valueName, LPCTSTR defaultValue);
-*/
 
 #endif // !defined(AFX_CONFIG_H__3AC5942A_61A5_4469_ADFE_264704448F3C__INCLUDED_)
