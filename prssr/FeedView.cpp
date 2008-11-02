@@ -28,7 +28,7 @@
 #include "Site.h"
 #include "Config.h"
 #include "../share/helpers.h"
-#include "ArticleDlg.h"
+//#include "ArticleDlg.h"
 #include "MainFrm.h"
 
 #ifdef MYDEBUG
@@ -102,18 +102,12 @@ CFeedView::CFeedView() {
 
 	m_bScrolling = FALSE;
 
-	m_pArticleDlg = NULL;
-
 	SiteItem = NULL;
 
 	ItemHeight = Appearance.FeedViewFontCfg.Size + ITEM_MARGIN;
 }
 
 CFeedView::~CFeedView() {
-	if (m_pArticleDlg != NULL) {
-		m_pArticleDlg->DestroyWindow();
-		m_pArticleDlg = NULL;
-	}
 }
 
 
@@ -851,7 +845,7 @@ void CFeedView::OnTimer(UINT nIDEvent) {
 //
 
 void CFeedView::OnItemOpen() {
-	OpenOnlineMessage(m_oItems[m_nSelectFirst]->Link, m_oItems[m_nSelectFirst]->SiteItem);
+//	OpenOnlineMessage(m_oItems[m_nSelectFirst]->Link, m_oItems[m_nSelectFirst]->SiteItem);
 }
 
 void CFeedView::OnItemMarkRead() {
@@ -1065,52 +1059,42 @@ int CFeedView::MoveToPrevChannel() {
 	return Config.ActSiteIdx;
 }
 
-void CFeedView::SetupArticleDlg(int item) {
-	LOG1(5, "SetupArticleDlg(%d)", item);
-
-	CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
-
-	CFeedItem *fi = m_oItems.GetAt(item);
-	CSiteItem *si = fi->SiteItem;
-
-	CDC *pDC = GetDC();
-	CString strSiteTitle = GetNumberItemText(pDC, si->Name, si->GetUnreadCount(), GetSystemMetrics(SM_CXSCREEN) - SCALEX(22 + 50));
-	ReleaseDC(pDC);
-
-	m_pArticleDlg->m_ctlBanner.SetTitle(strSiteTitle);
-	m_pArticleDlg->m_ctlBanner.SetItems(m_nSelectFirst + 1, m_oItems.GetSize());
-	m_pArticleDlg->m_ctlBanner.SetIcon(si->ImageIdx);
-	if (fi != NULL) m_pArticleDlg->m_ctlBanner.SetFlagged(fi->IsFlagged() ? FLAG_ICON : -1);
-
-	if (::IsWindow(m_pArticleDlg->m_ctlBanner.GetSafeHwnd()))
-		m_pArticleDlg->m_ctlBanner.Invalidate();
-
-	delete m_pArticleDlg->m_pFeedItem;
-	m_pArticleDlg->m_pFeedItem = new CFeedItem(*fi);
-}
-
 void CFeedView::OpenItem(int item) {
 	LOG1(3, "CFeedView::OpenItem(%d)", item);
 
 	if (item < 0 || item >= m_oItems.GetSize())
 		return;
 
+	Config.ActFeedItem = item;
 	m_nSelectFirst = m_nSelectStart = m_nSelectEnd = item;
 	CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
 
-	if (m_pArticleDlg == NULL) {
-		m_pArticleDlg = new CArticleDlg();
-		m_pArticleDlg->m_ctlBanner.SetImageList(&frame->m_ilIcons);
-		m_pArticleDlg->m_ctlBanner.SetSmbImageList(&m_oIcons);
-	}
+	CFeedItem *fi = m_oItems.GetAt(item);
+	CSiteItem *si = fi->SiteItem;
 
+	// enclosure bar
+	frame->SwitchView(CMainFrame::ArticleView);
+
+	frame->m_wndArticleView.SetFeedItem(fi);
+	frame->m_wndArticleView.CreateMenu(frame->m_hwndCmdBar);
+	frame->SetupEnclosureBar(fi);
+
+	// setup controls
+	CDC *pDC = GetDC();
+	CString strSiteTitle = GetNumberItemText(pDC, si->Name, si->GetUnreadCount(), GetSystemMetrics(SM_CXSCREEN) - SCALEX(22 + 50));
+	ReleaseDC(pDC);
+
+	frame->m_wndBanner.SetTitle(strSiteTitle);
+	frame->m_wndBanner.SetItems(m_nSelectFirst + 1, m_oItems.GetSize());
+	frame->m_wndBanner.SetIcon(si->ImageIdx);
+
+	if (fi != NULL) frame->m_wndBanner.SetFlagged(fi->IsFlagged() ? FLAG_ICON : -1);
+
+	if (::IsWindow(frame->m_wndBanner.GetSafeHwnd()))
+		frame->m_wndBanner.Invalidate();
+
+	frame->m_wndArticleView.ShowArticle();
 	MarkItem(item, MESSAGE_READ);
-
-	SetupArticleDlg(item);
-
-	if (!::IsWindow(m_pArticleDlg->GetSafeHwnd()))
-		m_pArticleDlg->Create(this, NULL);
-	m_pArticleDlg->ShowWindow(SW_SHOW);
 
 	frame->UpdateTopBar();
 }
@@ -1131,7 +1115,7 @@ void CFeedView::FlagItem(int item) {
 
 	CFeedItem *fi = m_oItems.GetAt(item);
 	fi->SetFlags(MESSAGE_FLAG, MESSAGE_FLAG);
-	
+
 	CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
 	frame->SyncItem(fi);
 }

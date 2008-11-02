@@ -1,5 +1,5 @@
 /**
- *  helpers.cpp : Miscelaneous helping functions 
+ *  helpers.cpp : Miscelaneous helping functions
  *
  *  Copyright (C) 2008  David Andrs <pda@jasnapaka.com>
  *
@@ -154,7 +154,7 @@ BOOL FormatDateTime(CString &strDateTime, SYSTEMTIME date, BOOL relDates/* = FAL
 				strDate.LoadString(IDS_TODAY);
 			else if (diff == 1)
 				strDate.LoadString(IDS_YESTERDAY);
-			else 
+			else
 				strDate.Format(IDS_DAYS_AGO, diff);
 		}
 		else {
@@ -172,26 +172,11 @@ BOOL FormatDateTime(CString &strDateTime, SYSTEMTIME date, BOOL relDates/* = FAL
 		}
 
 		CString strTime;
-/*		if (relTimes && (diff == 0)) {
-			int lDiff = SystemTimeToLong(&today) - SystemTimeToLong(&date);
-
-			int hours = lDiff / 60;
-			int minutes = lDiff % 60;
-
-			if (hours == 0) {
-				strTime.Format(IDS_MINUTES_AGO, minutes);
-			}
-			else {
-				strTime.Format(IDS_HOURS_AGO, hours);
-			}
-		}
-		else {
-*/			// time
-			LPCTSTR timeFormat = _T("H:mm");
-			len = GetTimeFormat(LOCALE_USER_DEFAULT, 0, &date, timeFormat, NULL, 0);
-			buffer = strTime.GetBufferSetLength(len);
-			GetTimeFormat(LOCALE_USER_DEFAULT, 0, &date, timeFormat, buffer, len);
-//		}
+		// time
+		LPCTSTR timeFormat = _T("H:mm");
+		len = GetTimeFormat(LOCALE_USER_DEFAULT, 0, &date, timeFormat, NULL, 0);
+		buffer = strTime.GetBufferSetLength(len);
+		GetTimeFormat(LOCALE_USER_DEFAULT, 0, &date, timeFormat, buffer, len);
 
 		// put it together
 		if (strTime.GetLength() > 0)
@@ -401,7 +386,7 @@ BOOL UpdateIntervalElapsed(SYSTEMTIME *now, SYSTEMTIME *t, int interval) {
 	if (interval > 0) {
 		int days, hours, mins;
 		int rem;
-		
+
 		days = interval / 1440;
 		rem = interval % 1440;
 		hours = rem / 60;
@@ -460,7 +445,7 @@ void ClearCacheFiles(EFileType type, const CString &cacheLocation, CStringList &
 	while (!deleteList.IsEmpty()) {
 		CString strPath = deleteList.RemoveHead();
 		DeleteFile(strPath);
-		
+
 		// remove empty dirs, if there are some
 		RemoveLastPathPart(strPath);
 		while (strPath.GetLength() > 0 && strPath.CompareNoCase(rootDir) != 0) {
@@ -477,7 +462,7 @@ void ClearCacheFile(EFileType type, const CString &cacheLocation, const CString 
 
 	CString strFileName = fileName;
 	DeleteFile(strFileName);
-	
+
 	// remove empty dirs, if there are some
 	RemoveLastPathPart(strFileName);
 	while (strFileName.GetLength() > 0 && strFileName.CompareNoCase(rootDir) != 0) {
@@ -586,7 +571,7 @@ BOOL MergeMenu(CMenu *pMenuDestination, const CMenu *pMenuAdd) {
 	if (iMenuAddItemCount == 0)
 		return TRUE;
 
-	// iterate through the top level of 
+	// iterate through the top level of
 	for (int iLoop = 0; iLoop < iMenuAddItemCount; iLoop++) {
 		// get the menu string from the add menu
 		CString sMenuAddString;
@@ -648,10 +633,10 @@ BOOL MergeMenu(CMenu *pMenuDestination, const CMenu *pMenuAdd) {
 				return FALSE;
 			}
 
-			// don't destroy the new menu       
+			// don't destroy the new menu
 			newPopupMenu.Detach();
-		} 
-	} 
+		}
+	}
 
     return TRUE;
 }
@@ -1025,7 +1010,7 @@ void ShellOpenFile(const CString &strTransUrl) {
 						ei.nShow = SW_SHOW;
 						ShellExecuteEx(&ei);
 					}
-					
+
 					RegCloseKey(hOpenCmd);
 				}
 				RegCloseKey(hFileType);
@@ -1046,7 +1031,7 @@ BOOL CopyTextToClipboard(HWND hWnd, const CString &strText) {
 			TCHAR *pchData = (TCHAR *) GlobalLock(hClipboardData);
 			lstrcpy(pchData, (LPCTSTR) strText);
 			GlobalUnlock(hClipboardData);
-			
+
 			::SetClipboardData(CF_UNICODETEXT, hClipboardData);
 		}
 		else {

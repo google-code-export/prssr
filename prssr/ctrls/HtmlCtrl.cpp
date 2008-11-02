@@ -35,53 +35,79 @@ static TCHAR THIS_FILE[] = _T(__FILE__);
 static char THIS_FILE[] = __FILE__;
 #endif
 
-HINSTANCE CHTMLCtrl::HHtmlDLL = 0;
+HINSTANCE CHTMLCtrl::HHtmlDLL = LoadLibrary(_T("htmlview.dll"));
 
 /////////////////////////////////////////////////////////////////////////////
 // CHTMLCtrl
 
 CHTMLCtrl::CHTMLCtrl() {
-	HWnd = NULL;
 }
 
-/*BEGIN_MESSAGE_MAP(CHTMLCtrl, CWnd)
+BEGIN_MESSAGE_MAP(CHTMLCtrl, CWnd)
 	//{{AFX_MSG_MAP(CHTMLCtrl)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
-*/
 
-BOOL CHTMLCtrl::Create(DWORD dwStyle, CRect &rc, HWND parent, UINT id) {
-	HHtmlDLL = LoadLibrary(_T("htmlview.dll"));
+//BOOL CHTMLCtrl::Create(DWORD dwStyle, CRect &rc, HWND parent, UINT id) {
+BOOL CHTMLCtrl::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext/* = NULL*/) {
+	// allow modification of several common create parameters
+	CREATESTRUCT cs;
+	cs.dwExStyle = 0;//dwExStyle;
+	cs.lpszClass = _T("DISPLAYCLASS");//lpszClassName;
+	cs.lpszName = NULL; //lpszWindowName;
+	cs.style = dwStyle;
+	cs.x = rect.left;
+	cs.y = rect.top;
+	cs.cx = rect.right - rect.left;
+	cs.cy = rect.bottom - rect.top;
+	cs.hwndParent = pParentWnd->GetSafeHwnd();
+	cs.hMenu = (HMENU) nID;
+	cs.hInstance = AfxGetInstanceHandle();
+	cs.lpCreateParams = NULL;//pContext;
 
-	HWnd = ::CreateWindow(_T("DISPLAYCLASS"), NULL, dwStyle,
-		rc.left, rc.top, rc.Width(), rc.Height(),
-		parent, (HMENU) id, HHtmlDLL, NULL);
+	HWND hWnd = ::CreateWindowEx(cs.dwExStyle, cs.lpszClass,
+			cs.lpszName, cs.style, cs.x, cs.y, cs.cx, cs.cy,
+			cs.hwndParent, cs.hMenu, cs.hInstance, cs.lpCreateParams);
 
-	return HWnd != NULL;
+#ifdef _DEBUG
+	if (hWnd == NULL) {
+		TRACE1("Warning: Window creation failed: GetLastError returns 0x%8.8X\n",
+			GetLastError());
+	}
+#endif
+
+	if (hWnd == NULL)
+		return FALSE;
+
+	m_hWnd = hWnd;
+	::SetWindowLong(hWnd, GWL_ID, 12321);
+	::SendMessage(hWnd, WM_SETTEXT, 0, (LPARAM) (LPCTSTR) _T(""));
+
+	return TRUE;
 }
 
 void CHTMLCtrl::Clear() {
-	::SendMessage(HWnd, DTM_CLEAR, 0, 0);
+	::SendMessage(m_hWnd, DTM_CLEAR, 0, 0);
 }
 
 void CHTMLCtrl::EnableContextMenu(BOOL enable/* = TRUE*/) {
-	::SendMessage(HWnd, DTM_ENABLECONTEXTMENU, 0, enable);
+	::SendMessage(m_hWnd, DTM_ENABLECONTEXTMENU, 0, enable);
 }
 
 void CHTMLCtrl::EnableClearType(BOOL enable/* = TRUE*/) {
-	::SendMessage(HWnd, DTM_ENABLECLEARTYPE, 0, (LPARAM) enable);
+	::SendMessage(m_hWnd, DTM_ENABLECLEARTYPE, 0, (LPARAM) enable);
 }
 
 void CHTMLCtrl::EnableScripting(BOOL enable/* = TRUE*/) {
-	::SendMessage(HWnd, DTM_ENABLESCRIPTING, 0, (LPARAM) enable);
+	::SendMessage(m_hWnd, DTM_ENABLESCRIPTING, 0, (LPARAM) enable);
 }
 
 void CHTMLCtrl::ZoomLevel(int level) {
-	::SendMessage(HWnd, DTM_ZOOMLEVEL, 0, (LPARAM) level);
+	::SendMessage(m_hWnd, DTM_ZOOMLEVEL, 0, (LPARAM) level);
 }
 
 void CHTMLCtrl::AddText(LPWSTR str) {
-	::SendMessage(HWnd, DTM_ADDTEXTW, FALSE, (LPARAM) str);
+	::SendMessage(m_hWnd, DTM_ADDTEXTW, FALSE, (LPARAM) str);
 }
 
 void CHTMLCtrl::AddText(const CString &str) {
@@ -89,17 +115,17 @@ void CHTMLCtrl::AddText(const CString &str) {
 }
 
 void CHTMLCtrl::EndOfSource() {
-	::SendMessage(HWnd, DTM_ENDOFSOURCE, 0, 0);
+	::SendMessage(m_hWnd, DTM_ENDOFSOURCE, 0, 0);
 }
 
 BOOL CHTMLCtrl::IsSelection() {
-	return (BOOL) ::SendMessage(HWnd, DTM_ISSELECTION, 0, 0);
+	return (BOOL) ::SendMessage(m_hWnd, DTM_ISSELECTION, 0, 0);
 }
 
 void CHTMLCtrl::CopySelectionToNewIStream(DWORD *rsd, LPSTREAM *stream) {
-	::SendMessage(HWnd, DTM_COPYSELECTIONTONEWISTREAM, (WPARAM) rsd, (LPARAM) stream);
+	::SendMessage(m_hWnd, DTM_COPYSELECTIONTONEWISTREAM, (WPARAM) rsd, (LPARAM) stream);
 }
 
 HWND CHTMLCtrl::SetParent(HWND hNewParent) {
-	return ::SetParent(HWnd, hNewParent);
+	return ::SetParent(m_hWnd, hNewParent);
 }

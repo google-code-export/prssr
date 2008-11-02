@@ -5,7 +5,7 @@
 #include "../StdAfx.h"
 #include "../prssr.h"
 #include "NetworkSync.h"
-#include "../net/download.h"
+#include "../net/Download.h"
 #include "../Config.h"
 #include "../Site.h"
 #include "../xml/FeedFile.h"

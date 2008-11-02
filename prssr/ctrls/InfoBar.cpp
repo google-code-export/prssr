@@ -22,6 +22,7 @@
 #include "../prssr.h"
 #include "../../share/UIHelper.h"
 #include "../../share/helpers.h"
+#include "../MainFrm.h"
 
 #include "InfoBar.h"
 #include "../Appearance.h"
@@ -68,13 +69,13 @@ BOOL CInfoBar::Register() {
 	return TRUE;
 }
 
-BOOL CInfoBar::Create(DWORD dwStyle, CRect &rc, CWnd *pParentWnd, UINT nID) {
+BOOL CInfoBar::Create(CWnd *pParentWnd) {
 	BOOL ret;
 
-	ret = CWnd::Create(INFOBAR_CLASSNAME, _T(""), dwStyle, rc, pParentWnd, nID);
+	m_dwStyle = CBRS_BOTTOM | CBRS_BORDER_TOP;
 
-//	m_ctlText.Create(_T(""), WS_CHILD | WS_VISIBLE | SS_NOTIFY, CRect(0, 0, 0, 0), this, IDC_TEXT);
-//	m_ctlText.SetFont(&Appearance.BaseFont);
+	CRect rect;
+	ret = CWnd::Create(INFOBAR_CLASSNAME, NULL, WS_CHILD, rect, pParentWnd, AFX_IDW_TOOLBAR + 3);
 
 	m_ctlStopBtn.Create(NULL, WS_CHILD | WS_VISIBLE | BS_OWNERDRAW, CRect(0, 0, 0, 0), this, IDC_CLOSE);
 
@@ -90,7 +91,7 @@ void CInfoBar::SetText(UINT nID) {
 	m_strText.LoadString(nID);
 }
 
-BEGIN_MESSAGE_MAP(CInfoBar, CWnd)
+BEGIN_MESSAGE_MAP(CInfoBar, CControlBar)
 	//{{AFX_MSG_MAP(CInfoBar)
 	ON_WM_PAINT()
 	ON_WM_SIZE()
@@ -103,7 +104,8 @@ END_MESSAGE_MAP()
 void CInfoBar::OnClose() {
 	LOG0(1, "CInfoBar::OnClose()");
 
-	ShowWindow(SW_HIDE);
+	CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
+	frame->ShowControlBar(this, FALSE, FALSE);
 	KillTimer(HideTimer);
 }
 
@@ -119,16 +121,8 @@ void CInfoBar::OnPaint() {
 	CRect	rc;
 	GetClientRect(&rc);
 
-	// fill		
+	// fill
 	dc.FillSolidRect(rc, GetSysColor(COLOR_BTNFACE));
-
-	// line
-	CPen blackPen(PS_SOLID, SCALEY(1), GetSysColor(COLOR_WINDOWFRAME));
-
-	CPen *oldPen = dc.SelectObject(&blackPen);
-	dc.MoveTo(rc.left, rc.top);
-	dc.LineTo(rc.right, rc.top);
-	dc.SelectObject(oldPen);
 
 	CFont *pFont = dc.SelectObject(&Appearance.BaseFont);
 	CRect rcText(SCALEX(5), SCALEY(3), rc.right - SCALEX(5) - SCALEX(17) - 1, SCALEY(17) - 1);
@@ -137,7 +131,7 @@ void CInfoBar::OnPaint() {
 
 	m_ctlStopBtn.Invalidate();
 
-	ValidateRect(NULL);	
+	ValidateRect(NULL);
 }
 
 void CInfoBar::OnSize(UINT nType, int cx, int cy) {
@@ -155,6 +149,17 @@ void CInfoBar::OnTimer(UINT nIDEvent) {
 	if (nIDEvent == HideTimer) {
 		OnClose();
 	}
-	
-	CWnd::OnTimer(nIDEvent);
+
+	CControlBar::OnTimer(nIDEvent);
+}
+
+void CInfoBar::OnUpdateCmdUI(CFrameWnd *pTarget, BOOL bDisableIfNoHndler) {
+}
+
+CSize CInfoBar::CalcFixedLayout(BOOL bStretch, BOOL bHorz) {
+	CDC *pDC = GetDC();
+	int cx = pDC->GetDeviceCaps(HORZRES);
+	ReleaseDC(pDC);
+
+	return CSize(cx, SCALEY(21) - 1);
 }

@@ -708,7 +708,7 @@ void CGroupView::OnSize(UINT nType, int cx, int cy) {
 	CView::OnSize(nType, cx, cy);
 
 	m_nClientHeight = cy;
-	m_nClientWidth = cx + SCALEX(1);;
+	m_nClientWidth = cx + SCALEX(1);
 
 	CRect rcClient;
 	GetClientRect(rcClient);
@@ -785,7 +785,7 @@ void CGroupView::OnLButtonDown(UINT nFlags, CPoint point) {
 
 		if (GN_CONTEXTMENU == ::SHRecognizeGesture(&shrgi)) {
 			m_hClickedItem = NULL;
-			
+
 			CPoint pt = point;
 			ClientToScreen(&pt);
 			ContextMenu(&pt);
@@ -888,7 +888,7 @@ void CGroupView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 				if (GN_CONTEXTMENU == r) {
 					ClientToScreen(&pt);
 					LOG0(1, "CGroupView::Context()");
-					ContextMenu(&pt);					
+					ContextMenu(&pt);
 				}
 				else {
 					if (Items.GetCount() > 0 && m_hSelectedItem != NULL) {
@@ -1064,7 +1064,6 @@ void CGroupView::OnItemClicked() {
 
 void CGroupView::UpdateItemHeight() {
 	int items = m_nTotalHeight / SCALEY(ItemHeight);
-	ItemHeight = Appearance.SummaryViewFontCfg.Size + ITEM_MARGIN;
 	m_nTotalHeight = items * SCALEY(ItemHeight);
 	int top = 0;
 	HGROUPITEM hItem = GetRootItem();
