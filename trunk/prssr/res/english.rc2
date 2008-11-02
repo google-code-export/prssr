@@ -1098,6 +1098,7 @@ BEGIN
         MENUITEM "Mark All Items Unread",       ID_TOOLS_MARKALLITEMSUNREAD
         MENUITEM SEPARATOR
         MENUITEM "Hide Read Items",             ID_VIEW_HIDEREADITEMS
+        MENUITEM "Exit",                        ID_APP_EXIT
     END
 END
 
@@ -1285,7 +1286,7 @@ END
 
 IDR_ARTICLE MENU DISCARDABLE
 BEGIN
-    MENUITEM "Close",                           IDCANCEL
+    MENUITEM "Close",                           ID_TOOLS_FEEDVIEW
     POPUP "Menu"
     BEGIN
         MENUITEM "Open...",                     ID_ITEM_OPEN
@@ -1371,6 +1372,11 @@ IDR_REWRITING MENU DISCARDABLE
 BEGIN
     MENUITEM "New",                            ID_NEW
     MENUITEM "Cancel",                         IDCANCEL
+END
+
+IDR_EXIT MENU DISCARDABLE
+BEGIN
+    MENUITEM "Exit",                           ID_APP_EXIT
 END
 
 /////////////////////////////////////////////////////////////////////////////

@@ -96,7 +96,15 @@ static char THIS_FILE[] = __FILE__;
 #define TOPBAR_IMAGE_ASC				4
 #define TOPBAR_IMAGE_DESC				5
 
+// icons for enclosures
+#define ICON_SITE						0
+#define ICON_AUDIO						4
+#define ICON_VIDEO						6
+#define ICON_IMAGE						8
+#define ICON_OTHER						10
+
 //
+
 
 DWORD WINAPI LoadSitesStubProc(LPVOID lpParameter) {
 	CMainFrame *frame = (CMainFrame *) lpParameter;
@@ -136,6 +144,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_SETFOCUS()
 	ON_WM_SIZE()
 //	ON_WM_INITMENUPOPUP()
+	ON_WM_KEYDOWN()
 	//}}AFX_MSG_MAP
 
 	ON_COMMAND(ID_FILE_INFORMATION, OnFileInformation)
@@ -192,6 +201,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 
 	ON_COMMAND(ID_REWRITE_RULES, OnRewriteRules)
 
+	ON_COMMAND(ID_TOOLS_FEEDVIEW, OnFeedListView)
+
 	ON_MESSAGE(WM_HIBERNATE, OnHibernate)
 	ON_MESSAGE(UWM_SHOW_UPDATEBAR, OnShowUpdateBar)
 	ON_MESSAGE(UWM_UPDATE_FEED, OnUpdateFeed)
@@ -244,19 +255,30 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 	if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
+//	Config.MainView = MAIN_VIEW_SUMMARY_VIEW;
+
 	// view
 	switch (Config.MainView) {
 		case MAIN_VIEW_FEED_LIST:
 			m_wndFeedView.Create(NULL, NULL, AFX_WS_DEFAULT_VIEW, CRect(0, 0, 0, 0), this, AFX_IDW_PANE_FIRST, NULL);
 			m_wndSummaryView.Create(NULL, NULL, WS_CHILD | WS_BORDER, CRect(0, 0, 0, 0), this, AFX_IDW_PANE_FIRST + 1, NULL);
+			m_wndArticleView.Create(NULL, NULL, WS_CHILD | WS_BORDER, CRect(0, 0, 0, 0), this, AFX_IDW_PANE_FIRST + 2, NULL);
+			break;
+
+		case MAIN_VIEW_ARTICLE:
+			m_wndArticleView.Create(NULL, NULL, AFX_WS_DEFAULT_VIEW | WS_VISIBLE | WS_CLIPSIBLINGS, CRect(0, 0, 0, 0), this, AFX_IDW_PANE_FIRST, NULL);
+			m_wndSummaryView.Create(NULL, NULL, WS_CHILD | WS_BORDER, CRect(0, 0, 0, 0), this, AFX_IDW_PANE_FIRST + 1, NULL);
+			m_wndFeedView.Create(NULL, NULL, WS_CHILD | WS_BORDER, CRect(0, 0, 0, 0), this, AFX_IDW_PANE_FIRST + 2, NULL);
 			break;
 
 		default:
 		case MAIN_VIEW_SUMMARY_VIEW:
 			m_wndSummaryView.Create(NULL, NULL, AFX_WS_DEFAULT_VIEW, CRect(0, 0, 0, 0), this, AFX_IDW_PANE_FIRST, NULL);
 			m_wndFeedView.Create(NULL, NULL, WS_CHILD | WS_BORDER, CRect(0, 0, 0, 0), this, AFX_IDW_PANE_FIRST + 1, NULL);
+			m_wndArticleView.Create(NULL, NULL, WS_CHILD | WS_BORDER, CRect(0, 0, 0, 0), this, AFX_IDW_PANE_FIRST + 2, NULL);
 			break;
 	}
+	m_wndArticleView.View = &m_wndFeedView;
 
 	// top bar
 	DWORD dwStyle = WS_CHILD | WS_VISIBLE | CBRS_ALIGN_TOP | CBRS_BORDER_BOTTOM;
@@ -287,11 +309,59 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 	btn.iString     = -1;
 	ctlToolBar.InsertButton(0, &btn);
 
+
+	EnableDocking(CBRS_ALIGN_ANY);
+
+	// update bar
+	if (!m_wndUpdateBar.Create(this)) {
+	   	TRACE0("Failed to create Update Bar\n");
+		return -1;      // fail to create
+	}
+
+	// banner
+	if (!m_wndBanner.Create(this)) {
+	   	TRACE0("Failed to create Banner\n");
+		return -1;      // fail to create
+	}
+
+	// enclosure bar
+	m_wndEnclosureBar.Create(this);
+
+	// info bar
+	m_wndInfoBar.Create(this);
+
+//	m_wndTopBar.EnableDocking(CBRS_ALIGN_ANY);
+	m_wndTopBar.EnableDocking(CBRS_ALIGN_TOP);
+
+	// banner
+	m_wndBanner.SetImageList(&m_ilIcons);
+	m_wndBanner.SetSmbImageList(&m_wndFeedView.m_oIcons);
+//	m_wndBanner.EnableDocking(CBRS_ALIGN_ANY);
+	m_wndBanner.EnableDocking(CBRS_ALIGN_TOP);
+
+	m_wndEnclosureBar.EnableDocking(CBRS_ALIGN_BOTTOM);
+	m_wndInfoBar.EnableDocking(CBRS_ALIGN_BOTTOM);
+
+	DockControlBar(&m_wndTopBar);
+//	DockControlBar(&m_wndUpdateBar);
+	DockControlBar(&m_wndBanner);
+	DockControlBar(&m_wndEnclosureBar);
+	DockControlBar(&m_wndInfoBar);
+
 	///
 	switch (Config.MainView) {
 		case MAIN_VIEW_FEED_LIST:
 			SetupFeedView();
 			m_wndFeedView.SetFocus();
+			break;
+
+		case MAIN_VIEW_ARTICLE:
+			// to display the HTML ctrl in proper dimensions
+			m_wndArticleView.SetDlgCtrlID(AFX_IDW_PANE_FIRST);
+			m_wndArticleView.ShowWindow(SW_SHOW);
+
+			SetupArticleView();
+			m_wndArticleView.SetFocus();
 			break;
 
 		default:
@@ -301,21 +371,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 			break;
 	}
 
-	// update bar
-	if (!m_wndUpdateBar.Create(this)) {
-	   	TRACE0("Failed to create Update Bar\n");
-		return -1;      // fail to create
-	}
-
-	m_wndTopBar.EnableDocking(CBRS_ALIGN_ANY);
-	EnableDocking(CBRS_ALIGN_ANY);
-	DockControlBar(&m_wndTopBar);
-//	DockControlBar(&m_wndUpdateBar);
-
-	m_wndTopBar.EnableDocking(CBRS_ALIGN_TOP);
-//	m_wndUpdateBar.EnableDocking(CBRS_ALIGN_BOTTOM);
-
-//	ShowControlBar(&m_wndUpdateBar, FALSE, FALSE);
 
 	//
 	CString strLabel;
@@ -392,13 +447,27 @@ BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO*
 	LOG0(5, "CMainFrame::OnCmdMsg()");
 
 	// let the view have first crack at the command
-	if (View == FeedView) {
-		if (m_wndFeedView.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
-			return TRUE;
-	}
-	else if (View == SummaryView) {
-		if (m_wndSummaryView.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
-			return TRUE;
+	switch (View) {
+		case FeedView:
+			if (m_wndFeedView.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
+				return TRUE;
+			break;
+
+		case SummaryView:
+			if (m_wndSummaryView.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
+				return TRUE;
+			break;
+
+		case ArticleView:
+			if (m_wndArticleView.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
+				return TRUE;
+			if (m_wndBanner.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
+				return TRUE;
+			if (m_wndEnclosureBar.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
+				return TRUE;
+			if (m_wndInfoBar.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
+				return TRUE;
+			break;
 	}
 
 	if (m_wndUpdateBar.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
@@ -456,6 +525,11 @@ void CMainFrame::SetupSummaryView() {
 	ShowControlBar(&m_wndTopBar, FALSE, FALSE);
 	m_wndTopBar.EnableSortButton(FALSE);
 
+	// hide article view controls
+	ShowControlBar(&m_wndBanner, FALSE, FALSE);
+	ShowControlBar(&m_wndEnclosureBar, FALSE, FALSE);
+	ShowControlBar(&m_wndInfoBar, FALSE, FALSE);
+
 	// menu bar
 	BOOL fSuccess;
 	SHMENUBARINFO mbi = { 0 };
@@ -467,7 +541,10 @@ void CMainFrame::SetupSummaryView() {
 	mbi.hwndParent = GetSafeHwnd();
 
 	fSuccess = SHCreateMenuBar(&mbi);
+	::DestroyWindow(m_hwndCmdBar);
 	m_hwndCmdBar = mbi.hwndMB;
+
+//	m_wndArticleView.UnsubclassWindow();
 }
 
 void CMainFrame::SetupFeedView() {
@@ -476,6 +553,11 @@ void CMainFrame::SetupFeedView() {
 
 	ShowControlBar(&m_wndTopBar, TRUE, FALSE);
 	m_wndTopBar.EnableSortButton();
+
+	// hide article view controls
+	ShowControlBar(&m_wndBanner, FALSE, FALSE);
+	ShowControlBar(&m_wndEnclosureBar, FALSE, FALSE);
+	ShowControlBar(&m_wndInfoBar, FALSE, FALSE);
 
 	// menu bar
 	BOOL fSuccess;
@@ -488,22 +570,66 @@ void CMainFrame::SetupFeedView() {
 	mbi.hwndParent = GetSafeHwnd();
 
 	fSuccess = SHCreateMenuBar(&mbi);
+	::DestroyWindow(m_hwndCmdBar);
 	m_hwndCmdBar = mbi.hwndMB;
+
+//	m_wndArticleView.UnsubclassWindow();
+}
+
+void CMainFrame::SetupArticleView() {
+	View = ArticleView;
+	Config.MainView = MAIN_VIEW_ARTICLE;
+
+	ShowControlBar(&m_wndTopBar, FALSE, FALSE);
+	m_wndTopBar.EnableSortButton(FALSE);
+
+	// show article view controls
+	ShowControlBar(&m_wndBanner, TRUE, FALSE);
+	ShowControlBar(&m_wndEnclosureBar, FALSE, FALSE);		// initially hidden
+	ShowControlBar(&m_wndInfoBar, FALSE, FALSE);		// initially hidden
+
+	// menu bar
+	BOOL fSuccess;
+	SHMENUBARINFO mbi = { 0 };
+
+	mbi.cbSize = sizeof(mbi);
+	mbi.dwFlags = SHCMBF_HMENU;
+	mbi.nToolBarId = IDR_ARTICLE;
+	mbi.hInstRes = AfxGetInstanceHandle();
+	mbi.hwndParent = GetSafeHwnd();
+
+	fSuccess = SHCreateMenuBar(&mbi);
+	::DestroyWindow(m_hwndCmdBar);
+	m_hwndCmdBar = mbi.hwndMB;
+
+//	m_wndArticleView.SubclassWindow(GetSafeHwnd());
 }
 
 void CMainFrame::SwitchView(EView view) {
 	if (View == view)
 		return;
 
-	if (view == SummaryView) {
-		SwitchToView(&m_wndFeedView, &m_wndSummaryView);
-		SetupSummaryView();
-		m_wndSummaryView.SetFocus();
-	}
-	else if (view == FeedView) {
-		SwitchToView(&m_wndSummaryView, &m_wndFeedView);
-		SetupFeedView();
-		m_wndFeedView.SetFocus();
+	switch (view) {
+		case SummaryView:
+			SwitchToView(&m_wndFeedView, &m_wndSummaryView);
+			SetupSummaryView();
+			m_wndSummaryView.SetFocus();
+			break;
+
+		case FeedView:
+			if (View == ArticleView)
+				SwitchToView(&m_wndArticleView, &m_wndFeedView);
+			else
+				SwitchToView(&m_wndSummaryView, &m_wndFeedView);
+			SetupFeedView();
+			m_wndFeedView.SetFocus();
+			break;
+
+		case ArticleView:
+			SwitchToView(&m_wndFeedView, &m_wndArticleView);
+			SetupArticleView();
+			m_wndArticleView.SetFocus();
+			break;
 	}
 
 	Config.SaveUI();
@@ -566,15 +692,31 @@ void CMainFrame::LoadSites() {
 		// we have sites, but ActSiteIdx is out out the range -> activate the first site
 		if (Config.ActSiteIdx < -2 || Config.ActSiteIdx >= SiteList.GetCount())
 			Config.ActSiteIdx = 0;
-	}
 
-	if (View == FeedView) {
-		if (Config.ActSiteIdx >= -2 && Config.ActSiteIdx < SiteList.GetCount()) {
-			SelectSite(Config.ActSiteIdx);
-			PreloadSite(Config.ActSiteIdx);
+		CSiteItem *si = SiteList.GetAt(Config.ActSiteIdx);
+		if (View == FeedView || View == ArticleView) {
+			if (Config.ActSiteIdx >= -2 && Config.ActSiteIdx < SiteList.GetCount()) {
+				SelectSite(Config.ActSiteIdx);
+				PreloadSite(Config.ActSiteIdx);
+			}
+			else {
+				// TODO: switch to summary view
+			}
 		}
-	}
-	else {
+
+		if (View == ArticleView) {
+			if (si->Feed != NULL) {
+				LOG2(1, "FeedItem = %d, %d", Config.ActFeedItem, si->Feed->GetItemCount());
+				if (Config.ActFeedItem >= 0 && Config.ActFeedItem < si->Feed->GetItemCount()) {
+					m_wndFeedView.OpenItem(Config.ActFeedItem);
+				}
+				else {
+					// switch to feed view
+					SwitchView(FeedView);
+					SelectSite(Config.ActSiteIdx);
+				}
+			}
+		}
 	}
 
 	Loading = FALSE;
@@ -771,6 +913,8 @@ void CMainFrame::OnSiteSelected(UINT nID) {
 		SelectSite(nSite);
 		PreloadSite(nSite);
 	}
+	else if (View == ArticleView) {
+	}
 	else {
 		if (Config.ActSiteIdx != nSite) {
 			SelectSite(nSite);
@@ -784,15 +928,8 @@ void CMainFrame::OnSiteSelected(UINT nID) {
 void CMainFrame::OnToolsSummaryview() {
 	LOG0(1, "CMainFrame::OnToolsSummaryview()");
 
-	if (View == FeedView) {
-		// switch to summary view
-		SwitchView(SummaryView);
-		AddSiteToSave(Config.ActSiteIdx);
-	}
-	else {
-		SwitchView(FeedView);
-		SelectSite(Config.ActSiteIdx);
-	}
+	SwitchView(SummaryView);
+	AddSiteToSave(Config.ActSiteIdx);
 
 	UpdateTopBar();
 }
@@ -817,7 +954,6 @@ void CMainFrame::SelectSite(int nSite) {
 
 	Config.ActSiteIdx = nSite;
 
-
 	if (nSite >= 0 && nSite < SiteList.GetCount()) {
 		CSiteItem *si = SiteList.GetAt(nSite);
 		if (si->Status == CSiteItem::Empty)
@@ -828,10 +964,10 @@ void CMainFrame::SelectSite(int nSite) {
 		SaveSiteItemUnreadCount(si, nSite);
 		SaveSiteItemFlaggedCount(si, nSite);
 
-		if (View == FeedView) {
+//		if (View == FeedView) {
 			m_wndFeedView.InsertItems(si);
-			UpdateSort();
-		}
+//			UpdateSort();
+//		}
 	}
 	else if (nSite == SITE_UNREAD) {
 		SetTopBarText(IDS_LOADING, TOPBAR_IMAGE_LOADING);
@@ -860,8 +996,8 @@ void CMainFrame::SelectSite(int nSite) {
 		UnreadItems.Feed = unreadFeed;
 		UnreadItems.Status = CSiteItem::Ok;
 
+		m_wndFeedView.InsertItems(&UnreadItems);
 		if (View == FeedView) {
-			m_wndFeedView.InsertItems(&UnreadItems);
 			UpdateSort();
 		}
 	}
@@ -892,8 +1028,8 @@ void CMainFrame::SelectSite(int nSite) {
 		FlaggedItems.Feed = flaggedFeed;
 		FlaggedItems.Status = CSiteItem::Ok;
 
+		m_wndFeedView.InsertItems(&FlaggedItems);
 		if (View == FeedView) {
-			m_wndFeedView.InsertItems(&FlaggedItems);
 			UpdateSort();
 		}
 	}
@@ -1096,6 +1232,7 @@ void CMainFrame::OnToolsOptions() {
 		NotifyTodayPlugin(ReadConfigMessage);
 
 		m_wndFeedView.UpdateItemHeight();
+		m_wndSummaryView.SetItemHeight();
 		m_wndSummaryView.UpdateItemHeight();
 	}
 }
@@ -1433,12 +1570,7 @@ void CMainFrame::OnFileInformation() {
 		sheet.AddPage(&pgDescription);
 	}
 	else if (si->Type == CSiteItem::VFolder) {
-		CString strTitle;
-		switch (SiteList.GetIndexOf(si)) {
-			case SITE_FLAGGED: strTitle.LoadString(IDS_FLAGGED);
-			case SITE_UNREAD:  strTitle.LoadString(IDS_UNREAD);
-		}
-		pgGeneral.m_strSiteName = strTitle;
+		pgGeneral.m_strSiteName = si->Name;
 		pgGeneral.m_nFileSize = 0;
 
 		memset(&pgGeneral.m_stLastUpdated, 0, sizeof(pgGeneral.m_stLastUpdated));
@@ -1959,21 +2091,21 @@ void CMainFrame::PreloadThread() {
 void CMainFrame::PreloadSite(int idx) {
 	LOG1(5, "CMainFrame::PreloadSite(%d)", idx);
 
-	if (SiteList.GetCount() > 0 && (idx >= 0 && idx < SiteList.GetCount())) {
-		idx = idx % SiteList.GetCount();
-
-		int site = idx;
-		do {
-			site = (site + 1) % SiteList.GetCount();
-
-			CSiteItem *si = SiteList.GetAt(site);
-			if (si->Status == CSiteItem::Empty) {
-				PreloadList.AddTail(si);
-				SetEvent(HPreloadSiteEvent);
-				break;
-			}
-		} while (idx != site);
-	}
+//	if (SiteList.GetCount() > 0 && (idx >= 0 && idx < SiteList.GetCount())) {
+//		idx = idx % SiteList.GetCount();
+//
+//		int site = idx;
+//		do {
+//			site = (site + 1) % SiteList.GetCount();
+//
+//			CSiteItem *si = SiteList.GetAt(site);
+//			if (si->Status == CSiteItem::Empty) {
+//				PreloadList.AddTail(si);
+//				SetEvent(HPreloadSiteEvent);
+//				break;
+//			}
+//		} while (idx != site);
+//	}
 }
 
 LRESULT CMainFrame::OnOpenSite(WPARAM wParam, LPARAM lParam) {
@@ -2103,4 +2235,154 @@ void CMainFrame::SyncItemsThread() {
 void CMainFrame::SyncItem(CFeedItem *fi) {
 	ItemsToSync.AddTail(fi);
 	SetEvent(HSyncItemEvent);
+}
+
+void CMainFrame::OnFeedListView() {
+	SwitchView(FeedView);
+	UpdateTopBar();
+}
+
+void CMainFrame::SetupEnclosureBar(CFeedItem *fi) {
+	if (fi->HasEnclosure()) {
+		CEnclosureItem *ei = fi->Enclosures.GetHead();
+
+		CString name = GetUrlFileName(ei->URL);
+		if (name.IsEmpty())
+			name.LoadString(IDS_ENCLOSURE);
+		m_wndEnclosureBar.SetName(name);
+		BOOL cached = IsEnclosureCached(ei->URL);
+		m_wndEnclosureBar.SetCached(cached);
+		m_wndEnclosureBar.SetSize(ei->Length);
+		// set icon according to the file type
+		int nImage;
+		switch (ei->Type) {
+			case ENCLOSURE_TYPE_AUDIO: nImage = ICON_AUDIO; break;
+			case ENCLOSURE_TYPE_VIDEO: nImage = ICON_VIDEO; break;
+			case ENCLOSURE_TYPE_IMAGE: nImage = ICON_IMAGE; break;
+			default: nImage = ICON_OTHER; break;
+		}
+
+		if (cached)
+			m_wndEnclosureBar.SetIcon(m_ilIcons.ExtractIcon(nImage));
+		else
+			m_wndEnclosureBar.SetIcon(m_ilIcons.ExtractIcon(nImage - 1));
+
+//		m_wndEnclosureBar.ShowWindow(SW_SHOW);
+		ShowControlBar(&m_wndEnclosureBar, TRUE, FALSE);
+		m_wndEnclosureBar.Invalidate();
+		m_wndEnclosureBar.UpdateWindow();
+	}
+	else {
+//		m_wndEnclosureBar.ShowWindow(SW_HIDE);
+		ShowControlBar(&m_wndEnclosureBar, FALSE, FALSE);
+	}
+
+
+}
+
+BOOL CMainFrame::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult) {
+	if (View == ArticleView) {
+		return m_wndArticleView.OnNotify(wParam, lParam, pResult);
+	}
+	else {
+		return CFrameWnd::OnNotify(wParam, lParam, pResult);
+	}
+}
+
+BOOL CMainFrame::PreTranslateMessage(MSG* pMsg) {
+	if (View == ArticleView) {
+		static BOOL bDoIdle = TRUE;
+
+		MSG msg;
+		if (!::PeekMessage(&msg, NULL, NULL, NULL, PM_NOREMOVE) && bDoIdle) {
+			bDoIdle = FALSE;
+		}
+		else {
+			if (AfxGetApp()->IsIdleMessage(pMsg) && pMsg->message != 0x3FC) {
+				bDoIdle = TRUE;
+			}
+		}
+
+		if (pMsg->message == WM_KEYDOWN) {
+			if (pMsg->wParam == VK_UP || pMsg->wParam == VK_DOWN) {
+				m_wndArticleView.HotSpot = TRUE;
+			}
+
+			if (pMsg->wParam == VK_LEFT ||
+				pMsg->wParam == VK_RIGHT)
+			{
+				TranslateMessage(pMsg);
+				SendMessage(pMsg->message, pMsg->wParam, pMsg->lParam);
+				return TRUE;
+			}
+			else if (Config.MsgScrollThrought && (pMsg->wParam == VK_UP || pMsg->wParam == VK_DOWN)) {
+				TranslateMessage(pMsg);
+				SendMessage(pMsg->message, pMsg->wParam, pMsg->lParam);
+				return TRUE;
+			}
+			else if (pMsg->wParam == VK_RETURN) {
+				TranslateMessage(pMsg);
+				SendMessage(pMsg->message, pMsg->wParam, pMsg->lParam);
+				if (m_wndArticleView.HotSpot) {
+					return CFrameWnd::PreTranslateMessage(pMsg);
+				}
+				else {
+					return TRUE;
+				}
+			}
+			else {
+				return CFrameWnd::PreTranslateMessage(pMsg);
+			}
+		}
+		else {
+			return CFrameWnd::PreTranslateMessage(pMsg);
+		}
+	}
+	else
+		return CFrameWnd::PreTranslateMessage(pMsg);
+}
+
+void CMainFrame::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
+	LOG3(1, "CMainFrame::OnKeyDown(%d, %d, %d)", nChar, nRepCnt, nFlags);
+
+	if (View == ArticleView) {
+		switch (nChar) {
+			case VK_RETURN:
+				m_wndArticleView.OnItemOpen();
+				break;
+
+			case VK_LEFT:
+				// Move to previous item
+				m_wndArticleView.OnItemPrev();
+				break;
+
+			case VK_RIGHT:
+				// Move to next item
+				m_wndArticleView.OnItemNext();
+				break;
+
+			case VK_UP:
+				m_wndArticleView.OnScrollUp();
+				m_wndArticleView.HotSpot = TRUE;
+				break;
+
+			case VK_DOWN:
+				m_wndArticleView.OnScrollDown();
+				m_wndArticleView.HotSpot = TRUE;
+				break;
+
+			default:
+				CFrameWnd::OnKeyDown(nChar, nRepCnt, nFlags);
+				break;
+		}
+	}
+	else
+		CFrameWnd::OnKeyDown(nChar, nRepCnt, nFlags);
+}
+
+void CMainFrame::NoNewMessage() {
+	// info bar
+	m_wndInfoBar.SetText(IDS_NO_MORE_MESSAGES);
+	ShowControlBar(&m_wndInfoBar, TRUE, FALSE);
+	m_wndInfoBar.StartTimer();
 }

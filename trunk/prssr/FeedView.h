@@ -29,7 +29,7 @@
 
 class CSiteItem;
 class CFeedItem;
-class CArticleDlg;
+//class CArticleDlg;
 class CSortInfo;
 
 // icons
@@ -176,14 +176,14 @@ protected:
 	int MoveToNextChannel();
 	int MoveToPrevChannel();
 
-	void SetupArticleDlg(int item);
+//	void SetupArticleDlg(int item);
 	void OpenItem(int item);
 	void FlagItem(int item);
 	void UnflagItem(int item);
 	void OpenItem(CFeedItem *feedItem);
 
 	// article dialog
-	CArticleDlg *m_pArticleDlg;
+//	CArticleDlg *m_pArticleDlg;
 
 	CSiteItem *SiteItem;
 
@@ -201,7 +201,8 @@ protected:
 	static const int ITEM_MARGIN;
 
 	friend DWORD WINAPI ScrollThread(LPVOID lpParam);
-	friend class CArticleDlg;
+
+	friend class CArticleView;
 	friend class CMainFrame;
 };
 

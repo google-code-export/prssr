@@ -50,7 +50,7 @@ static char THIS_FILE[] = __FILE__;
 CSummaryView::CSummaryView() {
 	NoItemsId = IDS_NO_FEEDS_SUMM;
 
-	ItemHeight = ITEM_MARGIN + Appearance.SummaryViewFontCfg.Size + 11;
+	SetItemHeight();
 }
 
 CSummaryView::~CSummaryView() {
@@ -70,6 +70,10 @@ BEGIN_MESSAGE_MAP(CSummaryView, CGroupView)
 	ON_WM_SIZE()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
+
+void CSummaryView::SetItemHeight() {
+	ItemHeight = ITEM_MARGIN + Appearance.SummaryViewFontCfg.Size + 11;
+}
 
 void CSummaryView::CreateFonts() {
 	m_fntSmall.DeleteObject();
@@ -492,3 +496,4 @@ void CSummaryView::OnSize(UINT nType, int cx, int cy) {
 	if (::IsWindow(m_ctlSiteManLink.GetSafeHwnd()))
 		m_ctlSiteManLink.SetWindowPos(NULL, 0, height - SCALEY(54) - SCALEY(20), width, SCALEY(20), SWP_NOZORDER);
 }
+

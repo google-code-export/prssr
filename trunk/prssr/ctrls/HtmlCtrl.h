@@ -28,13 +28,14 @@
 /////////////////////////////////////////////////////////////////////////////
 // CHTMLCtrl
 
-class CHTMLCtrl {//: public CWnd {
+class CHTMLCtrl : public CWnd {
 public:
 	CHTMLCtrl();
 
-	HWND GetHwnd() { return HWnd; }
+//	HWND GetHwnd() { return HWnd; }
 
-	BOOL Create(DWORD dwStyle, CRect &rc, HWND parent, UINT id);
+//	BOOL Create(DWORD dwStyle, CRect &rc, HWND parent, UINT id);
+	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext = NULL);
 
 	void Clear();
 	void EnableContextMenu(BOOL enable = TRUE);
@@ -50,14 +51,13 @@ public:
 
 protected:
 	static HINSTANCE HHtmlDLL;
-	HWND HWnd;
+//	HWND HWnd;
 
-/*	// Generated message map functions
+	// Generated message map functions
 	//{{AFX_MSG(CHTMLCtrl)
 	//}}AFX_MSG
 
 	DECLARE_MESSAGE_MAP()
-*/
 };
 
 /////////////////////////////////////////////////////////////////////////////

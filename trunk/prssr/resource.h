@@ -121,6 +121,7 @@
 #define IDR_KEYWORD_MANAGER             341
 #define IDR_FULLSCREEN                  342
 #define IDR_REWRITING                   343
+#define IDR_EXIT                        344
 
 #define IDS_TODAY                       400
 #define IDS_YESTERDAY                   401
@@ -690,6 +691,7 @@
 #define ID_FULLSCREEN                   32879
 #define ID_REWRITE_RULES                32880
 #define ID_SYNC_SUBSCRIPTIONS           32881
+#define ID_TOOLS_FEEDVIEW               32882
 
 #define ID_SOCIAL_BOOKMARK_BASE			 33000
 

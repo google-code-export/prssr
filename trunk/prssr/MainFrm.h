@@ -27,12 +27,16 @@
 
 #include "../share/SyncList.h"
 #include "ctrls/CeToolBar.h"
+#include "ctrls/Banner.h"
+#include "ctrls/EnclosureBar.h"
+#include "ctrls/InfoBar.h"
 #include "Site.h"
 //#include "Download.h"
 #include "UpdateBar.h"
 
 #include "FeedView.h"
 #include "SummaryView.h"
+#include "ArticleView.h"
 #include "sync/FeedSync.h"
 
 #define MF_NUM_TOOLTIPS				6
@@ -59,6 +63,9 @@ public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo);
 	virtual BOOL DestroyWindow();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	virtual BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult);
+	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	//}}AFX_VIRTUAL
 
 public:
@@ -76,11 +83,17 @@ protected:  // control bar embedded members
 
 	enum EView {
 		FeedView = 1,
-		SummaryView = 2
+		SummaryView = 2,
+		ArticleView = 3
 	} View;
 	CFeedView m_wndFeedView;
 	CSummaryView m_wndSummaryView;
-	TCHAR *m_ToolTipsTable[MF_NUM_TOOLTIPS];
+
+	// message view
+	CBanner m_wndBanner;
+	CEnclosureBar m_wndEnclosureBar;
+	CInfoBar m_wndInfoBar;
+	CArticleView m_wndArticleView;
 
 	// update bar
 	CUpdateBar m_wndUpdateBar;
@@ -99,7 +112,10 @@ protected:
 	void SwitchToView(CWnd *pOldActiveView, CWnd *pNewView);
 	void SetupSummaryView();
 	void SetupFeedView();
+	void SetupArticleView();
 
+	void SetupEnclosureBar(CFeedItem *fi);
+	void NoNewMessage();
 	void SetTopBarText(UINT nID, int nIconIdx);
 	void SetTopBarText(const CString &strText, int nIconIdx);
 	void UpdateTopBar();
@@ -203,6 +219,8 @@ protected:
 
 	afx_msg void OnRewriteRules();
 
+	afx_msg void OnFeedListView();
+
 	// sort
 	void UpdateSort();
 	afx_msg void OnSortChange();
@@ -225,7 +243,7 @@ protected:
 	friend class CPrssrApp;
 	friend class CFeedView;
 	friend class CSummaryView;
-	friend class CArticleDlg;
+	friend class CArticleView;
 	friend class CCacheManPg;
 	friend class CCacheManHtmlPg;
 	friend class CCacheManEnclosuresPg;

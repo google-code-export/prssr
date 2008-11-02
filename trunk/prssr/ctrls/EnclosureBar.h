@@ -28,10 +28,14 @@
 /////////////////////////////////////////////////////////////////////////////
 // CEnclosureBar window
 
-class CEnclosureBar : public CStatic {
+class CEnclosureBar : public CControlBar {
 // Construction
 public:
 	CEnclosureBar();
+
+	BOOL Create(CWnd *parentWnd);
+	virtual void OnUpdateCmdUI(CFrameWnd *pTarget, BOOL bDisableIfNoHndler);
+	virtual CSize CalcFixedLayout(BOOL bStretch, BOOL bHorz);
 
 // Attributes
 public:
@@ -57,7 +61,7 @@ public:
 	// Generated message map functions
 protected:
 	CFont m_fntBold;
-	
+
 	DWORD m_nSize;
 	CString m_strName;
 	HICON m_hIcon;

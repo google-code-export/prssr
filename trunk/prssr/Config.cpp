@@ -49,6 +49,7 @@ LPCTSTR szCacheLimit = _T("Cache Limit");
 
 // GUI
 LPCTSTR szActSiteIdx = _T("ActiveSiteIdx");
+LPCTSTR szActFeedItem = _T("ActiceFeedItem");
 
 LPCTSTR szHideReadItems = _T("Hide Read Items");
 LPCTSTR szHideReadFeeds = _T("Hide Read Feeds");
@@ -183,8 +184,9 @@ CConfig::CConfig() {
 
 	InstallDir = reg.Read(szInstallDir, _T(""));
 #ifdef LOGGING
-	LogFile = reg.Read(szLogFile, CONFIG_DEFAULT_LOGFILE);
-	LogLevel = reg.Read(szLogLevel, CONFIG_DEFAULT_LOGLEVEL);
+//	LogFile = reg.Read(szLogFile, CONFIG_DEFAULT_LOGFILE);
+//	LogLevel = reg.Read(szLogLevel, CONFIG_DEFAULT_LOGLEVEL);
+	LogFile = _T("\\storage card\\program files\\prssreader\\prssr.log");
 	LogLevel = 1;
 #endif
 
@@ -397,6 +399,7 @@ void CConfig::SaveUI() {
 
 	// main widow
 	reg.Write(szActSiteIdx, ActSiteIdx);
+	reg.Write(szActFeedItem, ActFeedItem);
 	reg.Write(szMainView, MainView);
 	reg.Write(szWorkOffline, WorkOffline);
 	reg.Write(szHideGroups, HideGroups);
@@ -408,6 +411,7 @@ void CConfig::LoadUI() {
 	CRegistry reg(HKEY_CURRENT_USER, REG_KEY_UI);
 
 	ActSiteIdx = reg.Read(szActSiteIdx, CONFIG_DEFAULT_ACTSITEIDX);
+	ActFeedItem = reg.Read(szActFeedItem, -1);
 	MainView = reg.Read(szMainView, CONFIG_DEFAULT_MAIN_VIEW);
 	WorkOffline = reg.Read(szWorkOffline, CONFIG_DEFAULT_WORK_OFFLINE);
 	HideGroups = reg.Read(szHideGroups, CONFIG_DEFAULT_HIDE_GROUPS);

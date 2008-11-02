@@ -42,6 +42,7 @@ enum ESyncSite {
 // Main View
 #define MAIN_VIEW_FEED_LIST							0
 #define MAIN_VIEW_SUMMARY_VIEW						1
+#define MAIN_VIEW_ARTICLE							2
 
 /*// feed preload
 #define FEED_PRELOAD_SINGLE							1
@@ -181,6 +182,7 @@ public:
 	// GUI
 	// main window
 	int ActSiteIdx;
+	int ActFeedItem;
 	BOOL WorkOffline;
 	int MainView;
 	BOOL HideGroups;
