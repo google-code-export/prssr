@@ -65,7 +65,6 @@ public:
 	virtual BOOL DestroyWindow();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	virtual BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult);
-	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	//}}AFX_VIRTUAL
 
 public:
@@ -105,6 +104,10 @@ protected:  // control bar embedded members
 	BOOL SiteMenuOpened;
 	BOOL Loading;				// loading site list
 	BOOL WorkOffline;			// TRUE if in Offline mode
+
+	// article view touch scrolling
+	BOOL m_bClick;
+	CPoint LastCursorPos;
 
 // Generated message map functions
 protected:
@@ -165,6 +168,10 @@ protected:
 	afx_msg void OnSetFocus(CWnd *pOldWnd);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnInitMenuPopup(CMenu* pMenu, UINT nIndex, BOOL bSysMenu);
+	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	//}}AFX_MSG
 
 	afx_msg void OnFileProperties();

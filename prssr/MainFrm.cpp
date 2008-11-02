@@ -145,6 +145,9 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_SIZE()
 //	ON_WM_INITMENUPOPUP()
 	ON_WM_KEYDOWN()
+	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONUP()
+	ON_WM_MOUSEMOVE()
 	//}}AFX_MSG_MAP
 
 	ON_COMMAND(ID_FILE_INFORMATION, OnFileInformation)
@@ -706,7 +709,6 @@ void CMainFrame::LoadSites() {
 
 		if (View == ArticleView) {
 			if (si->Feed != NULL) {
-				LOG2(1, "FeedItem = %d, %d", Config.ActFeedItem, si->Feed->GetItemCount());
 				if (Config.ActFeedItem >= 0 && Config.ActFeedItem < si->Feed->GetItemCount()) {
 					m_wndFeedView.OpenItem(Config.ActFeedItem);
 				}
@@ -2332,9 +2334,33 @@ BOOL CMainFrame::PreTranslateMessage(MSG* pMsg) {
 				return CFrameWnd::PreTranslateMessage(pMsg);
 			}
 		}
-		else {
-			return CFrameWnd::PreTranslateMessage(pMsg);
+		else if (pMsg->message == WM_LBUTTONDOWN || pMsg->message == WM_LBUTTONUP || pMsg->message == WM_MOUSEMOVE) {
+			if (View == ArticleView) {
+				CRect rc;
+				m_wndArticleView.GetWindowRect(rc);
+
+				CPoint pt;
+				pt.x = LOWORD(pMsg->lParam);
+				pt.y = HIWORD(pMsg->lParam);
+				ClientToScreen(&pt);
+
+				if (rc.PtInRect(pt) && Config.NavigationType == NAVIGATION_TOUCH) {
+//					LOG0(1, "Yes");
+					TranslateMessage(pMsg);
+					SendMessage(pMsg->message, pMsg->wParam, pMsg->lParam);
+					return TRUE;
+				}
+				else {
+//					LOG0(1, "No");
+//					CFrameWnd::OnLButtonUp(nFlags, point);
+					return CFrameWnd::PreTranslateMessage(pMsg);
+				}
+			}
+			else
+				return CFrameWnd::PreTranslateMessage(pMsg);
 		}
+		else
+			return CFrameWnd::PreTranslateMessage(pMsg);
 	}
 	else
 		return CFrameWnd::PreTranslateMessage(pMsg);
@@ -2383,4 +2409,62 @@ void CMainFrame::NoNewMessage() {
 	m_wndInfoBar.SetText(IDS_NO_MORE_MESSAGES);
 	ShowControlBar(&m_wndInfoBar, TRUE, FALSE);
 	m_wndInfoBar.StartTimer();
+}
+
+
+void CMainFrame::OnLButtonDown(UINT nFlags, CPoint point) {
+	// NOTE: This is called only when ArticleView is active
+
+	CPoint pt = point;
+	ClientToScreen(&pt);
+
+	m_bClick = TRUE;
+	LastCursorPos = pt;
+
+//	SetCapture();
+	HWND hSB = ::GetWindow(m_wndArticleView.GetSafeHwnd(), GW_CHILD);
+	if (hSB == NULL) hSB = m_wndArticleView.GetSafeHwnd();
+	::SendMessage(hSB, WM_LBUTTONDOWN, nFlags, MAKELPARAM(point.x, point.y));
+}
+
+void CMainFrame::OnLButtonUp(UINT nFlags, CPoint point) {
+	// NOTE: This is called only when ArticleView is active
+
+//	ReleaseCapture();
+	HWND hSB = ::GetWindow(m_wndArticleView.GetSafeHwnd(), GW_CHILD);
+	if (hSB == NULL) hSB = m_wndArticleView.GetSafeHwnd();
+	::SendMessage(hSB, WM_LBUTTONUP, nFlags, MAKELPARAM(point.x, point.y));
+}
+
+void CMainFrame::OnMouseMove(UINT nFlags, CPoint point) {
+	// NOTE: This is called only when ArticleView is active
+
+	CPoint pt = point;
+	ClientToScreen(&pt);
+
+	if (abs(pt.x - LastCursorPos.x) > SCALEX(3) || abs(pt.y - LastCursorPos.y) > SCALEX(3)) {
+		m_bClick = FALSE;
+
+		// Scrolling
+		int delta = (LastCursorPos.y - pt.y) / 2;
+
+		SCROLLINFO si;
+		HWND hSB = ::GetWindow(m_wndArticleView.GetSafeHwnd(), GW_CHILD);
+		if (hSB == NULL) hSB = m_wndArticleView.GetSafeHwnd();
+
+		si.cbSize = sizeof(SCROLLINFO);
+		si.fMask = SIF_PAGE | SIF_POS | SIF_RANGE | SIF_TRACKPOS;
+		::GetScrollInfo(hSB, SB_VERT, &si);
+
+		int pos = si.nPos;
+		si.nPos += delta;
+		if (si.nPos < si.nMin) si.nPos = si.nMin;
+		if (si.nPos > si.nMax) si.nPos = si.nMax;
+
+		delta = si.nPos - pos;
+		if (delta > 0) ::SendMessage(hSB, WM_VSCROLL, SB_LINEDOWN, NULL);
+		else if (delta < 0) ::SendMessage(hSB, WM_VSCROLL, SB_LINEUP, NULL);
+
+		LastCursorPos = pt;
+	}
 }
