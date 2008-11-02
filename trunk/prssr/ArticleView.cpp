@@ -177,7 +177,8 @@ void CArticleView::ShowArticle() {
 		CString description ;
 		description.Format(_T("<div>%s</div>"), m_pArticle->Description);		// workaround for libsgml
 		AddText(L"<p>");
-		AddText(description);
+		for (int j = 0; j < 20; j++)
+			AddText(description);
 		AddText(L"</p>");
 
 		// author
