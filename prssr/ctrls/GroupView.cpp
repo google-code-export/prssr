@@ -805,16 +805,10 @@ void CGroupView::OnLButtonDown(UINT nFlags, CPoint point) {
 void CGroupView::OnLButtonUp(UINT nFlags, CPoint point) {
 	HGROUPITEM hItem = ItemFromPoint(point);
 	if (m_hClickedItem != NULL && hItem != NULL && hItem == m_hClickedItem) {
-		if (0 <= point.x && point.x <= SCALEX(19)) {
-			if (ItemHasChildren(m_hClickedItem))
-				ToggleItem(m_hClickedItem);
-			else
-				OnItemClicked();
-		}
-		else {
-			// do some action - on item clicked
+		if (ItemHasChildren(m_hClickedItem))
+			ToggleItem(m_hClickedItem);
+		else
 			OnItemClicked();
-		}
 	}
 	m_hClickedItem = NULL;
 }
