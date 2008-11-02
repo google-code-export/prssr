@@ -63,9 +63,16 @@ BOOL CEnclosureBar::Create(CWnd *parentWnd) {
 	CRect rect; rect.SetRectEmpty();
 	ret = CWnd::Create(NULL, NULL, WS_CHILD, rect, parentWnd, AFX_IDW_TOOLBAR + 5);
 
+	AfxSetResourceHandle(theApp.GetDPISpecificInstanceHandle());
+	m_ilIcons.Create(IDB_CACHE_ITEMS, SCALEX(16), 0, RGB(255, 0, 255));
+	AfxSetResourceHandle(AfxGetInstanceHandle());
+
 	return ret;
 }
 
+void CEnclosureBar::SetIcon(int index) {
+	m_hIcon = m_ilIcons.ExtractIcon(index);
+}
 
 BEGIN_MESSAGE_MAP(CEnclosureBar, CControlBar)
 	//{{AFX_MSG_MAP(CEnclosureBar)
