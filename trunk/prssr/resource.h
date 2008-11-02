@@ -350,13 +350,15 @@
 #define IDS_EMPTY_NAME                  647
 #define IDS_EMPTY_HOST_NAME             648
 #define IDS_ABOUT                       649
-#define IDS_PURGE_CACHE_WARNING	        650
+#define IDS_PURGE_CACHE_WARNING	         650
 #define IDS_AUTHENTICATING              651
 #define IDS_AUTHENTICATION_FAILED       652
 #define IDS_SYNCING                     653
 #define IDS_ERROR_GETTING_TOKEN         654
 #define IDS_DISK_FULL                   655
 #define IDS_NO_UNREAD_ITEMS             656
+#define IDS_NAVIGATION_TOUCH            657
+#define IDS_NAVIGATION_NORMAL           658
 
 // controls
 #define IDC_HTML                        1000
@@ -607,6 +609,7 @@
 #define IDC_SYNC_SITE                   1248
 #define IDC_SYNC_USERNAME               1249
 #define IDC_SYNC_PASSWORD               1250
+#define IDC_NAVIGATION                  1251
 
 #define ID_TOOLS_OPTIONS                32774
 #define ID_TOOLS_SITEMANAGER            32775

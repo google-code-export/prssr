@@ -73,6 +73,7 @@ LPCTSTR szDownloadThreads = _T("Download Threads");
 LPCTSTR szMoveToUnread = _T("Move To Unread");
 LPCTSTR szMoveChannel = _T("Move Channel");
 LPCTSTR szWarnFeedMove = _T("Warn Feed Move");
+LPCTSTR szNavigationType = _T("Navigation Type");
 
 // read options
 LPCTSTR szNewSeconds = _T("New Seconds");
@@ -195,6 +196,7 @@ CConfig::CConfig() {
 	UserAgent = CONFIG_DEFAULT_USERAGENT;
 
 	NotifyNew = CONFIG_DEFAULT_NOTIFYNEW;
+	NavigationType = CONFIG_DEFAULT_NAVIGATION_TYPE;
 
 	CacheLocation = _T("");
 	CacheLimit = CONFIG_DEFAULT_CACHE_LIMIT;
@@ -262,6 +264,8 @@ void CConfig::Destroy() {
 void CConfig::Save() {
 	CRegistry reg(HKEY_CURRENT_USER, REG_KEY_CONFIGURATION);
 
+	reg.Write(szNavigationType, NavigationType);
+
 	reg.Write(szCacheLocation, CacheLocation);
 	reg.Write(szCacheLimit, CacheLimit);
 
@@ -303,6 +307,8 @@ void CConfig::Save() {
 
 void CConfig::Load() {
 	CRegistry reg(HKEY_CURRENT_USER, REG_KEY_CONFIGURATION);
+
+	NavigationType = reg.Read(szNavigationType, CONFIG_DEFAULT_NAVIGATION_TYPE);
 
 	// cache
 	CacheLocation = reg.Read(szCacheLocation, _T("\\My Documents\\pRSSreader"));

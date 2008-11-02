@@ -51,6 +51,9 @@ enum ESyncSite {
 #define FEED_PRELOAD_ALL							4
 */
 
+#define NAVIGATION_TOUCH							0
+#define NAVIGATION_NORMAL							1
+
 // config
 #define CONFIG_DEFAULT_CACHE_LIMIT					50
 
@@ -71,6 +74,7 @@ enum ESyncSite {
 #define CONFIG_DEFAULT_HIDE_READ_ITEMS				FALSE
 #define CONFIG_DEFAULT_UPDATE_ONLY					FALSE
 #define CONFIG_DEFAULT_BACKGROUNDUPDATE				TRUE
+#define CONFIG_DEFAULT_NAVIGATION_TYPE				NAVIGATION_TOUCH
 
 #define CONFIG_DEFAULT_CLEARERRORLOG				TRUE
 #define CONFIG_DEFAULT_USERAGENT					UA_PRSSREADER
@@ -193,6 +197,7 @@ public:
 
 	BOOL NotifyNew;
 	BOOL WrapAround;
+	int NavigationType;
 
 	// cache
 	CString CacheLocation;

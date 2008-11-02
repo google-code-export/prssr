@@ -68,8 +68,6 @@ BOOL CFeedView::Register() {
 	//you can specify your own window procedure
 	wndcls.lpfnWndProc = ::DefWindowProc;
 	wndcls.hInstance = AfxGetInstanceHandle();
-//	wndcls.hIcon = LoadIcon(IDR_MAINFRAME); // or load a different icon
-//	wndcls.hCursor = LoadCursor( IDC_ARROW );
 	wndcls.hbrBackground = (HBRUSH) (COLOR_WINDOW + 1);
 	wndcls.lpszMenuName = NULL;
 
@@ -120,7 +118,6 @@ BEGIN_MESSAGE_MAP(CFeedView, CWnd)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
 	ON_WM_MOUSEMOVE()
-	ON_WM_LBUTTONDBLCLK()
 	ON_WM_TIMER()
 	ON_WM_KEYDOWN()
 	//}}AFX_MSG_MAP
@@ -618,7 +615,9 @@ int CFeedView::ItemFromPoint(CPoint pt) {
 	return item;
 }
 
-void CFeedView::OnLButtonDown(UINT nFlags, CPoint point) {
+// Normal
+
+void CFeedView::OnLButtonDownNormal(UINT nFlags, CPoint point) {
 	SetFocus();
 
 	int item = ItemFromPoint(point);
@@ -675,7 +674,7 @@ void CFeedView::OnLButtonDown(UINT nFlags, CPoint point) {
 	}
 }
 
-void CFeedView::OnMouseMove(UINT nFlags, CPoint pt) {
+void CFeedView::OnMouseMoveNormal(UINT nFlags, CPoint pt) {
 	// Scrolling
 	if (m_nTotalHeight > m_nClientHeight && GetCapture() == this) {
 		int delta = 0;
@@ -720,7 +719,7 @@ void CFeedView::OnMouseMove(UINT nFlags, CPoint pt) {
 
 		Invalidate(FALSE);
 
-		if (abs(pt.x - LastCursorPos.x) > SCALEX(2) || abs(pt.y - LastCursorPos.y) > SCALEX(2))
+		if (abs(pt.x - LastCursorPos.x) > SCALEX(3) || abs(pt.y - LastCursorPos.y) > SCALEX(3))
 			m_bClick = FALSE;
 	}
 
@@ -728,7 +727,7 @@ void CFeedView::OnMouseMove(UINT nFlags, CPoint pt) {
 	m_ptOldCursorPos = pt;
 }
 
-void CFeedView::OnLButtonUp(UINT nFlags, CPoint point) {
+void CFeedView::OnLButtonUpNormal(UINT nFlags, CPoint point) {
 	ReleaseCapture();
 
 	int item = ItemFromPoint(point);
@@ -756,13 +755,138 @@ void CFeedView::OnLButtonUp(UINT nFlags, CPoint point) {
 	m_bSelecting = FALSE;
 }
 
-void CFeedView::OnLButtonDblClk(UINT nFlags, CPoint point) {
-	LOG3(5, "CFeedView::OnLButtonDblClk(%d, %d, %d)", nFlags, point.x, point.y);
+// TOUCH
+
+void CFeedView::OnLButtonDownTouch(UINT nFlags, CPoint point) {
+	int item = ItemFromPoint(point);
+	if (item >= 0 && item < m_oItems.GetSize()) {
+		CRect rcClient;
+		GetClientRect(rcClient);
+
+		if (point.x >= 0 && point.x <= SCALEY(20)) {
+			m_nFlagItem = item;
+		}
+
+		m_bClick = TRUE;
+
+		LastCursorPos = point;
+
+		// tap and hold
+		SHRGINFO  shrg;
+		shrg.cbSize = sizeof(shrg);
+		shrg.hwndClient = GetSafeHwnd();
+		shrg.ptDown.x = LastCursorPos.x;
+		shrg.ptDown.y = LastCursorPos.y;
+		shrg.dwFlags = SHRG_NOTIFYPARENT | SHRG_RETURNCMD;
+
+		if (::SHRecognizeGesture(&shrg) == GN_CONTEXTMENU) {
+			InvalidateItem(m_nSelectFirst, FALSE);
+			m_nSelectStart = m_nSelectEnd = m_nSelectFirst = item;
+			InvalidateItem(item, FALSE);
+
+			CPoint pt = point;
+			ClientToScreen(&pt);
+			ContextMenu(&pt);
+
+			m_nFlagItem = -1;
+			m_bSelecting = FALSE;
+		}
+		else {
+			SetCapture();
+			Default();
+		}
+	}
+	else {
+		// tap out of items (deselect all)
+		m_nSelectStart = m_nSelectEnd = m_nSelectFirst = -1;
+		m_bSelecting = FALSE;
+		Invalidate(FALSE);
+	}
+}
+
+void CFeedView::OnMouseMoveTouch(UINT nFlags, CPoint pt) {
+	if (abs(pt.x - LastCursorPos.x) > SCALEX(3) || abs(pt.y - LastCursorPos.y) > SCALEX(3))
+		m_bClick = FALSE;
+
+	// Scrolling
+	if (m_nTotalHeight > m_nClientHeight && GetCapture() == this) {
+		m_bScrolling = TRUE;
+
+		int delta = LastCursorPos.y - pt.y;
+
+		int top = m_nViewTop;
+		m_nViewTop += delta;
+
+		AdjustViewTop();
+
+		ScrollWindowEx(0, top - m_nViewTop, &m_rcScroll, &m_rcScroll, NULL, NULL, SW_INVALIDATE);
+		m_oVScrollBar.SetScrollPos(m_nViewTop, TRUE);
+
+		LastCursorPos = pt;
+	}
+}
+
+void CFeedView::OnLButtonUpTouch(UINT nFlags, CPoint point) {
+	ReleaseCapture();
 
 	int item = ItemFromPoint(point);
-	if (item >= 0 && item < m_oItems.GetSize())
-		OpenItem(item);
+	if (item >= 0 && item < m_oItems.GetSize()) {
+		if (m_bClick) {
+			if (m_nFlagItem == item && point.x >= 0 && point.x <= SCALEY(20)) {
+				if (GetItem(item)->IsFlagged())
+					UnflagItem(item);
+				else
+					FlagItem(item);
+
+				InvalidateItem(m_nSelectFirst, FALSE);
+				m_nSelectFirst = item;
+				m_nSelectStart = m_nSelectEnd = item;
+				InvalidateItem(item, FALSE);
+			}
+			else if (m_bClick) {
+				InvalidateItem(m_nSelectFirst, FALSE);
+				m_nSelectFirst = item;
+				m_nSelectStart = m_nSelectEnd = item;
+				InvalidateItem(item, FALSE);
+
+				OpenItem(item);
+			}
+		}
+		else {
+
+		}
+	}
+
+	m_bClick = FALSE;
+	m_bScrolling = FALSE;
+	m_bSelecting = FALSE;
 }
+
+
+void CFeedView::OnLButtonDown(UINT nFlags, CPoint point) {
+	switch (Config.NavigationType) {
+		case NAVIGATION_NORMAL: OnLButtonDownNormal(nFlags, point); break;
+		default:
+		case NAVIGATION_TOUCH: OnLButtonDownTouch(nFlags, point); break;
+	}
+}
+
+void CFeedView::OnMouseMove(UINT nFlags, CPoint pt) {
+	switch (Config.NavigationType) {
+		case NAVIGATION_NORMAL: OnMouseMoveNormal(nFlags, pt); break;
+		default:
+		case NAVIGATION_TOUCH: OnMouseMoveTouch(nFlags, pt); break;
+	}
+}
+
+void CFeedView::OnLButtonUp(UINT nFlags, CPoint point) {
+	switch (Config.NavigationType) {
+		case NAVIGATION_NORMAL: OnLButtonUpNormal(nFlags, point); break;
+		default:
+		case NAVIGATION_TOUCH: OnLButtonUpTouch(nFlags, point); break;
+	}
+}
+
 
 // keys
 
