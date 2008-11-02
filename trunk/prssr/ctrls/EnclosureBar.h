@@ -55,7 +55,7 @@ public:
 	void SetSize(DWORD size) { m_nSize = size; }
 	void SetName(const CString &name) { m_strName = name; }
 //	void SetItems(int unread, int total = -1) { m_nUnread = unread; if (total != -1) m_nTotal = total; }
-	void SetIcon(HICON icon) { m_hIcon = icon; }
+	void SetIcon(int index);
 	void SetCached(BOOL cached = TRUE) { Cached = cached; }
 
 	// Generated message map functions
@@ -66,6 +66,7 @@ protected:
 	CString m_strName;
 	HICON m_hIcon;
 	BOOL Cached;
+	CImageList m_ilIcons;
 
 	CPoint LastCursorPos;
 

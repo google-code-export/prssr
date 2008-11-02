@@ -2262,10 +2262,8 @@ void CMainFrame::SetupEnclosureBar(CFeedItem *fi) {
 			default: nImage = ICON_OTHER; break;
 		}
 
-		if (cached)
-			m_wndEnclosureBar.SetIcon(m_ilIcons.ExtractIcon(nImage));
-		else
-			m_wndEnclosureBar.SetIcon(m_ilIcons.ExtractIcon(nImage - 1));
+		if (!cached) nImage--;
+		m_wndEnclosureBar.SetIcon(nImage);
 
 //		m_wndEnclosureBar.ShowWindow(SW_SHOW);
 		ShowControlBar(&m_wndEnclosureBar, TRUE, FALSE);
