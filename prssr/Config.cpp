@@ -82,6 +82,7 @@ LPCTSTR szActionButton = _T("Action Button");
 
 LPCTSTR szUpdateIntervalIdx = _T("Update Interval");
 LPCTSTR szAutoConnect = _T("Auto Connect");
+LPCTSTR szUseConnMan = _T("Use Conn Manager");
 LPCTSTR szClearErrorLog = _T("Clear Error Log");
 LPCTSTR szMarkNewUnread = _T("Mark New Unread");
 LPCTSTR szUserAgent = _T("User Agent");
@@ -102,16 +103,6 @@ LPCTSTR szSyncPassword = _T("Sync Password");
 LPCTSTR szGeneratePlaylists = _T("Generate Playlists");
 LPCTSTR szEnclosurePlaylistFormat = _T("Enclosure Playlist Format");
 
-/*// proxy
-LPCTSTR szProxyOverrideConMan = _T("Proxy Override ConMan");
-LPCTSTR szProxyType = _T("Proxy Type");
-LPCTSTR szProxyHostName = _T("Proxy Host Name");
-LPCTSTR szProxyPort = _T("Proxy Port");
-LPCTSTR szProxyNeedAuth = _T("Proxy Need Auth");
-LPCTSTR szProxyUserName = _T("Proxy User Name");
-LPCTSTR szProxyPassword = _T("Proxy Password");
-*/
-
 // html optimizer
 LPCTSTR szUseHtmlOptimizer = _T("Use HTML Optimizer");
 LPCTSTR szHtmlOptimizerURL = _T("HTML Optimizer URL");
@@ -119,14 +110,6 @@ LPCTSTR szHtmlOptimizerURL = _T("HTML Optimizer URL");
 static LPCTSTR szMatch = _T("Match");
 static LPCTSTR szReplace = _T("Replace");
 
-/*
-// template of settings for newly added site
-LPCTSTR szSite = _T("Site");
-LPCTSTR szTodayShow = _T("Today Show");
-LPCTSTR szCacheEnclosures = _T("Cache Enclosures");
-LPCTSTR szEnclosureLimit = _T("Enclosure Limit");
-//LPCTSTR szCacheLimit = _T("Cache Limit");
-*/
 
 #ifdef LOGGING
 // logging feature
@@ -185,10 +168,10 @@ CConfig::CConfig() {
 
 	InstallDir = reg.Read(szInstallDir, _T(""));
 #ifdef LOGGING
-//	LogFile = reg.Read(szLogFile, CONFIG_DEFAULT_LOGFILE);
-//	LogLevel = reg.Read(szLogLevel, CONFIG_DEFAULT_LOGLEVEL);
-	LogFile = _T("\\storage card\\program files\\prssreader\\prssr.log");
-	LogLevel = 1;
+	LogFile = reg.Read(szLogFile, CONFIG_DEFAULT_LOGFILE);
+	LogLevel = reg.Read(szLogLevel, CONFIG_DEFAULT_LOGLEVEL);
+//	LogFile = _T("\\storage card\\program files\\prssreader\\prssr.log");
+//	LogLevel = 1;
 #endif
 
 	// ////
@@ -207,6 +190,7 @@ CConfig::CConfig() {
 
 	UpdateInterval = CONFIG_DEFAULT_UPDATEINTERVAL;
 	AutoConnect = CONFIG_DEFAULT_AUTOCONNECT;
+	UseConnManager = CONFIG_DEFAULT_USE_CONN_MANAGER;
 	CheckOnCradling = CONFIG_DEFAULT_CHECKONCRADLING;
 	ClearErrorLog = CONFIG_DEFAULT_CLEARERRORLOG;
 	TimeUpdate = CONFIG_DEFAULT_TIME_UPDATE;
@@ -278,6 +262,7 @@ void CConfig::Save() {
 	reg.Write(szUpdateInterval, UpdateInterval);
 
 	reg.Write(szAutoConnect, AutoConnect);
+	reg.Write(szUseConnMan, UseConnManager);
 	reg.Write(szCheckOnCradling, CheckOnCradling);
 	reg.Write(szClearErrorLog, ClearErrorLog);
 	reg.Write(szUserAgent, UserAgent);
@@ -345,6 +330,7 @@ void CConfig::Load() {
 	}
 
 	AutoConnect = reg.Read(szAutoConnect, CONFIG_DEFAULT_AUTOCONNECT);
+	UseConnManager = reg.Read(szUseConnMan, CONFIG_DEFAULT_USE_CONN_MANAGER);
 	CheckOnCradling = reg.Read(szCheckOnCradling, CONFIG_DEFAULT_CHECKONCRADLING);
 	ClearErrorLog = reg.Read(szClearErrorLog, CONFIG_DEFAULT_CLEARERRORLOG);
 	UserAgent = reg.Read(szUserAgent, CONFIG_DEFAULT_USERAGENT);

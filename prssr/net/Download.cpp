@@ -109,11 +109,6 @@ CDownloader::CDownloader() {
 	HTerminate = CreateEvent(NULL, FALSE, FALSE, NULL);
 
 	HttpConnection.UserAgent = Config.UserAgent;
-
-	// setup proxy for connection
-	if (Config.ProxyProfileIdx != -1)
-		HttpConnection.SetProxy(&(Config.ProxyProfiles[Config.ProxyProfileIdx]->ProxyConfig));
-
 	AuthSet = FALSE;
 }
 
@@ -144,7 +139,33 @@ void CDownloader::SaveHeaders(CHttpResponse *res) {
 	}
 }
 
+void CDownloader::SetupProxy() {
+	// setup proxy for connection
+	if (Config.UseConnManager) {
+		if (Connection.IsProxyRequired()) {
+			PROXY_CONFIG *proxyInfo = Connection.GetProxyInfo();
+
+			// TODO: other types of proxy?
+			CProxy proxy;
+			proxy.Type = PROXY_TYPE_HTTP;
+
+			CString sProxyServer = proxyInfo->szProxyServer;
+			int nColon = sProxyServer.Find(':');
+			if (nColon != NULL) {
+				proxy.HostName = sProxyServer.Left(nColon);
+				swscanf(sProxyServer.Mid(nColon + 1), _T("%d"), &proxy.Port);
+			}
+			HttpConnection.SetProxy(&proxy);
+		}
+	}
+	else {
+		if (Config.ProxyProfileIdx != -1)
+			HttpConnection.SetProxy(&(Config.ProxyProfiles[Config.ProxyProfileIdx]->ProxyConfig));
+	}
+}
+
 void CDownloader::OnConnection(LPVOID context) {
+	SetupProxy();
 }
 
 void CDownloader::OnFileDownloaded(LPVOID context) {
@@ -868,5 +889,5 @@ void CDownloader::FreeAdditionalHeaders() {
 }
 
 void CDownloader::SetCookie(const CString &cookie) {
-	Cookies.AddTail(cookie);	
+	Cookies.AddTail(cookie);
 }

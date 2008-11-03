@@ -390,12 +390,14 @@ FONT 8, "Tahoma"
 BEGIN
     CONTROL         "Automatically connect",IDC_AUTO_CONNECT,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,4,5,152,10
-    LTEXT           "Proxy:",IDC_STATIC,4,25,22,8
-    COMBOBOX        IDC_PROXIES,29,24,83,57,CBS_DROPDOWNLIST |
+	CONTROL         "Use built-in connection manager",IDC_USE_CONMAN,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,4,21,152,10
+    LTEXT           "Proxy:",IDC_STATIC1,16,35,22,8
+    COMBOBOX        IDC_PROXIES,41,34,71,57,CBS_DROPDOWNLIST |
                     WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "Edit...",IDC_EDIT,115,24,40,13
-    PUSHBUTTON      "New...",IDC_NEW,29,40,40,13
-    PUSHBUTTON      "Remove",IDC_REMOVE,115,40,40,13
+    PUSHBUTTON      "Edit...",IDC_EDIT,115,34,40,13
+    PUSHBUTTON      "New...",IDC_NEW,41,50,40,13
+    PUSHBUTTON      "Remove",IDC_REMOVE,115,50,40,13
 END
 
 //

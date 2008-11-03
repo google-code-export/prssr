@@ -125,7 +125,7 @@ HRESULT CConnection::AttemptConnect() {
 		connInfo.cbSize = sizeof(connInfo);
 		connInfo.dwParams = CONNMGR_PARAM_GUIDDESTNET;
 //		connInfo.dwFlags = GetProxy() ? CONNMGR_FLAG_PROXY_HTTP : 0;
-		connInfo.dwFlags = CONNMGR_FLAG_PROXY_HTTP | CONNMGR_FLAG_PROXY_SOCKS4 | CONNMGR_FLAG_PROXY_SOCKS5;
+		connInfo.dwFlags = CONNMGR_FLAG_PROXY_HTTP;// | CONNMGR_FLAG_PROXY_SOCKS4 | CONNMGR_FLAG_PROXY_SOCKS5;
 		connInfo.dwPriority = CONNMGR_PRIORITY_USERINTERACTIVE;
 		connInfo.guidDestNet = GetNetworkGuid();
 
@@ -185,7 +185,8 @@ BOOL CConnection::CheckForRequiredProxy(HANDLE hConn) {
 	m_bProxyRequired = FALSE;
 
 	ZeroMemory(&m_ProxyInfo, sizeof(m_ProxyInfo));
-	m_ProxyInfo.dwType = CONNMGR_FLAG_PROXY_HTTP | CONNMGR_FLAG_PROXY_SOCKS4 | CONNMGR_FLAG_PROXY_SOCKS5;
+//	m_ProxyInfo.dwType = CONNMGR_FLAG_PROXY_HTTP | CONNMGR_FLAG_PROXY_SOCKS4 | CONNMGR_FLAG_PROXY_SOCKS5;
+	m_ProxyInfo.dwType = CONNMGR_FLAG_PROXY_HTTP;
 	if (SUCCEEDED(ConnMgrProviderMessage(hConn, &IID_ConnPrv_IProxyExtension, NULL, 0, 0, (PBYTE) &m_ProxyInfo, sizeof(m_ProxyInfo)))) {
 		m_bProxyRequired = TRUE;
 	}

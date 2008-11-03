@@ -527,7 +527,7 @@
 #define IDC_DELETE                      1164
 #define IDC_CACHE_LOCATION              1165
 #define IDC_BROWSE_CACHE                1166
-#define IDC_OVERRIDE_CONMAN             1167
+#define IDC_USE_CONMAN                  1167
 #define IDC_C_TYPE                      1168
 #define IDC_USERAGENT                   1169
 #define IDC_FONT_ITEM                   1170
