@@ -244,18 +244,14 @@ void CSummaryView::OnDrawItem(CDC &dc, CRect &rc, HGROUPITEM hItem, BOOL selecte
 
 	CFont *pOldFont;
 	pOldFont = dc.SelectObject(&m_fntBold);
-
-	if (newCnt > 0)
-		clrFg = Appearance.ClrFeedViewFg;
-	else
-		clrFg = ::GetSysColor(COLOR_3DSHADOW);
-
-	clrOld = dc.SetTextColor(clrFg);
-
+	if (!selected) {
+		if (newCnt > 0) clrOld = dc.SetTextColor(Appearance.ClrFeedViewFg);
+		else clrOld = dc.SetTextColor(::GetSysColor(COLOR_3DSHADOW));
+	}
+	else clrOld = dc.SetTextColor(clrFg);
 	DrawTextEndEllipsis(dc, gi->Text, rcItem, DT_LEFT | DT_TOP | DT_NOPREFIX);
-	dc.SelectObject(pOldFont);
-
 	dc.SetTextColor(clrOld);
+	dc.SelectObject(pOldFont);
 
 	// 2nd line
 	if (si != NULL) {
@@ -277,15 +273,11 @@ void CSummaryView::OnDrawItem(CDC &dc, CRect &rc, HGROUPITEM hItem, BOOL selecte
 		}
 */
 		CRect rcInfo = rcItem;
-		if (selected)
-			clrOld = dc.SetTextColor(clrFg);
-		else
-			clrOld = dc.SetTextColor(Appearance.ClrDate);
+		if (selected) clrOld = dc.SetTextColor(clrFg);
+		else clrOld = dc.SetTextColor(Appearance.ClrDate);
 
-		if (newCnt > 0)
-			sInfo.Format(IDS_UNREAD_ITEMS, newCnt);
-		else
-			sInfo.Format(IDS_NO_UNREAD_ITEMS);
+		if (newCnt > 0) sInfo.Format(IDS_UNREAD_ITEMS, newCnt);
+		else sInfo.Format(IDS_NO_UNREAD_ITEMS);
 
 //		if (!sTime.IsEmpty()) sInfo += _T(", ") + sTime;
 
