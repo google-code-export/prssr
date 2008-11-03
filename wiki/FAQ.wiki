@@ -43,11 +43,19 @@ See FAQ: How to use Skweezer with pRSSreader.
        
 *How to use Skweezer with pRSSreader?*
 
-  # Enter Tools | Options.
-  # Active the HTML tab.
-  # Check Use HTML Optimizer.
+  # Enter *Tools | Options*.
+  # Activate the *HTML* tab.
+  # Check *Use HTML Optimizer*.
   # Enter {{{http://www.skweezer.net/skweeze.aspx?q=[%URL%]&i=1}}} (if you do not want images to be cached, omit '&i=1').
        
+
+*How to use Google HTML optimizer?*
+
+  # Enter *Tools | Options*.
+  # Activate the *HTML* tab.
+  # Check *Use HTML Optimizer*.
+  # Enter {{{http://www.google.com/gwt/n?u=[%URL%]}}} (if you do not want images append {{{&_gwt_noimg=1}}}
+
 
 *Cached pages are displayed in incorrect encoding. What should I do?*
 
