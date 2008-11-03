@@ -87,6 +87,7 @@ public:
 	}
 
 	void Reset();
+	void SetupProxy();
 
 	virtual BOOL SaveHttpObject(CString &strURL, const CString &strFileName, LPVOID context = NULL);
 	virtual BOOL GetHttpObject(CString &strURL, CString &strBody, LPVOID context = NULL);

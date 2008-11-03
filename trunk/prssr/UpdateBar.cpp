@@ -513,8 +513,10 @@ void CUpdateBar::UpdateFeeds() {
 				SaveSiteItemUnreadCount(si, SiteList.GetIndexOf(si));
 				SaveSiteItemFlaggedCount(si, SiteList.GetIndexOf(si));
 				// process
+
+				NewItemsCount += si->Feed->GetNewCount();
 			}
-			else {			
+			else {
 				if (Downloader->Error == DOWNLOAD_ERROR_DISK_FULL) {
 					CErrorItem *ei = new CErrorItem(IDS_DISK_FULL);
 					ei->Type = CErrorItem::System;
@@ -709,6 +711,7 @@ void CUpdateBar::UpdateThread() {
 
 	Terminate = FALSE;
 	ErrorCount = 0;
+	NewItemsCount = 0;
 
 	// update feeds
 	BOOL disconnect;
@@ -727,16 +730,9 @@ void CUpdateBar::UpdateThread() {
 
 		// notify
 		if (Config.NotifyNew && GetForegroundWindow()->GetSafeHwnd() != frame->GetSafeHwnd()) {
-			int newItems = 0;
-			for (int i = 0; i < SiteList.GetCount(); i++) {
-				CFeed *feed = SiteList.GetAt(i)->Feed;
-				if (feed != NULL)
-					newItems += feed->GetNewCount();
-			}
-
-			if (newItems > 0) {
+			if (NewItemsCount > 0) {
 				prssrNotificationRemove();
-				prssrNotification(newItems);
+				prssrNotification(NewItemsCount);
 			}
 		}
 
@@ -816,7 +812,7 @@ void CUpdateBar::ShowErrorCount() {
 			CErrorItem *ei = Errors.GetNext(pos);
 			strError = ei->Message;
 		}
-		else 
+		else
 			strError.Format(IDS_N_ERRORS, Errors.GetCount());			// this sould not happend, but for sure
 	}
 
