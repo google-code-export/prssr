@@ -142,7 +142,7 @@ void CDownloader::SaveHeaders(CHttpResponse *res) {
 void CDownloader::SetupProxy() {
 	// setup proxy for connection
 	if (Config.UseConnManager) {
-		if (Connection.IsProxyRequired()) {
+		if (Connection.IsAvailable() && Connection.IsProxyRequired()) {
 			PROXY_CONFIG *proxyInfo = Connection.GetProxyInfo();
 
 			// TODO: other types of proxy?
