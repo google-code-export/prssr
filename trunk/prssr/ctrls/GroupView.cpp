@@ -681,6 +681,7 @@ void CGroupView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar) {
 
 	ScrollWindowEx(0, i - m_nViewTop, &m_rcScroll, &m_rcScroll, NULL, NULL, SW_INVALIDATE);
 	m_oVScrollBar.SetScrollPos(m_nViewTop, TRUE);
+	UpdateWindow();
 }
 
 void CGroupView::UpdateScrollBars() {
@@ -872,6 +873,7 @@ void CGroupView::OnMouseMoveTouch(UINT nFlags, CPoint pt) {
 
 		ScrollWindowEx(0, top - m_nViewTop, &m_rcScroll, &m_rcScroll, NULL, NULL, SW_INVALIDATE);
 		m_oVScrollBar.SetScrollPos(m_nViewTop, TRUE);
+		UpdateWindow();
 
 		LastCursorPos = pt;
 	}
