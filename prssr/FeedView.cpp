@@ -374,6 +374,14 @@ void CFeedView::DrawItem(CDC &dc, CRect &rc, int idx) {
 	else
 		DrawIcon(dc, READ_FEED_ICON, selected);
 
+	// has html cached
+	if (IsHTMLCached(item->Link, TRUE)) {
+		if (item->IsNew() || item->IsUnread())
+			DrawIcon(dc, CACHED_ITEM_ICON, selected);
+		else
+			DrawIcon(dc, NOT_CACHED_ITEM_ICON, selected);
+	}
+	
 	// keyword
 	if (item->HasKeywordMatch())
 		DrawIcon(dc, KEYWORD_ICON, selected);
