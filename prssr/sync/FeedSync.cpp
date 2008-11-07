@@ -32,7 +32,7 @@ BOOL CFeedSync::MergeFeed(CSiteItem *si, CFeed *feed, CArray<CFeedItem *, CFeedI
 	FeedDiff(feed, si->Feed, &newItems);
 	// set the SYNC flag for new items
 	for (i = 0; i < newItems.GetSize(); i++) {
-		CFeedItem *fi = si->Feed->GetItem(i);
+		CFeedItem *fi = newItems.GetAt(i);
 		fi->SetFlags(MESSAGE_SYNC, MESSAGE_SYNC);
 	}
 
