@@ -361,7 +361,7 @@ static  BOOL ParseList(CXmlNode *parent, CSiteList &siteList) {
 		if (tagName.Compare(_T("object")) == 0) {
 			// process <object> nodes
 			CSiteItem *siteItem = NULL;
-			if (ParseSubscriptionObject(object, siteItem));
+			if (ParseSubscriptionObject(object, siteItem))
 				rootItem->AddItem(siteItem);
 		}
 	}
