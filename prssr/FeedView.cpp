@@ -532,6 +532,7 @@ static DWORD WINAPI ScrollThread(LPVOID lpParam) {
 			view->ScrollWindowEx(0, oldtop - view->m_nViewTop, &view->m_rcScroll, &view->m_rcScroll,
 				NULL, NULL, SW_INVALIDATE);
 			view->m_oVScrollBar.SetScrollPos(view->m_nViewTop, TRUE);
+			view->UpdateWindow();
 			view->OnMouseMove(view->m_nOldKeys, view->m_ptOldCursorPos);
 		}
 
@@ -561,6 +562,7 @@ void CFeedView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar) {
 
 	ScrollWindowEx(0, i - m_nViewTop, &m_rcScroll, &m_rcScroll, NULL, NULL, SW_INVALIDATE);
 	m_oVScrollBar.SetScrollPos(m_nViewTop, TRUE);
+	UpdateWindow();
 }
 
 void CFeedView::UpdateScrollBars() {
@@ -821,6 +823,7 @@ void CFeedView::OnMouseMoveTouch(UINT nFlags, CPoint pt) {
 
 		ScrollWindowEx(0, top - m_nViewTop, &m_rcScroll, &m_rcScroll, NULL, NULL, SW_INVALIDATE);
 		m_oVScrollBar.SetScrollPos(m_nViewTop, TRUE);
+		UpdateWindow();
 
 		LastCursorPos = pt;
 	}
