@@ -37,8 +37,8 @@ class CSortInfo;
 #define UNREAD_FEED_ICON				1
 #define READ_FEED_ICON					2
 #define KEYWORD_ICON					3
-#define CACHED_ENCLOSURE_ICON			4
-#define NOT_CACHED_ENCLOSURE_ICON		5
+#define CACHED_ITEM_ICON				4
+#define NOT_CACHED_ITEM_ICON			5
 #define FLAG_ICON						6
 
 
