@@ -167,7 +167,7 @@ protected:
 	CPoint LastCursorPos;
 
 	void CreateFonts();
-	void DrawIcon(CDC &dc, int icon, BOOL selected);
+	void DrawIcon(CDC &dc, int icon, BOOL selected, int xofs = 0, int yofs = 0);
 	void DrawItem(CDC &dc, CRect &rc, int idx);
 	void InvalidateItem(int idx, BOOL erase = TRUE);
 
