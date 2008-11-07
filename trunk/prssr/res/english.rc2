@@ -279,7 +279,8 @@ BEGIN
                     BS_MULTILINE | WS_TABSTOP,4,16,152,10
     CONTROL         "Clear error log before update",IDC_CLEAR_ERRORLOG,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,28,152,10
-    COMBOBOX        IDC_NAVIGATION,55,40,100,60,CBS_DROPDOWNLIST |
+    LTEXT           "Navigation style:",IDC_STATIC,4,41,70,10
+    COMBOBOX        IDC_NAVIGATION,75,40,80,60,CBS_DROPDOWNLIST |
                     WS_VSCROLL | WS_TABSTOP
 END
 
