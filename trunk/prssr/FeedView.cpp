@@ -320,14 +320,14 @@ void CFeedView::AdjustViewTop() {
 	}
 }
 
-void CFeedView::DrawIcon(CDC &dc, int icon, BOOL selected) {
+void CFeedView::DrawIcon(CDC &dc, int icon, BOOL selected, int xofs/* = 0*/, int yofs/* = 0*/) {
 	IMAGELISTDRAWPARAMS drawing;
 	drawing.cbSize = sizeof(IMAGELISTDRAWPARAMS);
 	drawing.himl = m_oIcons.GetSafeHandle();
 	drawing.i = icon;
 	drawing.hdcDst = dc.GetSafeHdc();
-	drawing.x = SCALEX(1);
-	drawing.y = SCALEY(2);
+	drawing.x = SCALEX(1) + SCALEX(xofs);
+	drawing.y = SCALEY(2) + SCALEX(yofs);
 	drawing.cx = SCALEX(16);
 	drawing.cy = SCALEY(16);
 	drawing.xBitmap = 0;
@@ -377,6 +377,14 @@ void CFeedView::DrawItem(CDC &dc, CRect &rc, int idx) {
 	// has html cached
 	if (IsHTMLCached(item->Link, TRUE)) {
 		if (item->IsNew() || item->IsUnread())
+			DrawIcon(dc, CACHED_ITEM_ICON, selected);
+		else
+			DrawIcon(dc, NOT_CACHED_ITEM_ICON, selected);
+	}
+	
+	if (item->HasEnclosure()) {
+		CEnclosureItem *ei = item->Enclosures.GetHead();
+		if (IsEnclosureCached(ei->URL))
 			DrawIcon(dc, CACHED_ITEM_ICON, selected);
 		else
 			DrawIcon(dc, NOT_CACHED_ITEM_ICON, selected);
