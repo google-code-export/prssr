@@ -46,6 +46,7 @@ COptGeneralPg::COptGeneralPg() : CPropertyPage(COptGeneralPg::IDD) {
 	m_bNotifyNew = Config.NotifyNew;
 	m_bMoveToUnread = Config.MoveToUnread;
 	m_bClearErrorLog = Config.ClearErrorLog;
+	m_bWrapTitles = Config.WrapTitles;
 	m_nNavigation = Config.NavigationType;
 	//}}AFX_DATA_INIT
 }
@@ -61,6 +62,7 @@ void COptGeneralPg::DoDataExchange(CDataExchange* pDX) {
 	DDX_Check(pDX, IDC_NOTIFY_NEW, m_bNotifyNew);
 	DDX_Check(pDX, IDC_MOVETOUNREAD, m_bMoveToUnread);
 	DDX_Check(pDX, IDC_CLEAR_ERRORLOG, m_bClearErrorLog);
+	DDX_Check(pDX, IDC_WRAP_TITLES, m_bWrapTitles);
 	DDX_CBIndex(pDX, IDC_NAVIGATION, m_nNavigation);
 	//}}AFX_DATA_MAP
 }
@@ -93,6 +95,7 @@ BOOL COptGeneralPg::OnApply() {
 	Config.NotifyNew = m_bNotifyNew;
 	Config.MoveToUnread = m_bMoveToUnread;
 	Config.ClearErrorLog = m_bClearErrorLog;
+	Config.WrapTitles = m_bWrapTitles;
 	Config.NavigationType = m_nNavigation;
 
 	return CPropertyPage::OnApply();

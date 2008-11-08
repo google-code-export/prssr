@@ -21,14 +21,12 @@
 #include "StdAfx.h"
 #include "prssr.h"
 #include "FeedView.h"
-//#include "data.h"
 
 #include "Appearance.h"
 #include "Feed.h"
 #include "Site.h"
 #include "Config.h"
 #include "../share/helpers.h"
-//#include "ArticleDlg.h"
 #include "MainFrm.h"
 
 #ifdef MYDEBUG
@@ -50,11 +48,12 @@ static char THIS_FILE[] = __FILE__;
 #define SCROLL_SPEED					1
 #define SCROLL_MAXSPEED					60
 
-const int CFeedView::LABEL_MARGIN = 2;
-const int CFeedView::LABEL_X_PADDING = 3;
-const int CFeedView::LABEL_Y_PADDING = 1;
-const int CFeedView::LABEL_MSG_SKIP = 2;
+const int CFeedView::LEFT_SKIP = 20;
+const int CFeedView::PADDING_TOP = 2;
+const int CFeedView::PADDING_RIGHT = 4;
+const int CFeedView::PADDING_BOTTOM = 1;
 const int CFeedView::ITEM_MARGIN = 22;
+const int CFeedView::DATE_HEIGHT = 18;
 
 BOOL CFeedView::Register() {
 	// Register your unique class name that you wish to use
@@ -101,8 +100,6 @@ CFeedView::CFeedView() {
 	m_bScrolling = FALSE;
 
 	SiteItem = NULL;
-
-	ItemHeight = Appearance.FeedViewFontCfg.Size + ITEM_MARGIN;
 }
 
 CFeedView::~CFeedView() {
@@ -207,13 +204,13 @@ void CFeedView::DeleteItem(int idx) {
 
 	if (idx >= 0  && idx < m_oItems.GetSize()) {
 		m_oItems.RemoveAt(idx);
-		m_nTotalHeight -= SCALEY(ItemHeight);
 
 		if (idx <= m_nSelectStart) m_nSelectStart--;
 		if (idx <= m_nSelectEnd) m_nSelectEnd--;
 		if (idx <= m_nSelectFirst) m_nSelectFirst--;
 
 		AdjustViewTop();
+		UpdateItemHeights();
 		UpdateScrollBars();
 		Invalidate();
 	}
@@ -223,6 +220,7 @@ void CFeedView::DeleteAllItems() {
 	LOG0(1, "CFeedView::DeleteAllItems()");
 
 	m_oItems.RemoveAll();
+	m_oItemHeight.RemoveAll();
 	Invalidate();
 
 	m_nTotalHeight = 0;
@@ -237,7 +235,9 @@ BOOL CFeedView::InsertItem(int i, CFeedItem *item) {
 		return FALSE;
 	else {
 		m_oItems.SetAtGrow(i, item);
-		m_nTotalHeight += SCALEY(ItemHeight);
+		int ht = CalcItemHeight(i);
+		m_nTotalHeight += ht;
+		m_oItemHeight.SetAtGrow(i, m_nTotalHeight);
 		return TRUE;
 	}
 }
@@ -245,9 +245,11 @@ BOOL CFeedView::InsertItem(int i, CFeedItem *item) {
 void CFeedView::EnsureVisible(int item) {
 	LOG1(1, "CFeedView::EnsureVisible(%d)", item);
 
-	int y = item * SCALEY(ItemHeight);
+	int y;
+	if (item > 0) y = m_oItemHeight[item - 1];
+	else y = 0;
 
-	if (m_nViewTop <= y && y + SCALEY(ItemHeight) <= m_nViewTop + m_nClientHeight) {
+	if (m_nViewTop <= y && m_oItemHeight[item] <= m_nViewTop + m_nClientHeight) {
 	}
 	else {
 		m_nViewTop = y;
@@ -285,11 +287,11 @@ void CFeedView::MarkAllRead() {
 	}
 
 	AdjustViewTop();
-	UpdateScrollBars();
 	Invalidate(TRUE);
 
 	DeselectAllItems();
 	SortItems();
+	UpdateScrollBars();
 }
 
 void CFeedView::MarkAllUnread() {
@@ -299,11 +301,11 @@ void CFeedView::MarkAllUnread() {
 		MarkItem(i, MESSAGE_UNREAD);
 
 	AdjustViewTop();
-	UpdateScrollBars();
 	Invalidate(TRUE);
 
 	DeselectAllItems();
 	SortItems();
+	UpdateScrollBars();
 }
 
 //
@@ -403,11 +405,16 @@ void CFeedView::DrawItem(CDC &dc, CRect &rc, int idx) {
 	pOldFont = dc.SelectObject(&m_fntBold);
 	clrOld = dc.SetTextColor(clrFg);
 	CRect rcTitle = rc;
-	rcTitle.DeflateRect(SCALEX(20), SCALEY(2), SCALEX(4), SCALEY(1));
+	rcTitle.DeflateRect(SCALEX(LEFT_SKIP), SCALEY(PADDING_TOP), SCALEX(PADDING_RIGHT), SCALEY(PADDING_BOTTOM));
 
 	CString strTitle = item->Title;
 	ReplaceHTMLEntities(strTitle);
-	DrawTextEndEllipsis(dc, strTitle, rcTitle, DT_LEFT | DT_TOP | DT_NOPREFIX);
+	if (m_bWrapTitles) {
+		dc.DrawText(strTitle, &rcTitle, DT_LEFT | DT_TOP | DT_NOPREFIX | DT_WORDBREAK);
+
+	}
+	else
+		DrawTextEndEllipsis(dc, strTitle, rcTitle, DT_LEFT | DT_TOP | DT_NOPREFIX);
 	dc.SetTextColor(clrOld);
 	dc.SelectObject(pOldFont);
 
@@ -447,8 +454,10 @@ void CFeedView::InvalidateItem(int idx, BOOL erase/* = TRUE*/) {
 	CRect rcClient;
 	GetClientRect(rcClient);
 
-	int top = (idx * SCALEY(ItemHeight)) - m_nViewTop;
-	CRect rc(rcClient.left, top, rcClient.right, top + SCALEY(ItemHeight));
+	int top;
+	if (idx > 0) top = m_oItemHeight[idx - 1];
+	else top = 0;
+	CRect rc(rcClient.left, top - m_nViewTop, rcClient.right, m_oItemHeight[idx] - m_nViewTop);
 	InvalidateRect(rc, erase);
 }
 
@@ -477,20 +486,27 @@ void CFeedView::OnPaint() {
 
 		int y = rc.top;
 
-		int wd = rc.Width();
-		int ht = SCALEY(ItemHeight);
-
-		CBitmap bmp;
-		bmp.CreateCompatibleBitmap(&dc, wd, ht);
-
-		CDC memDC;
-		memDC.CreateCompatibleDC(&dc);
-		CBitmap *saveBmp = memDC.SelectObject(&bmp);
-
-		int first = m_nViewTop / SCALEY(ItemHeight);
-		int ofsY = m_nViewTop % SCALEY(ItemHeight);
+		int first = 0;
+		for (; first < m_oItems.GetSize(); first++)
+			if (m_oItemHeight[first] > m_nViewTop)
+				break;
+		int ofsY;
+		if (first > 0) ofsY = m_nViewTop - m_oItemHeight[first - 1];
+		else ofsY = m_nViewTop;
 
 		for (int idx = first; idx < m_oItems.GetSize() && y < rc.bottom; idx++) {
+			int wd = rc.Width();
+			int ht;
+			if (idx > 0) ht = m_oItemHeight[idx] - m_oItemHeight[idx - 1];
+			else ht = m_oItemHeight[idx];
+
+			CBitmap bmp;
+			bmp.CreateCompatibleBitmap(&dc, wd, ht);
+
+			CDC memDC;
+			memDC.CreateCompatibleDC(&dc);
+			CBitmap *saveBmp = memDC.SelectObject(&bmp);
+
 			CRect rcPhys(rc.left, y, rc.right, y + ht);
 			CRect rcDraw;
 			if (rcDraw.IntersectRect(rcClip, rcPhys)) {
@@ -503,10 +519,10 @@ void CFeedView::OnPaint() {
 
 			y += ht - ofsY;
 			ofsY = 0;				// for the rest of the items, the ofsY is zero
-		}
 
-		//
-		memDC.SelectObject(saveBmp);
+			//
+			memDC.SelectObject(saveBmp);
+		}
 
 		// delete the rest of the window
 		CRect rcRest(rc.left, y, rc.right, rc.bottom);
@@ -561,8 +577,9 @@ static DWORD WINAPI ScrollThread(LPVOID lpParam) {
 void CFeedView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar) {
 	int i = m_nViewTop;
 	switch (nSBCode) {
-		case SB_LINEDOWN:   m_nViewTop += SCALEY(ItemHeight); break;
-		case SB_LINEUP:     m_nViewTop -= SCALEY(ItemHeight); break;
+		// FIXME
+		case SB_LINEDOWN:   m_nViewTop += SCALEY(20); break;
+		case SB_LINEUP:     m_nViewTop -= SCALEY(20); break;
 		case SB_PAGEDOWN:   m_nViewTop += m_nClientHeight; break;
 		case SB_PAGEUP:     m_nViewTop -= m_nClientHeight; break;
 		case SB_THUMBTRACK: {
@@ -629,8 +646,15 @@ void CFeedView::OnSize(UINT nType, int cx, int cy) {
 }
 
 int CFeedView::ItemFromPoint(CPoint pt) {
-	int item = (m_nViewTop + pt.y) / SCALEY(ItemHeight);
-	return item;
+	if (m_oItemHeight.GetSize() > 0) {
+		int y = m_nViewTop + pt.y;
+		for (int i = 0; i < m_oItemHeight.GetSize(); i++)
+			if (m_oItemHeight[i] >= y)
+				return i;
+		return m_oItemHeight.GetSize();
+	}
+	else
+		return -1;
 }
 
 // Normal
@@ -1004,28 +1028,23 @@ void CFeedView::OnItemMarkRead() {
 		if (SiteItem != NULL) {
 			if (SiteItem->Type == CSiteItem::VFolder && SiteItem->FlagMask == MESSAGE_READ_STATE) {
 				// delete items
-				for (i = m_nSelectStart; i <= m_nSelectEnd; i++) {
+				for (i = m_nSelectStart; i <= m_nSelectEnd; i++)
 					m_oItems.RemoveAt(m_nSelectStart);
-					m_nTotalHeight -= SCALEY(ItemHeight);
-				}
 				AdjustViewTop();
-				UpdateScrollBars();
 				Invalidate(FALSE);
 			}
 			else if (SiteItem->Type != CSiteItem::VFolder && Config.HideReadItems) {
 				// delete items
-				for (i = m_nSelectStart; i <= m_nSelectEnd; i++) {
+				for (i = m_nSelectStart; i <= m_nSelectEnd; i++)
 					m_oItems.RemoveAt(m_nSelectStart);
-					m_nTotalHeight -= SCALEY(ItemHeight);
-				}
 				AdjustViewTop();
-				UpdateScrollBars();
 				Invalidate(FALSE);
 			}
 		}
 
 		DeselectAllItems();
 		SortItems();
+		UpdateScrollBars();
 
 		CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
 		frame->UpdateTopBar();
@@ -1107,12 +1126,10 @@ void CFeedView::OnItemDelete() {
 		// delete from view
 		int cnt = m_nSelectEnd - m_nSelectStart + 1;
 		m_oItems.RemoveAt(m_nSelectStart, cnt);
-		m_nTotalHeight -= cnt * SCALEY(ItemHeight);
-
-		UpdateScrollBars();
-
+	
 		DeselectAllItems();
 		SortItems();
+		UpdateScrollBars();
 
 		frame->UpdateTopBar();
 	}
@@ -1133,11 +1150,15 @@ int CFeedView::MoveToNextItem() {
 		m_nSelectFirst++;
 		m_nSelectEnd = m_nSelectStart = m_nSelectFirst;
 
-		int y = m_nSelectFirst * SCALEY(ItemHeight);
+		// FIXME
+		int y;
+		if (m_nSelectFirst > 0) y = m_oItemHeight[m_nSelectFirst - 1];
+		else y = 0;
+		
 		if (y < m_nViewTop)
 			m_nViewTop = y;
-		else if (y + SCALEY(ItemHeight) > m_nViewTop + m_nClientHeight)
-			m_nViewTop = y + SCALEY(ItemHeight) - m_nClientHeight;
+		else if (m_oItemHeight[m_nSelectFirst] > m_nViewTop + m_nClientHeight)
+			m_nViewTop = m_oItemHeight[m_nSelectFirst] - m_nClientHeight;
 		AdjustViewTop();
 
 		UpdateScrollBars();
@@ -1154,11 +1175,15 @@ int CFeedView::MoveToPrevItem() {
 		m_nSelectFirst--;
 		m_nSelectEnd = m_nSelectStart = m_nSelectFirst;
 
-		int y = m_nSelectFirst * SCALEY(ItemHeight);
+		// FIXME
+		int y;
+		if (m_nSelectFirst > 0) y = m_oItemHeight[m_nSelectFirst - 1];
+		else y = 0;
+
 		if (y < m_nViewTop)
 			m_nViewTop = y;
-		else if (y + SCALEY(ItemHeight) > m_nViewTop + m_nClientHeight)
-			m_nViewTop = y + SCALEY(ItemHeight) - m_nClientHeight;
+		else if (m_oItemHeight[m_nSelectFirst] > m_nViewTop + m_nClientHeight)
+			m_nViewTop = m_oItemHeight[m_nSelectFirst] - m_nClientHeight;
 		AdjustViewTop();
 
 		UpdateScrollBars();
@@ -1390,6 +1415,7 @@ void CFeedView::Sort(int (__cdecl *compare)(const void *elem1, const void *elem2
 
 	for (i = 0; i < count; i++)
 		m_oItems.SetAt(i, items[i]);
+//	UpdateItemHeights();
 
 	delete [] items;
 }
@@ -1420,6 +1446,8 @@ void CFeedView::SortItems() {
 				break;
 		}
 	}
+
+	UpdateItemHeights();
 }
 
 void CFeedView::OnSortAscending() {
@@ -1475,9 +1503,9 @@ void CFeedView::InsertItems(CSiteItem *si) {
 		feed->Unlock();
 	}
 	SortItems();
+	UpdateScrollBars();
 
 	SetRedraw(TRUE);
-	UpdateScrollBars();
 	Invalidate();
 }
 
@@ -1492,10 +1520,36 @@ void CFeedView::OnUpdateViewHideReadItems(CCmdUI *pCmdUI) {
 	pCmdUI->SetCheck(Config.HideReadItems);
 }
 
-void CFeedView::UpdateItemHeight() {
-	ItemHeight = Appearance.FeedViewFontCfg.Size + ITEM_MARGIN;
-	m_nTotalHeight = m_oItems.GetSize() * SCALEY(ItemHeight);
+int CFeedView::CalcItemHeight(int idx) {
+	if (m_bWrapTitles) {
+		CDC *pDC = GetDC();
+		
+		CRect rc;
+		GetClientRect(rc);
 
-	CreateFonts();
-	UpdateScrollBars();
+		rc.right -= ::GetSystemMetrics(SM_CXVSCROLL);
+		rc.DeflateRect(SCALEX(LEFT_SKIP), SCALEY(PADDING_TOP), SCALEX(PADDING_RIGHT), SCALEY(PADDING_BOTTOM));
+		int wd = rc.Width();
+
+		CString strTitle = m_oItems[idx]->Title;
+		ReplaceHTMLEntities(strTitle);
+
+		CFont *pOldFont = pDC->SelectObject(&m_fntBold);
+		pDC->DrawText(strTitle, &rc, DT_LEFT | DT_TOP | DT_NOPREFIX | DT_CALCRECT | DT_WORDBREAK);
+		pDC->SelectObject(pOldFont);
+		ReleaseDC(pDC);
+
+		return rc.Height() + SCALEY(DATE_HEIGHT);
+	}
+	else
+		return SCALEY(Appearance.FeedViewFontCfg.Size + ITEM_MARGIN);
 }
+
+void CFeedView::UpdateItemHeights() {
+	m_nTotalHeight = 0;
+	for (int i = 0; i < m_oItems.GetSize(); i++) {
+		m_nTotalHeight += CalcItemHeight(i);
+		m_oItemHeight[i] = m_nTotalHeight;
+	}
+}
+

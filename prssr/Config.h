@@ -59,6 +59,7 @@ enum ESyncSite {
 #define CONFIG_DEFAULT_MOVETOUNREAD					FALSE
 
 #define CONFIG_DEFAULT_NOTIFYNEW                    TRUE
+#define CONFIG_DEFAULT_WRAPTITLES                   TRUE
 
 // GUI
 #define CONFIG_DEFAULT_MAIN_VIEW					MAIN_VIEW_SUMMARY_VIEW
@@ -157,6 +158,7 @@ public:
 
 	BOOL NotifyNew;
 	BOOL WrapAround;
+	BOOL WrapTitles;
 	int NavigationType;
 
 	// cache

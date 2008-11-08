@@ -66,6 +66,7 @@ LPCTSTR szSetPropertiesAfterSiteAdded = _T("Set Properties After Site Added");
 
 // general
 LPCTSTR szNotifyNew = _T("Notify New");
+LPCTSTR szWrapTitles = _T("Wrap Titles");
 LPCTSTR szWrapAround = _T("Wrap Around");
 
 LPCTSTR szTruncateItemTitles = _T("Truncate Item Titles");
@@ -179,6 +180,7 @@ CConfig::CConfig() {
 	UserAgent = CONFIG_DEFAULT_USERAGENT;
 
 	NotifyNew = CONFIG_DEFAULT_NOTIFYNEW;
+	WrapTitles = CONFIG_DEFAULT_WRAPTITLES;
 	NavigationType = CONFIG_DEFAULT_NAVIGATION_TYPE;
 
 	CacheLocation = _T("");
@@ -255,6 +257,7 @@ void CConfig::Save() {
 
 	// general
 	reg.Write(szNotifyNew, NotifyNew);
+	reg.Write(szWrapTitles, WrapTitles);
 	reg.Write(szShowRelativeDates, ShowRelativeDates);
 	reg.Write(szMoveToUnread, MoveToUnread);
 
@@ -301,6 +304,7 @@ void CConfig::Load() {
 
 	// general
 	NotifyNew = reg.Read(szNotifyNew, CONFIG_DEFAULT_NOTIFYNEW);
+	WrapTitles = reg.Read(szWrapTitles, CONFIG_DEFAULT_WRAPTITLES);
 	ShowRelativeDates = reg.Read(szShowRelativeDates, CONFIG_DEFAULT_SHOWRELATIVEDATES);
 	MoveToUnread = reg.Read(szMoveToUnread, CONFIG_DEFAULT_MOVETOUNREAD);
 
