@@ -99,6 +99,9 @@ CFeedView::CFeedView() {
 	m_bSelecting = FALSE;
 
 	m_bScrolling = FALSE;
+	
+	CtxMenuTimer = 1;
+	m_bOpenCtxMenu = FALSE;
 
 	SiteItem = NULL;
 }
@@ -118,6 +121,7 @@ BEGIN_MESSAGE_MAP(CFeedView, CWnd)
 	ON_WM_MOUSEMOVE()
 	ON_WM_TIMER()
 	ON_WM_KEYDOWN()
+	ON_WM_KEYUP()
 	//}}AFX_MSG_MAP
 
 	ON_COMMAND(ID_ITEM_OPEN, OnItemOpen)
@@ -936,7 +940,7 @@ void CFeedView::OnLButtonUp(UINT nFlags, CPoint point) {
 // keys
 
 void CFeedView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
-	LOG3(5, "CFeedView::OnKeyDown(%d, %d, %d)", nChar, nRepCnt, nFlags);
+	LOG3(1, "CFeedView::OnKeyDown(%d, %d, %d)", nChar, nRepCnt, nFlags);
 
 	switch (nChar) {
 		case VK_UP:
@@ -970,8 +974,10 @@ void CFeedView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			break;
 
 		case VK_RETURN:
-			if (m_oItems.GetSize() > 0 && m_nSelectFirst >= 0)
-				OpenItem(m_nSelectFirst);
+			if (!(nFlags & 0x4000)) {
+				m_bOpenCtxMenu = FALSE;
+				SetTimer(CtxMenuTimer, TIMER_KEY_CTX_MENU, NULL);
+			}
 			break;
 
 		default:
@@ -981,8 +987,42 @@ void CFeedView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	CWnd::OnKeyDown(nChar, nRepCnt, nFlags);
 }
 
+void CFeedView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
+	LOG3(1, "CFeedView::OnKeyUp(%d, %d, %d)", nChar, nRepCnt, nFlags);
+
+	switch (nChar) {
+		case VK_RETURN:
+			KillTimer(CtxMenuTimer);
+			if (m_bOpenCtxMenu) {
+				m_bOpenCtxMenu = FALSE;
+				if (m_oItems.GetSize() > 0 && m_nSelectFirst >= 0) {
+					int y;
+					if (m_nSelectFirst > 0) y = (m_oItemHeight[m_nSelectFirst] + m_oItemHeight[m_nSelectFirst - 1]) / 2;
+					else y = m_oItemHeight[m_nSelectFirst] / 2;
+					y -= m_nViewTop;
+
+					CPoint pt(m_nClientWidth / 2, y);
+					ClientToScreen(&pt);
+					ContextMenu(&pt);
+				}
+				else
+					CWnd::OnKeyUp(nChar, nRepCnt, nFlags);
+			}
+			else {
+				if (m_oItems.GetSize() > 0 && m_nSelectFirst >= 0)
+					OpenItem(m_nSelectFirst);
+				CWnd::OnKeyUp(nChar, nRepCnt, nFlags);
+			}
+			break;
+
+		default:
+			CWnd::OnKeyUp(nChar, nRepCnt, nFlags);
+			break;
+	}
+}
+
 void CFeedView::ContextMenu(CPoint *pt) {
-	LOG0(5, "CFeedView::ContextMenu()");
+	LOG0(1, "CFeedView::ContextMenu()");
 
 	if (m_nSelectFirst != -1) {
 		CMenu popup;
@@ -1004,7 +1044,12 @@ void CFeedView::ContextMenu(CPoint *pt) {
 }
 
 void CFeedView::OnTimer(UINT nIDEvent) {
-	LOG0(5, "CFeedView::OnTimer()");
+	LOG0(1, "CFeedView::OnTimer()");
+
+	if (nIDEvent == CtxMenuTimer) {
+		m_bOpenCtxMenu = TRUE;
+		KillTimer(CtxMenuTimer);
+	}
 
 	CWnd::OnTimer(nIDEvent);
 }
