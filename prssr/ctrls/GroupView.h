@@ -68,8 +68,6 @@ protected:
 
 // Operations
 public:
-//	BOOL Create(DWORD dwStyle, const RECT &rect, CView *pParentWnd, UINT nID);
-
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CGroupView)
@@ -89,7 +87,6 @@ public:
 	void SetImageList(CImageList *il) { m_pImageList = il; }
 	CImageList *GetImageList() const { return m_pImageList; }
 
-//	HGROUPITEM GetNextItem(HGROUPITEM pos, UINT code);
 	BOOL ItemHasChildren(HGROUPITEM hItem) const;
 	HGROUPITEM GetChildItem(HGROUPITEM hItem) const;
 	HGROUPITEM GetNextSiblingItem(HGROUPITEM hItem) const;
@@ -116,7 +113,6 @@ public:
 	HGROUPITEM InsertItem(LPCTSTR lpszItem, int nImage, HGROUPITEM hParent = GVI_ROOT, HGROUPITEM hInsertAfter = GVI_LAST);
 	BOOL DeleteItem(HGROUPITEM hItem);
 	BOOL DeleteAllItems();
-//	BOOL Expand(HGROUPITEM hItem, UINT nCode);
 	void ExpandItem(HGROUPITEM hItem);
 	void CollapseItem(HGROUPITEM hItem);
 	void ToggleItem(HGROUPITEM hItem);
@@ -140,9 +136,7 @@ protected:
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnTimer(UINT nIDEvent);
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	//}}AFX_MSG
 	virtual void ContextMenu(CPoint *pt);
 	virtual void OnItemClicked();
@@ -167,8 +161,6 @@ protected:
 	//
 	CRect m_rcScroll;
 	CCeScrollBar m_oVScrollBar;
-//	UINT m_nOldKeys;
-//	CPoint m_ptOldCursorPos;
 
 	int m_nViewTop;								// in pixels
 	int m_nTotalHeight;							// in pixels
@@ -196,8 +188,8 @@ protected:
 	HGROUPITEM ItemFromPoint(CPoint pt);
 	void AdjustViewTop();
 
-	UINT KeyTimer;
-	BOOL ReturnPressed;
+	UINT CtxMenuTimer;
+	BOOL m_bOpenCtxMenu;
 
 protected:
 	static const int ITEM_MARGIN;
