@@ -55,8 +55,6 @@ BOOL CGroupView::Register() {
 	//you can specify your own window procedure
 	wndcls.lpfnWndProc = ::DefWindowProc;
 	wndcls.hInstance = AfxGetInstanceHandle();
-//	wndcls.hIcon = LoadIcon(IDR_MAINFRAME); // or load a different icon
-//	wndcls.hCursor = LoadCursor( IDC_ARROW );
 	wndcls.hbrBackground = (HBRUSH) (COLOR_WINDOW + 1);
 	wndcls.lpszMenuName = NULL;
 
@@ -87,9 +85,8 @@ CGroupView::CGroupView() {
 	m_nViewTop = 0;
 	m_hSelectedItem = NULL;
 
-	KeyTimer = 2;
-
-	ReturnPressed = FALSE;
+	CtxMenuTimer = 1;
+	m_bOpenCtxMenu = FALSE;
 
 	m_hClickedItem = NULL;
 
@@ -116,8 +113,6 @@ BEGIN_MESSAGE_MAP(CGroupView, CView)
 	ON_WM_TIMER()
 	ON_WM_KEYDOWN()
 	ON_WM_KEYUP()
-	ON_WM_CHAR()
-//	ON_WM_LBUTTONDBLCLK()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -930,9 +925,6 @@ void CGroupView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 
 	HGROUPITEM hItem;
 	switch (nChar) {
-//		case VK_F23:
-//			break;
-
 		case VK_UP:
 			// move to previous visible item
 			if (m_hSelectedItem != NULL) {
@@ -966,47 +958,11 @@ void CGroupView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			ExpandItem(m_hSelectedItem);
 			break;
 
-		case VK_F23:
 		case VK_RETURN:
-			if (Items.GetCount() > 0 && m_hSelectedItem != NULL) {
-				GVITEM *gi = Items.GetAt(m_hSelectedItem);
-
-				SHRGINFO shrg;
-				CPoint pt(100, gi->yTop - m_nViewTop + SCALEY(ItemHeight / 2));
-
-				shrg.cbSize = sizeof(shrg);
-				shrg.hwndClient = m_hWnd;
-				shrg.ptDown.x = pt.x;
-				shrg.ptDown.y = pt.y;
-				shrg.dwFlags = SHRG_NOANIMATION;
-
-				// is not working :-(
-				DWORD r = ::SHRecognizeGesture(&shrg);
-				LOG1(1, "R = %d", r);
-				if (GN_CONTEXTMENU == r) {
-					ClientToScreen(&pt);
-					LOG0(1, "CGroupView::Context()");
-					ContextMenu(&pt);
-				}
-				else {
-					if (Items.GetCount() > 0 && m_hSelectedItem != NULL) {
-						// toggle item state
-						if (ItemHasChildren(m_hSelectedItem))
-							ToggleItem(m_hSelectedItem);
-						else
-							OnItemClicked();
-					}
-				}
+			if (!(nFlags & 0x4000)) {
+				m_bOpenCtxMenu = FALSE;
+				SetTimer(CtxMenuTimer, TIMER_KEY_CTX_MENU, NULL);
 			}
-/*			if (!ReturnPressed && Items.GetCount() > 0 && m_hSelectedItem != NULL) {
-				ReturnPressed = TRUE;
-//				SetCapture();
-				KillTimer(KeyTimer);
-				SetTimer(KeyTimer, 700, NULL);
-				CView::OnKeyDown(nChar, nRepCnt, nFlags);
-			}
-*/
-
 			break;
 
 		default:
@@ -1017,12 +973,23 @@ void CGroupView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 
 void CGroupView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	LOG3(1, "CGroupView::OnKeyUp(%d, %d, %d)", nChar, nRepCnt, nFlags);
-/*
+
 	switch (nChar) {
 		case VK_RETURN:
-			if (ReturnPressed) {
-//				ReleaseCapture();
-				KillTimer(KeyTimer);
+			KillTimer(CtxMenuTimer);
+			if (m_bOpenCtxMenu) {
+				m_bOpenCtxMenu = FALSE;
+
+				if (Items.GetCount() > 0 && m_hSelectedItem != NULL) {
+					GVITEM *gi = Items.GetAt(m_hSelectedItem);
+					CPoint pt(m_nClientWidth / 2, gi->yTop - m_nViewTop + SCALEY(ItemHeight / 2));
+					ClientToScreen(&pt);
+					ContextMenu(&pt);
+				}
+				else
+					CWnd::OnKeyUp(nChar, nRepCnt, nFlags);
+			}
+			else {
 				if (Items.GetCount() > 0 && m_hSelectedItem != NULL) {
 					// toggle item state
 					if (ItemHasChildren(m_hSelectedItem))
@@ -1030,33 +997,14 @@ void CGroupView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
 					else
 						OnItemClicked();
 				}
-				ReturnPressed = FALSE;
+				CWnd::OnKeyUp(nChar, nRepCnt, nFlags);
 			}
-			CView::OnKeyUp(nChar, nRepCnt, nFlags);
 			break;
 
 		default:
-*/			CView::OnKeyUp(nChar, nRepCnt, nFlags);
-//			break;
-//	}
-}
-
-void CGroupView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
-	LOG3(1, "CGroupView::OnChar(%d, %d, %d)", nChar, nRepCnt, nFlags);
-
-/*	switch (nChar) {
-		case VK_RETURN:
-			if (ReturnPressed) {
-			}
-			else
-				CView::OnChar(nChar, nRepCnt, nFlags);
+			CWnd::OnKeyUp(nChar, nRepCnt, nFlags);
 			break;
-
-		default:
-*/			CView::OnChar(nChar, nRepCnt, nFlags);
-/*			break;
 	}
-*/
 }
 
 void CGroupView::ContextMenu(CPoint *pt) {
@@ -1066,6 +1014,11 @@ void CGroupView::ContextMenu(CPoint *pt) {
 
 void CGroupView::OnTimer(UINT nIDEvent) {
 	LOG0(5, "CGroupView::OnTimer()");
+
+	if (nIDEvent == CtxMenuTimer) {
+		m_bOpenCtxMenu = TRUE;
+		KillTimer(CtxMenuTimer);
+	}
 
 	CView::OnTimer(nIDEvent);
 }
@@ -1173,15 +1126,4 @@ void CGroupView::UpdateItemHeight() {
 	CreateFonts();
 	UpdateScrollBars();
 	Invalidate();
-}
-
-BOOL CGroupView::PreTranslateMessage(MSG *pMsg) {
-	if (ReturnPressed && (pMsg->message == WM_KEYDOWN || pMsg->message == WM_CHAR)) {
-		LOG0(1, "CGroupView::PreTranslateMessage()");
-		TranslateMessage(pMsg);
-		return TRUE;
-	}
-	else {
-		return CView::PreTranslateMessage(pMsg);
-	}
 }
