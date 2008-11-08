@@ -4,16 +4,16 @@
 #
 
 PRODUCT=pRSSreader
-VERSION=1.4.1
-INF=pRSSreader.inf
+VERSION=r138
+INF=pRSSreader.devel.inf
 
 # On linux
-CABWIZ=wine c:\\Program\ Files\\Windows\ CE\ Tools\\wce420\\POCKET\ PC\ 2003\\Tools\\Cabwiz.exe
-ZIP=zip
+#CABWIZ=wine c:\\Program\ Files\\Windows\ CE\ Tools\\wce420\\POCKET\ PC\ 2003\\Tools\\Cabwiz.exe
+#ZIP=zip
 
 # On windows
-#CABWIZ="c:/program files/windows ce tools/wce420/pocket pc 2003/tools/cabwiz.exe"
-#ZIP="c:/program files/unxutils/usr/local/wbin/zip.exe"
+CABWIZ="c:/program files/windows ce tools/wce420/pocket pc 2003/tools/cabwiz.exe"
+ZIP="c:/program files/unxutils/usr/local/wbin/zip.exe"
 
 all: cab
 
