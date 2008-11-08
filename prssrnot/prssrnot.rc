@@ -29,7 +29,7 @@ LANGUAGE LANG_CZECH, SUBLANG_DEFAULT
 
 VS_VERSION_INFO VERSIONINFO
  FILEVERSION 1,4,1,0
- PRODUCTVERSION 1,4,1,0
+ PRODUCTVERSION 1,4,3,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -54,7 +54,7 @@ BEGIN
             VALUE "OriginalFilename", "prssrnot.exe\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "prssrnot\0"
-            VALUE "ProductVersion", "1, 4, 1, 0\0"
+            VALUE "ProductVersion", "1, 4, 3, 0\0"
             VALUE "SpecialBuild", "\0"
         END
     END

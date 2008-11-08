@@ -4,8 +4,8 @@
 #
 
 PRODUCT=pRSSreader
-VERSION=r138
-INF=pRSSreader.devel.inf
+VERSION=1.4.3
+INF=pRSSreader.inf
 
 # On linux
 #CABWIZ=wine c:\\Program\ Files\\Windows\ CE\ Tools\\wce420\\POCKET\ PC\ 2003\\Tools\\Cabwiz.exe
