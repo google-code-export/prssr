@@ -921,7 +921,7 @@ void CGroupView::OnLButtonUp(UINT nFlags, CPoint point) {
 // keys
 
 void CGroupView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
-	LOG3(1, "CGroupView::OnKeyDown(%d, %d, %d)", nChar, nRepCnt, nFlags);
+	LOG3(5, "CGroupView::OnKeyDown(%d, %d, %d)", nChar, nRepCnt, nFlags);
 
 	HGROUPITEM hItem;
 	switch (nChar) {
@@ -972,7 +972,7 @@ void CGroupView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 }
 
 void CGroupView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
-	LOG3(1, "CGroupView::OnKeyUp(%d, %d, %d)", nChar, nRepCnt, nFlags);
+	LOG3(5, "CGroupView::OnKeyUp(%d, %d, %d)", nChar, nRepCnt, nFlags);
 
 	switch (nChar) {
 		case VK_RETURN:
@@ -997,12 +997,12 @@ void CGroupView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
 					else
 						OnItemClicked();
 				}
-				CWnd::OnKeyUp(nChar, nRepCnt, nFlags);
+				CView::OnKeyUp(nChar, nRepCnt, nFlags);
 			}
 			break;
 
 		default:
-			CWnd::OnKeyUp(nChar, nRepCnt, nFlags);
+			CView::OnKeyUp(nChar, nRepCnt, nFlags);
 			break;
 	}
 }
