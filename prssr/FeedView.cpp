@@ -940,7 +940,7 @@ void CFeedView::OnLButtonUp(UINT nFlags, CPoint point) {
 // keys
 
 void CFeedView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
-	LOG3(1, "CFeedView::OnKeyDown(%d, %d, %d)", nChar, nRepCnt, nFlags);
+	LOG3(5, "CFeedView::OnKeyDown(%d, %d, %d)", nChar, nRepCnt, nFlags);
 
 	switch (nChar) {
 		case VK_UP:
@@ -988,7 +988,7 @@ void CFeedView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 }
 
 void CFeedView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
-	LOG3(1, "CFeedView::OnKeyUp(%d, %d, %d)", nChar, nRepCnt, nFlags);
+	LOG3(5, "CFeedView::OnKeyUp(%d, %d, %d)", nChar, nRepCnt, nFlags);
 
 	switch (nChar) {
 		case VK_RETURN:
@@ -1022,7 +1022,7 @@ void CFeedView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
 }
 
 void CFeedView::ContextMenu(CPoint *pt) {
-	LOG0(1, "CFeedView::ContextMenu()");
+	LOG0(5, "CFeedView::ContextMenu()");
 
 	if (m_nSelectFirst != -1) {
 		CMenu popup;
@@ -1044,7 +1044,7 @@ void CFeedView::ContextMenu(CPoint *pt) {
 }
 
 void CFeedView::OnTimer(UINT nIDEvent) {
-	LOG0(1, "CFeedView::OnTimer()");
+	LOG0(5, "CFeedView::OnTimer()");
 
 	if (nIDEvent == CtxMenuTimer) {
 		m_bOpenCtxMenu = TRUE;
