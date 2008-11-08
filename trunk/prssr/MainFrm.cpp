@@ -282,6 +282,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 			break;
 	}
 	m_wndArticleView.View = &m_wndFeedView;
+	m_wndFeedView.m_bWrapTitles = Config.WrapTitles;
 
 	// top bar
 	DWORD dwStyle = WS_CHILD | WS_VISIBLE | CBRS_ALIGN_TOP | CBRS_BORDER_BOTTOM;
@@ -1233,7 +1234,11 @@ void CMainFrame::OnToolsOptions() {
 		//
 		NotifyTodayPlugin(ReadConfigMessage);
 
-		m_wndFeedView.UpdateItemHeight();
+		m_wndFeedView.m_bWrapTitles = Config.WrapTitles;
+		m_wndFeedView.CreateFonts();
+		m_wndFeedView.UpdateItemHeights();
+		m_wndFeedView.UpdateScrollBars();
+
 		m_wndSummaryView.SetItemHeight();
 		m_wndSummaryView.UpdateItemHeight();
 	}

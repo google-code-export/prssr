@@ -42,6 +42,7 @@ public:
 	BOOL	m_bNotifyNew;
 	BOOL	m_bMoveToUnread;
 	BOOL	m_bClearErrorLog;
+	BOOL	m_bWrapTitles;
 	int		m_nNavigation;
 	//}}AFX_DATA
 	CComboBox m_ctlNavigation;

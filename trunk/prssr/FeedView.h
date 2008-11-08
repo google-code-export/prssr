@@ -45,8 +45,7 @@ class CSortInfo;
 /////////////////////////////////////////////////////////////////////////////
 // CFeedView window
 
-class CFeedView : public CWnd //View
-{
+class CFeedView : public CWnd {
 // Construction
 public:
 	CFeedView();
@@ -56,9 +55,6 @@ public:
 
 // Operations
 public:
-//	BOOL Create(DWORD dwStyle, const RECT &rect, CView *pParentWnd, UINT nID);
-
-//	void AddMessage(CChatMsg *msg);
 	void SelectAll();
 	void DeleteItem(int idx);
 	void DeleteAllItems();
@@ -66,7 +62,6 @@ public:
 	int GetItemCount() { return m_oItems.GetSize(); }
 	CFeedItem *GetItem(int idx) { return m_oItems.GetAt(idx); }
 	void GetSelectedRange(int &start, int &end) { start = m_nSelectStart; end = m_nSelectEnd; }
-	void UpdateItemHeight();
 
 	void UpdateScrollBars();
 
@@ -140,6 +135,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 	CArray<CFeedItem *, CFeedItem *> m_oItems;
+	CArray<int, int> m_oItemHeight;
 
 	CRect m_rcScroll;
 	BOOL m_bScrolling;
@@ -148,10 +144,10 @@ protected:
 	UINT m_nOldKeys;
 	CPoint m_ptOldCursorPos;
 
+	BOOL m_bWrapTitles;
 	int m_nViewTop;								// in pixels
 	int m_nTotalHeight;							// in pixels
 	int m_nClientHeight;						// in pixels
-//	int m_nSelectedItem;
 	int m_nSelectStart;
 	int m_nSelectEnd;
 	int m_nSelectFirst;
@@ -183,29 +179,26 @@ protected:
 	int MoveToNextChannel();
 	int MoveToPrevChannel();
 
-//	void SetupArticleDlg(int item);
 	void OpenItem(int item);
 	void FlagItem(int item);
 	void UnflagItem(int item);
 	void OpenItem(CFeedItem *feedItem);
 
-	// article dialog
-//	CArticleDlg *m_pArticleDlg;
-
 	CSiteItem *SiteItem;
 
 	// sort
-//	CSortInfo *SortInfo;
 	void Sort(int (__cdecl *compare)(const void *elem1, const void *elem2));
 
 protected:
-	int ItemHeight;
+	int CalcItemHeight(int idx);
+	void UpdateItemHeights();
 
-	static const int LABEL_MARGIN;
-	static const int LABEL_X_PADDING;
-	static const int LABEL_Y_PADDING;
-	static const int LABEL_MSG_SKIP;
+	static const int LEFT_SKIP;
+	static const int PADDING_TOP;
+	static const int PADDING_RIGHT;
+	static const int PADDING_BOTTOM;
 	static const int ITEM_MARGIN;
+	static const int DATE_HEIGHT;
 
 	friend DWORD WINAPI ScrollThread(LPVOID lpParam);
 
