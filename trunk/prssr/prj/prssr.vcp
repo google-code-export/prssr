@@ -247,20 +247,8 @@ DEP_CPP_APPEA=\
 # End Source File
 # Begin Source File
 
-SOURCE=..\ArticleDlg.cpp
+SOURCE=..\ArticleView.cpp
 DEP_CPP_ARTIC=\
-	"..\..\libexpat\expat.h"\
-	"..\..\libexpat\expat_external.h"\
-	"..\..\libsgml\DomComment.h"\
-	"..\..\libsgml\DomDocument.h"\
-	"..\..\libsgml\DomElement.h"\
-	"..\..\libsgml\DomNode.h"\
-	"..\..\libsgml\DomNodeList.h"\
-	"..\..\libsgml\DomText.h"\
-	"..\..\libsgml\libsgml.h"\
-	"..\..\libsgml\SgmlExtensionHtml.h"\
-	"..\..\libsgml\SgmlExtensionXml.h"\
-	"..\..\libsgml\SgmlParser.h"\
 	"..\..\share\defs.h"\
 	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
@@ -270,10 +258,9 @@ DEP_CPP_ARTIC=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\Appearance.h"\
-	"..\ArticleDlg.h"\
+	"..\ArticleView.h"\
 	"..\Config.h"\
 	"..\ctrls\Banner.h"\
-	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeScrollBar.h"\
 	"..\ctrls\CeToolBar.h"\
 	"..\ctrls\EnclosureBar.h"\
@@ -298,8 +285,6 @@ DEP_CPP_ARTIC=\
 	"..\SummaryView.h"\
 	"..\sync\FeedSync.h"\
 	"..\UpdateBar.h"\
-	"..\www\HTMLFile.h"\
-	"..\www\LocalHtmlFile.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"connmgr.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
@@ -335,14 +320,19 @@ DEP_CPP_CACHE=\
 	"..\..\share\SyncList.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
+	"..\ArticleView.h"\
 	"..\CacheMan.h"\
 	"..\Config.h"\
+	"..\ctrls\Banner.h"\
 	"..\ctrls\CePropertyPage.h"\
 	"..\ctrls\CePropertySheet.h"\
 	"..\ctrls\CeScrollBar.h"\
 	"..\ctrls\CeToolBar.h"\
 	"..\ctrls\CeTreeCtrl.h"\
+	"..\ctrls\EnclosureBar.h"\
 	"..\ctrls\GroupView.h"\
+	"..\ctrls\HtmlCtrl.h"\
+	"..\ctrls\InfoBar.h"\
 	"..\ctrls\LinkCtrl.h"\
 	"..\ctrls\TextProgressCtrl.h"\
 	"..\debug\crtdbg.h"\
@@ -575,10 +565,9 @@ DEP_CPP_FEEDV=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\Appearance.h"\
-	"..\ArticleDlg.h"\
+	"..\ArticleView.h"\
 	"..\Config.h"\
 	"..\ctrls\Banner.h"\
-	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeScrollBar.h"\
 	"..\ctrls\CeToolBar.h"\
 	"..\ctrls\EnclosureBar.h"\
@@ -759,8 +748,10 @@ DEP_CPP_MAINF=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\Appearance.h"\
+	"..\ArticleView.h"\
 	"..\CacheMan.h"\
 	"..\Config.h"\
+	"..\ctrls\Banner.h"\
 	"..\ctrls\Caption.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeEdit.h"\
@@ -771,8 +762,11 @@ DEP_CPP_MAINF=\
 	"..\ctrls\CeToolBar.h"\
 	"..\ctrls\CeTreeCtrl.h"\
 	"..\ctrls\ColorButton.h"\
+	"..\ctrls\EnclosureBar.h"\
 	"..\ctrls\GroupView.h"\
 	"..\ctrls\Hrule.h"\
+	"..\ctrls\HtmlCtrl.h"\
+	"..\ctrls\InfoBar.h"\
 	"..\ctrls\LinkCtrl.h"\
 	"..\ctrls\TextProgressCtrl.h"\
 	"..\debug\crtdbg.h"\
@@ -1144,13 +1138,17 @@ DEP_CPP_PRSSR=\
 	"..\..\share\wnd.h"\
 	"..\AboutPg.h"\
 	"..\Appearance.h"\
+	"..\ArticleView.h"\
 	"..\Config.h"\
 	"..\CreditsPg.h"\
+	"..\ctrls\Banner.h"\
 	"..\ctrls\CePropertyPage.h"\
 	"..\ctrls\CePropertySheet.h"\
 	"..\ctrls\CeScrollBar.h"\
 	"..\ctrls\CeToolBar.h"\
+	"..\ctrls\EnclosureBar.h"\
 	"..\ctrls\GroupView.h"\
+	"..\ctrls\HtmlCtrl.h"\
 	"..\ctrls\InfoBar.h"\
 	"..\ctrls\LinkCtrl.h"\
 	"..\ctrls\TextProgressCtrl.h"\
@@ -1415,10 +1413,15 @@ DEP_CPP_SUMMA=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\Appearance.h"\
+	"..\ArticleView.h"\
 	"..\Config.h"\
+	"..\ctrls\Banner.h"\
 	"..\ctrls\CeScrollBar.h"\
 	"..\ctrls\CeToolBar.h"\
+	"..\ctrls\EnclosureBar.h"\
 	"..\ctrls\GroupView.h"\
+	"..\ctrls\HtmlCtrl.h"\
+	"..\ctrls\InfoBar.h"\
 	"..\ctrls\LinkCtrl.h"\
 	"..\ctrls\TextProgressCtrl.h"\
 	"..\debug\crtdbg.h"\
@@ -1480,10 +1483,15 @@ DEP_CPP_UPDAT=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\Appearance.h"\
+	"..\ArticleView.h"\
 	"..\Config.h"\
+	"..\ctrls\Banner.h"\
 	"..\ctrls\CeScrollBar.h"\
 	"..\ctrls\CeToolBar.h"\
+	"..\ctrls\EnclosureBar.h"\
 	"..\ctrls\GroupView.h"\
+	"..\ctrls\HtmlCtrl.h"\
+	"..\ctrls\InfoBar.h"\
 	"..\ctrls\LinkCtrl.h"\
 	"..\ctrls\TextProgressCtrl.h"\
 	"..\debug\crtdbg.h"\
@@ -1566,7 +1574,7 @@ SOURCE=..\Appearance.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\ArticleDlg.h
+SOURCE=..\ArticleView.h
 # End Source File
 # Begin Source File
 
@@ -2260,15 +2268,38 @@ DEP_CPP_INFOB=\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
+	"..\..\share\SyncList.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\Appearance.h"\
+	"..\ArticleView.h"\
+	"..\ctrls\Banner.h"\
+	"..\ctrls\CeScrollBar.h"\
+	"..\ctrls\CeToolBar.h"\
+	"..\ctrls\EnclosureBar.h"\
+	"..\ctrls\GroupView.h"\
+	"..\ctrls\HtmlCtrl.h"\
 	"..\ctrls\InfoBar.h"\
+	"..\ctrls\LinkCtrl.h"\
+	"..\ctrls\TextProgressCtrl.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
 	"..\Feed.h"\
+	"..\FeedView.h"\
+	"..\MainFrm.h"\
+	"..\net\download.h"\
+	"..\net\http.h"\
+	"..\net\HttpConnection.h"\
+	"..\net\httpsock.h"\
+	"..\net\proxy.h"\
 	"..\prssr.h"\
+	"..\Site.h"\
 	"..\StdAfx.h"\
+	"..\SummaryView.h"\
+	"..\sync\FeedSync.h"\
+	"..\UpdateBar.h"\
+	"..\www\url.h"\
+	{$(INCLUDE)}"connmgr.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
