@@ -92,6 +92,7 @@ CFeedView::CFeedView() {
 	m_nTotalHeight = 0;
 	m_nViewTop = 0;
 	m_nClientHeight = 0;
+	m_nClientWidth = 0;
 
 	m_nSelectStart = m_nSelectEnd = -1;		// none
 	m_nSelectFirst = -1;
@@ -287,11 +288,11 @@ void CFeedView::MarkAllRead() {
 	}
 
 	AdjustViewTop();
-	Invalidate(TRUE);
 
 	DeselectAllItems();
 	SortItems();
 	UpdateScrollBars();
+	Invalidate(TRUE);
 }
 
 void CFeedView::MarkAllUnread() {
@@ -301,11 +302,11 @@ void CFeedView::MarkAllUnread() {
 		MarkItem(i, MESSAGE_UNREAD);
 
 	AdjustViewTop();
-	Invalidate(TRUE);
 
 	DeselectAllItems();
 	SortItems();
 	UpdateScrollBars();
+	Invalidate(TRUE);
 }
 
 //
@@ -624,6 +625,7 @@ void CFeedView::OnSize(UINT nType, int cx, int cy) {
 	CWnd::OnSize(nType, cx, cy);
 
 	m_nClientHeight = cy;
+	m_nClientWidth = cx;
 
 	CRect rcClient;
 	GetClientRect(rcClient);
@@ -1514,6 +1516,8 @@ void CFeedView::OnViewHideReadItems() {
 	Config.SaveUI();
 
 	InsertItems(SiteItem);
+	UpdateScrollBars();
+	UpdateItemHeights();
 }
 
 void CFeedView::OnUpdateViewHideReadItems(CCmdUI *pCmdUI) {
@@ -1524,10 +1528,7 @@ int CFeedView::CalcItemHeight(int idx) {
 	if (m_bWrapTitles) {
 		CDC *pDC = GetDC();
 		
-		CRect rc;
-		GetClientRect(rc);
-
-		rc.right -= ::GetSystemMetrics(SM_CXVSCROLL);
+		CRect rc(0, 0, m_nClientWidth, m_nClientHeight);
 		rc.DeflateRect(SCALEX(LEFT_SKIP), SCALEY(PADDING_TOP), SCALEX(PADDING_RIGHT), SCALEY(PADDING_BOTTOM));
 		int wd = rc.Width();
 
@@ -1546,10 +1547,28 @@ int CFeedView::CalcItemHeight(int idx) {
 }
 
 void CFeedView::UpdateItemHeights() {
+	CRect rc;
+	GetClientRect(rc);
+	m_nClientWidth = rc.Width();
+	
 	m_nTotalHeight = 0;
+	bool refresh = false;
 	for (int i = 0; i < m_oItems.GetSize(); i++) {
 		m_nTotalHeight += CalcItemHeight(i);
+		if (m_nTotalHeight > m_nClientHeight) {
+			m_nClientWidth -= ::GetSystemMetrics(SM_CXVSCROLL);
+			refresh = true;
+			break;
+		}
 		m_oItemHeight[i] = m_nTotalHeight;
+	}
+
+	if (refresh) {
+		m_nTotalHeight = 0;
+		for (int i = 0; i < m_oItems.GetSize(); i++) {
+			m_nTotalHeight += CalcItemHeight(i);
+			m_oItemHeight[i] = m_nTotalHeight;
+		}
 	}
 }
 

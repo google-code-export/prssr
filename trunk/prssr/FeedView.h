@@ -148,6 +148,7 @@ protected:
 	int m_nViewTop;								// in pixels
 	int m_nTotalHeight;							// in pixels
 	int m_nClientHeight;						// in pixels
+	int m_nClientWidth;						// in pixels
 	int m_nSelectStart;
 	int m_nSelectEnd;
 	int m_nSelectFirst;
