@@ -69,6 +69,7 @@ protected:
 	void ToFullScreenMode();
 
 	void OnContextMenu(NM_HTMLCONTEXT *pnmhc);
+	void ContextMenu(CPoint point);
 
 	// Generated message map functions
 	//{{AFX_MSG(CArticleView)

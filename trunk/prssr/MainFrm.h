@@ -109,6 +109,9 @@ protected:  // control bar embedded members
 	BOOL m_bClick;
 	CPoint LastCursorPos;
 
+	UINT CtxMenuTimer;
+	BOOL m_bOpenCtxMenu;
+
 // Generated message map functions
 protected:
 	void SwitchView(EView view);
@@ -169,9 +172,11 @@ protected:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnInitMenuPopup(CMenu* pMenu, UINT nIndex, BOOL bSysMenu);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnTimer(UINT nIDEvent);
 	//}}AFX_MSG
 
 	afx_msg void OnFileProperties();
