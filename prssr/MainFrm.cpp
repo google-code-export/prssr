@@ -144,7 +144,9 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_SETFOCUS()
 	ON_WM_SIZE()
 //	ON_WM_INITMENUPOPUP()
+	ON_WM_TIMER()
 	ON_WM_KEYDOWN()
+	ON_WM_KEYUP()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
 	ON_WM_MOUSEMOVE()
@@ -234,6 +236,9 @@ CMainFrame::CMainFrame() {
 	HSyncItemsThread = NULL;
 	Syncer = NULL;
 	HSyncItemEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+
+	CtxMenuTimer = 1;
+	m_bOpenCtxMenu = FALSE;
 }
 
 CMainFrame::~CMainFrame() {
@@ -2350,6 +2355,15 @@ BOOL CMainFrame::PreTranslateMessage(MSG* pMsg) {
 				return CFrameWnd::PreTranslateMessage(pMsg);
 			}
 		}
+		else if (pMsg->message == WM_KEYUP) {
+			if (pMsg->wParam == VK_RETURN) {
+				TranslateMessage(pMsg);
+				SendMessage(pMsg->message, pMsg->wParam, pMsg->lParam);
+				return TRUE;
+			}
+			else
+				return CFrameWnd::PreTranslateMessage(pMsg);
+		}
 		else if (pMsg->message == WM_LBUTTONDOWN || pMsg->message == WM_LBUTTONUP || pMsg->message == WM_MOUSEMOVE) {
 			if (View == ArticleView) {
 				CRect rc;
@@ -2383,12 +2397,15 @@ BOOL CMainFrame::PreTranslateMessage(MSG* pMsg) {
 }
 
 void CMainFrame::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
-	LOG3(1, "CMainFrame::OnKeyDown(%d, %d, %d)", nChar, nRepCnt, nFlags);
+	LOG3(5, "CMainFrame::OnKeyDown(%d, %d, %d)", nChar, nRepCnt, nFlags);
 
 	if (View == ArticleView) {
 		switch (nChar) {
 			case VK_RETURN:
-				m_wndArticleView.OnItemOpen();
+				if (!(nFlags & 0x4000)) {
+					m_bOpenCtxMenu = FALSE;
+					SetTimer(CtxMenuTimer, TIMER_KEY_CTX_MENU, NULL);
+				}
 				break;
 
 			case VK_LEFT:
@@ -2418,6 +2435,48 @@ void CMainFrame::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	}
 	else
 		CFrameWnd::OnKeyDown(nChar, nRepCnt, nFlags);
+}
+
+void CMainFrame::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
+	LOG3(5, "CMainFrame::OnKeyUp(%d, %d, %d)", nChar, nRepCnt, nFlags);
+
+	if (View == ArticleView) {
+		switch (nChar) {
+			case VK_RETURN:
+				KillTimer(CtxMenuTimer);
+				if (m_bOpenCtxMenu) {
+					m_bOpenCtxMenu = FALSE;
+
+					CRect rc;
+					GetClientRect(rc);
+					CPoint pt(rc.Width() / 2, SCALEY(10));
+					m_wndArticleView.ClientToScreen(&pt);
+					m_wndArticleView.ContextMenu(pt);
+				}
+				else {
+					m_wndArticleView.OnItemOpen();
+					CFrameWnd::OnKeyUp(nChar, nRepCnt, nFlags);
+				}
+				break;
+
+			default:
+				CFrameWnd::OnKeyUp(nChar, nRepCnt, nFlags);
+				break;
+		}
+	}
+	else
+		CFrameWnd::OnKeyUp(nChar, nRepCnt, nFlags);
+}
+
+void CMainFrame::OnTimer(UINT nIDEvent) {
+	LOG0(5, "CFrameWnd::OnTimer()");
+
+	if (nIDEvent == CtxMenuTimer) {
+		m_bOpenCtxMenu = TRUE;
+		KillTimer(CtxMenuTimer);
+	}
+
+	CFrameWnd::OnTimer(nIDEvent);
 }
 
 void CMainFrame::NoNewMessage() {

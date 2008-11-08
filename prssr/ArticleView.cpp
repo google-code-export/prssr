@@ -383,6 +383,32 @@ void CArticleView::AppendBookmarkMenu(CMenu *menu) {
 	}
 }
 
+void CArticleView::ContextMenu(CPoint point) {
+	LOG0(3, "CArticleView::ContextMenu()");
+
+	CMenu popup;
+	popup.CreatePopupMenu();
+
+	m_strContextMnuUrl.Empty();
+	m_strContextMenuLinkName.Empty();
+
+	AppendMenuFromResource(&popup, IDR_OPEN);
+	if (m_pArticle->HasEnclosure()) {
+		AppendMenuFromResource(&popup, IDR_ENCLOSURES);
+	}
+	popup.AppendMenu(MF_SEPARATOR);
+	AppendBookmarkMenu(&popup);
+	AppendMenuFromResource(&popup, IDR_SEND_BY_EMAIL);
+	AppendMenuFromResource(&popup, IDR_COPY_URL);
+
+	popup.AppendMenu(MF_SEPARATOR);
+	AppendMenuFromResource(&popup, IDR_ITEM_FLAG);
+	AppendMenuFromResource(&popup, IDR_COPY);
+	AppendMenuFromResource(&popup, IDR_FULLSCREEN);
+
+	popup.TrackPopupMenu(TPM_LEFTALIGN, point.x, point.y, GetParent());
+}
+
 void CArticleView::OnContextMenu(NM_HTMLCONTEXT *pnmhc) {
 	LOG0(3, "CArticleView::OnContextMenu()");
 
