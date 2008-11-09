@@ -4,6 +4,30 @@
 = !ChangeLog =
 ----
 
+== Version 1.4.3 ==
+Released on November 8, 2008
+
+ * Greader support
+ * Improved one hand use
+ * Touch friendly scrolling
+ * Long article title can be wrapped (multiline article titles)
+ * Show a little icon if an article or enclosure is cached or not
+ * Can use proxy settings from the built-in connection manager
+ * True full screen
+ * Larger items in summary view
+ * Used saved authentication on update
+ * 'No space left on the device' reported to the user instead of false invalid feed errors
+ * added GBK encoding
+ * HTML optimozation related fixes
+ * prssrnot.exe goes to the \windows directory (fixed auto-update related issues)
+ * and more fixes
+
+
+== Version 1.4.2 ==
+Released on September 6, 2008
+
+TODO:
+
 == Version 1.4.1 ==
 Released on August 3, 2008
 
