@@ -65,24 +65,13 @@ CBanner::CBanner() {
 }
 
 CBanner::~CBanner() {
-	m_fntBold.DeleteObject();
+	m_fntBold.DeleteObject();	
 }
 
-BOOL CBanner::Create(CWnd *parentWnd) {
-	m_dwStyle = CBRS_TOP | CBRS_BORDER_BOTTOM;
 
-	BOOL ret;
-
-	CRect rect; rect.SetRectEmpty();
-	ret = CWnd::Create(NULL, NULL, WS_CHILD, rect, parentWnd, AFX_IDW_TOOLBAR + 4);
-
-	return ret;
-}
-
-BEGIN_MESSAGE_MAP(CBanner, CControlBar)
+BEGIN_MESSAGE_MAP(CBanner, CStatic)
 	//{{AFX_MSG_MAP(CBanner)
 	ON_WM_PAINT()
-	ON_WM_SIZE()
 	ON_WM_ERASEBKGND()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
@@ -93,9 +82,7 @@ END_MESSAGE_MAP()
 // CBanner message handlers
 
 void CBanner::OnPaint() {
-	CControlBar::OnPaint();
-
-	CWindowDC dc(this); // device context for painting
+	CPaintDC dc(this); // device context for painting
 
 	CRect rcClient;
 	GetClientRect(&rcClient);
@@ -163,13 +150,9 @@ void CBanner::OnPaint() {
 	//
 	memDC.SelectObject(saveBmp);
 
-	ValidateRect(NULL);
-
+	ValidateRect(NULL);	
+	
 	// Do not call CStatic::OnPaint() for painting messages
-}
-
-void CBanner::OnSize(UINT nType, int cx, int cy) {
-	CControlBar::OnSize(nType, cx, cy);
 }
 
 BOOL CBanner::OnEraseBkgnd(CDC *pDC) {
@@ -201,17 +184,4 @@ void CBanner::OnLButtonUp(UINT nFlags, CPoint point) {
 	}
 
 	m_bClick = FALSE;
-}
-
-void CBanner::OnUpdateCmdUI(CFrameWnd *pTarget, BOOL bDisableIfNoHndler) {
-}
-
-CSize CBanner::CalcFixedLayout(BOOL bStretch, BOOL bHorz) {
-	LOG0(1, "CBanner::CalcFixedLayout()");
-
-	CDC *pDC = GetDC();
-	int cx = pDC->GetDeviceCaps(HORZRES);
-	ReleaseDC(pDC);
-
-	return CSize(cx, SCALEY(21) - 1);
 }

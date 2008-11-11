@@ -27,16 +27,12 @@
 
 #include "../share/SyncList.h"
 #include "ctrls/CeToolBar.h"
-#include "ctrls/Banner.h"
-#include "ctrls/EnclosureBar.h"
-#include "ctrls/InfoBar.h"
 #include "Site.h"
 //#include "Download.h"
 #include "UpdateBar.h"
 
 #include "FeedView.h"
 #include "SummaryView.h"
-#include "ArticleView.h"
 #include "sync/FeedSync.h"
 
 #define MF_NUM_TOOLTIPS				6
@@ -63,8 +59,6 @@ public:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo);
 	virtual BOOL DestroyWindow();
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	virtual BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult);
 	//}}AFX_VIRTUAL
 
 public:
@@ -82,17 +76,11 @@ protected:  // control bar embedded members
 
 	enum EView {
 		FeedView = 1,
-		SummaryView = 2,
-		ArticleView = 3
+		SummaryView = 2
 	} View;
 	CFeedView m_wndFeedView;
 	CSummaryView m_wndSummaryView;
-
-	// message view
-	CBanner m_wndBanner;
-	CEnclosureBar m_wndEnclosureBar;
-	CInfoBar m_wndInfoBar;
-	CArticleView m_wndArticleView;
+	TCHAR *m_ToolTipsTable[MF_NUM_TOOLTIPS];
 
 	// update bar
 	CUpdateBar m_wndUpdateBar;
@@ -105,23 +93,13 @@ protected:  // control bar embedded members
 	BOOL Loading;				// loading site list
 	BOOL WorkOffline;			// TRUE if in Offline mode
 
-	// article view touch scrolling
-	BOOL m_bClick;
-	CPoint LastCursorPos;
-
-	UINT CtxMenuTimer;
-	BOOL m_bOpenCtxMenu;
-
 // Generated message map functions
 protected:
 	void SwitchView(EView view);
 	void SwitchToView(CWnd *pOldActiveView, CWnd *pNewView);
 	void SetupSummaryView();
 	void SetupFeedView();
-	void SetupArticleView();
 
-	void SetupEnclosureBar(CFeedItem *fi);
-	void NoNewMessage();
 	void SetTopBarText(UINT nID, int nIconIdx);
 	void SetTopBarText(const CString &strText, int nIconIdx);
 	void UpdateTopBar();
@@ -171,12 +149,6 @@ protected:
 	afx_msg void OnSetFocus(CWnd *pOldWnd);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnInitMenuPopup(CMenu* pMenu, UINT nIndex, BOOL bSysMenu);
-	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-	afx_msg void OnTimer(UINT nIDEvent);
 	//}}AFX_MSG
 
 	afx_msg void OnFileProperties();
@@ -231,8 +203,6 @@ protected:
 
 	afx_msg void OnRewriteRules();
 
-	afx_msg void OnFeedListView();
-
 	// sort
 	void UpdateSort();
 	afx_msg void OnSortChange();
@@ -255,7 +225,7 @@ protected:
 	friend class CPrssrApp;
 	friend class CFeedView;
 	friend class CSummaryView;
-	friend class CArticleView;
+	friend class CArticleDlg;
 	friend class CCacheManPg;
 	friend class CCacheManHtmlPg;
 	friend class CCacheManEnclosuresPg;

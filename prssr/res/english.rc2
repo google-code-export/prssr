@@ -279,11 +279,6 @@ BEGIN
                     BS_MULTILINE | WS_TABSTOP,4,16,152,10
     CONTROL         "Clear error log before update",IDC_CLEAR_ERRORLOG,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,28,152,10
-    CONTROL         "Wrap article titles",IDC_WRAP_TITLES,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,40,152,10
-    LTEXT           "Navigation style:",IDC_STATIC,4,53,70,10
-    COMBOBOX        IDC_NAVIGATION,75,52,80,60,CBS_DROPDOWNLIST |
-                    WS_VSCROLL | WS_TABSTOP
 END
 
 IDD_OPT_CACHE DIALOG DISCARDABLE  0, 0, 160, 190
@@ -393,14 +388,12 @@ FONT 8, "Tahoma"
 BEGIN
     CONTROL         "Automatically connect",IDC_AUTO_CONNECT,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,4,5,152,10
-	CONTROL         "Use built-in connection manager",IDC_USE_CONMAN,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,4,21,152,10
-    LTEXT           "Proxy:",IDC_STATIC1,16,35,22,8
-    COMBOBOX        IDC_PROXIES,41,34,71,57,CBS_DROPDOWNLIST |
+    LTEXT           "Proxy:",IDC_STATIC,4,25,22,8
+    COMBOBOX        IDC_PROXIES,29,24,83,57,CBS_DROPDOWNLIST |
                     WS_VSCROLL | WS_TABSTOP
-    PUSHBUTTON      "Edit...",IDC_EDIT,115,34,40,13
-    PUSHBUTTON      "New...",IDC_NEW,41,50,40,13
-    PUSHBUTTON      "Remove",IDC_REMOVE,115,50,40,13
+    PUSHBUTTON      "Edit...",IDC_EDIT,115,24,40,13
+    PUSHBUTTON      "New...",IDC_NEW,29,40,40,13
+    PUSHBUTTON      "Remove",IDC_REMOVE,115,40,40,13
 END
 
 //
@@ -721,7 +714,7 @@ BEGIN
 #if SHOW_SVN_REVISION
     LTEXT           SVN_REVISION_TEXT,IDC_STATIC2,5,8,115,10
 #else
-    LTEXT           "pRSSreader 1.4.3",IDC_STATIC2,5,8,115,10
+    LTEXT           "pRSSreader 1.4.2",IDC_STATIC2,5,8,115,10
 #endif
     LTEXT           "Copyright (c) 2005 - 2008",IDC_STATIC3,5,23,115,10
     LTEXT           "David Andrs",IDC_STATIC4,5,33,115,10
@@ -740,7 +733,7 @@ BEGIN
 #if SHOW_SVN_REVISION
     LTEXT           SVN_REVISION_TEXT,IDC_STATIC2,5,8,115,10
 #else
-    LTEXT           "pRSSreader 1.4.3",IDC_STATIC2,5,8,115,10
+    LTEXT           "pRSSreader 1.4.2",IDC_STATIC2,5,8,115,10
 #endif
     LTEXT           "Copyright (c) 2005 - 2008",IDC_STATIC3,5,23,115,10
     LTEXT           "David Andrs",IDC_STATIC4,5,33,115,10
@@ -1105,7 +1098,6 @@ BEGIN
         MENUITEM "Mark All Items Unread",       ID_TOOLS_MARKALLITEMSUNREAD
         MENUITEM SEPARATOR
         MENUITEM "Hide Read Items",             ID_VIEW_HIDEREADITEMS
-        MENUITEM "Exit",                        ID_APP_EXIT
     END
 END
 
@@ -1293,7 +1285,7 @@ END
 
 IDR_ARTICLE MENU DISCARDABLE
 BEGIN
-    MENUITEM "Close",                           ID_TOOLS_FEEDVIEW
+    MENUITEM "Close",                           IDCANCEL
     POPUP "Menu"
     BEGIN
         MENUITEM "Open...",                     ID_ITEM_OPEN
@@ -1381,11 +1373,6 @@ BEGIN
     MENUITEM "Cancel",                         IDCANCEL
 END
 
-IDR_EXIT MENU DISCARDABLE
-BEGIN
-    MENUITEM "Exit",                           ID_APP_EXIT
-END
-
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
@@ -1412,7 +1399,6 @@ BEGIN
     IDS_PRSSR_NOTIFICATION  "pRSSreader"
     IDS_LINK_TO_ARTICLE     "Link to the article"
 	IDS_NOTHING_TO_DISPLAY  "Nothing to display"
-    IDS_NO_UNREAD_ITEMS     "No unread items"
 END
 
 STRINGTABLE PRELOAD DISCARDABLE
@@ -1471,8 +1457,6 @@ BEGIN
     IDS_NEVER               "never"
     IDS_SELECT_ENCLOSURES_LOCATION "Select enclosures location"
     IDS_CACHING_ENCLOSURES  "Enclosures (%d remain)"
-    IDS_NAVIGATION_TOUCH    "Touch friendly"
-    IDS_NAVIGATION_NORMAL   "WM standard"
 END
 
 STRINGTABLE DISCARDABLE

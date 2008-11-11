@@ -130,7 +130,6 @@ protected:
 	int ErrorCount;
 	BOOL Terminate;
 	int TotalItems;
-	int NewItemsCount;
 
 	void UpdateThread();
 	void UpdateFeeds();

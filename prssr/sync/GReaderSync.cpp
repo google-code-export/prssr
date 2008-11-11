@@ -5,7 +5,7 @@
 #include "../StdAfx.h"
 #include "../prssr.h"
 #include "GReaderSync.h"
-#include "../net/Download.h"
+#include "../net/download.h"
 #include "../Config.h"
 #include "../Site.h"
 #include "../xml/FeedFile.h"
@@ -65,7 +65,7 @@ BOOL CGReaderSync::Authenticate() {
 	}
 
 	LeaveCriticalSection(&CS);
-
+	
 	return ret;
 }
 
@@ -170,7 +170,7 @@ void CGReaderSync::UpdateInGreader() {
 
 BOOL CGReaderSync::SyncItem(CFeedItem *fi, DWORD mask) {
 	LOG0(1, "CGReaderSync::SyncItem()");
-
+	
 	EnterCriticalSection(&CS);
 
 	CString url, body, response;
@@ -302,7 +302,7 @@ static BOOL ParseSubscriptionObject(CXmlNode *object, CSiteItem *&siteItem) {
 	while (posObject != NULL) {
 		CXmlNode *string = object->GetNextChild(posObject);
 		CString tagName = string->GetName();
-
+		
 		if (tagName.Compare(_T("string")) == 0) {
 			// find attribute name=""
 			CString attrName;
@@ -352,7 +352,7 @@ static  BOOL ParseList(CXmlNode *parent, CSiteList &siteList) {
 	CSiteItem *rootItem = new CSiteItem(NULL, CSiteItem::Group);
 
 	CXmlNode *list = parent;
-
+	
 	// process <object> nodes
 	POSITION pos = list->GetFirstChildPos();
 	while (pos != NULL) {
@@ -361,11 +361,11 @@ static  BOOL ParseList(CXmlNode *parent, CSiteList &siteList) {
 		if (tagName.Compare(_T("object")) == 0) {
 			// process <object> nodes
 			CSiteItem *siteItem = NULL;
-			if (ParseSubscriptionObject(object, siteItem))
+			if (ParseSubscriptionObject(object, siteItem));
 				rootItem->AddItem(siteItem);
 		}
 	}
-
+	
 	siteList.SetRoot(rootItem);
 
 	return TRUE;
@@ -428,7 +428,7 @@ BOOL CGReaderSync::GetSubscriptions(CSiteList &siteList) {
 
 BOOL CGReaderSync::AddSubscription(const CString &feedUrl, const CString &title) {
 	LOG0(1, "CGReaderSync::AddSubscription()");
-
+	
 	EnterCriticalSection(&CS);
 
 	CString url, body, response;
@@ -451,7 +451,7 @@ BOOL CGReaderSync::AddSubscription(const CString &feedUrl, const CString &title)
 
 BOOL CGReaderSync::RemoveSubscription(const CString &feedUrl) {
 	LOG0(1, "CGReaderSync::RemoveSubscription()");
-
+	
 	EnterCriticalSection(&CS);
 
 	CString url, body, response;

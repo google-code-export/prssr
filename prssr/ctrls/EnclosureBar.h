@@ -28,14 +28,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // CEnclosureBar window
 
-class CEnclosureBar : public CControlBar {
+class CEnclosureBar : public CStatic {
 // Construction
 public:
 	CEnclosureBar();
-
-	BOOL Create(CWnd *parentWnd);
-	virtual void OnUpdateCmdUI(CFrameWnd *pTarget, BOOL bDisableIfNoHndler);
-	virtual CSize CalcFixedLayout(BOOL bStretch, BOOL bHorz);
 
 // Attributes
 public:
@@ -55,18 +51,17 @@ public:
 	void SetSize(DWORD size) { m_nSize = size; }
 	void SetName(const CString &name) { m_strName = name; }
 //	void SetItems(int unread, int total = -1) { m_nUnread = unread; if (total != -1) m_nTotal = total; }
-	void SetIcon(int index);
+	void SetIcon(HICON icon) { m_hIcon = icon; }
 	void SetCached(BOOL cached = TRUE) { Cached = cached; }
 
 	// Generated message map functions
 protected:
 	CFont m_fntBold;
-
+	
 	DWORD m_nSize;
 	CString m_strName;
 	HICON m_hIcon;
 	BOOL Cached;
-	CImageList m_ilIcons;
 
 	CPoint LastCursorPos;
 

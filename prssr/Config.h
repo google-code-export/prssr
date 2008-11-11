@@ -42,10 +42,13 @@ enum ESyncSite {
 // Main View
 #define MAIN_VIEW_FEED_LIST							0
 #define MAIN_VIEW_SUMMARY_VIEW						1
-#define MAIN_VIEW_ARTICLE							2
 
-#define NAVIGATION_TOUCH							0
-#define NAVIGATION_NORMAL							1
+/*// feed preload
+#define FEED_PRELOAD_SINGLE							1
+#define FEED_PRELOAD_NEIGHBOURS						2
+#define FEED_PRELOAD_GROUP							3
+#define FEED_PRELOAD_ALL							4
+*/
 
 // config
 #define CONFIG_DEFAULT_CACHE_LIMIT					50
@@ -53,13 +56,11 @@ enum ESyncSite {
 #define CONFIG_DEFAULT_CHECKONCRADLING				FALSE
 #define CONFIG_DEFAULT_UPDATEINTERVAL				0
 #define CONFIG_DEFAULT_AUTOCONNECT					FALSE
-#define CONFIG_DEFAULT_USE_CONN_MANAGER				TRUE
 #define CONFIG_DEFAULT_TIMEOUT						7000		// 7 seconds
 
 #define CONFIG_DEFAULT_MOVETOUNREAD					FALSE
 
 #define CONFIG_DEFAULT_NOTIFYNEW                    TRUE
-#define CONFIG_DEFAULT_WRAPTITLES                   TRUE
 
 // GUI
 #define CONFIG_DEFAULT_MAIN_VIEW					MAIN_VIEW_SUMMARY_VIEW
@@ -69,7 +70,6 @@ enum ESyncSite {
 #define CONFIG_DEFAULT_HIDE_READ_ITEMS				FALSE
 #define CONFIG_DEFAULT_UPDATE_ONLY					FALSE
 #define CONFIG_DEFAULT_BACKGROUNDUPDATE				TRUE
-#define CONFIG_DEFAULT_NAVIGATION_TYPE				NAVIGATION_TOUCH
 
 #define CONFIG_DEFAULT_CLEARERRORLOG				TRUE
 #define CONFIG_DEFAULT_USERAGENT					UA_PRSSREADER
@@ -82,6 +82,8 @@ enum ESyncSite {
 #define CONFIG_DEFAULT_GENERATEPLAYLISTS			FALSE
 #define CONFIG_DEFAULT_ENCLOSUREPLAYLISTFORMAT		PLAYLIST_FORMAT_ASX
 
+//#define CONFIG_DEFAULT_PROXYOVERRIDECONMAN			FALSE
+//#define CONFIG_DEFAULT_PROXYTYPE					PROXY_TYPE_NONE
 #define CONFIG_DEFAULT_SEARCHLIMIT					20
 
 #define CONFIG_DEFAULT_USE_HTML_OPTIMIZER			FALSE
@@ -105,6 +107,38 @@ enum ESyncSite {
 #define CONFIG_DEFAULT_EMAIL_SERVICE				_T("ActiveSync")
 #define CONFIG_DEFAULT_WRAPAROUND					FALSE
 
+/*
+
+#define CONFIG_DEFAULT_MARKNEWUNREAD				TRUE
+#define CONFIG_DEFAULT_CACHEHTMLIMAGES				TRUE
+
+//#define CONFIG_DEFAULT_MAINWNDFONT					FALSE
+#define CONFIG_DEFAULT_TRUNCATEITEMTITLES			FALSE
+#define CONFIG_DEFAULT_DOWNLOADTHREADS				3
+#define CONFIG_DEFAULT_MOVECHANNEL					TRUE
+#define CONFIG_DEFAULT_NEWSECONDS					2
+#define CONFIG_DEFAULT_SHOWSITENAME					TRUE
+#define CONFIG_DEFAULT_ACTIONBUTTON					0
+
+#define CONFIG_DEFAULT_HIDEREADITEMS				FALSE
+#define CONFIG_DEFAULT_HIDEREADFEEDS				FALSE
+#define CONFIG_DEFAULT_CACHEMANPAGE					0
+#define CONFIG_DEFAULT_HIDEGROUPS					FALSE
+
+#define CONFIG_DEFAULT_WARN_FEED_MOVE               TRUE
+
+
+*/
+
+// Default values for site settings
+/*#define SITE_DEFAULT_CACHE_IMAGES					FALSE
+#define SITE_DEFAULT_CACHE_HTML						FALSE
+#define SITE_DEFAULT_TODAY_SHOW						TRUE
+#define SITE_DEFAULT_UPDATE_INTERVAL				UPDATE_INTERVAL_GLOBAL
+#define SITE_DEFAULT_CACHE_ENCLOSURES				FALSE
+#define SITE_DEFAULT_ENCLOSURE_LIMIT				0
+#define SITE_DEFAULT_CACHE_LIMIT					CACHE_LIMIT_DEFAULT
+*/
 
 #ifdef LOGGING
 	#if defined PRSSR_APP
@@ -147,7 +181,6 @@ public:
 	// GUI
 	// main window
 	int ActSiteIdx;
-	int ActFeedItem;
 	BOOL WorkOffline;
 	int MainView;
 	BOOL HideGroups;
@@ -158,8 +191,6 @@ public:
 
 	BOOL NotifyNew;
 	BOOL WrapAround;
-	BOOL WrapTitles;
-	int NavigationType;
 
 	// cache
 	CString CacheLocation;
@@ -176,7 +207,6 @@ public:
 	//
 	int UpdateInterval;
 	BOOL AutoConnect;
-	BOOL UseConnManager;
 	BOOL CheckOnCradling;
 	BOOL ClearErrorLog;
 	BOOL BackgroundUpdate;
@@ -210,6 +240,51 @@ public:
 
 	CArray<CSocialBookmarkSite *, CSocialBookmarkSite *> SocialBookmarkSites;
 
+	////////
+
+/*	// general
+	BOOL ShowRelativeTimes;
+	BOOL TruncateItemTitles;
+	BOOL GMTTimes;
+	int DownloadThreads;
+	BOOL MoveChannel;
+	BOOL WarnFeedMove;
+
+	// read options
+	int NewSeconds;
+	BOOL ShowSiteName;				// show banner
+	int ActionButton;
+
+	// Cache Manager
+	int CacheManPage;
+	BOOL HideGroups;
+	///
+
+	// retrieval
+	BOOL MarkNewUnread;
+	BOOL CacheHtmlImages;
+
+	// enclosures
+	CString EnclosuresLocation;
+
+*/
+
+/*	// default settings for new sites
+	struct CSite {
+		BOOL CacheImages;
+		BOOL CacheHtml;
+		BOOL TodayShow;
+		int UpdateInterval;
+		BOOL CacheEnclosures;
+		int EnclosureLimit;
+		int CacheLimit;
+
+		CSite();
+		void Save(HKEY hApp);
+		void Load(HKEY hApp);
+	} Site;
+*/
+
 	// TWEAKS
 	CString DateFormat;						// custom date format
 	int SearchLimit;						// number of items in search results
@@ -218,6 +293,8 @@ public:
 	BOOL SetPropertiesAfterSiteAdded;		// site man
 	BOOL ShowMainToolbar;					// show toolbar on the main window
 	BOOL CheckCertificates;					// check certificates when connection to secured sites
+//	BOOL StartInSummaryView;				// start pRSSreader in summary view
+//	int FeedPreload;
 	DWORD Timeout;
 	BOOL ReportErrorsAfterUpdate;			// Report errors after update if there are any
 	BOOL OpenMsgWithHtmlOptimizer;
@@ -235,6 +312,7 @@ public:
 	virtual ~CConfig();
 	void Destroy();
 
+//	void SaveUiSettings();
 	void Save();
 	void Load();
 
@@ -252,8 +330,36 @@ public:
 
 	void SaveUI();
 	void LoadUI();
+
+protected:
+/*#ifdef PRSSR_APP
+	void LoadKeys(HKEY hApp);
+	void SaveKeys(HKEY hApp);
+
+	void LoadOptions(HKEY hApp);
+	void SaveOptions(HKEY hApp);
+
+
+	void LoadColors(HKEY hApp);
+	void SaveColors(HKEY hApp);
+#endif
+*/
+
 };
 
 extern CConfig Config;
+
+/*extern LPCTSTR szConfig;
+
+extern LPCTSTR szNewItems;
+extern LPCTSTR szUnreadItems;
+extern LPCTSTR szTotalItems;
+
+//
+void RegWriteDword(HKEY hKey, LPCTSTR valueName, DWORD value);
+void RegWriteString(HKEY hKey, LPCTSTR valueName, LPCTSTR value);
+DWORD RegReadDword(HKEY hKey, LPCTSTR valueName, DWORD defaultValue);
+CString RegReadString(HKEY hKey, LPCTSTR valueName, LPCTSTR defaultValue);
+*/
 
 #endif // !defined(AFX_CONFIG_H__3AC5942A_61A5_4469_ADFE_264704448F3C__INCLUDED_)

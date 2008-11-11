@@ -121,7 +121,6 @@
 #define IDR_KEYWORD_MANAGER             341
 #define IDR_FULLSCREEN                  342
 #define IDR_REWRITING                   343
-#define IDR_EXIT                        344
 
 #define IDS_TODAY                       400
 #define IDS_YESTERDAY                   401
@@ -350,15 +349,12 @@
 #define IDS_EMPTY_NAME                  647
 #define IDS_EMPTY_HOST_NAME             648
 #define IDS_ABOUT                       649
-#define IDS_PURGE_CACHE_WARNING	         650
+#define IDS_PURGE_CACHE_WARNING	        650
 #define IDS_AUTHENTICATING              651
 #define IDS_AUTHENTICATION_FAILED       652
 #define IDS_SYNCING                     653
 #define IDS_ERROR_GETTING_TOKEN         654
 #define IDS_DISK_FULL                   655
-#define IDS_NO_UNREAD_ITEMS             656
-#define IDS_NAVIGATION_TOUCH            657
-#define IDS_NAVIGATION_NORMAL           658
 
 // controls
 #define IDC_HTML                        1000
@@ -527,7 +523,7 @@
 #define IDC_DELETE                      1164
 #define IDC_CACHE_LOCATION              1165
 #define IDC_BROWSE_CACHE                1166
-#define IDC_USE_CONMAN                  1167
+#define IDC_OVERRIDE_CONMAN             1167
 #define IDC_C_TYPE                      1168
 #define IDC_USERAGENT                   1169
 #define IDC_FONT_ITEM                   1170
@@ -609,8 +605,6 @@
 #define IDC_SYNC_SITE                   1248
 #define IDC_SYNC_USERNAME               1249
 #define IDC_SYNC_PASSWORD               1250
-#define IDC_NAVIGATION                  1251
-#define IDC_WRAP_TITLES                 1252
 
 #define ID_TOOLS_OPTIONS                32774
 #define ID_TOOLS_SITEMANAGER            32775
@@ -695,7 +689,6 @@
 #define ID_FULLSCREEN                   32879
 #define ID_REWRITE_RULES                32880
 #define ID_SYNC_SUBSCRIPTIONS           32881
-#define ID_TOOLS_FEEDVIEW               32882
 
 #define ID_SOCIAL_BOOKMARK_BASE			 33000
 

@@ -28,12 +28,10 @@
 /////////////////////////////////////////////////////////////////////////////
 // CBanner window
 
-class CBanner : public CControlBar {
+class CBanner : public CStatic {
 // Construction
 public:
 	CBanner();
-
-	BOOL Create(CWnd *parentWnd);
 
 // Attributes
 public:
@@ -52,9 +50,6 @@ public:
 public:
 	virtual ~CBanner();
 
-	virtual void OnUpdateCmdUI(CFrameWnd *pTarget, BOOL bDisableIfNoHndler);
-	virtual CSize CalcFixedLayout(BOOL bStretch, BOOL bHorz);
-
 	void SetTitle(const CString &title) { m_strTitle = title; }
 	void SetItems(int pos, int total = -1) { m_nPos = pos; if (total != -1) m_nTotal = total; }
 //	void SetIcon(HICON icon) { m_hIcon = icon; }
@@ -67,7 +62,7 @@ public:
 	// Generated message map functions
 protected:
 	CFont m_fntBold;
-
+	
 	CString m_strTitle;
 	int m_nPos;
 	int m_nTotal;
@@ -79,7 +74,6 @@ protected:
 
 	//{{AFX_MSG(CBanner)
 	afx_msg void OnPaint();
-	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg BOOL OnEraseBkgnd(CDC *pDC);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);

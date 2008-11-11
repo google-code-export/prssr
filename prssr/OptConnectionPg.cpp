@@ -47,7 +47,6 @@ COptConnectionPg::COptConnectionPg() : CPropertyPage(COptConnectionPg::IDD)
 {
 	//{{AFX_DATA_INIT(COptConnectionPg)
 	m_bAutoConnect = Config.AutoConnect;
-	m_bUseConMan = Config.UseConnManager;
 	//}}AFX_DATA_INIT
 }
 
@@ -59,13 +58,8 @@ void COptConnectionPg::DoDataExchange(CDataExchange* pDX)
 {
 	CPropertyPage::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(COptConnectionPg)
-	DDX_Control(pDX, IDC_USE_CONMAN, m_ctlUseConMan);
-	DDX_Control(pDX, IDC_PROXIES, m_ctlProxies);
-	DDX_Control(pDX, IDC_NEW, m_btnNew);
-	DDX_Control(pDX, IDC_EDIT, m_btnEdit);
-	DDX_Control(pDX, IDC_REMOVE, m_btnRemove);
 	DDX_Check(pDX, IDC_AUTO_CONNECT, m_bAutoConnect);
-	DDX_Check(pDX, IDC_USE_CONMAN, m_bUseConMan);
+	DDX_Control(pDX, IDC_PROXIES, m_ctlProxies);
 	//}}AFX_DATA_MAP
 }
 
@@ -75,7 +69,6 @@ BEGIN_MESSAGE_MAP(COptConnectionPg, CPropertyPage)
 	ON_BN_CLICKED(IDC_NEW, OnNew)
 	ON_BN_CLICKED(IDC_EDIT, OnEdit)
 	ON_BN_CLICKED(IDC_REMOVE, OnRemove)
-	ON_BN_CLICKED(IDC_USE_CONMAN, OnUseConMan)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -90,7 +83,7 @@ void COptConnectionPg::AddProfile(CProxyProfile *prf) {
 BOOL COptConnectionPg::OnInitDialog() {
 	CPropertyPage::OnInitDialog();
 
-	//
+	// 
 	CString sNone;
 	sNone.LoadString(IDS_NONE);
 	int item = m_ctlProxies.AddString(sNone);
@@ -103,27 +96,13 @@ BOOL COptConnectionPg::OnInitDialog() {
 	}
 
 	m_ctlProxies.SetCurSel(Config.ProxyProfileIdx + 1);
-
+	
 	UpdateControls();
-
+	
 	return TRUE;
 }
 
 void COptConnectionPg::UpdateControls() {
-	if (m_ctlUseConMan.GetCheck() == BST_CHECKED) {
-		m_ctlProxies.EnableWindow(FALSE);
-		m_btnNew.EnableWindow(FALSE);
-		m_btnEdit.EnableWindow(FALSE);
-		m_btnRemove.EnableWindow(FALSE);
-		GetDlgItem(IDC_STATIC1)->EnableWindow(FALSE);
-	}
-	else {
-		m_ctlProxies.EnableWindow();
-		m_btnNew.EnableWindow();
-		m_btnEdit.EnableWindow();
-		m_btnRemove.EnableWindow();
-		GetDlgItem(IDC_STATIC1)->EnableWindow();
-	}
 }
 
 BOOL COptConnectionPg::OnApply() {
@@ -131,7 +110,6 @@ BOOL COptConnectionPg::OnApply() {
 		return FALSE;
 
 	Config.AutoConnect = m_bAutoConnect;
-	Config.UseConnManager = m_bUseConMan;
 
 	int idx = m_ctlProxies.GetCurSel();
 	if (idx > 0)
@@ -176,7 +154,7 @@ void COptConnectionPg::OnEdit() {
 		dlg.m_bUseAuthentication = prf->ProxyConfig.NeedAuth;
 		dlg.m_strUserName = prf->ProxyConfig.UserName;
 		dlg.m_strPassword = prf->ProxyConfig.Password;
-
+		
 
 		if (dlg.DoModal() == IDOK) {
 			prf->Name = dlg.m_strName;
@@ -188,7 +166,7 @@ void COptConnectionPg::OnEdit() {
 			prf->ProxyConfig.NeedAuth = dlg.m_bUseAuthentication;
 			prf->ProxyConfig.UserName = dlg.m_strUserName;
 			prf->ProxyConfig.Password = dlg.m_strPassword;
-
+			
 			m_ctlProxies.DeleteString(idx);
 			int item = m_ctlProxies.InsertString(idx, prf->Name);
 			m_ctlProxies.SetItemData(item, (DWORD) prf);
@@ -211,8 +189,4 @@ void COptConnectionPg::OnRemove() {
 		if (m_ctlProxies.SetCurSel(idx) == CB_ERR)
 			m_ctlProxies.SetCurSel(0);
 	}
-}
-
-void COptConnectionPg::OnUseConMan() {
-	UpdateControls();
 }

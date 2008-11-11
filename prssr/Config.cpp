@@ -49,7 +49,6 @@ LPCTSTR szCacheLimit = _T("Cache Limit");
 
 // GUI
 LPCTSTR szActSiteIdx = _T("ActiveSiteIdx");
-LPCTSTR szActFeedItem = _T("ActiceFeedItem");
 
 LPCTSTR szHideReadItems = _T("Hide Read Items");
 LPCTSTR szHideReadFeeds = _T("Hide Read Feeds");
@@ -66,7 +65,6 @@ LPCTSTR szSetPropertiesAfterSiteAdded = _T("Set Properties After Site Added");
 
 // general
 LPCTSTR szNotifyNew = _T("Notify New");
-LPCTSTR szWrapTitles = _T("Wrap Titles");
 LPCTSTR szWrapAround = _T("Wrap Around");
 
 LPCTSTR szTruncateItemTitles = _T("Truncate Item Titles");
@@ -74,7 +72,6 @@ LPCTSTR szDownloadThreads = _T("Download Threads");
 LPCTSTR szMoveToUnread = _T("Move To Unread");
 LPCTSTR szMoveChannel = _T("Move Channel");
 LPCTSTR szWarnFeedMove = _T("Warn Feed Move");
-LPCTSTR szNavigationType = _T("Navigation Type");
 
 // read options
 LPCTSTR szNewSeconds = _T("New Seconds");
@@ -83,7 +80,6 @@ LPCTSTR szActionButton = _T("Action Button");
 
 LPCTSTR szUpdateIntervalIdx = _T("Update Interval");
 LPCTSTR szAutoConnect = _T("Auto Connect");
-LPCTSTR szUseConnMan = _T("Use Conn Manager");
 LPCTSTR szClearErrorLog = _T("Clear Error Log");
 LPCTSTR szMarkNewUnread = _T("Mark New Unread");
 LPCTSTR szUserAgent = _T("User Agent");
@@ -104,6 +100,16 @@ LPCTSTR szSyncPassword = _T("Sync Password");
 LPCTSTR szGeneratePlaylists = _T("Generate Playlists");
 LPCTSTR szEnclosurePlaylistFormat = _T("Enclosure Playlist Format");
 
+/*// proxy
+LPCTSTR szProxyOverrideConMan = _T("Proxy Override ConMan");
+LPCTSTR szProxyType = _T("Proxy Type");
+LPCTSTR szProxyHostName = _T("Proxy Host Name");
+LPCTSTR szProxyPort = _T("Proxy Port");
+LPCTSTR szProxyNeedAuth = _T("Proxy Need Auth");
+LPCTSTR szProxyUserName = _T("Proxy User Name");
+LPCTSTR szProxyPassword = _T("Proxy Password");
+*/
+
 // html optimizer
 LPCTSTR szUseHtmlOptimizer = _T("Use HTML Optimizer");
 LPCTSTR szHtmlOptimizerURL = _T("HTML Optimizer URL");
@@ -111,6 +117,14 @@ LPCTSTR szHtmlOptimizerURL = _T("HTML Optimizer URL");
 static LPCTSTR szMatch = _T("Match");
 static LPCTSTR szReplace = _T("Replace");
 
+/*
+// template of settings for newly added site
+LPCTSTR szSite = _T("Site");
+LPCTSTR szTodayShow = _T("Today Show");
+LPCTSTR szCacheEnclosures = _T("Cache Enclosures");
+LPCTSTR szEnclosureLimit = _T("Enclosure Limit");
+//LPCTSTR szCacheLimit = _T("Cache Limit");
+*/
 
 #ifdef LOGGING
 // logging feature
@@ -171,8 +185,7 @@ CConfig::CConfig() {
 #ifdef LOGGING
 	LogFile = reg.Read(szLogFile, CONFIG_DEFAULT_LOGFILE);
 	LogLevel = reg.Read(szLogLevel, CONFIG_DEFAULT_LOGLEVEL);
-//	LogFile = _T("\\storage card\\program files\\prssreader\\prssr.log");
-//	LogLevel = 1;
+	LogLevel = 1;
 #endif
 
 	// ////
@@ -180,8 +193,6 @@ CConfig::CConfig() {
 	UserAgent = CONFIG_DEFAULT_USERAGENT;
 
 	NotifyNew = CONFIG_DEFAULT_NOTIFYNEW;
-	WrapTitles = CONFIG_DEFAULT_WRAPTITLES;
-	NavigationType = CONFIG_DEFAULT_NAVIGATION_TYPE;
 
 	CacheLocation = _T("");
 	CacheLimit = CONFIG_DEFAULT_CACHE_LIMIT;
@@ -192,7 +203,6 @@ CConfig::CConfig() {
 
 	UpdateInterval = CONFIG_DEFAULT_UPDATEINTERVAL;
 	AutoConnect = CONFIG_DEFAULT_AUTOCONNECT;
-	UseConnManager = CONFIG_DEFAULT_USE_CONN_MANAGER;
 	CheckOnCradling = CONFIG_DEFAULT_CHECKONCRADLING;
 	ClearErrorLog = CONFIG_DEFAULT_CLEARERRORLOG;
 	TimeUpdate = CONFIG_DEFAULT_TIME_UPDATE;
@@ -250,14 +260,11 @@ void CConfig::Destroy() {
 void CConfig::Save() {
 	CRegistry reg(HKEY_CURRENT_USER, REG_KEY_CONFIGURATION);
 
-	reg.Write(szNavigationType, NavigationType);
-
 	reg.Write(szCacheLocation, CacheLocation);
 	reg.Write(szCacheLimit, CacheLimit);
 
 	// general
 	reg.Write(szNotifyNew, NotifyNew);
-	reg.Write(szWrapTitles, WrapTitles);
 	reg.Write(szShowRelativeDates, ShowRelativeDates);
 	reg.Write(szMoveToUnread, MoveToUnread);
 
@@ -265,7 +272,6 @@ void CConfig::Save() {
 	reg.Write(szUpdateInterval, UpdateInterval);
 
 	reg.Write(szAutoConnect, AutoConnect);
-	reg.Write(szUseConnMan, UseConnManager);
 	reg.Write(szCheckOnCradling, CheckOnCradling);
 	reg.Write(szClearErrorLog, ClearErrorLog);
 	reg.Write(szUserAgent, UserAgent);
@@ -296,15 +302,12 @@ void CConfig::Save() {
 void CConfig::Load() {
 	CRegistry reg(HKEY_CURRENT_USER, REG_KEY_CONFIGURATION);
 
-	NavigationType = reg.Read(szNavigationType, CONFIG_DEFAULT_NAVIGATION_TYPE);
-
 	// cache
 	CacheLocation = reg.Read(szCacheLocation, _T("\\My Documents\\pRSSreader"));
 	CacheLimit = reg.Read(szCacheLimit, CONFIG_DEFAULT_CACHE_LIMIT);
 
 	// general
 	NotifyNew = reg.Read(szNotifyNew, CONFIG_DEFAULT_NOTIFYNEW);
-	WrapTitles = reg.Read(szWrapTitles, CONFIG_DEFAULT_WRAPTITLES);
 	ShowRelativeDates = reg.Read(szShowRelativeDates, CONFIG_DEFAULT_SHOWRELATIVEDATES);
 	MoveToUnread = reg.Read(szMoveToUnread, CONFIG_DEFAULT_MOVETOUNREAD);
 
@@ -334,7 +337,6 @@ void CConfig::Load() {
 	}
 
 	AutoConnect = reg.Read(szAutoConnect, CONFIG_DEFAULT_AUTOCONNECT);
-	UseConnManager = reg.Read(szUseConnMan, CONFIG_DEFAULT_USE_CONN_MANAGER);
 	CheckOnCradling = reg.Read(szCheckOnCradling, CONFIG_DEFAULT_CHECKONCRADLING);
 	ClearErrorLog = reg.Read(szClearErrorLog, CONFIG_DEFAULT_CLEARERRORLOG);
 	UserAgent = reg.Read(szUserAgent, CONFIG_DEFAULT_USERAGENT);
@@ -395,7 +397,6 @@ void CConfig::SaveUI() {
 
 	// main widow
 	reg.Write(szActSiteIdx, ActSiteIdx);
-	reg.Write(szActFeedItem, ActFeedItem);
 	reg.Write(szMainView, MainView);
 	reg.Write(szWorkOffline, WorkOffline);
 	reg.Write(szHideGroups, HideGroups);
@@ -407,7 +408,6 @@ void CConfig::LoadUI() {
 	CRegistry reg(HKEY_CURRENT_USER, REG_KEY_UI);
 
 	ActSiteIdx = reg.Read(szActSiteIdx, CONFIG_DEFAULT_ACTSITEIDX);
-	ActFeedItem = reg.Read(szActFeedItem, -1);
 	MainView = reg.Read(szMainView, CONFIG_DEFAULT_MAIN_VIEW);
 	WorkOffline = reg.Read(szWorkOffline, CONFIG_DEFAULT_WORK_OFFLINE);
 	HideGroups = reg.Read(szHideGroups, CONFIG_DEFAULT_HIDE_GROUPS);

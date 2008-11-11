@@ -247,8 +247,20 @@ DEP_CPP_APPEA=\
 # End Source File
 # Begin Source File
 
-SOURCE=..\ArticleView.cpp
+SOURCE=..\ArticleDlg.cpp
 DEP_CPP_ARTIC=\
+	"..\..\libexpat\expat.h"\
+	"..\..\libexpat\expat_external.h"\
+	"..\..\libsgml\DomComment.h"\
+	"..\..\libsgml\DomDocument.h"\
+	"..\..\libsgml\DomElement.h"\
+	"..\..\libsgml\DomNode.h"\
+	"..\..\libsgml\DomNodeList.h"\
+	"..\..\libsgml\DomText.h"\
+	"..\..\libsgml\libsgml.h"\
+	"..\..\libsgml\SgmlExtensionHtml.h"\
+	"..\..\libsgml\SgmlExtensionXml.h"\
+	"..\..\libsgml\SgmlParser.h"\
 	"..\..\share\defs.h"\
 	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
@@ -258,10 +270,10 @@ DEP_CPP_ARTIC=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\Appearance.h"\
-	"..\ArticleView.h"\
+	"..\ArticleDlg.h"\
 	"..\Config.h"\
 	"..\ctrls\Banner.h"\
-	"..\ctrls\CeScrollBar.h"\
+	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeToolBar.h"\
 	"..\ctrls\EnclosureBar.h"\
 	"..\ctrls\GroupView.h"\
@@ -283,8 +295,9 @@ DEP_CPP_ARTIC=\
 	"..\Site.h"\
 	"..\StdAfx.h"\
 	"..\SummaryView.h"\
-	"..\sync\FeedSync.h"\
 	"..\UpdateBar.h"\
+	"..\www\HTMLFile.h"\
+	"..\www\LocalHtmlFile.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"connmgr.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
@@ -320,19 +333,13 @@ DEP_CPP_CACHE=\
 	"..\..\share\SyncList.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
-	"..\ArticleView.h"\
 	"..\CacheMan.h"\
 	"..\Config.h"\
-	"..\ctrls\Banner.h"\
 	"..\ctrls\CePropertyPage.h"\
 	"..\ctrls\CePropertySheet.h"\
-	"..\ctrls\CeScrollBar.h"\
 	"..\ctrls\CeToolBar.h"\
 	"..\ctrls\CeTreeCtrl.h"\
-	"..\ctrls\EnclosureBar.h"\
 	"..\ctrls\GroupView.h"\
-	"..\ctrls\HtmlCtrl.h"\
-	"..\ctrls\InfoBar.h"\
 	"..\ctrls\LinkCtrl.h"\
 	"..\ctrls\TextProgressCtrl.h"\
 	"..\debug\crtdbg.h"\
@@ -350,7 +357,6 @@ DEP_CPP_CACHE=\
 	"..\Site.h"\
 	"..\StdAfx.h"\
 	"..\SummaryView.h"\
-	"..\sync\FeedSync.h"\
 	"..\UpdateBar.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"connmgr.h"\
@@ -565,10 +571,10 @@ DEP_CPP_FEEDV=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\Appearance.h"\
-	"..\ArticleView.h"\
+	"..\ArticleDlg.h"\
 	"..\Config.h"\
 	"..\ctrls\Banner.h"\
-	"..\ctrls\CeScrollBar.h"\
+	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeToolBar.h"\
 	"..\ctrls\EnclosureBar.h"\
 	"..\ctrls\GroupView.h"\
@@ -590,7 +596,6 @@ DEP_CPP_FEEDV=\
 	"..\Site.h"\
 	"..\StdAfx.h"\
 	"..\SummaryView.h"\
-	"..\sync\FeedSync.h"\
 	"..\UpdateBar.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"connmgr.h"\
@@ -748,25 +753,19 @@ DEP_CPP_MAINF=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\Appearance.h"\
-	"..\ArticleView.h"\
 	"..\CacheMan.h"\
 	"..\Config.h"\
-	"..\ctrls\Banner.h"\
 	"..\ctrls\Caption.h"\
 	"..\ctrls\CeDialog.h"\
 	"..\ctrls\CeEdit.h"\
 	"..\ctrls\CeListCtrl.h"\
 	"..\ctrls\CePropertyPage.h"\
 	"..\ctrls\CePropertySheet.h"\
-	"..\ctrls\CeScrollBar.h"\
 	"..\ctrls\CeToolBar.h"\
 	"..\ctrls\CeTreeCtrl.h"\
 	"..\ctrls\ColorButton.h"\
-	"..\ctrls\EnclosureBar.h"\
 	"..\ctrls\GroupView.h"\
 	"..\ctrls\Hrule.h"\
-	"..\ctrls\HtmlCtrl.h"\
-	"..\ctrls\InfoBar.h"\
 	"..\ctrls\LinkCtrl.h"\
 	"..\ctrls\TextProgressCtrl.h"\
 	"..\debug\crtdbg.h"\
@@ -782,7 +781,6 @@ DEP_CPP_MAINF=\
 	"..\MainFrm.h"\
 	"..\misc\icon.h"\
 	"..\misc\shnotif.h"\
-	"..\net\Connection.h"\
 	"..\net\download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
@@ -801,14 +799,10 @@ DEP_CPP_MAINF=\
 	"..\SiteManagerDlg.h"\
 	"..\StdAfx.h"\
 	"..\SummaryView.h"\
-	"..\sync\FeedSync.h"\
-	"..\sync\GReaderSync.h"\
-	"..\sync\NetworkSync.h"\
 	"..\UpdateBar.h"\
 	"..\UpdateSitesDlg.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"connmgr.h"\
-	{$(INCLUDE)}"connmgr_proxy.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -1138,17 +1132,12 @@ DEP_CPP_PRSSR=\
 	"..\..\share\wnd.h"\
 	"..\AboutPg.h"\
 	"..\Appearance.h"\
-	"..\ArticleView.h"\
 	"..\Config.h"\
 	"..\CreditsPg.h"\
-	"..\ctrls\Banner.h"\
 	"..\ctrls\CePropertyPage.h"\
 	"..\ctrls\CePropertySheet.h"\
-	"..\ctrls\CeScrollBar.h"\
 	"..\ctrls\CeToolBar.h"\
-	"..\ctrls\EnclosureBar.h"\
 	"..\ctrls\GroupView.h"\
-	"..\ctrls\HtmlCtrl.h"\
 	"..\ctrls\InfoBar.h"\
 	"..\ctrls\LinkCtrl.h"\
 	"..\ctrls\TextProgressCtrl.h"\
@@ -1168,7 +1157,6 @@ DEP_CPP_PRSSR=\
 	"..\Site.h"\
 	"..\StdAfx.h"\
 	"..\SummaryView.h"\
-	"..\sync\FeedSync.h"\
 	"..\UpdateBar.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"connmgr.h"\
@@ -1361,14 +1349,11 @@ DEP_CPP_SITEM=\
 	"..\Feed.h"\
 	"..\FeedsTreeCtrl.h"\
 	"..\ImportFeedsDlg.h"\
-	"..\net\Connection.h"\
-	"..\net\download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
 	"..\net\proxy.h"\
 	"..\net\Searcher.h"\
-	"..\ProgressDlg.h"\
 	"..\Properties.h"\
 	"..\prssr.h"\
 	"..\SearchDlg.h"\
@@ -1376,15 +1361,11 @@ DEP_CPP_SITEM=\
 	"..\Site.h"\
 	"..\SiteManagerDlg.h"\
 	"..\StdAfx.h"\
-	"..\sync\FeedSync.h"\
-	"..\sync\GReaderSync.h"\
-	"..\sync\NetworkSync.h"\
 	"..\www\url.h"\
 	"..\xml\FeedFile.h"\
 	"..\xml\OpmlFile.h"\
 	"..\xml\XMLFile.h"\
 	{$(INCLUDE)}"connmgr.h"\
-	{$(INCLUDE)}"connmgr_proxy.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # End Source File
@@ -1413,15 +1394,9 @@ DEP_CPP_SUMMA=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\Appearance.h"\
-	"..\ArticleView.h"\
 	"..\Config.h"\
-	"..\ctrls\Banner.h"\
-	"..\ctrls\CeScrollBar.h"\
 	"..\ctrls\CeToolBar.h"\
-	"..\ctrls\EnclosureBar.h"\
 	"..\ctrls\GroupView.h"\
-	"..\ctrls\HtmlCtrl.h"\
-	"..\ctrls\InfoBar.h"\
 	"..\ctrls\LinkCtrl.h"\
 	"..\ctrls\TextProgressCtrl.h"\
 	"..\debug\crtdbg.h"\
@@ -1439,7 +1414,6 @@ DEP_CPP_SUMMA=\
 	"..\Site.h"\
 	"..\StdAfx.h"\
 	"..\SummaryView.h"\
-	"..\sync\FeedSync.h"\
 	"..\UpdateBar.h"\
 	"..\www\url.h"\
 	{$(INCLUDE)}"connmgr.h"\
@@ -1483,15 +1457,9 @@ DEP_CPP_UPDAT=\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\Appearance.h"\
-	"..\ArticleView.h"\
 	"..\Config.h"\
-	"..\ctrls\Banner.h"\
-	"..\ctrls\CeScrollBar.h"\
 	"..\ctrls\CeToolBar.h"\
-	"..\ctrls\EnclosureBar.h"\
 	"..\ctrls\GroupView.h"\
-	"..\ctrls\HtmlCtrl.h"\
-	"..\ctrls\InfoBar.h"\
 	"..\ctrls\LinkCtrl.h"\
 	"..\ctrls\TextProgressCtrl.h"\
 	"..\debug\crtdbg.h"\
@@ -1512,6 +1480,8 @@ DEP_CPP_UPDAT=\
 	"..\SummaryView.h"\
 	"..\SuspendKiller.h"\
 	"..\sync\FeedSync.h"\
+	"..\sync\GReaderSync.h"\
+	"..\sync\NetworkSync.h"\
 	"..\UpdateBar.h"\
 	"..\www\HTMLFile.h"\
 	"..\www\LocalHtmlFile.h"\
@@ -1574,7 +1544,7 @@ SOURCE=..\Appearance.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\ArticleView.h
+SOURCE=..\ArticleDlg.h
 # End Source File
 # Begin Source File
 
@@ -2036,27 +2006,6 @@ SOURCE=..\ctrls\CePropertySheet.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\ctrls\CeScrollBar.cpp
-DEP_CPP_CESCR=\
-	"..\..\share\defs.h"\
-	"..\..\share\shguim.h"\
-	"..\..\share\UIHelper.h"\
-	"..\..\share\wnd.h"\
-	"..\ctrls\CeScrollBar.h"\
-	"..\debug\crtdbg.h"\
-	"..\debug\Logger.h"\
-	"..\prssr.h"\
-	"..\StdAfx.h"\
-	{$(INCLUDE)}"htmlctrl.h"\
-	
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=..\ctrls\CeScrollBar.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\ctrls\CeToolbar.cpp
 DEP_CPP_CETOO=\
 	"..\..\share\reg.h"\
@@ -2201,7 +2150,6 @@ DEP_CPP_GROUP=\
 	"..\..\share\wnd.h"\
 	"..\Appearance.h"\
 	"..\Config.h"\
-	"..\ctrls\CeScrollBar.h"\
 	"..\ctrls\GroupView.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
@@ -2268,38 +2216,15 @@ DEP_CPP_INFOB=\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
-	"..\..\share\SyncList.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\Appearance.h"\
-	"..\ArticleView.h"\
-	"..\ctrls\Banner.h"\
-	"..\ctrls\CeScrollBar.h"\
-	"..\ctrls\CeToolBar.h"\
-	"..\ctrls\EnclosureBar.h"\
-	"..\ctrls\GroupView.h"\
-	"..\ctrls\HtmlCtrl.h"\
 	"..\ctrls\InfoBar.h"\
-	"..\ctrls\LinkCtrl.h"\
-	"..\ctrls\TextProgressCtrl.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
 	"..\Feed.h"\
-	"..\FeedView.h"\
-	"..\MainFrm.h"\
-	"..\net\download.h"\
-	"..\net\http.h"\
-	"..\net\HttpConnection.h"\
-	"..\net\httpsock.h"\
-	"..\net\proxy.h"\
 	"..\prssr.h"\
-	"..\Site.h"\
 	"..\StdAfx.h"\
-	"..\SummaryView.h"\
-	"..\sync\FeedSync.h"\
-	"..\UpdateBar.h"\
-	"..\www\url.h"\
-	{$(INCLUDE)}"connmgr.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
@@ -3166,24 +3091,17 @@ SOURCE=..\xml\XMLFile.h
 
 SOURCE=..\sync\FeedSync.cpp
 DEP_CPP_FEEDSY=\
-	"..\..\share\defs.h"\
 	"..\..\share\file.h"\
-	"..\..\share\helpers.h"\
-	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
-	"..\Config.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\net\download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
 	"..\net\proxy.h"\
-	"..\Site.h"\
 	"..\StdAfx.h"\
 	"..\sync\FeedSync.h"\
-	"..\www\url.h"\
 	{$(INCLUDE)}"connmgr.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	

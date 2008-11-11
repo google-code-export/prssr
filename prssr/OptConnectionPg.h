@@ -44,12 +44,7 @@ public:
 	//{{AFX_DATA(COptConnectionPg)
 	enum { IDD = IDD_OPT_CONNECTION };
 	CComboBox m_ctlProxies;
-	CButton	m_ctlUseConMan;
-	CButton	m_btnEdit;
-	CButton	m_btnNew;
-	CButton	m_btnRemove;
 	BOOL	m_bAutoConnect;
-	BOOL	m_bUseConMan;
 	//}}AFX_DATA
 
 
@@ -75,7 +70,6 @@ protected:
 	afx_msg void OnNew();
 	afx_msg void OnEdit();
 	afx_msg void OnRemove();
-	afx_msg void OnUseConMan();
 
 	DECLARE_MESSAGE_MAP()
 };

@@ -53,14 +53,9 @@ public:
 	void InsertItems(HGROUPITEM hParent, CSiteItem *parent);
 	void InsertSiteItem(HGROUPITEM hParent, CSiteItem *parent);
 
-	void SetItemHeight();
-
 // Implementation
 protected:
 	CLinkCtrl m_ctlSiteManLink;
-	CFont m_fntSmall;
-
-	void CreateFonts();
 
 	// apperance
 	void SetReadState(CSiteItem *si, DWORD state);

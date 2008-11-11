@@ -1,5 +1,5 @@
 /**
- *  ArticleView.h
+ *  ArticleDlg.h
  *
  *  Copyright (C) 2008  David Andrs <pda@jasnapaka.com>
  *
@@ -26,39 +26,56 @@
 #endif // _MSC_VER > 1000
 
 #include "ctrls/HtmlCtrl.h"
+#include "ctrls/CeDialog.h"
+#include "ctrls/Banner.h"
+#include "ctrls/EnclosureBar.h"
+#include "ctrls/InfoBar.h"
+#include "Site.h"
 
 /////////////////////////////////////////////////////////////////////////////
-// CArticleView dialog
+// CArticleDlg dialog
 
-class CSiteItem;
 class CFeedItem;
 class CFeedView;
 class CEnclosureItem;
 
-class CArticleView : public CHTMLCtrl {
+class CArticleDlg : public CCeDialog {
 // Construction
 public:
-	CArticleView();   // standard constructor
-	~CArticleView();
+	CArticleDlg();   // standard constructor
+	~CArticleDlg();
 
-	void CreateMenu(HWND hwndCmdBar);
-	void SetFeedItem(CFeedItem *fi);
-	void ShowArticle();
+	BOOL Create(CFeedView *view, CWnd *pParentWnd = NULL);
+
+// Dialog Data
+	enum {
+		IDD = IDD_ARTICLE,
+		IDD_WIDE = IDD_ARTICLE_WIDE
+	};
+	//{{AFX_DATA(CArticleDlg)
+	CBanner m_ctlBanner;
+	CEnclosureBar m_ctlEnclosureBar;
+	//}}AFX_DATA
+	CInfoBar m_ctlInfoBar;
+	CHTMLCtrl m_ctlHTML;
+
+	CFeedItem *m_pFeedItem;				// local copy of feed item (to have this pointer always valid)
+										// something bad can happen when doing update on background
 
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CArticleView)
+	//{{AFX_VIRTUAL(CArticleDlg)
+	public:
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult);
 	//}}AFX_VIRTUAL
 
 // Implementation
 protected:
 	CFeedView *View;
-	CFeedItem *m_pArticle;				// local copy of feed item (to have this pointer always valid)
-										// something bad can happen when doing update on background
-
-//	CImageList m_ilIcons;
+	CImageList m_ilIcons;
 	BOOL HotSpot;
 	CString m_strContextMnuUrl;
 	CString m_strContextMenuLinkName;
@@ -69,12 +86,16 @@ protected:
 	void ToFullScreenMode();
 
 	void OnContextMenu(NM_HTMLCONTEXT *pnmhc);
-	void ContextMenu(CPoint point);
+
+	void SetupEnclosureBar(CEnclosureItem *ei);
+	void ShowFeedItem();
 
 	// Generated message map functions
-	//{{AFX_MSG(CArticleView)
+	//{{AFX_MSG(CArticleDlg)
+	virtual BOOL OnInitDialog();
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnDestroy();
 	afx_msg void OnInitMenuPopup(CMenu* pMenu, UINT nIndex, BOOL bSysMenu);
 	afx_msg void OnActivate(UINT nState, CWnd *pWndOther, BOOL bMinimized);
 	//}}AFX_MSG
@@ -99,22 +120,30 @@ protected:
 	afx_msg void OnEnclosureDelete();
 	afx_msg void OnUpdateEnclosureDelete(CCmdUI *pCmdUI);
 
+	virtual void PostNcDestroy();
+	virtual void OnOK();
+	virtual void OnCancel();
+//	afx_msg BOOL OnContextMenu(NMHDR *pNMHDR, LRESULT *pResult);
+
 	void OnScrollUp();
 	void OnScrollDown();
 
-	afx_msg void OnLinkOpen();
-	afx_msg void OnLinkDownload();
+	void OnLinkOpen();
+	void OnLinkDownload();
 
-	afx_msg void OnBookmarkLink(UINT nID);
+	void OnBookmarkLink(UINT nID);
 	void AppendBookmarkMenu(CMenu *menu);
 
-	afx_msg void OnViewImage();
-	afx_msg void OnCopyImageLocation();
-	afx_msg void OnSendByEmail();
-	afx_msg void OnFullscreen();
-	afx_msg void OnUpdateFullscreen(CCmdUI *pCmdUI);
+	void NoNewMessage();
 
-	friend class CMainFrame;
+	void ResizeControls();
+
+	void OnViewImage();
+	void OnCopyImageLocation();
+	void OnSendByEmail();
+	void OnFullscreen();
+
+	BOOL HtmlCached;
 
 	DECLARE_MESSAGE_MAP()
 };

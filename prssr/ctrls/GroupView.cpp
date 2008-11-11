@@ -41,6 +41,32 @@ static char THIS_FILE[] = __FILE__;
 
 #define CLASS_NAME						_T("PrssrGroupViewClass")
 
+/*
+#define SCROLL_SLEEP					10
+#define SCROLL_SPEED					1
+#define SCROLL_MAXSPEED					60
+
+// icons
+#define NEW_FEED_ICON					0
+#define UNREAD_FEED_ICON				1
+#define READ_FEED_ICON					2
+#define KEYWORD_ICON					3
+#define CACHED_ENCLOSURE_ICON			4
+#define NOT_CACHED_ENCLOSURE_ICON		5
+#define FLAG_ICON						6
+*/
+
+//static BOOL reg = CGroupView::Register();
+
+/*
+const int CGroupView::LABEL_MARGIN = 2;
+const int CGroupView::LABEL_X_PADDING = 3;
+const int CGroupView::LABEL_Y_PADDING = 1;
+const int CGroupView::LABEL_MSG_SKIP = 2;
+const int CGroupView::INTERMSG_SKIP = 2;
+*/
+
+//const int CGroupView::ITEM_HEIGHT = 18;
 const int CGroupView::ITEM_MARGIN = 9;
 
 BOOL CGroupView::Register() {
@@ -55,6 +81,8 @@ BOOL CGroupView::Register() {
 	//you can specify your own window procedure
 	wndcls.lpfnWndProc = ::DefWindowProc;
 	wndcls.hInstance = AfxGetInstanceHandle();
+//	wndcls.hIcon = LoadIcon(IDR_MAINFRAME); // or load a different icon
+//	wndcls.hCursor = LoadCursor( IDC_ARROW );
 	wndcls.hbrBackground = (HBRUSH) (COLOR_WINDOW + 1);
 	wndcls.lpszMenuName = NULL;
 
@@ -85,8 +113,10 @@ CGroupView::CGroupView() {
 	m_nViewTop = 0;
 	m_hSelectedItem = NULL;
 
-	CtxMenuTimer = 1;
-	m_bOpenCtxMenu = FALSE;
+	TapAndHoldTimer = 1;
+	KeyTimer = 2;
+
+	ReturnPressed = FALSE;
 
 	m_hClickedItem = NULL;
 
@@ -105,6 +135,7 @@ BEGIN_MESSAGE_MAP(CGroupView, CView)
 	//{{AFX_MSG_MAP(CGroupView)
 	ON_WM_CREATE()
 	ON_WM_PAINT()
+//	ON_WM_ERASEBKGND()
 	ON_WM_VSCROLL()
 	ON_WM_SIZE()
 	ON_WM_LBUTTONDOWN()
@@ -113,10 +144,25 @@ BEGIN_MESSAGE_MAP(CGroupView, CView)
 	ON_WM_TIMER()
 	ON_WM_KEYDOWN()
 	ON_WM_KEYUP()
+	ON_WM_CHAR()
+	ON_WM_LBUTTONDBLCLK()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 void CGroupView::CreateFonts() {
+/*	HGDIOBJ hSysFont = ::GetStockObject(SYSTEM_FONT);
+	LOGFONT lf;
+	::GetObject(hSysFont, sizeof(LOGFONT), (LPVOID) &lf);
+    lf.lfHeight = SCALEY(11) + 1;
+
+    lf.lfHeight = SCALEY(12) + 1;
+	m_fntBase.CreateFontIndirect(&lf);
+
+    lf.lfHeight = SCALEY(12) + 1;
+	lf.lfWeight = FW_BOLD;
+	m_fntBold.CreateFontIndirect(&lf);
+*/
+
 	m_fntBase.DeleteObject();
 	m_fntBold.DeleteObject();
 
@@ -162,11 +208,13 @@ void CGroupView::OnDraw(CDC *pDC) {
 
 
 void CGroupView::UpdateItemsY(HGROUPITEM hParent, int &top) {
+//	LOG1(1, "- %d", hParent);
 	if (hParent == NULL)
 		return;
 
 	GVITEM *giParent = Items.GetAt(hParent);
 	giParent->yTop = top;
+//	LOG2(1, "U: '%S', %d", giParent->Text, top);
 
 	if (top != -1)
 		top += SCALEY(ItemHeight);
@@ -250,11 +298,22 @@ void CGroupView::OnDrawItem(CDC &dc, CRect &rc, HGROUPITEM hItem, BOOL selected)
 	pOldFont = dc.SelectObject(&m_fntBase);
 
 	clrOld = dc.SetTextColor(clrFg);
+//	CRect rcItem = rc;
 	rcItem.DeflateRect(SCALEX(2), SCALEY(1), SCALEX(2), SCALEY(3));
+//	CString s = _T("Tohle je velmi dlouhy nadpis, ktery se zlomi na vice radku, abych to mohl otestovat");
+//	DrawTextEndEllipsis(dc, s, rcTitle, DT_LEFT | DT_TOP | DT_NOPREFIX);
 
 	DrawTextEndEllipsis(dc, gi->Text, rcItem, DT_LEFT | DT_BOTTOM | DT_NOPREFIX);
 	dc.SetTextColor(clrOld);
 	dc.SelectObject(pOldFont);
+
+/*	// draw separator
+	CPen pen(PS_SOLID, 1, RGB(0xCC, 0xCC, 0xCC));
+	CPen *oldPen = dc.SelectObject(&pen);
+	dc.MoveTo(rc.left, rc.bottom - 1);
+	dc.LineTo(rc.right, rc.bottom - 1);
+	dc.SelectObject(oldPen);
+*/
 
 	dc.SetBkMode(oldBkMode);
 }
@@ -283,6 +342,7 @@ void CGroupView::DrawItems(CDC &dc, CRect &rc, HGROUPITEM hParent) {
 			CRect rcItem = rc;
 			OnDrawItem(memDC, rcItem, hParent, selected);
 			// copy to screen
+//			dc.BitBlt(0, y, wd, ht - ofsY, &memDC, 0, ofsY, SRCCOPY);
 			dc.BitBlt(0, giParent->yTop - m_nViewTop, rc.Width(), rc.Height(), &memDC, 0, 0, SRCCOPY);
 
 			//
@@ -310,6 +370,8 @@ void CGroupView::OnPaint() {
 
 	CRect rc;
 	GetClientRect(rc);
+
+//	LOG3(1, "Count = %d, height = %d, top = %d", Items.GetCount(), m_nTotalHeight, m_nViewTop);
 
 	if (Items.GetCount() > 0) {
 		if (m_oVScrollBar.IsWindowVisible()) {
@@ -408,6 +470,8 @@ HGROUPITEM CGroupView::GetParentItem(HGROUPITEM hItem) const {
 }
 
 HGROUPITEM CGroupView::GetRootItem() const {
+//	LOG1(1, "GetRoot: %d", RootItem.Childs.GetCount());
+
 	if (RootItem.Childs.GetCount() > 0)
 		return RootItem.Childs.GetHead();
 	else
@@ -676,7 +740,6 @@ void CGroupView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar) {
 
 	ScrollWindowEx(0, i - m_nViewTop, &m_rcScroll, &m_rcScroll, NULL, NULL, SW_INVALIDATE);
 	m_oVScrollBar.SetScrollPos(m_nViewTop, TRUE);
-	UpdateWindow();
 }
 
 void CGroupView::UpdateScrollBars() {
@@ -684,6 +747,7 @@ void CGroupView::UpdateScrollBars() {
 
 	BOOL visible = m_oVScrollBar.IsWindowVisible();
 
+//	LOG1(1, "total height = %d", m_nTotalHeight);
 	if (m_nClientHeight >= m_nTotalHeight) {
 		m_oVScrollBar.ShowScrollBar(FALSE);
 	}
@@ -705,7 +769,8 @@ void CGroupView::OnSize(UINT nType, int cx, int cy) {
 	CView::OnSize(nType, cx, cy);
 
 	m_nClientHeight = cy;
-	m_nClientWidth = cx + SCALEX(1);
+	m_nClientWidth = cx + SCALEX(1);;
+	// - GetSystemMetrics(SM_CXVSCROLL);
 
 	CRect rcClient;
 	GetClientRect(rcClient);
@@ -721,6 +786,7 @@ void CGroupView::OnSize(UINT nType, int cx, int cy) {
 
 	m_oVScrollBar.SetWindowPos(NULL, rcVert.left, rcVert.top, rcVert.Width(), rcVert.Height(), SWP_NOZORDER);
 
+//	AdjustViewTop();
 	UpdateScrollBars();
 
 	Invalidate();
@@ -739,8 +805,11 @@ void CGroupView::InvalidateItem(HGROUPITEM hItem, BOOL erase/* = TRUE*/) {
 
 	CRect rc(rcClient.left, gi->yTop - m_nViewTop, rcClient.right, gi->yTop + SCALEY(ItemHeight) - m_nViewTop);
 
+//	LOG4(1, "rc: (%d, %d, %d, %d)", rc.left, rc.top, rc.right, rc.bottom);
+
 	CRect rcInv;
 	if (rcInv.IntersectRect(rcClient, rc)) {
+//		LOG5(1, "AAA: %d (%d, %d, %d, %d)", hItem, rcInv.left, rcInv.top, rcInv.right, rcInv.bottom);
 		InvalidateRect(rcInv, erase);
 	}
 }
@@ -752,6 +821,7 @@ HGROUPITEM CGroupView::ItemFromPoint(CPoint pt) {
 		GVITEM *gi = Items.GetNext(pos);
 		if (gi->yTop != -1) {
 			if (gi->yTop - m_nViewTop <= pt.y && pt.y <= gi->yTop + SCALEY(ItemHeight) - m_nViewTop) {
+//				LOG3(1, "IFP: %d, %d, %d", gi->yTop - m_nViewTop, pt.y, gi->yTop + SCALEY(ItemHeight) - m_nViewTop);
 				return (HGROUPITEM) posPrev;
 			}
 		}
@@ -760,37 +830,25 @@ HGROUPITEM CGroupView::ItemFromPoint(CPoint pt) {
 	return NULL;
 }
 
-// Normal
-
-void CGroupView::OnLButtonDownNormal(UINT nFlags, CPoint point) {
+void CGroupView::OnLButtonDown(UINT nFlags, CPoint point) {
 	SetFocus();
 
+//	LOG2(1, "down: (%d, %d)", point.x, point.y);
 	HGROUPITEM item = ItemFromPoint(point);
 	if (item != NULL) {
+		SetCapture();
+
 		m_hClickedItem = item;
+
 		LastCursorPos = point;
+
+		KillTimer(TapAndHoldTimer);	// for sure
+		SetTimer(TapAndHoldTimer, 100, NULL);
 
 		HGROUPITEM hOldItem = m_hSelectedItem;
 		SelectItem(m_hClickedItem);
 		InvalidateItem(hOldItem, FALSE);
 		InvalidateItem(m_hClickedItem, FALSE);
-
-		SHRGINFO shrgi = {0};
-		shrgi.cbSize        = sizeof(SHRGINFO);
-		shrgi.hwndClient    = m_hWnd;
-		shrgi.ptDown.x      = point.x;
-		shrgi.ptDown.y      = point.y;
-		shrgi.dwFlags       = SHRG_RETURNCMD;
-
-		if (GN_CONTEXTMENU == ::SHRecognizeGesture(&shrgi)) {
-			m_hClickedItem = NULL;
-
-			CPoint pt = point;
-			ClientToScreen(&pt);
-			ContextMenu(&pt);
-		}
-		else
-			Default();
 	}
 	else {
 		// tap out of items (deselect all)
@@ -801,130 +859,57 @@ void CGroupView::OnLButtonDownNormal(UINT nFlags, CPoint point) {
 	}
 }
 
-void CGroupView::OnLButtonUpNormal(UINT nFlags, CPoint point) {
+void CGroupView::OnMouseMove(UINT nFlags, CPoint pt) {
+	if (abs(pt.x - LastCursorPos.x) > SCALEX(2) || abs(pt.y - LastCursorPos.y) > SCALEX(2))
+		KillTimer(TapAndHoldTimer);
+
+//	CView::OnMouseMove(nFlags, point);
+}
+
+void CGroupView::OnLButtonUp(UINT nFlags, CPoint point) {
+	ReleaseCapture();
+	KillTimer(TapAndHoldTimer);
+
+//	LOG2(1, "up: (%d, %d)", point.x, point.y);
+
 	HGROUPITEM hItem = ItemFromPoint(point);
 	if (m_hClickedItem != NULL && hItem != NULL && hItem == m_hClickedItem) {
-		if (ItemHasChildren(m_hClickedItem))
-			ToggleItem(m_hClickedItem);
-		else
-			OnItemClicked();
-	}
-	m_hClickedItem = NULL;
-}
-
-// TOUCH
-
-void CGroupView::OnLButtonDownTouch(UINT nFlags, CPoint point) {
-	HGROUPITEM item = ItemFromPoint(point);
-	if (item != NULL) {
-		m_hClickedItem = item;
-		LastCursorPos = point;
-
-		SHRGINFO shrgi = { 0 };
-		shrgi.cbSize        = sizeof(SHRGINFO);
-		shrgi.hwndClient    = m_hWnd;
-		shrgi.ptDown.x      = point.x;
-		shrgi.ptDown.y      = point.y;
-		shrgi.dwFlags       = SHRG_RETURNCMD;
-
-		if (GN_CONTEXTMENU == ::SHRecognizeGesture(&shrgi)) {
-			HGROUPITEM hOldItem = m_hSelectedItem;
-			SelectItem(m_hClickedItem);
-			InvalidateItem(hOldItem, FALSE);
-			InvalidateItem(m_hClickedItem, FALSE);
-
-			CPoint pt = point;
-			ClientToScreen(&pt);
-			ContextMenu(&pt);
-
-			m_hClickedItem = NULL;
-		}
-		else {
-			SetCapture();
-			Default();
-		}
-	}
-	else {
-		// tap out of items (deselect all)
-		HGROUPITEM hOldItem = m_hSelectedItem;
-
-		m_hSelectedItem = NULL;
-		InvalidateItem(hOldItem, FALSE);
-	}
-}
-
-void CGroupView::OnMouseMoveTouch(UINT nFlags, CPoint pt) {
-	if (abs(pt.x - LastCursorPos.x) > SCALEX(3) || abs(pt.y - LastCursorPos.y) > SCALEX(3))
-		m_hClickedItem = NULL;
-
-	// Scrolling
-	if (m_nTotalHeight > m_nClientHeight && GetCapture() == this) {
-		int delta = LastCursorPos.y - pt.y;
-
-		int top = m_nViewTop;
-		m_nViewTop += delta;
-
-		AdjustViewTop();
-
-		ScrollWindowEx(0, top - m_nViewTop, &m_rcScroll, &m_rcScroll, NULL, NULL, SW_INVALIDATE);
-		m_oVScrollBar.SetScrollPos(m_nViewTop, TRUE);
-		UpdateWindow();
-
-		LastCursorPos = pt;
-	}
-}
-
-void CGroupView::OnLButtonUpTouch(UINT nFlags, CPoint point) {
-	ReleaseCapture();
-
-	HGROUPITEM hItem = ItemFromPoint(point);
-	if (m_hClickedItem != NULL) {
-		if (hItem != NULL && hItem == m_hClickedItem) {
-			SelectItem(m_hClickedItem);
-
+		if (0 <= point.x && point.x <= SCALEX(19)) {
 			if (ItemHasChildren(m_hClickedItem))
 				ToggleItem(m_hClickedItem);
 			else
 				OnItemClicked();
 		}
 		else {
-
+			// do some action - on item clicked
+			OnItemClicked();
 		}
 	}
 	m_hClickedItem = NULL;
+
+//	CView::OnLButtonUp(nFlags, point);
 }
 
-void CGroupView::OnLButtonDown(UINT nFlags, CPoint point) {
-	switch (Config.NavigationType) {
-		case NAVIGATION_NORMAL: OnLButtonDownNormal(nFlags, point); break;
-		default:
-		case NAVIGATION_TOUCH: OnLButtonDownTouch(nFlags, point); break;
-	}
+void CGroupView::OnLButtonDblClk(UINT nFlags, CPoint point) {
+	LOG0(5, "CGroupView::OnLButtonDblClk()");
+
+	HGROUPITEM hItem = ItemFromPoint(point);
+	if (hItem != NULL)
+		ToggleItem(hItem);
 }
 
-void CGroupView::OnMouseMove(UINT nFlags, CPoint pt) {
-	switch (Config.NavigationType) {
-		case NAVIGATION_NORMAL: CView::OnMouseMove(nFlags, pt); break;
-		default:
-		case NAVIGATION_TOUCH: OnMouseMoveTouch(nFlags, pt); break;
-	}
-}
-
-void CGroupView::OnLButtonUp(UINT nFlags, CPoint point) {
-	switch (Config.NavigationType) {
-		case NAVIGATION_NORMAL: OnLButtonUpNormal(nFlags, point); break;
-		default:
-		case NAVIGATION_TOUCH: OnLButtonUpTouch(nFlags, point); break;
-	}
-}
-
-// keys
+//void CGroupView::UpdateScroll() {
+//
+//}
 
 void CGroupView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
-	LOG3(5, "CGroupView::OnKeyDown(%d, %d, %d)", nChar, nRepCnt, nFlags);
+	LOG3(1, "CGroupView::OnKeyDown(%d, %d, %d)", nChar, nRepCnt, nFlags);
 
 	HGROUPITEM hItem;
 	switch (nChar) {
+//		case VK_F23:
+//			break;
+
 		case VK_UP:
 			// move to previous visible item
 			if (m_hSelectedItem != NULL) {
@@ -959,9 +944,12 @@ void CGroupView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			break;
 
 		case VK_RETURN:
-			if (!(nFlags & 0x4000)) {
-				m_bOpenCtxMenu = FALSE;
-				SetTimer(CtxMenuTimer, TIMER_KEY_CTX_MENU, NULL);
+			if (!ReturnPressed && Items.GetCount() > 0 && m_hSelectedItem != NULL) {
+				ReturnPressed = TRUE;
+//				SetCapture();
+				KillTimer(KeyTimer);
+				SetTimer(KeyTimer, 700, NULL);
+				CView::OnKeyDown(nChar, nRepCnt, nFlags);
 			}
 			break;
 
@@ -972,24 +960,13 @@ void CGroupView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 }
 
 void CGroupView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
-	LOG3(5, "CGroupView::OnKeyUp(%d, %d, %d)", nChar, nRepCnt, nFlags);
+	LOG3(1, "CGroupView::OnKeyUp(%d, %d, %d)", nChar, nRepCnt, nFlags);
 
 	switch (nChar) {
 		case VK_RETURN:
-			KillTimer(CtxMenuTimer);
-			if (m_bOpenCtxMenu) {
-				m_bOpenCtxMenu = FALSE;
-
-				if (Items.GetCount() > 0 && m_hSelectedItem != NULL) {
-					GVITEM *gi = Items.GetAt(m_hSelectedItem);
-					CPoint pt(m_nClientWidth / 2, gi->yTop - m_nViewTop + SCALEY(ItemHeight / 2));
-					ClientToScreen(&pt);
-					ContextMenu(&pt);
-				}
-				else
-					CWnd::OnKeyUp(nChar, nRepCnt, nFlags);
-			}
-			else {
+			if (ReturnPressed) {
+//				ReleaseCapture();
+				KillTimer(KeyTimer);
 				if (Items.GetCount() > 0 && m_hSelectedItem != NULL) {
 					// toggle item state
 					if (ItemHasChildren(m_hSelectedItem))
@@ -997,12 +974,30 @@ void CGroupView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
 					else
 						OnItemClicked();
 				}
-				CView::OnKeyUp(nChar, nRepCnt, nFlags);
+				ReturnPressed = FALSE;
 			}
+			CView::OnKeyUp(nChar, nRepCnt, nFlags);
 			break;
 
 		default:
 			CView::OnKeyUp(nChar, nRepCnt, nFlags);
+			break;
+	}
+}
+
+void CGroupView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
+	LOG3(1, "CGroupView::OnChar(%d, %d, %d)", nChar, nRepCnt, nFlags);
+
+	switch (nChar) {
+		case VK_RETURN:
+			if (ReturnPressed) {
+			}
+			else
+				CView::OnChar(nChar, nRepCnt, nFlags);
+			break;
+
+		default:
+			CView::OnChar(nChar, nRepCnt, nFlags);
 			break;
 	}
 }
@@ -1015,9 +1010,41 @@ void CGroupView::ContextMenu(CPoint *pt) {
 void CGroupView::OnTimer(UINT nIDEvent) {
 	LOG0(5, "CGroupView::OnTimer()");
 
-	if (nIDEvent == CtxMenuTimer) {
-		m_bOpenCtxMenu = TRUE;
-		KillTimer(CtxMenuTimer);
+	if (nIDEvent == TapAndHoldTimer) {
+		KillTimer(TapAndHoldTimer);
+
+		ReleaseCapture();
+		m_hClickedItem = NULL;
+
+		// tap and hold
+		SHRGINFO  shrg;
+		shrg.cbSize = sizeof(shrg);
+		shrg.hwndClient = GetSafeHwnd();
+		shrg.ptDown.x = LastCursorPos.x;
+		shrg.ptDown.y = LastCursorPos.y;
+		shrg.dwFlags = SHRG_NOTIFYPARENT | SHRG_RETURNCMD;
+
+		if (::SHRecognizeGesture(&shrg) == GN_CONTEXTMENU) {
+			CPoint pt = LastCursorPos;
+			ClientToScreen(&pt);
+			ContextMenu(&pt);
+		}
+	}
+	else if (nIDEvent == KeyTimer) {
+		KillTimer(KeyTimer);
+		ReturnPressed = FALSE;
+
+//		SendMessage(WM_KEYUP, VK_RETURN, (0xCA05 << 16 | 1));
+//		ReleaseCapture();
+
+		if (Items.GetCount() > 0 && m_hSelectedItem != NULL) {
+			GVITEM *gi = Items.GetAt(m_hSelectedItem);
+		
+			CPoint pt(100, gi->yTop - m_nViewTop + SCALEY(ItemHeight / 2));
+			ClientToScreen(&pt);
+			LOG0(1, "CGroupView::Context()");
+			ContextMenu(&pt);
+		}
 	}
 
 	CView::OnTimer(nIDEvent);
@@ -1070,6 +1097,7 @@ void CGroupView::CollapseItem(HGROUPITEM hItem) {
 	int t = -1;
 	HGROUPITEM hNext = hItem;
 	UpdateItemsY(hNext, t);
+//	GVITEM *gi = Items.GetAt(hItem);
 	gi->yTop = top;
 	top += SCALEY(ItemHeight);
 
@@ -1081,6 +1109,7 @@ void CGroupView::CollapseItem(HGROUPITEM hItem) {
 		}
 	}
 
+//	LOG1(1, "- new total height = %d", top);
 	m_nTotalHeight = top;
 
 	Invalidate(FALSE);
@@ -1115,6 +1144,7 @@ void CGroupView::OnItemClicked() {
 
 void CGroupView::UpdateItemHeight() {
 	int items = m_nTotalHeight / SCALEY(ItemHeight);
+	ItemHeight = Appearance.SummaryViewFontCfg.Size + ITEM_MARGIN;
 	m_nTotalHeight = items * SCALEY(ItemHeight);
 	int top = 0;
 	HGROUPITEM hItem = GetRootItem();
@@ -1126,4 +1156,15 @@ void CGroupView::UpdateItemHeight() {
 	CreateFonts();
 	UpdateScrollBars();
 	Invalidate();
+}
+
+BOOL CGroupView::PreTranslateMessage(MSG *pMsg) {
+	if (ReturnPressed && (pMsg->message == WM_KEYDOWN || pMsg->message == WM_CHAR)) {
+		LOG0(1, "CGroupView::PreTranslateMessage()");
+		TranslateMessage(pMsg);
+		return TRUE;
+	}
+	else {
+		return CView::PreTranslateMessage(pMsg);
+	}
 }

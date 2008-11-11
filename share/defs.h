@@ -87,7 +87,7 @@
 // events
 //#define CRADLING_EVENT							L"DaProfik::pRSSreader::Events::CradlingEvent"
 
-#define TIMER_KEY_CTX_MENU						500
+#define TIMER_KEY_CTX_MENU						250
 
 // shared config items
 #define CONFIG_DEFAULT_SHOWRELATIVEDATES		TRUE

@@ -25,11 +25,9 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "ctrls/CeScrollBar.h"
-
 class CSiteItem;
 class CFeedItem;
-//class CArticleDlg;
+class CArticleDlg;
 class CSortInfo;
 
 // icons
@@ -37,15 +35,16 @@ class CSortInfo;
 #define UNREAD_FEED_ICON				1
 #define READ_FEED_ICON					2
 #define KEYWORD_ICON					3
-#define CACHED_ITEM_ICON				4
-#define NOT_CACHED_ITEM_ICON			5
+#define CACHED_ENCLOSURE_ICON			4
+#define NOT_CACHED_ENCLOSURE_ICON		5
 #define FLAG_ICON						6
 
 
 /////////////////////////////////////////////////////////////////////////////
 // CFeedView window
 
-class CFeedView : public CWnd {
+class CFeedView : public CWnd //View
+{
 // Construction
 public:
 	CFeedView();
@@ -55,6 +54,9 @@ public:
 
 // Operations
 public:
+//	BOOL Create(DWORD dwStyle, const RECT &rect, CView *pParentWnd, UINT nID);
+
+//	void AddMessage(CChatMsg *msg);
 	void SelectAll();
 	void DeleteItem(int idx);
 	void DeleteAllItems();
@@ -62,6 +64,7 @@ public:
 	int GetItemCount() { return m_oItems.GetSize(); }
 	CFeedItem *GetItem(int idx) { return m_oItems.GetAt(idx); }
 	void GetSelectedRange(int &start, int &end) { start = m_nSelectStart; end = m_nSelectEnd; }
+	void UpdateItemHeight();
 
 	void UpdateScrollBars();
 
@@ -103,19 +106,11 @@ protected:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnTimer(UINT nIDEvent);
 	//}}AFX_MSG
-	void OnLButtonDownTouch(UINT nFlags, CPoint point);
-	void OnLButtonUpTouch(UINT nFlags, CPoint point);
-	void OnMouseMoveTouch(UINT nFlags, CPoint point);
-
-	void OnLButtonDownNormal(UINT nFlags, CPoint point);
-	void OnLButtonUpNormal(UINT nFlags, CPoint point);
-	void OnMouseMoveNormal(UINT nFlags, CPoint point);
-
-	void ContextMenu(CPoint *pt);
+	void ContextMenu(CPoint pt);
 
 	afx_msg void OnItemOpen();
 	afx_msg void OnItemMarkRead();
@@ -136,44 +131,42 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 	CArray<CFeedItem *, CFeedItem *> m_oItems;
-	CArray<int, int> m_oItemHeight;
 
 	CRect m_rcScroll;
 	BOOL m_bScrolling;
 	int m_nScrollDelta;
-	CCeScrollBar m_oVScrollBar;
+	CScrollBar m_oVScrollBar;
 	UINT m_nOldKeys;
 	CPoint m_ptOldCursorPos;
 
-	BOOL m_bWrapTitles;
 	int m_nViewTop;								// in pixels
 	int m_nTotalHeight;							// in pixels
 	int m_nClientHeight;						// in pixels
-	int m_nClientWidth;						// in pixels
+//	int m_nSelectedItem;
 	int m_nSelectStart;
 	int m_nSelectEnd;
 	int m_nSelectFirst;
 	BOOL m_bSelecting;
+	BOOL m_bContextMenu;
 	BOOL m_bClick;
-	int m_nFlagItem;
-
-	UINT CtxMenuTimer;
-	BOOL m_bOpenCtxMenu;
 
 	CFont m_fntBase;
 	CFont m_fntBold;
 	CFont m_fntSmall;
 	CImageList m_oIcons;
 
+	UINT TapAndHoldTimer;
 	CPoint LastCursorPos;
 
 	void CreateFonts();
-	void DrawIcon(CDC &dc, int icon, BOOL selected, int xofs = 0, int yofs = 0);
+	void DrawIcon(CDC &dc, int icon, BOOL selected);
 	void DrawItem(CDC &dc, CRect &rc, int idx);
 	void InvalidateItem(int idx, BOOL erase = TRUE);
 
 	int ItemFromPoint(CPoint pt);
 	void AdjustViewTop();
+
+//	void UpdateMsgHeights();
 
 	int GetSelectedItem() { return m_nSelectFirst; }
 
@@ -184,30 +177,36 @@ protected:
 	int MoveToNextChannel();
 	int MoveToPrevChannel();
 
+	void SetupArticleDlg(int item);
 	void OpenItem(int item);
 	void FlagItem(int item);
 	void UnflagItem(int item);
 	void OpenItem(CFeedItem *feedItem);
 
+	// article dialog
+	CArticleDlg *m_pArticleDlg;
+
 	CSiteItem *SiteItem;
 
 	// sort
+//	CSortInfo *SortInfo;
 	void Sort(int (__cdecl *compare)(const void *elem1, const void *elem2));
 
 protected:
-	int CalcItemHeight(int idx);
-	void UpdateItemHeights();
+	int ItemHeight;
 
-	static const int LEFT_SKIP;
-	static const int PADDING_TOP;
-	static const int PADDING_RIGHT;
-	static const int PADDING_BOTTOM;
+	static const int LABEL_MARGIN;
+	static const int LABEL_X_PADDING;
+	static const int LABEL_Y_PADDING;
+	static const int LABEL_MSG_SKIP;
+//	static const int INTERMSG_SKIP;
 	static const int ITEM_MARGIN;
-	static const int DATE_HEIGHT;
+
+//	// FIXME: heiht should be adjusted according to the base font size
+//	static const int ITEM_HEIGHT;
 
 	friend DWORD WINAPI ScrollThread(LPVOID lpParam);
-
-	friend class CArticleView;
+	friend class CArticleDlg;
 	friend class CMainFrame;
 };
 

@@ -46,8 +46,6 @@ COptGeneralPg::COptGeneralPg() : CPropertyPage(COptGeneralPg::IDD) {
 	m_bNotifyNew = Config.NotifyNew;
 	m_bMoveToUnread = Config.MoveToUnread;
 	m_bClearErrorLog = Config.ClearErrorLog;
-	m_bWrapTitles = Config.WrapTitles;
-	m_nNavigation = Config.NavigationType;
 	//}}AFX_DATA_INIT
 }
 
@@ -57,13 +55,9 @@ COptGeneralPg::~COptGeneralPg() {
 void COptGeneralPg::DoDataExchange(CDataExchange* pDX) {
 	CPropertyPage::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(COptGeneralPg)
-	DDX_Control(pDX, IDC_NAVIGATION, m_ctlNavigation);
-
 	DDX_Check(pDX, IDC_NOTIFY_NEW, m_bNotifyNew);
 	DDX_Check(pDX, IDC_MOVETOUNREAD, m_bMoveToUnread);
 	DDX_Check(pDX, IDC_CLEAR_ERRORLOG, m_bClearErrorLog);
-	DDX_Check(pDX, IDC_WRAP_TITLES, m_bWrapTitles);
-	DDX_CBIndex(pDX, IDC_NAVIGATION, m_nNavigation);
 	//}}AFX_DATA_MAP
 }
 
@@ -78,14 +72,7 @@ END_MESSAGE_MAP()
 
 BOOL COptGeneralPg::OnInitDialog() {
 	CPropertyPage::OnInitDialog();
-
-	CString sText;
-	sText.LoadString(IDS_NAVIGATION_TOUCH);
-	m_ctlNavigation.AddString(sText);
-	sText.LoadString(IDS_NAVIGATION_NORMAL);
-	m_ctlNavigation.AddString(sText);
-	m_ctlNavigation.SetCurSel(m_nNavigation);
-
+		
 	return TRUE;
 }
 
@@ -95,8 +82,6 @@ BOOL COptGeneralPg::OnApply() {
 	Config.NotifyNew = m_bNotifyNew;
 	Config.MoveToUnread = m_bMoveToUnread;
 	Config.ClearErrorLog = m_bClearErrorLog;
-	Config.WrapTitles = m_bWrapTitles;
-	Config.NavigationType = m_nNavigation;
 
 	return CPropertyPage::OnApply();
 }

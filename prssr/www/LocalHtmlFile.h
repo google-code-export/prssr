@@ -45,7 +45,6 @@ protected:
 	CString Server, ActivePath;
 
 	// internal use
-	void FixTree(DOM_NODE *node);
 	void Filter(DOM_NODE *node);
 	void RewriteRelativeUrls(DOM_NODE *node);
 	void TranslateForOffline(DOM_NODE *node);

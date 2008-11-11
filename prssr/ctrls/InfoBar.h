@@ -28,16 +28,13 @@
 //
 // CInfoBar class
 //
-class CInfoBar : public CControlBar {
+class CInfoBar : public CWnd {
 // Construction
 public:
 	CInfoBar();
 	virtual ~CInfoBar();
 
-//	BOOL Create(DWORD dwStyle, CRect &rc, CWnd *pParentWnd, UINT nID);
-	BOOL Create(CWnd *parentWnd);
-	void OnUpdateCmdUI(CFrameWnd *pTarget, BOOL bDisableIfNoHndler);
-	virtual CSize CalcFixedLayout(BOOL bStretch, BOOL bHorz);
+	BOOL Create(DWORD dwStyle, CRect &rc, CWnd *pParentWnd, UINT nID);
 
 	void StartTimer();
 
@@ -49,6 +46,7 @@ public:
 
 protected:
 	CBitmapButton m_ctlStopBtn;
+//	CStatic m_ctlText;
 	CString m_strText;
 	UINT HideTimer;
 

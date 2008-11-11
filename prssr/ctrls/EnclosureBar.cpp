@@ -52,29 +52,11 @@ CEnclosureBar::CEnclosureBar() {
 }
 
 CEnclosureBar::~CEnclosureBar() {
-	m_fntBold.DeleteObject();
+	m_fntBold.DeleteObject();	
 }
 
-BOOL CEnclosureBar::Create(CWnd *parentWnd) {
-	m_dwStyle = CBRS_BOTTOM | CBRS_BORDER_TOP;
 
-	BOOL ret;
-
-	CRect rect; rect.SetRectEmpty();
-	ret = CWnd::Create(NULL, NULL, WS_CHILD, rect, parentWnd, AFX_IDW_TOOLBAR + 5);
-
-	AfxSetResourceHandle(theApp.GetDPISpecificInstanceHandle());
-	m_ilIcons.Create(IDB_CACHE_ITEMS, SCALEX(16), 0, RGB(255, 0, 255));
-	AfxSetResourceHandle(AfxGetInstanceHandle());
-
-	return ret;
-}
-
-void CEnclosureBar::SetIcon(int index) {
-	m_hIcon = m_ilIcons.ExtractIcon(index);
-}
-
-BEGIN_MESSAGE_MAP(CEnclosureBar, CControlBar)
+BEGIN_MESSAGE_MAP(CEnclosureBar, CStatic)
 	//{{AFX_MSG_MAP(CEnclosureBar)
 	ON_WM_PAINT()
 	ON_WM_LBUTTONDOWN()
@@ -85,9 +67,7 @@ END_MESSAGE_MAP()
 // CEnclosureBar message handlers
 
 void CEnclosureBar::OnPaint() {
-	CControlBar::OnPaint();
-
-	CWindowDC dc(this); // device context for painting
+	CPaintDC dc(this); // device context for painting
 
 	CFont *oldFont;
 	CRect rcClient;
@@ -135,7 +115,7 @@ void CEnclosureBar::OnPaint() {
 	dc.SelectObject(oldPen);
 
 	ValidateRect(NULL);
-
+	
 	// Do not call CStatic::OnPaint() for painting messages
 }
 
@@ -159,16 +139,4 @@ void CEnclosureBar::OnLButtonDown(UINT nFlags, CPoint point) {
 		// open enclosure
 		GetParent()->PostMessage(WM_COMMAND, ID_ENCLOSURE_OPEN);
 	}
-}
-
-void CEnclosureBar::OnUpdateCmdUI(CFrameWnd *pTarget, BOOL bDisableIfNoHndler) {
-
-}
-
-CSize CEnclosureBar::CalcFixedLayout(BOOL bStretch, BOOL bHorz) {
-	CDC *pDC = GetDC();
-	int cx = pDC->GetDeviceCaps(HORZRES);
-	ReleaseDC(pDC);
-
-	return CSize(cx, SCALEY(21) - 1);
 }

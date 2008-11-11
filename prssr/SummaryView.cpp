@@ -49,8 +49,6 @@ static char THIS_FILE[] = __FILE__;
 
 CSummaryView::CSummaryView() {
 	NoItemsId = IDS_NO_FEEDS_SUMM;
-
-	SetItemHeight();
 }
 
 CSummaryView::~CSummaryView() {
@@ -71,27 +69,13 @@ BEGIN_MESSAGE_MAP(CSummaryView, CGroupView)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-void CSummaryView::SetItemHeight() {
-	ItemHeight = ITEM_MARGIN + Appearance.SummaryViewFontCfg.Size + 11;
-}
-
-void CSummaryView::CreateFonts() {
-	m_fntSmall.DeleteObject();
-
-	HGDIOBJ hSysFont = ::GetStockObject(SYSTEM_FONT);
-	LOGFONT lf;
-	::GetObject(hSysFont, sizeof(LOGFONT), (LPVOID) &lf);
-	lf.lfHeight = SCALEY(11) + 1;
-	m_fntSmall.CreateFontIndirect(&lf);
-}
-
 void CSummaryView::OnInitialUpdate() {
 	LOG0(3, "CSummaryView::OnInitialUpdate()");
 
 	CGroupView::OnInitialUpdate();
 
-	int height = GetSystemMetrics(SM_CYSCREEN);
-	int width = GetSystemMetrics(SM_CXSCREEN);
+	int height = GetSystemMetrics(SM_CYSCREEN);	
+	int width = GetSystemMetrics(SM_CXSCREEN);	
 	CRect rc(0, height - SCALEY(54) - SCALEY(20), width, height - SCALEY(54));
 
 	CString strText;
@@ -100,8 +84,6 @@ void CSummaryView::OnInitialUpdate() {
 	if (Items.GetCount() == 0)
 		dwStyle |= WS_VISIBLE;
 	m_ctlSiteManLink.Create(strText, dwStyle, rc, this, IDC_SITEMAN_LINK);
-
-	CreateFonts();
 }
 
 void CSummaryView::InsertSites(CSiteList *siteList) {
@@ -242,50 +224,33 @@ void CSummaryView::OnDrawItem(CDC &dc, CRect &rc, HGROUPITEM hItem, BOOL selecte
 			newCnt = SiteList.GetRoot()->GetUnreadCount();
 	}
 
+	clrOld = dc.SetTextColor(clrFg);
+
 	CFont *pOldFont;
-	pOldFont = dc.SelectObject(&m_fntBold);
-	if (!selected) {
-		if (newCnt > 0) clrOld = dc.SetTextColor(Appearance.ClrFeedViewFg);
-		else clrOld = dc.SetTextColor(::GetSysColor(COLOR_3DSHADOW));
+	if (newCnt > 0) {
+		// number
+		pOldFont = dc.SelectObject(&m_fntBold);
+
+		CString sNum;
+		sNum.Format(_T("(%d)"), newCnt);
+
+		CRect rcn = rcItem;
+		dc.DrawText(sNum, rcn, DT_RIGHT | DT_BOTTOM | DT_NOPREFIX | DT_CALCRECT);
+
+		CRect rcNum = rcItem;
+		rcNum.right = rcItem.right - SCALEX(2);
+		rcNum.left = rcNum.right - rcn.Width();
+		dc.DrawText(sNum, rcNum, DT_RIGHT | DT_BOTTOM | DT_NOPREFIX);
+
+		rcItem.right = rcNum.left;
 	}
-	else clrOld = dc.SetTextColor(clrFg);
-	DrawTextEndEllipsis(dc, gi->Text, rcItem, DT_LEFT | DT_TOP | DT_NOPREFIX);
-	dc.SetTextColor(clrOld);
+	else
+		pOldFont = dc.SelectObject(&m_fntBase);
+
+	DrawTextEndEllipsis(dc, gi->Text, rcItem, DT_LEFT | DT_BOTTOM | DT_NOPREFIX);
 	dc.SelectObject(pOldFont);
 
-	// 2nd line
-	if (si != NULL) {
-		pOldFont = dc.SelectObject(&m_fntSmall);
-
-		CString sInfo;
-/*		CString sTime;
-		if (si->Info != NULL) {
-			FILETIME ftFile = { 0 };
-			CString fileName = GetCacheFile(FILE_TYPE_FEED, Config.CacheLocation, si->Info->FileName);
-			if (GetFileTime(fileName, &ftFile)) {
-				FILETIME ftLocal;
-				FileTimeToLocalFileTime(&ftFile, &ftLocal);
-
-				SYSTEMTIME stFile;
-				FileTimeToSystemTime(&ftLocal, &stFile);
-				FormatDateTime(sTime, stFile, Config.ShowRelativeDates);
-			}
-		}
-*/
-		CRect rcInfo = rcItem;
-		if (selected) clrOld = dc.SetTextColor(clrFg);
-		else clrOld = dc.SetTextColor(Appearance.ClrDate);
-
-		if (newCnt > 0) sInfo.Format(IDS_UNREAD_ITEMS, newCnt);
-		else sInfo.Format(IDS_NO_UNREAD_ITEMS);
-
-//		if (!sTime.IsEmpty()) sInfo += _T(", ") + sTime;
-
-		dc.DrawText(sInfo, &rcInfo, DT_LEFT | DT_BOTTOM | DT_NOPREFIX);
-		dc.SetTextColor(clrOld);
-
-		dc.SelectObject(pOldFont);
-	}
+	dc.SetTextColor(clrOld);
 
 	// draw separator
 	CPen pen(PS_SOLID, 1, ::GetSysColor(COLOR_3DSHADOW));
@@ -324,7 +289,7 @@ void CSummaryView::ContextMenu(CPoint *pt) {
 		mnu.LoadMenu(IDR_SUMMARY_VIEW_CONTEXT_MENU);
 		CMenu *popup = mnu.GetSubMenu(0);
 
-		popup->TrackPopupMenu(TPM_TOPALIGN | TPM_LEFTALIGN, pt->x, pt->y, AfxGetMainWnd());
+		popup->TrackPopupMenu(TPM_TOPALIGN | TPM_LEFTALIGN, pt->x, pt->y, AfxGetMainWnd());		
 	}
 }
 
@@ -333,7 +298,7 @@ void CSummaryView::OnUpdateChannel() {
 
 	HGROUPITEM hItem = GetSelectedItem();
 	if (hItem == NULL) return;
-
+	
 	CSiteItem *si = (CSiteItem *) GetItemData(hItem);
 	if (si == NULL) return;
 
@@ -483,9 +448,8 @@ void CSummaryView::OnSiteManLink() {
 void CSummaryView::OnSize(UINT nType, int cx, int cy) {
 	CGroupView::OnSize(nType, cx, cy);
 
-	int height = GetSystemMetrics(SM_CYSCREEN);
-	int width = GetSystemMetrics(SM_CXSCREEN);
+	int height = GetSystemMetrics(SM_CYSCREEN);	
+	int width = GetSystemMetrics(SM_CXSCREEN);	
 	if (::IsWindow(m_ctlSiteManLink.GetSafeHwnd()))
 		m_ctlSiteManLink.SetWindowPos(NULL, 0, height - SCALEY(54) - SCALEY(20), width, SCALEY(20), SWP_NOZORDER);
 }
-
