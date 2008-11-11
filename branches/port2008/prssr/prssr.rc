@@ -175,8 +175,10 @@ LANGUAGE LANG_PORTUGUESE, SUBLANG_PORTUGUESE_BRAZILIAN
 
 #endif
 
-#include "res\prssr.rc2"  // non-Microsoft eMbedded Visual C++ edited resources
+//#include "res\prssr.rc2"  // non-Microsoft eMbedded Visual C++ edited resources
 #include "afxres.rc"         // Standard components
-#include "wceres.rc"         // WCE-specific components
+
+// JAB no longer needed http://msdn.microsoft.com/en-us/library/ms228698(VS.80).aspx
+//#include "wceres.rc"         // WCE-specific components
 
 #include "res\hires.rc2"
