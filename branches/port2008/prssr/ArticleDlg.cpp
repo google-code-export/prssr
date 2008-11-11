@@ -720,6 +720,7 @@ void CArticleDlg::OnInitMenuPopup(CMenu* pMenu, UINT nIndex, BOOL bSysMenu) {
 	ASSERT(state.m_pOther == NULL);
 	ASSERT(state.m_pParentMenu == NULL);
 
+	/*
 	// determine if menu is popup in top-level menu and set m_pOther to
 	// it if so (m_pParentMenu == NULL indicates that it is secondary popup)
 	HMENU hParentMenu;
@@ -741,6 +742,30 @@ void CArticleDlg::OnInitMenuPopup(CMenu* pMenu, UINT nIndex, BOOL bSysMenu) {
 			}
 		}
 	}
+	*/
+		// determine if menu is popup in top-level menu and set m_pOther to
+	// it if so (m_pParentMenu == NULL indicates that it is secondary popup)
+	// JAB: Changed from HWND to CMenu because you're not supposed to use WCE_FCTN
+	CMenu *pParentMenu;
+	if (AfxGetThreadState()->m_hTrackingMenu == pMenu->m_hMenu)
+		state.m_pParentMenu = pMenu; // parent == child for tracking popup
+	else if ((pParentMenu = GetMenu()) != NULL) {
+		CWnd *pParent = GetTopLevelParent(); // child windows don't have menus -- need to go to the top!
+
+		if (pParent != NULL &&
+			((pParentMenu = pParent->GetMenu()) != NULL))
+		{
+			int nIndexMax = pParentMenu->GetMenuItemCount();
+			for (int nIndex = 0; nIndex < nIndexMax; nIndex++) {
+				if (pParentMenu->GetSubMenu(nIndex) == pMenu) {
+					// when popup is found, m_pParentMenu is containing menu
+					state.m_pParentMenu = pParentMenu;
+					break;
+				}
+			}
+		}
+	}
+
 
 	state.m_nIndexMax = pMenu->GetMenuItemCount();
 	for (state.m_nIndex = 0; state.m_nIndex < state.m_nIndexMax; state.m_nIndex++) {

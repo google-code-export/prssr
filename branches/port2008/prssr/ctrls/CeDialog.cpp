@@ -174,6 +174,7 @@ void CCeDialog::OnInitMenuPopup(CMenu* pMenu, UINT nIndex, BOOL bSysMenu) {
 
 	// determine if menu is popup in top-level menu and set m_pOther to
 	// it if so (m_pParentMenu == NULL indicates that it is secondary popup)
+/*
 	HMENU hParentMenu;
 	if (AfxGetThreadState()->m_hTrackingMenu == pMenu->m_hMenu)
 		state.m_pParentMenu = pMenu; // parent == child for tracking popup
@@ -188,6 +189,26 @@ void CCeDialog::OnInitMenuPopup(CMenu* pMenu, UINT nIndex, BOOL bSysMenu) {
 				if (::GetSubMenu(hParentMenu, nIndex) == pMenu->m_hMenu) {
 					// when popup is found, m_pParentMenu is containing menu
 					state.m_pParentMenu = CMenu::FromHandle(hParentMenu);
+					break;
+				}
+			}
+		}
+	}
+*/
+	CMenu *pParentMenu;
+	if (AfxGetThreadState()->m_hTrackingMenu == pMenu->m_hMenu)
+		state.m_pParentMenu = pMenu; // parent == child for tracking popup
+	else if ((pParentMenu = GetMenu()) != NULL) {
+		CWnd *pParent = GetTopLevelParent(); // child windows don't have menus -- need to go to the top!
+
+		if (pParent != NULL &&
+			((pParentMenu = pParent->GetMenu()) != NULL))
+		{
+			int nIndexMax = pParentMenu->GetMenuItemCount();
+			for (int nIndex = 0; nIndex < nIndexMax; nIndex++) {
+				if (pParentMenu->GetSubMenu(nIndex) == pMenu) {
+					// when popup is found, m_pParentMenu is containing menu
+					state.m_pParentMenu = pParentMenu;
 					break;
 				}
 			}

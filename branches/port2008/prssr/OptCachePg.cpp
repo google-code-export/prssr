@@ -87,7 +87,7 @@ BEGIN_MESSAGE_MAP(CMoveCacheProgressDlg, CProgressDlg)
 	ON_WM_TIMER()
 	ON_WM_DESTROY()
 	//}}AFX_MSG_MAP
-	ON_MESSAGE(UWM_DIALOG_CLOSE, OnClose)
+	ON_MESSAGE(UWM_DIALOG_CLOSE, CProgressDlg::OnClose)
 END_MESSAGE_MAP()
 
 BOOL CMoveCacheProgressDlg::OnInitDialog() {

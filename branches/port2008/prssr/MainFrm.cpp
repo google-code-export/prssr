@@ -307,6 +307,9 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 		return -1;      // fail to create
 	}
 
+	// DEBUG: This wouldn't compile with EnableDocking/DockControlBar
+	// Were those part of CToolBar at some point and got taken out?
+/*
 	m_wndTopBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockControlBar(&m_wndTopBar);
@@ -314,7 +317,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 
 	m_wndTopBar.EnableDocking(CBRS_ALIGN_TOP);
 //	m_wndUpdateBar.EnableDocking(CBRS_ALIGN_BOTTOM);
-
+*/
 //	ShowControlBar(&m_wndUpdateBar, FALSE, FALSE);
 
 	//
@@ -1861,20 +1864,21 @@ void CMainFrame::OnInitMenuPopup(CMenu* pMenu, UINT nIndex, BOOL bSysMenu) {
 
 	// determine if menu is popup in top-level menu and set m_pOther to
 	// it if so (m_pParentMenu == NULL indicates that it is secondary popup)
-	HMENU hParentMenu;
+	// JAB: Changed from HWND to CMenu because you're not supposed to use WCE_FCTN
+	CMenu *pParentMenu;
 	if (AfxGetThreadState()->m_hTrackingMenu == pMenu->m_hMenu)
 		state.m_pParentMenu = pMenu; // parent == child for tracking popup
-	else if ((hParentMenu = ::WCE_FCTN(GetMenu)(m_hWnd)) != NULL) {
+	else if ((pParentMenu = GetMenu()) != NULL) {
 		CWnd *pParent = GetTopLevelParent(); // child windows don't have menus -- need to go to the top!
 
 		if (pParent != NULL &&
-			(hParentMenu = ::WCE_FCTN(GetMenu)(pParent->m_hWnd)) != NULL)
+			((pParentMenu = pParent->GetMenu()) != NULL))
 		{
-			int nIndexMax = ::WCE_FCTN(GetMenuItemCount)(hParentMenu);
+			int nIndexMax = pParentMenu->GetMenuItemCount();
 			for (int nIndex = 0; nIndex < nIndexMax; nIndex++) {
-				if (::GetSubMenu(hParentMenu, nIndex) == pMenu->m_hMenu) {
+				if (pParentMenu->GetSubMenu(nIndex) == pMenu) {
 					// when popup is found, m_pParentMenu is containing menu
-					state.m_pParentMenu = CMenu::FromHandle(hParentMenu);
+					state.m_pParentMenu = pParentMenu;
 					break;
 				}
 			}

@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="prssrenc"
 	ProjectGUID="{7B2FF48B-4727-4248-9589-CBA6D3B2A7CE}"
+	RootNamespace="prssrenc"
 	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
@@ -1367,7 +1368,7 @@
 				ProgramDatabaseFile="$(PlatformName)\$(ConfigurationName)/prssrenc.pdb"
 				StackReserveSize="65536"
 				StackCommitSize="4096"
-				EntryPointSymbol="_DllMainCRTStartup"
+				EntryPointSymbol=""
 				BaseAddress="0x00100000"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"

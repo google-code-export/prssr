@@ -229,7 +229,7 @@ void CHtmlFile::DetectEncoding(const CString &encoding) {
 
 static int
 utf8EncodingConvert(void *data, const char *p) {
-	unsigned short c = '?';
+	wchar_t c = '?';
 
 	BYTE *a = (BYTE *) p;
 
