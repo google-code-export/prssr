@@ -73,7 +73,8 @@ static int XMLCALL
 utf8EncodingConvert(void *data, const char *p) {
 //	LOG0(1, "utf8EncodingConvert");
 
-	unsigned short c = '?';
+//	unsigned short c = '?';
+	wchar_t c = '?';
 
 	BYTE *a = (BYTE *) p;
 //	LOG1(1, "a = %x", a[0]);
@@ -97,7 +98,8 @@ static int XMLCALL
 unknownEncodingConvert(void *data, const char *p) {
 //	LOG0(1, "unknownEncodingConvert");
 
-	unsigned short c;
+	wchar_t c;
+
 	if (MultiByteToWideChar(CP_OEMCP, MB_PRECOMPOSED|MB_ERR_INVALID_CHARS, p, 1, &c, 1) == 1)
 		return c;
 	return '?';

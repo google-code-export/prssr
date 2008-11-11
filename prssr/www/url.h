@@ -22,6 +22,7 @@
 #define _URL_H_INCLUDED_
 
 #include <afxtempl.h>
+#include <wininet.h>		// JAB: Needed for INTERNET_PORT
 
 #if defined PRSSR_APP
 

@@ -175,6 +175,11 @@ void CProgressDlg::OnClose() {
 	DestroyWindow();
 }
 
+LRESULT CProgressDlg::OnClose(WPARAM wParam, LPARAM lParam) {
+	DestroyWindow();
+	return 0;
+}
+
 void CProgressDlg::OnActivate(UINT nState, CWnd *pWndOther, BOOL bMinimized) {
 	CWnd::OnActivate(nState, pWndOther, bMinimized);
 }

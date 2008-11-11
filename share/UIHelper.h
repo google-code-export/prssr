@@ -17,7 +17,10 @@ Abstract:
 
 #include <windows.h>
 #include <commctrl.h>
-#include "shguim.h"
+
+// JAB: aygshell is a superset of shguim
+#include <aygshell.h>
+//#include "shguim.h"
 
 #ifdef __cplusplus
 extern "C" {

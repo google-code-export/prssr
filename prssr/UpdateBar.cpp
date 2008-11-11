@@ -460,11 +460,11 @@ void CUpdateBar::UpdateFeeds() {
 				ClearHtmlPages(itemsToClean);
 				ClearEnclosures(itemsToClean);
 
-				for (i = 0; i < itemsToClean.GetSize(); i++)
+				for (int i = 0; i < itemsToClean.GetSize(); i++)
 					delete itemsToClean[i];
 
 				// check keywords in new items
-				for (i = 0; i < newItems.GetSize(); i++)
+				for (int i = 0; i < newItems.GetSize(); i++)
 					newItems.GetAt(i)->SearchKeywords(Config.Keywords);
 
 				// cache

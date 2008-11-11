@@ -77,7 +77,7 @@ CKeywordScanProgressDlg::~CKeywordScanProgressDlg() {
 BEGIN_MESSAGE_MAP(CKeywordScanProgressDlg, CProgressDlg)
 	//{{AFX_MSG_MAP(CKeywordScanProgressDlg)
 	//}}AFX_MSG_MAP
-	ON_MESSAGE(UWM_DIALOG_CLOSE, OnClose)
+	ON_MESSAGE(UWM_DIALOG_CLOSE, CProgressDlg::OnClose)
 END_MESSAGE_MAP()
 
 BOOL CKeywordScanProgressDlg::OnInitDialog() {

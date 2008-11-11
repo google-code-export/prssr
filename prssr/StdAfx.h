@@ -14,6 +14,13 @@
 #error : This project does not support MFCCE 2.00 or earlier, because it requires CControlBar, available only in MFCCE 2.01 or later
 #endif
 
+// JAB 2008-11-06 - This solves "unresolved vftable" linker errors
+#if _WIN32_WCE < 0x500 && _MSC_VER > 1220
+// only needed for WM2003 builds under VS2005
+#pragma comment(lib, "ccrtrtti.lib")
+#endif
+
+
 #define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
 
 #include <afx.h>
@@ -21,7 +28,8 @@
 #include <afxext.h>         // MFC extensions
 #include <afxcview.h>
 
-//#include <wininet.h>
+#include <wininet.h>		// JAB: uncommented because we need INTERNET_PORT (among others)
+
 #include <htmlctrl.h>
 #include <winuser.h>
 
@@ -29,8 +37,9 @@
 #include <afxmt.h>
 #include <afxtempl.h>
 
-
-#include "../share/shguim.h"
+// JAB: aygshell is a superset of shguim
+#include <aygshell.h>
+//#include "../share/shguim.h"
 #include "../share/UIHelper.h"
 
 #if defined(_WIN32_WCE) && (_WIN32_WCE >= 211) && (_AFXDLL)

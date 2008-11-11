@@ -234,7 +234,8 @@ void CLightnessCtl::PrepareGradient() {
 
 		// fill
 		rcFrame.DeflateRect(SCALEX(1), SCALEY(1), SCALEX(2), SCALEY(1));
-		for (int i = 0; i < rc.Height(); i += SCALEY(3)) {
+		int i;
+		for (i = 0; i < rc.Height(); i += SCALEY(3)) {
 			double l = 1.0 - ((double) (i) / rc.Height());
 			COLORREF rgb = hsl2rgb(m_dH, m_dS, l);
 			m_dcMem->FillSolidRect(rcFrame.left, rcFrame.top + i, rcFrame.right, rcFrame.top + (i + SCALEY(3)), rgb);

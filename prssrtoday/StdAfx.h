@@ -10,6 +10,12 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
+// JAB 2008-11-06 - This solves "unresolved vftable" linker errors
+#if _WIN32_WCE < 0x500 && _MSC_VER > 1220
+// only needed for WM2003 builds under VS2005
+#pragma comment(lib, "ccrtrtti.lib")
+#endif
+
 #define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
 
 #include <afxwin.h>         // MFC core and standard components
@@ -32,7 +38,7 @@
 #include <aygshell.h>
 #include "todaycmn.h"
 
-#include "../share/shguim.h"
+//#include "../share/shguim.h"
 #include "../share/UIHelper.h"
 
 #include "resource.h"

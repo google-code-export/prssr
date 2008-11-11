@@ -118,7 +118,7 @@ BOOL CAcceptCertificateDlg::OnInitDialog() {
 	HICON hIcon;
 
 	hIcon = (HICON) LoadImage(theApp.GetDPISpecificInstanceHandle(), MAKEINTRESOURCE(IDI_LOCK_ALERT), IMAGE_ICON, SCALEX(32), SCALEY(32), 0);
-	SendDlgItemMessageW(GetSafeHwnd(), IDC_ALERT_ICON, STM_SETIMAGE, IMAGE_ICON, (LPARAM) hIcon);
+	::SendDlgItemMessageW(GetSafeHwnd(), IDC_ALERT_ICON, STM_SETIMAGE, IMAGE_ICON, (LPARAM) hIcon);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
