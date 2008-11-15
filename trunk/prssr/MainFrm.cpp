@@ -151,6 +151,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_LBUTTONUP()
 	ON_WM_MOUSEMOVE()
 	//}}AFX_MSG_MAP
+	ON_WM_ENTERMENULOOP()
 
 	ON_COMMAND(ID_FILE_INFORMATION, OnFileInformation)
 	ON_UPDATE_COMMAND_UI(ID_FILE_INFORMATION, OnUpdateFileInformation)
@@ -239,6 +240,7 @@ CMainFrame::CMainFrame() {
 
 	CtxMenuTimer = 1;
 	m_bOpenCtxMenu = FALSE;
+	m_bMenuOpened = FALSE;
 }
 
 CMainFrame::~CMainFrame() {
@@ -2399,7 +2401,7 @@ BOOL CMainFrame::PreTranslateMessage(MSG* pMsg) {
 void CMainFrame::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	LOG3(5, "CMainFrame::OnKeyDown(%d, %d, %d)", nChar, nRepCnt, nFlags);
 
-	if (View == ArticleView) {
+	if (View == ArticleView && !m_bMenuOpened) {
 		switch (nChar) {
 			case VK_RETURN:
 				if (!(nFlags & 0x4000)) {
@@ -2435,12 +2437,14 @@ void CMainFrame::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	}
 	else
 		CFrameWnd::OnKeyDown(nChar, nRepCnt, nFlags);
+
+	m_bMenuOpened = FALSE;
 }
 
 void CMainFrame::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	LOG3(5, "CMainFrame::OnKeyUp(%d, %d, %d)", nChar, nRepCnt, nFlags);
 
-	if (View == ArticleView) {
+	if (View == ArticleView && !m_bMenuOpened) {
 		switch (nChar) {
 			case VK_RETURN:
 				KillTimer(CtxMenuTimer);
@@ -2542,4 +2546,8 @@ void CMainFrame::OnMouseMove(UINT nFlags, CPoint point) {
 
 		LastCursorPos = pt;
 	}
+}
+
+void CMainFrame::OnEnterMenuLoop(BOOL bIsTrackPopupMenu) {
+	m_bMenuOpened = TRUE;
 }

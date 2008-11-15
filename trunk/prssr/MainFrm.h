@@ -111,6 +111,7 @@ protected:  // control bar embedded members
 
 	UINT CtxMenuTimer;
 	BOOL m_bOpenCtxMenu;
+	BOOL m_bMenuOpened;
 
 // Generated message map functions
 protected:
@@ -232,6 +233,8 @@ protected:
 	afx_msg void OnRewriteRules();
 
 	afx_msg void OnFeedListView();
+
+	afx_msg void OnEnterMenuLoop(BOOL bIsTrackPopupMenu);
 
 	// sort
 	void UpdateSort();
