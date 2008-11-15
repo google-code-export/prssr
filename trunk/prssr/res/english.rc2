@@ -1104,6 +1104,12 @@ BEGIN
         MENUITEM "Mark All Items Read",         ID_TOOLS_MARKALLITEMSREAD
         MENUITEM "Mark All Items Unread",       ID_TOOLS_MARKALLITEMSUNREAD
         MENUITEM SEPARATOR
+        POPUP "Sort by"
+        BEGIN
+            MENUITEM "Date",                    ID_VIEW_SORTBY_DATE
+            MENUITEM "Read",                    ID_VIEW_SORTBY_READ
+        END
+        MENUITEM SEPARATOR
         MENUITEM "Hide Read Items",             ID_VIEW_HIDEREADITEMS
         MENUITEM "Exit",                        ID_APP_EXIT
     END

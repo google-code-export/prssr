@@ -413,6 +413,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 	CreateSyncer();
 	HSyncItemsThread = CreateThread(NULL, 0, SyncItemsStubProc, this, 0, NULL);
 
+	UpdateSort();
 	UpdateMenu();
 	UpdateWorkOfflineMenu();
 
@@ -564,6 +565,7 @@ void CMainFrame::SetupFeedView() {
 
 	ShowControlBar(&m_wndTopBar, TRUE, FALSE);
 	m_wndTopBar.EnableSortButton();
+	UpdateSort();
 
 	// hide article view controls
 	ShowControlBar(&m_wndBanner, FALSE, FALSE);
