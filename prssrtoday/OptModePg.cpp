@@ -43,12 +43,12 @@ UINT ModeID[] = {
 //	IDS_MODE_TREE
 };
 
-UINT SpeedID[] = {
-	IDS_FASTEST,
-	IDS_FAST,
-	IDS_MEDIUM,
-	IDS_SLOW,
-	IDS_SLOWEST
+int SpeedSecs[] = {
+	1,
+	3,
+	5,
+	7,
+	10
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -66,7 +66,6 @@ COptModePg::COptModePg() : CPropertyPage(COptModePg::IDD)
 	m_bShowSiteName = Config.ShowSiteName;
 	m_bShowDateTime = Config.ShowDateTime;
 	m_bShowOnlyNew = Config.ShowOnlyNew;
-	m_nDisplaySpeedIdx = -1;
 	//}}AFX_DATA_INIT
 }
 
@@ -91,6 +90,7 @@ void COptModePg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SHOW_ONLY_NEW, m_ctlShowOnlyNew);
 	DDX_Control(pDX, IDC_DISPLAY_SPEED_LBL, m_ctlDisplaySpeedLbl);
 	DDX_Control(pDX, IDC_DISPLAYSPEED, m_ctlDisplaySpeed);
+	DDX_Control(pDX, IDC_DISPLAY_SPEED_SECS, m_ctlDisplaySpeedSecs);
 	// general
 	DDX_CBIndex(pDX, IDC_MODE, m_nMode);
 	// cycling
@@ -98,7 +98,6 @@ void COptModePg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_SHOW_SITE_NAME, m_bShowSiteName);
 	DDX_Check(pDX, IDC_SHOW_DATE_TIME, m_bShowDateTime);
 	DDX_Check(pDX, IDC_SHOW_ONLY_NEW, m_bShowOnlyNew);
-	DDX_CBIndex(pDX, IDC_DISPLAYSPEED, m_nDisplaySpeedIdx);
 	//}}AFX_DATA_MAP
 }
 
@@ -135,13 +134,17 @@ BOOL COptModePg::OnInitDialog() {
 	}
 
 	// display speed
-	for (i = 0; i < sizeof(SpeedID) / sizeof(SpeedID[0]); i++) {
-		CString strSpeed;
-		strSpeed.LoadString(SpeedID[i]);
+	CString strSpeed;
+	for (i = 0; i < sizeof(SpeedSecs) / sizeof(SpeedSecs[0]); i++) {
+		strSpeed.Format(_T("%d"), SpeedSecs[i]);
 		int item = m_ctlDisplaySpeed.AddString(strSpeed);
 
-		if (i == Config.CyclingSpeedIdx)
+		if (SpeedSecs[i] == Config.CyclingSpeed)
 			m_ctlDisplaySpeed.SetCurSel(item);
+	}
+	if (m_ctlDisplaySpeed.GetCurSel() == CB_ERR) {
+		strSpeed.Format(_T("%d"), Config.CyclingSpeed);
+		m_ctlDisplaySpeed.SetWindowText(strSpeed);
 	}
 
 	SetForegroundWindow();
@@ -159,9 +162,13 @@ void COptModePg::OnOK() {
 	Config.ShowDateTime = m_bShowDateTime;
 	Config.ShowOnlyNew = m_bShowOnlyNew;
 
-	Config.CyclingSpeedIdx = m_nDisplaySpeedIdx;
-	if (Config.CyclingSpeedIdx == -1)
-		Config.CyclingSpeedIdx = CONFIG_DEFAULT_CYCLING_SPEED;
+	CString strSpeed;
+	m_ctlDisplaySpeed.GetWindowText(strSpeed);
+	int speed;
+	if (swscanf(strSpeed, _T("%d"), &speed) == 1)
+		Config.CyclingSpeed = speed;
+	else
+		Config.CyclingSpeed = CONFIG_DEFAULT_CYCLING_SPEED;
 
 	CPropertyPage::OnOK();
 }
@@ -178,6 +185,7 @@ void COptModePg::UpdateControlsCycling(BOOL enabled/* = TRUE*/) {
 	m_ctlShowOnlyNew.ShowWindow(nShowCmd);
 	m_ctlDisplaySpeedLbl.ShowWindow(nShowCmd);
 	m_ctlDisplaySpeed.ShowWindow(nShowCmd);
+	m_ctlDisplaySpeedSecs.ShowWindow(nShowCmd);
 
 	if (enabled) {
 		if (m_ctlSiteNames.GetCheck() == BST_CHECKED) {

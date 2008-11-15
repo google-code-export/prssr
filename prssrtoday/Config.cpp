@@ -72,7 +72,7 @@ CConfig::CConfig() {
 	ShowSiteName = CONFIG_DEFAULT_SHOW_SITE_NAME;
 	ShowDateTime = CONFIG_DEFAULT_SHOW_DATE_TIME;
 	ShowOnlyNew = CONFIG_DEFAULT_SHOW_ONLY_NEW;
-	CyclingSpeedIdx = CONFIG_DEFAULT_CYCLING_SPEED;
+	CyclingSpeed = CONFIG_DEFAULT_CYCLING_SPEED;
 
 //	StartupDelay = CONFIG_DEFAULT_STARTUP_DELAY;
 }
@@ -95,7 +95,7 @@ void CConfig::Save() {
 	reg.Write(szShowSiteName, ShowSiteName);
 	reg.Write(szShowDateTime, ShowDateTime);
 	reg.Write(szShowOnlyNew, ShowOnlyNew);
-	reg.Write(szCyclingSpeed, CyclingSpeedIdx);
+	reg.Write(szCyclingSpeed, CyclingSpeed);
 
 #ifdef LOGGING
 	reg.Write(szLogFile, LogFile);
@@ -123,7 +123,7 @@ void CConfig::Load() {
 	ShowSiteName = reg.Read(szShowSiteName, CONFIG_DEFAULT_SHOW_SITE_NAME);
 	ShowDateTime = reg.Read(szShowDateTime, CONFIG_DEFAULT_SHOW_DATE_TIME);
 	ShowOnlyNew = reg.Read(szShowOnlyNew, CONFIG_DEFAULT_SHOW_ONLY_NEW);
-	CyclingSpeedIdx = reg.Read(szCyclingSpeed, CONFIG_DEFAULT_CYCLING_SPEED);
+	CyclingSpeed = reg.Read(szCyclingSpeed, CONFIG_DEFAULT_CYCLING_SPEED);
 
 //	StartupDelay = reg.Read(szStartupDelay, CONFIG_DEFAULT_STARTUP_DELAY);
 

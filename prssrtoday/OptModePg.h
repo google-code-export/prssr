@@ -47,6 +47,7 @@ public:
 	CButton		m_ctlShowDateTime;
 	CStatic		m_ctlDisplaySpeedLbl;
 	CComboBox	m_ctlDisplaySpeed;
+	CStatic		m_ctlDisplaySpeedSecs;
 	CButton	m_ctlShowOnlyNew;
 	CSpinButtonCtrl	m_ctlHeightSpin;
 	int		m_nMode;

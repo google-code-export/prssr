@@ -57,7 +57,7 @@ static char THIS_FILE[] = __FILE__;
 #define CONFIG_DEFAULT_FONT_SIZE			9
 #define LINE_SPACING						2
 
-int CyclingSpeed[] = { 1000, 2500, 5000, 7500, 10000 };
+//int CyclingSpeed[] = { 1000, 2500, 5000, 7500, 10000 };
 
 
 UINT				WM_SH_UIMETRIC_CHANGE;
@@ -212,7 +212,8 @@ BOOL CTodayPluginWnd::Create(HWND hwndParent) {
 		SiteIdx = -1;
 	LeaveCriticalSection(&CSSiteList);
 
-	SetTimer(CycleTimer, CyclingSpeed[Config.CyclingSpeedIdx], NULL);
+//	SetTimer(CycleTimer, CyclingSpeed[Config.CyclingSpeedIdx], NULL);
+	SetTimer(CycleTimer, Config.CyclingSpeed * 1000, NULL);
 
 	return TRUE;
 }
@@ -866,7 +867,7 @@ void CTodayPluginWnd::Cycle() {
 
 		// to reflect changes in config
 		KillTimer(CycleTimer);
-		SetTimer(CycleTimer, CyclingSpeed[Config.CyclingSpeedIdx], NULL);
+		SetTimer(CycleTimer, Config.CyclingSpeed * 1000, NULL);
 	}
 }
 
@@ -881,6 +882,7 @@ void CTodayPluginWnd::OpenConfig() {
 	sheet.AddPage(&pgChannels);
 	sheet.AddPage(&pgMode);
 	sheet.AddPage(&pgAppearance);
+	sheet.SetMenu(IDR_DONE);
 
 	if (sheet.DoModal()) {
 		Config.Save();
