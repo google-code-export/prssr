@@ -53,7 +53,7 @@ void CPropGeneralPg::DoDataExchange(CDataExchange* pDX) {
 	CPropertyPage::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CPropGeneralPg)
 	DDX_Control(pDX, IDC_NAME, m_ctlName);
-	DDX_Control(pDX, IDC_URL, m_ctlName);
+	DDX_Control(pDX, IDC_URL, m_ctlURL);
 	DDX_Text(pDX, IDC_NAME, m_strName);
 	DDX_Text(pDX, IDC_URL, m_strURL);
 	DDX_Check(pDX, IDC_SHOW_ON_TODAY, m_bShowOnToday);
