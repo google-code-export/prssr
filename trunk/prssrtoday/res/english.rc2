@@ -44,8 +44,9 @@ BEGIN
     CONTROL         "Show only new items",IDC_SHOW_ONLY_NEW,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,11,68,146,11
     LTEXT           "Cycling speed:",IDC_DISPLAY_SPEED_LBL,10,82,58,10
-    COMBOBOX        IDC_DISPLAYSPEED,70,81,50,70,CBS_DROPDOWNLIST | 
+    COMBOBOX        IDC_DISPLAYSPEED,70,81,30,70,CBS_DROPDOWN | 
                     WS_VSCROLL | WS_TABSTOP
+    LTEXT           "second(s)",IDC_DISPLAY_SPEED_SECS,103,82,45,10
 END
 
 IDD_CFG_APPEARANCE DIALOG DISCARDABLE  0, 0, 160, 165
@@ -98,6 +99,18 @@ BEGIN
     END
 END
 #endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menubar
+//
+
+IDR_DONE MENU DISCARDABLE
+BEGIN
+    MENUITEM "Done",                           IDOK
+    MENUITEM "Cancel",                         IDCANCEL
+END
 
 /////////////////////////////////////////////////////////////////////////////
 //

@@ -48,7 +48,7 @@
 #define CONFIG_DEFAULT_SHOW_SITE_NAME			TRUE
 #define CONFIG_DEFAULT_SHOW_DATE_TIME			TRUE
 #define CONFIG_DEFAULT_SHOW_ONLY_NEW			TRUE
-#define CONFIG_DEFAULT_CYCLING_SPEED			1
+#define CONFIG_DEFAULT_CYCLING_SPEED			3
 
 //#define CONFIG_DEFAULT_SKIP_NONEWS_SITES	FALSE
 //#define CONFIG_DEFAULT_CYCLE_TITLES			FALSE
@@ -93,7 +93,7 @@ public:
 	// cycling mode
 	int CyclingSubMode;
 	BOOL ShowSiteName;
-	int CyclingSpeedIdx;
+	int CyclingSpeed;
 	BOOL ShowOnlyNew;
 	BOOL ShowDateTime;
 

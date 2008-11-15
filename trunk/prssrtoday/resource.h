@@ -34,6 +34,7 @@
 #define IDD_CFG_CHANNELS                503
 
 #define IDR_TODAY                       600
+#define IDR_DONE                        601
 
 #define IDC_DAYS                        1000
 #define IDC_DATE_FMT                    1001
@@ -59,6 +60,7 @@
 #define IDC_HIDE_PLUGIN                 1025
 #define IDC_SHOW_NEW_CHANNELS           1026
 #define IDC_CHANNELS                    1027
+#define IDC_DISPLAY_SPEED_SECS          1028
 
 #define ID_TODAY                        40000
 #define IDS_CAP_TODAY                   40002
