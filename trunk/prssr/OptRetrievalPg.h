@@ -50,7 +50,6 @@ public:
 	CCeEdit m_ctlURL;
 	CCaption m_lblAutoUpdate;
 	CDateTimeCtrl m_ctlTime;
-	CCaption	m_lblMisc;
 	BOOL m_bUseOptimizer;
 	CString m_strURL;
 	CCeEdit	m_ctlUpdateInterval;

@@ -80,7 +80,6 @@ void COptRetrievalPg::DoDataExchange(CDataExchange *pDX) {
 	DDX_Control(pDX, IDC_OPTIMIZER_LBL, m_lblOptimizer);
 	DDX_Control(pDX, IDC_USE_OPTIMIZER, m_ctlUseOptimizer);
 	DDX_Control(pDX, IDC_URL, m_ctlURL);
-	DDX_Control(pDX, IDC_MISC_LBL, m_lblMisc);
 
 	DDX_Check(pDX, IDC_PERIODIC_UPDATE, m_bPeriodicUpdate);
 	DDX_Text(pDX, IDC_UPDATE_INTERVAL, m_nUpdateInterval);
