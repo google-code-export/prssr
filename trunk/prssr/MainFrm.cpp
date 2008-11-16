@@ -2266,6 +2266,7 @@ void CMainFrame::OnFeedListView() {
 				m_wndFeedView.DeleteItem(i);
 		}
 	}
+	m_wndFeedView.UpdateItemHeights();
 	UpdateTopBar();
 }
 
