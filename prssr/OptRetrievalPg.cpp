@@ -47,7 +47,6 @@ IMPLEMENT_DYNCREATE(COptRetrievalPg, CPropertyPage)
 COptRetrievalPg::COptRetrievalPg() : CPropertyPage(COptRetrievalPg::IDD) {
 	//{{AFX_DATA_INIT(COptRetrievalPg)
 	m_bCheckNewIfCradled = Config.CheckOnCradling;
-	m_nUserAgent = -1;
 	m_bUseOptimizer = Config.UseHtmlOptimizer;
 	m_strURL = Config.HtmlOptimizerURL;
 	m_bBackgroundUpdate = Config.BackgroundUpdate;
@@ -82,7 +81,6 @@ void COptRetrievalPg::DoDataExchange(CDataExchange *pDX) {
 	DDX_Control(pDX, IDC_USE_OPTIMIZER, m_ctlUseOptimizer);
 	DDX_Control(pDX, IDC_URL, m_ctlURL);
 	DDX_Control(pDX, IDC_MISC_LBL, m_lblMisc);
-	DDX_Control(pDX, IDC_USERAGENT, m_ctlUserAgent);
 
 	DDX_Check(pDX, IDC_PERIODIC_UPDATE, m_bPeriodicUpdate);
 	DDX_Text(pDX, IDC_UPDATE_INTERVAL, m_nUpdateInterval);
@@ -91,7 +89,6 @@ void COptRetrievalPg::DoDataExchange(CDataExchange *pDX) {
 	DDX_Check(pDX, IDC_BKGND_UPDATE, m_bBackgroundUpdate);
 	DDX_Check(pDX, IDC_USE_OPTIMIZER, m_bUseOptimizer);
 	DDX_Text(pDX, IDC_URL, m_strURL);
-	DDX_CBIndex(pDX, IDC_USERAGENT, m_nUserAgent);
 	//}}AFX_DATA_MAP
 	if (pDX->m_bSaveAndValidate) {
 		if (m_bUseOptimizer && m_strURL.IsEmpty()) {

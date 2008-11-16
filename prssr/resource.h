@@ -461,7 +461,6 @@
 #define IDC_UPDATE_SETTINGS_LBL         1097
 #define IDC_EVENTS_LBL                  1098
 #define IDC_OFFLINE_LBL                 1099
-#define IDC_USERAGENT_LBL               1100
 #define IDC_MAX_LBL                     1101
 #define IDC_LEVEL_LBL                   1102
 #define IDC_STORE_IMAGES                1103
@@ -529,7 +528,6 @@
 #define IDC_BROWSE_CACHE                1166
 #define IDC_USE_CONMAN                  1167
 #define IDC_C_TYPE                      1168
-#define IDC_USERAGENT                   1169
 #define IDC_FONT_ITEM                   1170
 #define IDC_APPICON                     1171
 #define IDC_TITLE                       1172

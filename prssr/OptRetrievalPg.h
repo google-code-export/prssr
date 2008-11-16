@@ -42,10 +42,8 @@ public:
 // Dialog Data
 	//{{AFX_DATA(COptRetrievalPg)
 	enum { IDD = IDD_OPT_RETRIEVAL };
-	CComboBox	m_ctlUserAgent;
 	CSpinButtonCtrl m_ctlUpdateIntervalSpin;
 	BOOL	m_bCheckNewIfCradled;
-	int		m_nUserAgent;
 	int		m_nUpdateInterval;
 	CCaption	m_lblOptimizer;
 	CButton m_ctlUseOptimizer;
