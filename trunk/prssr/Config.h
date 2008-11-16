@@ -32,9 +32,6 @@ enum ESyncSite {
 };
 
 
-#define UA_PRSSREADER					_T("Bitevni kocka pitypacka")
-#define UA_PIE							_T("Mozilla/4.0 (compatible; MSIE 4.01; Windows CE; PPC; 240x320)")
-
 // Playlist format
 #define PLAYLIST_FORMAT_ASX							0
 #define PLAYLIST_FORMAT_M3U							1
@@ -72,7 +69,6 @@ enum ESyncSite {
 #define CONFIG_DEFAULT_NAVIGATION_TYPE				NAVIGATION_TOUCH
 
 #define CONFIG_DEFAULT_CLEARERRORLOG				TRUE
-#define CONFIG_DEFAULT_USERAGENT					UA_PRSSREADER
 
 #define CONFIG_DEFAULT_CACHE_IMAGES					FALSE
 #define CONFIG_DEFAULT_CACHE_HTML					FALSE
