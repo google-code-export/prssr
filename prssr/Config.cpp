@@ -40,6 +40,8 @@ static TCHAR THIS_FILE[] = _T(__FILE__);
 #define new MYDEBUG_NEW
 #endif
 
+#define USER_AGENT_STRING										_T("Mozilla/4.0 (compatible; MSIE 4.01; Windows CE; PPC; %dx%d) pRSSreader/%d.%d.%d")
+
 CConfig Config;
 
 LPCTSTR szAdditionalHttpHeaders = _T("Additional HTTP Headers");
@@ -86,7 +88,7 @@ LPCTSTR szAutoConnect = _T("Auto Connect");
 LPCTSTR szUseConnMan = _T("Use Conn Manager");
 LPCTSTR szClearErrorLog = _T("Clear Error Log");
 LPCTSTR szMarkNewUnread = _T("Mark New Unread");
-LPCTSTR szUserAgent = _T("User Agent");
+LPCTSTR szUserAgent = _T("User-Agent");
 LPCTSTR szCheckOnCradling = _T("Check On Cradling");
 
 LPCTSTR szTimeUpdate = _T("Time Update");
@@ -177,7 +179,7 @@ CConfig::CConfig() {
 
 	// ////
 
-	UserAgent = CONFIG_DEFAULT_USERAGENT;
+	UserAgent.Format(USER_AGENT_STRING, ::GetSystemMetrics(SM_CXSCREEN), ::GetSystemMetrics(SM_CYSCREEN), VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
 
 	NotifyNew = CONFIG_DEFAULT_NOTIFYNEW;
 	WrapTitles = CONFIG_DEFAULT_WRAPTITLES;
@@ -268,7 +270,6 @@ void CConfig::Save() {
 	reg.Write(szUseConnMan, UseConnManager);
 	reg.Write(szCheckOnCradling, CheckOnCradling);
 	reg.Write(szClearErrorLog, ClearErrorLog);
-	reg.Write(szUserAgent, UserAgent);
 
 	reg.Write(szBackgroundUpdate, BackgroundUpdate);
 
@@ -337,7 +338,8 @@ void CConfig::Load() {
 	UseConnManager = reg.Read(szUseConnMan, CONFIG_DEFAULT_USE_CONN_MANAGER);
 	CheckOnCradling = reg.Read(szCheckOnCradling, CONFIG_DEFAULT_CHECKONCRADLING);
 	ClearErrorLog = reg.Read(szClearErrorLog, CONFIG_DEFAULT_CLEARERRORLOG);
-	UserAgent = reg.Read(szUserAgent, CONFIG_DEFAULT_USERAGENT);
+	CString ua = reg.Read(szUserAgent, UserAgent);
+	UserAgent = ua;
 
 	// global caching options
 	CacheImages = reg.Read(szCacheImages, CONFIG_DEFAULT_CACHE_IMAGES);

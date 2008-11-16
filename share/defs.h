@@ -21,6 +21,10 @@
 #ifndef _DEFS_H_
 #define _DEFS_H_
 
+#define VERSION_MAJOR						1
+#define VERSION_MINOR						4
+#define VERSION_PATCH						3
+
 #define PRSSREADER_BIN						L"prssr.exe"
 #define PRSSRNOT_BIN						L"\\windows\\prssrnot.exe"
 

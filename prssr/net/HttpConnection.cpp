@@ -201,9 +201,8 @@ CHttpResponse *CHttpConnection::ReceiveResponse() {
 	LOG0(3, "CHttpConnection::ReceiveResponse()");
 
 	CString sLine;
-	if (!ReceiveLine(sLine)) {
+	if (!ReceiveLine(sLine))
 		return NULL;
-	}
 
 	CHttpResponse *res = new CHttpResponse();
 	res->SetStartLine(sLine);

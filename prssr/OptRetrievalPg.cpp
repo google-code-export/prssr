@@ -159,17 +159,6 @@ BOOL COptRetrievalPg::OnInitDialog() {
 	m_ctlUpdateIntervalSpin.SendMessage(CCM_SETVERSION, COMCTL32_VERSION);
 	m_ctlUpdateIntervalSpin.SetRange(0, 30000);
 
-	m_ctlUserAgent.AddString(_T("pRSSreader"));
-	m_ctlUserAgent.AddString(_T("Pocket IE"));
-	if (Config.UserAgent.Compare(UA_PRSSREADER) == 0)
-		m_ctlUserAgent.SetCurSel(0);
-	else if (Config.UserAgent.Compare(UA_PIE) == 0)
-		m_ctlUserAgent.SetCurSel(1);
-	else {
-		m_ctlUserAgent.AddString(_T("Custom"));
-		m_ctlUserAgent.SetCurSel(2);
-	}
-
 	UpdateControls();
 
 	return TRUE;
@@ -199,13 +188,6 @@ BOOL COptRetrievalPg::OnApply() {
 	// html optimizer
 	Config.UseHtmlOptimizer = m_bUseOptimizer;
 	Config.HtmlOptimizerURL = m_strURL;
-
-	// it is not custom UA string
-	switch (m_nUserAgent) {
-		case 0: Config.UserAgent = UA_PRSSREADER; break;
-		case 1: Config.UserAgent = UA_PIE; break;
-		case 2: /* do not destroy user-defined UA string */ break;
-	}
 
 	return CPropertyPage::OnApply();
 }
