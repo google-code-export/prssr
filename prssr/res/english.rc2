@@ -30,7 +30,7 @@ END
 
 IDD_SITE_MANAGER DIALOG DISCARDABLE  0, 0, 160, 190
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Site Manager"
+CAPTION "Manage Subscriptions"
 FONT 8, "Tahoma"
 BEGIN
     CONTROL         "Tree1",IDC_SITES,"SysTreeView32",TVS_HASBUTTONS |
@@ -43,7 +43,7 @@ END
 
 IDD_SITE_MANAGER_WIDE DIALOG DISCARDABLE  0, 0, 220, 115
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Site Manager"
+CAPTION "Manage Subscriptions"
 FONT 8, "Tahoma"
 BEGIN
     CONTROL         "Tree1",IDC_SITES,"SysTreeView32",TVS_HASBUTTONS |
@@ -1065,7 +1065,7 @@ BEGIN
             MENUITEM "Rewrite Rules",           ID_REWRITE_RULES
         END
         MENUITEM SEPARATOR
-        MENUITEM "Site Manager...",             ID_TOOLS_SITEMANAGER
+        MENUITEM "Manage Subscriptions...",     ID_TOOLS_SITEMANAGER
         MENUITEM "Keyword Manager...",          ID_TOOLS_KEYWORDMANAGER
         MENUITEM "Cache Manager...",            ID_TOOLS_CACHEMANAGER
         MENUITEM "Errors...",                   ID_TOOLS_ERRORS
@@ -1527,7 +1527,7 @@ END
 
 STRINGTABLE DISCARDABLE
 BEGIN
-    IDS_SITE_MANAGER        "Site Manager"
+    IDS_SITE_MANAGER        "Manage Subscriptions"
     IDS_MYDEVICE            "My device"
     IDS_MY_CHANNELS         "My Channels"
     IDS_PROXY_NEEDS_AUTH    "The proxy server needs an authentication"
@@ -1540,7 +1540,7 @@ BEGIN
     IDS_NO_KEYWORDS_DEFINED "There are no keywords defined"
     IDS_NO_FEEDS_DEFINED    "You are not subscribed to any feed. Tap Add or Import to add a feed."
     IDS_NO_FEEDS_SUMM       "You are not subscribed to any feed."
-	IDS_OPEN_SITE_MAN       "Open Site manager to add feeds"
+	IDS_OPEN_SITE_MAN       "Manage subscriptions >>"
     IDS_RETURN_TO_MAINLIST  "Return to main list"
     IDS_OPEN_ONLINE_MESSAGE "Open online message"
     IDS_SUGGEST_INTERVAL    "This feed suggests an update interval of %d minutes."
