@@ -644,22 +644,17 @@ void CArticleView::OnItemNext() {
 				idx++;
 				if (site == oldSite) {
 					// we are back on the original item
-					if (idx == oldIdx) {
-						frame->NoNewMessage();
+					if (idx == oldIdx)
 						break;
-					}
 				}
 			}
 			else {
 				int t = site;
 				site = View->MoveToNextChannel();
-				if (t == site) {
-					frame->NoNewMessage();
+				if (t == site)
 					break;
-				}
-				else {
+				else
 					idx = 0;
-				}
 			}
 
 			// check
@@ -757,22 +752,17 @@ void CArticleView::OnItemPrev() {
 				idx--;
 				if (site == oldSite) {
 					// we are back on the original site
-					if (idx == oldIdx) {
-						frame->NoNewMessage();
+					if (idx == oldIdx)
 						break;
-					}
 				}
 			}
 			else {
 				int t = site;
 				site = View->MoveToPrevChannel();
-				if (t == site) {
-					frame->NoNewMessage();
+				if (t == site)
 					break;
-				}
-				else {
+				else
 					idx = View->GetItemCount() - 1;
-				}
 			}
 
 			// check
@@ -801,7 +791,7 @@ void CArticleView::OnItemPrev() {
 		else {
 			// get back to original site and item
 			frame->SelectSite(oldSite);
-			if (View->GetItemCount() <= 0) {
+			if (View->GetItemCount() > 0) {
 				View->SetSelectedItem(oldIdx);
 				View->EnsureVisible(oldIdx);
 			}
