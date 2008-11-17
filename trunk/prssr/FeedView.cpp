@@ -1274,17 +1274,11 @@ int CFeedView::MoveToPrevChannel() {
 	return Config.ActSiteIdx;
 }
 
-void CFeedView::OpenItem(int item) {
-	LOG1(3, "CFeedView::OpenItem(%d)", item);
+void CFeedView::OpenItem(CFeedItem *fi) {
+	LOG1(3, "CFeedView::OpenItem(%p)", fi);
 
-	if (item < 0 || item >= m_oItems.GetSize())
-		return;
-
-	Config.ActFeedItem = item;
-	m_nSelectFirst = m_nSelectStart = m_nSelectEnd = item;
 	CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
 
-	CFeedItem *fi = m_oItems.GetAt(item);
 	CSiteItem *si = fi->SiteItem;
 
 	// enclosure bar
@@ -1309,20 +1303,28 @@ void CFeedView::OpenItem(int item) {
 		frame->m_wndBanner.Invalidate();
 
 	frame->m_wndArticleView.ShowArticle();
-	MarkItem(item, MESSAGE_READ);
-
 	frame->UpdateTopBar();
-}
 
-void CFeedView::OpenItem(CFeedItem *feedItem) {
-	LOG1(3, "CFeedView::OpenItem(%p)", feedItem);
-
-	for (int i = 0; i < m_oItems.GetSize(); i++) {
-		if (m_oItems.GetAt(i) == feedItem) {
-			OpenItem(i);
-			break;
+	if (si->Feed != NULL) {
+		for (int i = 0; i < si->Feed->GetItemCount(); i++) {
+			if (si->Feed->GetItem(i) == fi) {
+				Config.ActFeedItem = i;
+				break;
+			}
 		}
 	}
+}
+
+void CFeedView::OpenItem(int item) {
+	LOG1(3, "CFeedView::OpenItem(%d)", item);
+
+	if (item < 0 || item >= m_oItems.GetSize())
+		return;
+
+	m_nSelectFirst = m_nSelectStart = m_nSelectEnd = item;
+
+	OpenItem(m_oItems.GetAt(item));
+	MarkItem(item, MESSAGE_READ);
 }
 
 void CFeedView::FlagItem(int item) {

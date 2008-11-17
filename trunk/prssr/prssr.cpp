@@ -220,22 +220,6 @@ BOOL CPrssrApp::InitInstance() {
 	if ((npos = strCmdLine.Find(_T("/openitem"))) != -1) {
 		CString sPar = strCmdLine.Mid(npos + 10);
 
-/*		CString sSite, sFeedIdx;
-
-		int nSpacePos = sPar.Find(' ');
-		if (nSpacePos != -1) {
-			sSite = sPar.Left(nSpacePos);
-			sFeedIdx = sPar.Mid(nSpacePos + 1);
-		}
-		else {
-			sSite = sPar;
-		}
-
-		int site;
-		if (swscanf(sSite.GetBuffer(sSite.GetLength()), _T("%d"), &site) == 1) {
-			pFrame->PostMessage(UWM_OPEN_FEEDITEM, site, (LPARAM) (LPCTSTR) FeedItemHash);
-		}
-*/
 		int site, feedIdx;
 		if (swscanf(sPar.GetBuffer(sPar.GetLength()), _T("%d %d"), &site, &feedIdx) == 2) {
 			pFrame->PostMessage(UWM_OPEN_FEEDITEM, site, (LPARAM) feedIdx);

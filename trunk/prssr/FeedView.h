@@ -185,10 +185,10 @@ protected:
 	int MoveToNextChannel();
 	int MoveToPrevChannel();
 
+	void OpenItem(CFeedItem *fi);
 	void OpenItem(int item);
 	void FlagItem(int item);
 	void UnflagItem(int item);
-	void OpenItem(CFeedItem *feedItem);
 
 	CSiteItem *SiteItem;
 
