@@ -720,7 +720,7 @@ void CMainFrame::LoadSites() {
 		if (View == ArticleView) {
 			if (si->Feed != NULL) {
 				if (Config.ActFeedItem >= 0 && Config.ActFeedItem < si->Feed->GetItemCount()) {
-					m_wndFeedView.OpenItem(Config.ActFeedItem);
+					m_wndFeedView.OpenItem(si->Feed->GetItem(Config.ActFeedItem));
 				}
 				else {
 					// switch to feed view
@@ -2138,8 +2138,14 @@ LRESULT CMainFrame::OnOpenFeedItem(WPARAM wParam, LPARAM lParam) {
 	CFeed *feed = SiteList.GetAt(siteIdx)->Feed;
 	if (feed != NULL && (feedIdx >= 0 && feedIdx < feed->GetItemCount())) {
 		CFeedItem *fi = feed->GetItem(feedIdx);
-		if (fi != NULL)
+		if (fi != NULL) {
 			m_wndFeedView.OpenItem(fi);
+			// mark it as read
+			for (int i = 0; i < m_wndFeedView.m_oItems.GetSize(); i++) {
+				if (m_wndFeedView.m_oItems.GetAt(i) == fi)
+					m_wndFeedView.MarkItem(i, MESSAGE_READ);
+			}
+		}
 	}
 
 	return 0;
