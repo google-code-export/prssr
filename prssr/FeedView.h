@@ -176,6 +176,7 @@ protected:
 	void AdjustViewTop();
 
 	int GetSelectedItem() { return m_nSelectFirst; }
+	void SetSelectedItem(int selItem) { m_nSelectFirst = m_nSelectStart = m_nSelectEnd = selItem; }
 
 	void DeselectAllItems();
 

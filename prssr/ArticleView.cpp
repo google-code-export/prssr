@@ -688,7 +688,12 @@ void CArticleView::OnItemNext() {
 		else {
 			// get back to original site and item
 			frame->SelectSite(oldSite);
-			View->EnsureVisible(oldIdx);
+			if (View->GetItemCount() > 0) {
+				View->SetSelectedItem(oldIdx);
+				View->EnsureVisible(oldIdx);
+			}
+
+			frame->NoNewMessage();
 		}
 	}
 }
@@ -796,7 +801,11 @@ void CArticleView::OnItemPrev() {
 		else {
 			// get back to original site and item
 			frame->SelectSite(oldSite);
-			View->EnsureVisible(oldIdx);
+			if (View->GetItemCount() <= 0) {
+				View->SetSelectedItem(oldIdx);
+				View->EnsureVisible(oldIdx);
+			}
+			frame->NoNewMessage();
 		}
 	}
 }
