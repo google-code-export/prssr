@@ -702,30 +702,43 @@ void CMainFrame::LoadSites() {
 
 	//
 	if (SiteList.GetCount() > 0) {
-		// we have sites, but ActSiteIdx is out out the range -> activate the first site
-		if (Config.ActSiteIdx < -2 || Config.ActSiteIdx >= SiteList.GetCount())
+		// ActSiteIdx is out out the range -> activate the summary view
+		if (Config.ActSiteIdx < -2 || Config.ActSiteIdx >= SiteList.GetCount()) {
 			Config.ActSiteIdx = 0;
-
-		CSiteItem *si = SiteList.GetAt(Config.ActSiteIdx);
-		if (View == FeedView || View == ArticleView) {
-			if (Config.ActSiteIdx >= -2 && Config.ActSiteIdx < SiteList.GetCount()) {
-				SelectSite(Config.ActSiteIdx);
-				PreloadSite(Config.ActSiteIdx);
-			}
-			else {
-				// TODO: switch to summary view
-			}
+			SwitchView(SummaryView);
 		}
+		else {
+			CSiteItem *si;
+			if (Config.ActSiteIdx == SITE_UNREAD) si = &UnreadItems;
+			else if (Config.ActSiteIdx == SITE_FLAGGED) si = &FlaggedItems;
+			else si = SiteList.GetAt(Config.ActSiteIdx);
 
-		if (View == ArticleView) {
-			if (si->Feed != NULL) {
-				if (Config.ActFeedItem >= 0 && Config.ActFeedItem < si->Feed->GetItemCount()) {
-					m_wndFeedView.OpenItem(si->Feed->GetItem(Config.ActFeedItem));
+			if (View == FeedView || View == ArticleView) {
+				if (Config.ActSiteIdx >= -2 && Config.ActSiteIdx < SiteList.GetCount()) {
+					SelectSite(Config.ActSiteIdx);
+					PreloadSite(Config.ActSiteIdx);
 				}
 				else {
-					// switch to feed view
-					SwitchView(FeedView);
-					SelectSite(Config.ActSiteIdx);
+					// TODO: switch to summary view
+				}
+			}
+
+			if (View == ArticleView) {
+				if (si->Feed != NULL) {
+	//				CString s;
+	//				s.Format(_T("%d/%d"), Config.ActFeedItem, si->Feed->GetItemCount());
+	//				s.Format(_T("%d/%d"), Config.ActFeedItem, 10);
+	//				AfxMessageBox(s);
+	//				LOG2(1, "%d, %p", Config.ActFeedItem, si);
+
+					if (Config.ActFeedItem >= 0 && Config.ActFeedItem < si->Feed->GetItemCount()) {
+						m_wndFeedView.OpenItem(si->Feed->GetItem(Config.ActFeedItem));
+					}
+					else {
+						// switch to feed view
+						SwitchView(FeedView);
+						SelectSite(Config.ActSiteIdx);
+					}
 				}
 			}
 		}
