@@ -1050,7 +1050,7 @@ BOOL CopyTextToClipboard(HWND hWnd, const CString &strText) {
 
 void SendByEmail(const CString &body) {
 	CString pars;
-	pars.Format(_T("-service \"%s\" -body \"%s\""), Config.EmailService, body);
+	pars.Format(_T("-service \"%s\" -body \"%s\""), Config.EmailAccount, body);
 	CreateProcess(_T("tmail.exe"), pars, NULL, NULL, FALSE, 0, NULL, NULL, NULL, NULL);
 }
 

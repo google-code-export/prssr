@@ -236,10 +236,8 @@ void CSummaryView::OnDrawItem(CDC &dc, CRect &rc, HGROUPITEM hItem, BOOL selecte
 		newCnt = si->GetUnreadCount();
 	else {
 		// vfolder
-		if (si->FlagMask == MESSAGE_FLAG)
-			newCnt = SiteList.GetRoot()->GetFlaggedCount();
-		else
-			newCnt = SiteList.GetRoot()->GetUnreadCount();
+		if (si->FlagMask == MESSAGE_FLAG) newCnt = SiteList.GetRoot()->GetFlaggedCount();
+		else newCnt = SiteList.GetRoot()->GetUnreadCount();
 	}
 
 	CFont *pOldFont;

@@ -67,6 +67,7 @@ enum ESyncSite {
 #define CONFIG_DEFAULT_UPDATE_ONLY					FALSE
 #define CONFIG_DEFAULT_BACKGROUNDUPDATE				TRUE
 #define CONFIG_DEFAULT_NAVIGATION_TYPE				NAVIGATION_TOUCH
+#define CONFIG_DEFAULT_EMAIL_ACCOUNT				_T("ActiveSync")
 
 #define CONFIG_DEFAULT_CLEARERRORLOG				TRUE
 
@@ -98,7 +99,6 @@ enum ESyncSite {
 #define CONFIG_DEFAULT_HTMLOPTAFTERURLREWRITING		FALSE
 #define CONFIG_DEFAULT_MSG_SCROLL_THROUGHT			TRUE
 #define CONFIG_DEFAULT_SETPROPERTIESAFTERSITEADDED	TRUE
-#define CONFIG_DEFAULT_EMAIL_SERVICE				_T("ActiveSync")
 #define CONFIG_DEFAULT_WRAPAROUND					FALSE
 
 
@@ -149,6 +149,7 @@ public:
 	BOOL HideGroups;
 	BOOL HideReadItems;
 	BOOL UpdateOnly;
+	CString EmailAccount;					// email service used for sending emails (ActiveSync by default)
 
 	////
 
@@ -218,8 +219,6 @@ public:
 	BOOL ReportErrorsAfterUpdate;			// Report errors after update if there are any
 	BOOL OpenMsgWithHtmlOptimizer;
 	BOOL HtmlOptAfterUrlRewriting;			// apply html optimizer on rewritten urls
-
-	CString EmailService;					// email service used for sending emails (ActiveSync by default)
 
 #ifdef PRSSR_APP
 	// HW keys

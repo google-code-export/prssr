@@ -609,6 +609,7 @@
 #define IDC_SYNC_PASSWORD               1250
 #define IDC_NAVIGATION                  1251
 #define IDC_WRAP_TITLES                 1252
+#define IDC_EMAIL                       1253
 
 #define ID_TOOLS_OPTIONS                32774
 #define ID_TOOLS_SITEMANAGER            32775
