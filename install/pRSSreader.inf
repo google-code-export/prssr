@@ -32,7 +32,7 @@
 [DefaultInstall]
 	CEShortcuts          = Shortcuts
 	CopyFiles            = Files.License
-	AddReg               = RegisterTodayPlugin,Notifications
+	AddReg               = RegisterTodayPlugin,Notifications,AppToDate
 
 [DefaultInstall.ARM]
 	CopyFiles            = Files.App.ARM,Files.Libs.ARM,Files.TodayPlugin.ARM
@@ -40,6 +40,8 @@
 
 [SourceDisksNames]
 	12 = ,"license",,..
+	13 = ,"AppToDate",,..\apptodate
+	14 = ,"AppToDateIco",,..\prssr\res
 
 [SourceDisksNames.ARM]
 	 1 = ,"prssr",,..\prssr\prj\armv4rel
@@ -67,6 +69,8 @@
 	libsgml.dll = 7
 	libregex.dll = 8
 	COPYING = 12
+	apptodate.xml = 13
+	main.ico = 14
 
 [DestinationDirs]
 	Shortcuts              = ,%CE11%
@@ -87,6 +91,8 @@
 	res.096.dll,res096.dll,,0x40000000
 	res.192.dll,res192.dll,,0x40000000
 	prssrenc.dll,,,0x40000000
+	prssr.xml,apptodate.xml,,0x80000000
+	prssr.ico,main.ico,,0x80000000
 
 [Files.TodayPlugin.ARM]
 	prssrtoday.dll,,,0x40000000
@@ -107,3 +113,5 @@
 	HKCU,ControlPanel\Notifications\%CLSIDNewItems%,Options,  0x00010001, 0
 	HKCU,ControlPanel\Notifications\%CLSIDNewItems%,Wave,     0x00000000, ""
 
+[AppToDate]
+	HKCU,Software\Modaco\AppToDate\XML,pRSSreader,0x00000000,%InstallDir%\prssr.xml
