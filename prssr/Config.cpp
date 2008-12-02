@@ -77,6 +77,7 @@ LPCTSTR szMoveToUnread = _T("Move To Unread");
 LPCTSTR szMoveChannel = _T("Move Channel");
 LPCTSTR szWarnFeedMove = _T("Warn Feed Move");
 LPCTSTR szNavigationType = _T("Navigation Type");
+LPCTSTR szEmailAccount = _T("Email Account");
 
 // read options
 LPCTSTR szNewSeconds = _T("New Seconds");
@@ -133,7 +134,6 @@ LPCTSTR szTimeout = _T("Timeout");
 LPCTSTR szReportErrorsAfterUpdate = _T("Report Errors After Update");
 LPCTSTR szOpenMsgWithHtmlOptimizer = _T("Open Msg With Html Optimizer");
 LPCTSTR szHtmlOptAfterUrlRewriting = _T("HtmlOpt After Url Rewriting");
-LPCTSTR szEmailService = _T("Email Service");
 
 #ifdef PRSSR_APP
 // hw keys
@@ -184,6 +184,7 @@ CConfig::CConfig() {
 	NotifyNew = CONFIG_DEFAULT_NOTIFYNEW;
 	WrapTitles = CONFIG_DEFAULT_WRAPTITLES;
 	NavigationType = CONFIG_DEFAULT_NAVIGATION_TYPE;
+	EmailAccount = CONFIG_DEFAULT_EMAIL_ACCOUNT;
 
 	CacheLocation = _T("");
 	CacheLimit = CONFIG_DEFAULT_CACHE_LIMIT;
@@ -224,7 +225,6 @@ CConfig::CConfig() {
 	ReportErrorsAfterUpdate = CONFIG_DEFAULT_REPORTERRORSAFTERUPDATE;
 	OpenMsgWithHtmlOptimizer = CONFIG_DEFAULT_OPENMSGWITHHTMLOPTIMIZER;
 	HtmlOptAfterUrlRewriting = CONFIG_DEFAULT_HTMLOPTAFTERURLREWRITING;
-	EmailService = CONFIG_DEFAULT_EMAIL_SERVICE;
 	WrapAround = CONFIG_DEFAULT_WRAPAROUND;
 
 	MainView = CONFIG_DEFAULT_MAIN_VIEW;
@@ -262,6 +262,7 @@ void CConfig::Save() {
 	reg.Write(szWrapTitles, WrapTitles);
 	reg.Write(szShowRelativeDates, ShowRelativeDates);
 	reg.Write(szMoveToUnread, MoveToUnread);
+	reg.Write(szEmailAccount, EmailAccount);
 
 	// retrieve
 	reg.Write(szUpdateInterval, UpdateInterval);
@@ -308,6 +309,7 @@ void CConfig::Load() {
 	WrapTitles = reg.Read(szWrapTitles, CONFIG_DEFAULT_WRAPTITLES);
 	ShowRelativeDates = reg.Read(szShowRelativeDates, CONFIG_DEFAULT_SHOWRELATIVEDATES);
 	MoveToUnread = reg.Read(szMoveToUnread, CONFIG_DEFAULT_MOVETOUNREAD);
+	EmailAccount = reg.Read(szEmailAccount, CONFIG_DEFAULT_EMAIL_ACCOUNT);
 
 	// retrieve
 	int updateIntervalIdx = reg.Read(szUpdateIntervalIdx, -2);
@@ -386,7 +388,6 @@ void CConfig::Load() {
 	OpenMsgWithHtmlOptimizer = reg.Read(szOpenMsgWithHtmlOptimizer, CONFIG_DEFAULT_OPENMSGWITHHTMLOPTIMIZER);
 	HtmlOptAfterUrlRewriting = reg.Read(szHtmlOptAfterUrlRewriting, CONFIG_DEFAULT_HTMLOPTAFTERURLREWRITING);
 	BackgroundUpdate = reg.Read(szBackgroundUpdate, CONFIG_DEFAULT_BACKGROUNDUPDATE);
-	EmailService = reg.Read(szEmailService, CONFIG_DEFAULT_EMAIL_SERVICE);
 	WrapAround = reg.Read(szWrapAround, CONFIG_DEFAULT_WRAPAROUND);
 }
 

@@ -23,6 +23,11 @@
 #include "OptGeneralPg.h"
 #include "Config.h"
 
+#include <atlbase.h>
+#include <cemapi.h>
+#include <mapiutil.h>
+#include <mapidefs.h>
+
 #ifdef MYDEBUG
 #undef THIS_FILE
 static TCHAR THIS_FILE[] = _T(__FILE__);
@@ -58,6 +63,7 @@ void COptGeneralPg::DoDataExchange(CDataExchange* pDX) {
 	CPropertyPage::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(COptGeneralPg)
 	DDX_Control(pDX, IDC_NAVIGATION, m_ctlNavigation);
+	DDX_Control(pDX, IDC_EMAIL, m_ctlEmailAccount);
 
 	DDX_Check(pDX, IDC_NOTIFY_NEW, m_bNotifyNew);
 	DDX_Check(pDX, IDC_MOVETOUNREAD, m_bMoveToUnread);
@@ -76,6 +82,58 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // COptGeneralPg message handlers
 
+#define CHR(x) if (FAILED(x)) { hr = x; goto Error; }
+
+
+HRESULT COptGeneralPg::EnumEmailAccounts() {
+	HRESULT hr;
+
+	CComPtr<IMAPITable> ptbl;
+	CComPtr<IMAPISession> pSession;
+	SRowSet *prowset = NULL;
+	SPropValue  *pval = NULL;
+	SizedSPropTagArray (1, spta) = { 1, PR_DISPLAY_NAME };
+
+	// Log onto MAPI
+	hr = MAPILogonEx(0, NULL, NULL, 0, static_cast<LPMAPISESSION *>(&pSession));
+	CHR(hr); // CHR will goto Error if FAILED(hr)
+
+	// Get the table of accounts
+	hr = pSession->GetMsgStoresTable(0, &ptbl);
+	CHR(hr);
+
+	// set the columns of the table we will query
+	hr = ptbl->SetColumns ((SPropTagArray *) &spta, 0);
+	CHR(hr);
+
+	while (TRUE) {
+		// Free the previous row
+		FreeProws (prowset);
+		prowset = NULL;
+
+		hr = ptbl->QueryRows (1, 0, &prowset);
+		if ((hr != S_OK) || (prowset == NULL) || (prowset->cRows == 0)) {
+			break;
+		}
+
+		ASSERT (prowset->aRow[0].cValues == spta.cValues);
+		pval = prowset->aRow[0].lpProps;
+
+		ASSERT (pval[0].ulPropTag == PR_DISPLAY_NAME);
+		int nItem = m_ctlEmailAccount.AddString(pval[0].Value.lpszW);
+		if (Config.EmailAccount.CompareNoCase(pval[0].Value.lpszW) == 0)
+			m_ctlEmailAccount.SetCurSel(nItem);
+	}
+
+	pSession->Logoff(0, 0, 0);
+
+Error:
+    FreeProws (prowset);
+
+    return hr;
+
+}
+
 BOOL COptGeneralPg::OnInitDialog() {
 	CPropertyPage::OnInitDialog();
 
@@ -85,6 +143,11 @@ BOOL COptGeneralPg::OnInitDialog() {
 	sText.LoadString(IDS_NAVIGATION_NORMAL);
 	m_ctlNavigation.AddString(sText);
 	m_ctlNavigation.SetCurSel(m_nNavigation);
+
+	// email accounts
+	EnumEmailAccounts();
+	if (m_ctlEmailAccount.GetCurSel() == CB_ERR)
+		m_ctlEmailAccount.SelectString(-1, _T("ActiveSync"));
 
 	return TRUE;
 }
@@ -97,6 +160,8 @@ BOOL COptGeneralPg::OnApply() {
 	Config.ClearErrorLog = m_bClearErrorLog;
 	Config.WrapTitles = m_bWrapTitles;
 	Config.NavigationType = m_nNavigation;
+
+	m_ctlEmailAccount.GetWindowText(Config.EmailAccount);
 
 	return CPropertyPage::OnApply();
 }

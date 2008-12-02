@@ -46,6 +46,7 @@ public:
 	int		m_nNavigation;
 	//}}AFX_DATA
 	CComboBox m_ctlNavigation;
+	CComboBox m_ctlEmailAccount;
 
 
 // Overrides
@@ -59,6 +60,8 @@ public:
 
 // Implementation
 protected:
+	HRESULT EnumEmailAccounts();
+
 	// Generated message map functions
 	//{{AFX_MSG(COptGeneralPg)
 	virtual BOOL OnInitDialog();

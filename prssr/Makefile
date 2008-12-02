@@ -22,7 +22,7 @@ SRC=$(wildcard *.cpp)\
 	$(wildcard ../share/*.cpp)\
 	
 RC=prssr.rc
-LIB=ws2.lib htmlview.lib crypt32.lib prssrenc.lib libexpat.lib libsgml.lib libregex.lib zlib1.lib
+LIB=ws2.lib htmlview.lib crypt32.lib prssrenc.lib libexpat.lib libsgml.lib libregex.lib zlib1.lib cemapi.lib
 
 
 
@@ -53,7 +53,8 @@ LINK=/opt/wince-arm/bin/link
 # minimal include
 INCLUDE=\
 	/I z:\\opt\\wince-arm\\wce400\\include\\armv4 \
-	/I z:\\opt\\wince-arm\\wce400\\mfc\\Include
+	/I z:\\opt\\wince-arm\\wce400\\mfc\\Include \
+	/I z:\\opt\\wince-arm\\wce400\\Atl\\include
 
 LIB_PATH=\
 	/LIBPATH:z:\\opt\\wince-arm\\wce400\\lib\\Armv4 \
