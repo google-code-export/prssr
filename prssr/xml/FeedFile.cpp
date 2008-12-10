@@ -29,6 +29,7 @@
 
 #include "FeedFile.h"
 #include "../../share/helpers.h"
+#include "../../share/date.h"
 #include "../Feed.h"
 #include "../www/LocalHtmlFile.h"
 

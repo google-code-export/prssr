@@ -9,6 +9,7 @@
 #include "../Config.h"
 #include "../Site.h"
 #include "../xml/FeedFile.h"
+#include "../../share/cache.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

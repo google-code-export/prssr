@@ -21,10 +21,11 @@
 #include "StdAfx.h"
 #include "prssr.h"
 #include "../share/UIHelper.h"
+#include "../share/fs.h"
 
 #include "UpdateBar.h"
 #include "Appearance.h"
-#include "../share/helpers.h"
+#include "misc.h"
 #include "MainFrm.h"
 #include "Config.h"
 #include "Errors.h"
@@ -68,6 +69,27 @@ static BOOL TranslateForOfflineReading(const CString &srcFileName, const CString
 	file.Save(destFileName);
 
 	return TRUE;
+}
+
+
+void ClearCacheFiles(EFileType type, const CString &cacheLocation, CStringList &deleteList) {
+	LOG0(5, "ClearCacheFiles()");
+
+	CString rootDir = GetCachePath(type, cacheLocation);
+
+	while (!deleteList.IsEmpty()) {
+		CString strPath = deleteList.RemoveHead();
+		DeleteFile(strPath);
+
+		// remove empty dirs, if there are some
+		RemoveLastPathPart(strPath);
+		while (strPath.GetLength() > 0 && strPath.CompareNoCase(rootDir) != 0) {
+			if (RemoveDirectory(strPath))
+				RemoveLastPathPart(strPath);
+			else
+				break;
+		}
+	}
 }
 
 void ClearImages(CArray<CFeedItem *, CFeedItem *> &items) {
@@ -123,6 +145,7 @@ void ClearEnclosures(CArray<CFeedItem *, CFeedItem *> &items) {
 	if (files.GetCount() > 0)
 		ClearCacheFiles(FILE_TYPE_ENCLOSURE, Config.CacheLocation, files);
 }
+
 
 //
 // CDownloadQueue

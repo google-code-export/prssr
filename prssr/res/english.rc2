@@ -8,15 +8,6 @@
 // Dialog
 //
 
-IDD_ARTICLE DIALOG DISCARDABLE  0, 0, 160, 190
-STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
-CAPTION "News"
-FONT 8, "Tahoma"
-BEGIN
-    LTEXT           "",IDC_BANNER,0,0,160,12
-    LTEXT           "",IDC_ENCLOSUREBAR,0,178,160,12
-END
-
 IDD_PROGRESS DIALOG DISCARDABLE  0, 0, 120, 50
 STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE
 CAPTION ""
@@ -789,6 +780,15 @@ BEGIN
     EDITTEXT        IDC_CREDITS,5,5,150,129,ES_MULTILINE | ES_AUTOVSCROLL |
                     ES_AUTOHSCROLL | NOT WS_BORDER | WS_VSCROLL | WS_HSCROLL |
                     NOT WS_TABSTOP
+END
+
+IDD_MESSAGEBOX DIALOG DISCARDABLE  0, 0, 160, 190
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "MessageBox"
+FONT 8, "Tahoma"
+BEGIN
+    ICON            IDC_STATIC,IDC_ICO,5,20,21,20
+    LTEXT           "",IDC_TEXT,30,20,125,30
 END
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1626,15 +1626,16 @@ BEGIN
     IDS_ERROR_GETTING_FILE     "Error getting file."
     IDS_ERROR_XML_RPC_RESPONSE "XML RPC response error"
 	IDS_FEED_NOT_ADDED         "Feed was not added."
+	IDS_SEARCH_ERROR           "Error searching feeds."
 
     IDS_DOWNLOAD_ERROR      "Download error"
-    IDS_CANT_CONNECT        "Can not connect"
+    IDS_CANT_CONNECT        "Cannot connect"
     IDS_UNKNOWN_AUTH_SCHEME "Unknown authentication scheme"
     IDS_BAD_AUTHENTICATION_RESPONSE "Bad authentication response"
     IDS_RESPONSE_ERROR      "Response error"
 	IDS_AUTHORIZATION_FAILED "Authorization failed"
 	IDS_AUTHENTICATION_ERROR "Authentication error"
-    IDS_CANT_CONNECT_TO     "Can not connect to '%s'"
+    IDS_CANT_CONNECT_TO     "Cannot connect to '%s'"
     IDS_NO_LOCATION_HEADER  "Redirection without Location header"
     IDS_HTTP_ERROR          "HTTP Error %d"
     IDS_MALFORMED_URL       "Malformed URL"
@@ -1654,18 +1655,23 @@ BEGIN
     IDS_BAD_PORTNUM         "Port number must be in the range between 1 and 65536."
     IDS_FEED_NOT_FOUND      "Feed not found."
     IDS_PLAYLIST_WAS_NOT_GENERATED "Playlist was not generated."
-    IDS_NAME_CAN_NOT_BE_EMPTY "Name can not be empty."
-    IDS_URL_CAN_NOT_BE_EMPTY "URL can not be empty."
-    IDS_CANT_CONNECT_TO_INTERNET "Can not establish connection to the Internet"
+    IDS_NAME_CAN_NOT_BE_EMPTY "Name cannot be empty."
+    IDS_URL_CAN_NOT_BE_EMPTY "URL cannot be empty."
+    IDS_CANT_CONNECT_TO_INTERNET "Cannot establish connection to the Internet"
+	IDS_SEARCH_FIELD_EMPTY   "Search field cannot be empty."
     IDS_ERROR_MOVING_CACHE  "Error moving cache"
     IDS_ERROR_LOADING_OPML  "Error loading OPML file."
     IDS_ERROR_SAVING_OPML   "Error saving OPML file.\n%s\nQuit anyway?"
 	IDS_EMPTY_RULE          "Rewriting rule is not complete."
-	IDS_EMPTY_NAME          "The name can not be empty."
-	IDS_EMPTY_HOST_NAME     "The host name can not be empty."
+	IDS_EMPTY_NAME          "The name cannot be empty."
+	IDS_EMPTY_HOST_NAME     "The host name cannot be empty."
 	IDS_ABOUT               "About"
 	IDS_PURGE_CACHE_WARNING "Purge all cache content?"
 	IDS_AUTHENTICATION_FAILED "Authentication failed."
 	IDS_ERROR_GETTING_TOKEN "Error getting token."
 	IDS_DISK_FULL           "No space left on the device."
+
+    IDS_CONFIRM_OPERATION   "Confirm Operation"
+    IDS_DELETE              "Delete"
+    IDS_OVERWRITE           "Overwrite"
 END

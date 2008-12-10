@@ -29,7 +29,7 @@
 #include "ctrls/CePropertySheet.h"
 #include "ctrls/CePropertyPage.h"
 #include "ctrls/CeTreeCtrl.h"
-#include "../share/helpers.h"
+#include "misc.h"
 
 
 class CDeleteCacheProgressDlg;

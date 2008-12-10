@@ -33,6 +33,8 @@
 //#include "..\FeedFile.h"
 
 #include "../../share/helpers.h"
+#include "../../share/fs.h"
+#include "../../share/str.h"
 #include "../base64/base64.h"
 
 #include "Connection.h"
@@ -890,4 +892,24 @@ void CDownloader::FreeAdditionalHeaders() {
 
 void CDownloader::SetCookie(const CString &cookie) {
 	Cookies.AddTail(cookie);
+}
+
+CString CDownloader::GetErrorMsg() {
+	CString errorMsg;
+
+	switch (Error) {
+		case DOWNLOAD_ERROR_GETTING_FILE:            errorMsg.LoadString(IDS_ERROR_GETTING_FILE); break;
+		case DOWNLOAD_ERROR_RESPONSE_ERROR:          errorMsg.LoadString(IDS_RESPONSE_ERROR); break;
+		case DOWNLOAD_ERROR_SENDING_REQUEST:         errorMsg.LoadString(IDS_ERROR_SENDING_REQUEST); break;
+		case DOWNLOAD_ERROR_CONNECTION_ERROR:        errorMsg.LoadString(IDS_ERROR_CONNECT); break;
+		case DOWNLOAD_ERROR_MALFORMED_URL:           errorMsg.LoadString(IDS_MALFORMED_URL); break;
+		case DOWNLOAD_ERROR_AUTHENTICATION_RESPONSE: errorMsg.LoadString(IDS_INVALID_FEED_FILE); break;
+		case DOWNLOAD_ERROR_UNKNOWN_AUTH_SCHEME:     errorMsg.LoadString(IDS_UNKNOWN_AUTH_SCHEME); break;
+		case DOWNLOAD_ERROR_NO_LOCATION_HEADER:      errorMsg.LoadString(IDS_NO_LOCATION_HEADER); break;
+		case DOWNLOAD_ERROR_HTTP_ERROR:              errorMsg.Format(IDS_HTTP_ERROR, HttpErrorNo); break;
+		case DOWNLOAD_ERROR_AUTHORIZATION_FAILED:    errorMsg.LoadString(IDS_AUTHORIZATION_FAILED); break;
+		case DOWNLOAD_ERROR_AUTHENTICATION_ERROR:    errorMsg.LoadString(IDS_AUTHENTICATION_ERROR); break;
+		case DOWNLOAD_ERROR_DISK_FULL:               errorMsg.LoadString(IDS_DISK_FULL); break;
+	}
+	return errorMsg;
 }

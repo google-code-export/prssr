@@ -23,7 +23,8 @@
 #include "AddFeedDlg.h"
 #include "prssr.h"
 #include "Config.h"
-#include "../share/helpers.h"
+#include "misc.h"
+#include "Errors.h"
 
 #include "net/HttpConnection.h"
 #include "net/Connection.h"
@@ -229,7 +230,7 @@ void CAddFeedDlg::DoDataExchange(CDataExchange* pDX) {
 		CString server, object;
 		INTERNET_PORT port;
 		if (!ParseURL(m_strURL, srvType, server, object, port)) {
-			AfxMessageBox(IDS_INVALID_URL);
+			Error(IDS_INVALID_URL);
 			pDX->Fail();
 		}
 	}
@@ -241,7 +242,7 @@ void CAddFeedDlg::DoDataExchange(CDataExchange* pDX) {
 	DDX_Text(pDX, IDC_NAME, m_strName);
 	if (pDX->m_bSaveAndValidate) {
 		if (!m_bCheckOnline && m_strName.IsEmpty()) {
-			AfxMessageBox(IDS_NAME_CAN_NOT_BE_EMPTY);
+			Error(IDS_NAME_CAN_NOT_BE_EMPTY);
 			pDX->Fail();
 		}
 	}
@@ -319,6 +320,8 @@ void CAddFeedDlg::OnOK() {
 DWORD CAddFeedDlg::AddThread() {
 	LOG0(1, "CAddFeedDlg::AddThread() - start");
 
+	CString errorMsg;
+
 	CList<CHtmlFeed *, CHtmlFeed *> lFeeds;
 	lFeeds.AddTail(new CHtmlFeed(_T(""), m_strURL));
 
@@ -350,8 +353,7 @@ DWORD CAddFeedDlg::AddThread() {
 				CFeed *feed = new CFeed;
 				if (xml.LoadFromFile(fileName) && xml.Parse(feed, item)) {
 					CFeedInfo *info = new CFeedInfo();
-					info->FileName = CFeedInfo::GenerateFileNameFromTitle(feed->Title);
-					CFeedInfo::EnsureUniqueFileName(info->FileName);
+					info->FileName = CFeedInfo::GenerateFileName(htmlFeedItem->Url);
 					info->XmlUrl = htmlFeedItem->Url;
 					// If the authentication was not required, SavePassword is FALSE
 					if (Downloader->GetSavePassword()) {
@@ -426,7 +428,11 @@ DWORD CAddFeedDlg::AddThread() {
 				}
 
 				m_pProgress->PosOffset = m_pProgress->m_ctlProgress.GetPos();
-			} // save http opbject
+			}
+			else {
+				errorMsg = Downloader->GetErrorMsg();
+			}  // save http opbject
+
 			delete sync;
 
 			// remove temporary feed file
@@ -440,6 +446,7 @@ DWORD CAddFeedDlg::AddThread() {
 	}
 	else {
 		// error: can not connect to the Internet
+		errorMsg.LoadString(IDS_NO_INTERNET_CONNECTION);
 		bOK = FALSE;
 	}
 
@@ -460,7 +467,7 @@ DWORD CAddFeedDlg::AddThread() {
 			error = 1;		// terminated
 		else {
 			error = 2;
-			AfxMessageBox(IDS_FEED_NOT_ADDED);
+			Error(IDS_FEED_NOT_ADDED, errorMsg);
 			m_pProgress->CloseDialog();
 		}
 

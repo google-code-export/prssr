@@ -31,6 +31,30 @@
 //#include "share\IPCReadWriteLock.h"
 #include "www/url.h"
 
+#ifdef PRSSR_APP
+
+class CSortInfo {
+public:
+	enum ESortType {
+		Ascending = 1,
+		Descending = 2
+	};
+
+	enum ESortItem {
+		Date = 1,
+		Read = 2
+	};
+
+	ESortType Type;				// ascending/descending
+	ESortItem Item;				// date/read
+
+	CSortInfo() {
+		Type = Descending;
+		Item = Date;
+	}
+};
+
+#endif
 
 #define SITE_UNREAD						-1
 #define SITE_FLAGGED					-2
@@ -45,8 +69,7 @@ public:
 	virtual ~CFeedInfo();
 
 #ifdef PRSSR_APP
-	static CString GenerateFileNameFromTitle(const CString &title);
-	static void EnsureUniqueFileName(CString &fileName);
+	static CString GenerateFileName(const CString &url);
 #endif
 
 public:
@@ -134,8 +157,10 @@ public:
 	// site
 	CFeedInfo *Info;
 	CFeed *Feed;
+#ifdef PRSSR_APP
 	CSortInfo Sort;					// sort
 	DWORD FlagMask;					// for virtual folder
+#endif
 
 #ifdef PRSSR_TODAY
 	FILETIME LastUpdate;

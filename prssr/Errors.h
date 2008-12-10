@@ -25,7 +25,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "../share/helpers.h"
+#include "misc.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -93,6 +93,19 @@ protected:
 	CList<CErrorItem *, CErrorItem *> Items;
 	CRITICAL_SECTION CSItems;
 };
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+BOOL Error(UINT nID);
+BOOL Error(LPCTSTR str);
+
+BOOL Error(UINT nID, LPCTSTR str);
+BOOL Error(const CString &str, ...);
+
+CString FormatSysError(DWORD errCode);
+BOOL SysError(int resID, DWORD err, BOOL quiet, ...);
+
+BOOL PrssrMessageBox(UINT nCaption, UINT nText, DWORD style, UINT btnID = IDS_DONE);
 
 /////////////////////////////////////////////////////////////////////////////////////////
 

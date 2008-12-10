@@ -5,7 +5,7 @@
 OUTDIR=prj/ARMV4Rel
 BIN=prssr.exe
 
-VPATH=../share:base64:ctrls:debug:digest:digest/md5/:gunzip:misc:net:sha1:www:xml:sync
+VPATH=base64:ctrls:debug:digest:digest/md5/:gunzip:misc:net:sha1:www:xml:sync:../share
 SRC=$(wildcard *.cpp)\
 	$(wildcard base64/*.cpp)\
 	$(wildcard ctrls/*.cpp)\
@@ -19,7 +19,17 @@ SRC=$(wildcard *.cpp)\
 	$(wildcard www/*.cpp)\
 	$(wildcard xml/*.cpp)\
 	$(wildcard sync/*.cpp)\
-	$(wildcard ../share/*.cpp)\
+	../share/date.cpp\
+	../share/defs.cpp\
+	../share/str.cpp\
+	../share/cache.cpp\
+	../share/reg.cpp\
+	../share/helpers.cpp\
+	../share/UIHelper.cpp\
+	../share/file.cpp\
+	../share/wnd.cpp\
+	../share/notif.cpp\
+	../share/fs.cpp
 	
 RC=prssr.rc
 LIB=ws2.lib htmlview.lib crypt32.lib prssrenc.lib libexpat.lib libsgml.lib libregex.lib zlib1.lib cemapi.lib

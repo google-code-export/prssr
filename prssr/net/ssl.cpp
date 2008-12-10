@@ -22,6 +22,7 @@
 #include "../prssr.h"
 #include "ssl.h"
 #include "../Config.h"
+#include "../../share/str.h"
 
 #if defined PRSSR_APP
 #include "../AcceptCertificateDlg.h"

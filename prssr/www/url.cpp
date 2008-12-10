@@ -21,6 +21,7 @@
 #include <afxwin.h>
 #include "url.h"
 #include "../../share/helpers.h"
+#include "../../share/str.h"
 #include "../../regex/regex.h"
 #include "../debug/Logger.h"
 #include "HTMLFile.h"

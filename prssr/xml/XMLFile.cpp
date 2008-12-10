@@ -29,7 +29,8 @@
 
 #include "XMLFile.h"
 #include "../../prssrenc/codepages.h"
-#include "../../share/helpers.h"
+#include "../misc.h"
+#include "../../share/str.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE

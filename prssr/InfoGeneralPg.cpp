@@ -22,7 +22,8 @@
 #include "prssr.h"
 #include "InfoGeneralPg.h"
 #include "Config.h"
-#include "../share/helpers.h"
+#include "misc.h"
+#include "../share/date.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
@@ -82,7 +83,7 @@ BOOL CInfoGeneralPg::OnInitDialog() {
 	CPropertyPage::OnInitDialog();
 
 	m_ctlSiteName.SetWindowText(m_strSiteName);
-	
+
 	CString buffer;
 	buffer.Format(IDS_TOTAL_ITEMS, m_nTotalItems);
 	m_ctlTotalItems.SetWindowText(buffer);

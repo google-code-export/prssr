@@ -97,6 +97,8 @@ public:
 	virtual void Terminate();
 	virtual BOOL IsTerminated();
 
+	CString GetErrorMsg();
+
 	EDownloadState State;
 	EDownloadError Error;
 	int HttpErrorNo;

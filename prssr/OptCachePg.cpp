@@ -24,9 +24,10 @@
 
 #include "Config.h"
 #include "Site.h"
-#include "../share/helpers.h"
+#include "misc.h"
 #include "ctrls/BrowseDlg.h"
 #include "ProgressDlg.h"
+#include "../share/fs.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
@@ -109,7 +110,7 @@ void CMoveCacheProgressDlg::OnDestroy() {
 void CMoveCacheProgressDlg::OnTimer(UINT nIDEvent) {
 	if (nIDEvent == Timer) {
 	}
-	
+
 	CWnd::OnTimer(nIDEvent);
 }
 

@@ -312,20 +312,9 @@ void CConfig::Load() {
 	EmailAccount = reg.Read(szEmailAccount, CONFIG_DEFAULT_EMAIL_ACCOUNT);
 
 	// retrieve
-	int updateIntervalIdx = reg.Read(szUpdateIntervalIdx, -2);
-	if (updateIntervalIdx == -2) {
-		UpdateInterval = reg.Read(szUpdateInterval, CONFIG_DEFAULT_UPDATEINTERVAL);
-	}
-	else {
-		// value from older version is present
-		UpdateInterval = UpdateIntervalToMinutes(updateIntervalIdx);
-		if (UpdateInterval == UPDATE_INTERVAL_NO_AUTO)
-			UpdateInterval = 0;			// update never
-		reg.DeleteValue(szUpdateIntervalIdx);
-	}
+	UpdateInterval = reg.Read(szUpdateInterval, CONFIG_DEFAULT_UPDATEINTERVAL);
 
 	//
-
 	TimeUpdate = reg.Read(szTimeUpdate, CONFIG_DEFAULT_TIME_UPDATE);
 	SYSTEMTIME tm;
 	if (reg.Read(szUpdateAtTime, &tm, sizeof(tm)))

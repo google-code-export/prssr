@@ -95,9 +95,9 @@ public:
 	CFeedItem(CSiteItem *si);
 	CFeedItem(const CFeedItem &o);
 	virtual ~CFeedItem();
+#if defined PRSSR_APP
 	void ComputeHash(CString prefix = _T(""));
 
-#if defined PRSSR_APP
 	void GetEnclosures(CStringList &list, DWORD limit = 0);
 	BOOL HasEnclosure() { return Enclosures.GetCount() > 0; }
 	CList<CEnclosureItem *, CEnclosureItem *> Enclosures;

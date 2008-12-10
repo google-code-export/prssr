@@ -25,6 +25,7 @@
 
 #include "AutoFeedHtmlFile.h"
 #include "../../share/helpers.h"
+#include "../../share/str.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE

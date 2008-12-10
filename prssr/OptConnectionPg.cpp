@@ -24,6 +24,7 @@
 #include "Config.h"
 #include "net/proxy.h"
 #include "ProxyProfilesDlg.h"
+#include "Errors.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
@@ -201,7 +202,7 @@ void COptConnectionPg::OnEdit() {
 
 void COptConnectionPg::OnRemove() {
 	int idx = m_ctlProxies.GetCurSel();
-	if (idx > 0 && AfxMessageBox(IDS_DELETE_PROXY_PROFILE, MB_YESNO | MB_ICONQUESTION) == IDYES) {
+	if (idx > 0 && PrssrMessageBox(IDS_CONFIRM_OPERATION, IDS_DELETE_PROXY_PROFILE, MB_YESNO | MB_ICONQUESTION, IDS_DELETE) == IDYES) {
 		CProxyProfile *prf = Config.ProxyProfiles[idx - 1];
 		Config.ProxyProfiles.RemoveAt(idx - 1);
 		m_ctlProxies.DeleteString(idx);

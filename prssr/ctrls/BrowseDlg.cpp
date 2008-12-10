@@ -21,7 +21,9 @@
 #include "../StdAfx.h"
 #include "../prssr.h"
 #include "BrowseDlg.h"
+#include "../misc.h"
 #include "../../share/helpers.h"
+#include "../Errors.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
@@ -317,48 +319,6 @@ void CBrowseDlg::OnSelchangedDirs(NMHDR* pNMHDR, LRESULT* pResult) {
 	*pResult = 0;
 }
 
-/*
-BOOL CBrowseDlg::IsSelectedItemValid() {
-	// check selected item
-	CString path;
-	m_ctlPath.GetWindowText(path);
-	DWORD attrs = GetFileAttributes(path);
-	if (m_bFiles) {
-		if (!(attrs & FILE_ATTRIBUTE_DIRECTORY)) {
-			UpdateData();
-			return TRUE;
-		}
-		else {
-			AfxMessageBox(IDS_NOT_FILE);
-		}
-	}
-	else {
-		if (attrs & FILE_ATTRIBUTE_DIRECTORY) {
-			UpdateData();
-			return TRUE;
-		}
-		else {
-			AfxMessageBox(IDS_LOCATION_NOT_DIR);
-		}
-	}
-
-	return FALSE;
-}
-
-void CBrowseDlg::OnOk() {
-	LOG0(1, "CBrowseDlg::OnOk()");
-
-	// if we are in editing a directory name, end editing
-	if (m_ctlDirs.GetEditControl() != NULL) {
-		m_ctlDirs.SendMessage(TVM_ENDEDITLABELNOW, FALSE);
-//		return;
-	}
-
-	if (IsSelectedItemValid())
-		CCeDialog::OnOK();
-}
-*/
-
 void CBrowseDlg::OnOk() {
 	// if we are in editing a directory name, end editing
 	if (m_ctlDirs.GetEditControl() != NULL) {
@@ -376,7 +336,7 @@ void CBrowseDlg::OnOk() {
 			CCeDialog::OnOK();
 		}
 		else {
-			AfxMessageBox(IDS_NOT_FILE);
+			Error(IDS_NOT_FILE);
 		}
 	}
 	else {
@@ -385,7 +345,7 @@ void CBrowseDlg::OnOk() {
 			CCeDialog::OnOK();
 		}
 		else {
-			AfxMessageBox(IDS_LOCATION_NOT_DIR);
+			Error(IDS_LOCATION_NOT_DIR);
 		}
 	}
 }

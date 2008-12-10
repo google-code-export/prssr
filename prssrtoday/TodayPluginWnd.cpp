@@ -36,6 +36,8 @@
 #include "../share/defs.h"
 #include "../share/reg.h"
 #include "../share/wnd.h"
+#include "../share/date.h"
+#include "../share/fs.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
@@ -1049,7 +1051,9 @@ void CTodayPluginWnd::CheckFeedFile(CSiteItem *si) {
 
 	if (si != NULL && si->Info != NULL) {
 		if (si->Info->TodayShow) {
-			CString sXmlFileName = GetCacheFile(FILE_TYPE_FEED, Config.CacheLocation, si->Info->FileName);
+			CString sXmlFileName;
+
+			sXmlFileName.Format(_T("%s\\feeds\\%s"), Config.CacheLocation, si->Info->FileName);
 			if (IsFileChanged(sXmlFileName, &(si->LastUpdate))) {
 				LOG1(3, "Reloaded: '%S'", si->Name);
 				// feed file was changed -> reload it
