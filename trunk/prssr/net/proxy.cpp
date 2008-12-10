@@ -24,6 +24,7 @@
 #include "httpsock.h"
 #include "HttpConnection.h"
 #include "../../share/helpers.h"
+#include "../../share/str.h"
 #include "../www/url.h"
 
 #ifdef MYDEBUG

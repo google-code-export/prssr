@@ -23,6 +23,7 @@
 #include "ProxyProfilesDlg.h"
 #include "net/proxy.h"
 #include "Config.h"
+#include "misc.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE

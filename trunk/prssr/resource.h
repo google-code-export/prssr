@@ -6,8 +6,8 @@
 
 #define IDD_ABOUTBOX                    100
 #define IDD_ABOUTBOX_WIDE               101
-#define IDD_ARTICLE                     102
-#define IDD_ARTICLE_WIDE                103
+//#define IDD_ARTICLE                     102
+//#define IDD_ARTICLE_WIDE                103
 #define IDD_DOWNLOAD                    104
 #define IDD_IMPORT_OPML                 106
 #define IDD_IMPORT_OPML_WIDE            107
@@ -76,6 +76,8 @@
 #define IDD_CREDITS                     207
 #define IDD_CREDITS_WIDE                208
 #define IDD_OPT_SYNC                    209
+#define IDD_MESSAGEBOX                  211
+#define IDD_MESSAGEBOX_WIDE             212
 
 #define IDR_FEEDITEM                    300
 #define IDR_EDIT                        301
@@ -360,6 +362,12 @@
 #define IDS_NAVIGATION_TOUCH            657
 #define IDS_NAVIGATION_NORMAL           658
 
+#define IDS_CONFIRM_OPERATION           659
+#define IDS_DELETE                      660
+#define IDS_OVERWRITE                   661
+#define IDS_SEARCH_ERROR                662
+#define IDS_SEARCH_FIELD_EMPTY          663
+
 // controls
 #define IDC_HTML                        1000
 #define IDC_SECONDS                     1001
@@ -610,6 +618,7 @@
 #define IDC_NAVIGATION                  1251
 #define IDC_WRAP_TITLES                 1252
 #define IDC_EMAIL                       1253
+#define IDC_ICO                         1254
 
 #define ID_TOOLS_OPTIONS                32774
 #define ID_TOOLS_SITEMANAGER            32775

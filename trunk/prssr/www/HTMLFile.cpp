@@ -30,6 +30,7 @@
 #include "HTMLFile.h"
 #include "../../prssrenc/codepages.h"
 #include "../../share/helpers.h"
+#include "../../share/str.h"
 
 /*#ifdef MYDEBUG
 #undef THIS_FILE
@@ -490,7 +491,7 @@ void CHtmlFile::Recode(DOM_NODE *node) {
 			node->value = WCharToChar(str, CP_UTF8);
 			break;
 
-		case DOM_NODE_TYPE_ELEMENT:		
+		case DOM_NODE_TYPE_ELEMENT:
 			for (curr = node->attributes; curr; curr = curr->nextSibling) {
 				if (curr->value && *curr->value) {
 					str = recode(curr->value, &EncInfo);

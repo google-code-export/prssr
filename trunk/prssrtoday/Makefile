@@ -6,18 +6,21 @@ OUTDIR=prj/ARMV4Rel
 BIN=prssrtoday.dll
 DEF=prssrtoday.def
 
-VPATH=../prssr/:../prssr/ctrls/:../prssr/sha1/:../prssr/www/:../share
+VPATH=.:../prssr/ctrls/:../prssr/sha1/:../prssr/www/:../share
 SRC=$(wildcard *.cpp)\
 	../share/defs.cpp\
 	../share/reg.cpp\
-	../share/helpers.cpp\
 	../share/file.cpp\
 	../share/wnd.cpp\
+	../share/date.cpp\
+	../share/str.cpp\
+	../share/fs.cpp\
+	../share/cache.cpp\
+	../share/helpers.cpp\
 	../share/UIHelper.cpp\
 	../prssr/ctrls/CeListCtrl.cpp\
 	../prssr/ctrls/CePropertySheet.cpp\
 	../prssr/www/url.cpp\
-	../prssr/sha1/sha1.cpp\
 	../prssr/Site.cpp\
 	../prssr/Feed.cpp
 RC=prssrtoday.rc
@@ -86,6 +89,9 @@ $(OUTDIR)/$(BIN): $(OBJ)
 
 # main files
 $(OUTDIR)/%.obj: %.cpp
+	@$(CPP) $(CPP_FLAGS) $(INCLUDE) /Fo$@ $<
+
+$(OUTDIR)/%.obj: ../prssr/%.cpp
 	@$(CPP) $(CPP_FLAGS) $(INCLUDE) /Fo$@ $<
 
 $(OUTDIR)/%.res: %.rc

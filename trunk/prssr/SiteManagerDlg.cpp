@@ -24,7 +24,7 @@
 
 #include "Config.h"
 #include "Appearance.h"
-//#include "Session.h"
+#include "Errors.h"
 
 #include "AddFeedDlg.h"
 #include "SearchDlg.h"
@@ -39,7 +39,8 @@
 #include "xml/FeedFile.h"
 #include "xml/OpmlFile.h"
 
-#include "../share/helpers.h"
+#include "misc.h"
+#include "../share/fs.h"
 
 #include "ProgressDlg.h"
 #include "net/Download.h"
@@ -244,7 +245,7 @@ CSiteManagerDlg::CSiteManagerDlg(CWnd* pParent /*=NULL*/)
 //	m_strCaption.LoadString(IDS_SITE_MANAGER);
 	ShowNewChannelsOnToday = CONFIG_DEFAULT_SHOWNEWCHANNELS;
 
-	Syncer = NULL; 
+	Syncer = NULL;
 }
 
 CSiteManagerDlg::~CSiteManagerDlg() {
@@ -746,8 +747,7 @@ void CSiteManagerDlg::OnAddFeed() {
 
 			// add site offline
 			CFeedInfo *info = new CFeedInfo();
-			info->FileName = CFeedInfo::GenerateFileNameFromTitle(dlgAdd.m_strName);
-			CFeedInfo::EnsureUniqueFileName(info->FileName);
+			info->FileName = CFeedInfo::GenerateFileName(dlgAdd.m_strURL);
 			info->XmlUrl= dlgAdd.m_strURL;
 			info->TodayShow = ShowNewChannelsOnToday;
 
@@ -808,7 +808,7 @@ void CSiteManagerDlg::OnRemove() {
 	if (hSelItem == NULL || hSelItem == m_ctlSites.GetRootItem())
 		return;
 
-	if (AfxMessageBox(IDS_DELETE_ITEMS, MB_YESNO | MB_ICONQUESTION) == IDYES) {
+	if (PrssrMessageBox(IDS_CONFIRM_OPERATION, IDS_DELETE_ITEMS, MB_YESNO | MB_ICONQUESTION, IDS_DELETE) == IDYES) {
 		CSiteItem *si = (CSiteItem *) m_ctlSites.GetItemData(hSelItem);
 
 		// update subscription in syncer
@@ -817,6 +817,8 @@ void CSiteManagerDlg::OnRemove() {
 			Syncer->RemoveSubscription(si->Info->XmlUrl);
 		}
 
+		CString fileName = GetCachePath(FILE_TYPE_FEED, Config.CacheLocation) + _T("\\") + si->Info->FileName;
+		DeleteFile(fileName);
 		DeleteItem(hSelItem, TRUE);
 		UpdateControls();
 	}
@@ -951,9 +953,8 @@ void CSiteManagerDlg::OnSearch() {
 				item->Name = sri->SiteName;
 				item->Info = new CFeedInfo();
 				item->Info->XmlUrl = sri->XMLURL;
-				item->Info->FileName = CFeedInfo::GenerateFileNameFromTitle(item->Name);
+				item->Info->FileName = CFeedInfo::GenerateFileName(sri->XMLURL);
 				item->Info->TodayShow = ShowNewChannelsOnToday;
-				CFeedInfo::EnsureUniqueFileName(item->Info->FileName);
 
 				// add it to the list
 				AddItem(hParent, item);
@@ -1034,7 +1035,7 @@ void CSiteManagerDlg::OnImportOpml() {
 			}
 		}
 		else {
-			AfxMessageBox(IDS_ERROR_LOADING_OPML);
+			Error(IDS_ERROR_LOADING_OPML);
 		}
 	}
 }
@@ -1048,7 +1049,7 @@ void CSiteManagerDlg::OnExportOpml() {
 
 		BOOL bExport = TRUE;
 		if (FileExists(strDestinationFileName))
-			bExport = AfxMessageBox(IDS_OVERWRITE_OPML, MB_YESNO | MB_ICONQUESTION) == IDYES;
+			bExport = PrssrMessageBox(IDS_CONFIRM_OPERATION, IDS_OVERWRITE_OPML, MB_YESNO | MB_ICONQUESTION, IDS_OVERWRITE) == IDYES;
 
 		if (bExport) {
 			HTREEITEM hRoot = m_ctlSites.GetRootItem();
@@ -1063,7 +1064,7 @@ void CSiteManagerDlg::OnExportOpml() {
 				AfxMessageBox(IDS_EXPORT_OK);
 			}
 			else {
-				AfxMessageBox(IDS_CANT_EXPORT_FILE);
+				Error(IDS_CANT_EXPORT_FILE);
 			}
 
 			siteListToExport.Detach();
@@ -1080,7 +1081,7 @@ void CSiteManagerDlg::OnSyncSubscriptions() {
 
 		BOOL bOK = FALSE;
 		BOOL disconnect;
-		if (CheckConnection(Config.AutoConnect, disconnect)) {		
+		if (CheckConnection(Config.AutoConnect, disconnect)) {
 			CSiteList siteListToImport;
 			if (Syncer->GetSubscriptions(siteListToImport)) {
 				// append
@@ -1097,7 +1098,7 @@ void CSiteManagerDlg::OnSyncSubscriptions() {
 				delete root;		// free root node which was not added
 
 				m_ctlSites.Expand(m_ctlSites.GetRootItem(), TVE_EXPAND);
-				
+
 				UpdateControls();
 			}
 			else {
@@ -1117,6 +1118,6 @@ void CSiteManagerDlg::OnSyncSubscriptions() {
 
 void CSiteManagerDlg::OnUpdateSyncSubscriptions(CCmdUI *pCmdUI) {
 	LOG0(3, "CSiteManagerDlg::OnUpdateSyncSubscriptions()");
-	
+
 	pCmdUI->Enable(Config.SyncSite != SYNC_SITE_NONE);
 }

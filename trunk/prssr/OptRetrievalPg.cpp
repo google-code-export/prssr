@@ -22,6 +22,7 @@
 #include "prssr.h"
 #include "OptRetrievalPg.h"
 #include "Config.h"
+#include "Errors.h"
 #include <notify.h>
 
 #include <connmgr.h>
@@ -91,7 +92,7 @@ void COptRetrievalPg::DoDataExchange(CDataExchange *pDX) {
 	//}}AFX_DATA_MAP
 	if (pDX->m_bSaveAndValidate) {
 		if (m_bUseOptimizer && m_strURL.IsEmpty()) {
-			AfxMessageBox(IDS_URL_CAN_NOT_BE_EMPTY);
+			Error(IDS_URL_CAN_NOT_BE_EMPTY);
 			pDX->Fail();
 		}
 	}

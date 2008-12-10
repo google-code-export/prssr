@@ -376,6 +376,7 @@ void CSummaryView::OnToolsMarkItemsRead() {
 
 	HGROUPITEM hItem = GetSelectedItem();
 	if (hItem == NULL) return;
+	CWaitCursor wait;
 	CSiteItem *sitem = (CSiteItem *) GetItemData(hItem);
 	if (sitem != NULL) {
 		if (sitem->Type == CSiteItem::VFolder) {

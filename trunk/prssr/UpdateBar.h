@@ -29,7 +29,7 @@
 #include "ctrls/TextProgressCtrl.h"
 
 #include "net/Download.h"
-#include "../share/helpers.h"
+#include "misc.h"
 
 class CSiteItem;
 class CFeedItem;

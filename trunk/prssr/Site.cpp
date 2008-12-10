@@ -21,6 +21,7 @@
 #ifdef PRSSR_APP
 	#include "StdAfx.h"
 	#include "prssr.h"
+	#include "misc.h"
 #endif
 
 #if defined PRSSR_TODAY
@@ -31,7 +32,8 @@
 
 #include "../share/reg.h"
 #include "../share/defs.h"
-#include "../share/helpers.h"
+#include "../share/fs.h"
+#include "misc.h"
 
 #include "xml/FeedFile.h"
 #include "xml/OpmlFile.h"
@@ -132,45 +134,8 @@ CFeedInfo::~CFeedInfo() {
 
 #ifdef PRSSR_APP
 
-CString CFeedInfo::GenerateFileNameFromTitle(const CString &title) {
-	LOG0(5, "CFeedInfo::GenerateFileNameFromTitle()");
-
-	// create filename (leave only alphanumeric chars from title)
-	CString fileName;
-	for (int i = 0; i < title.GetLength(); i++) {
-		TCHAR ch = title.GetAt(i);
-		if ((ch >= 'A' && ch <= 'Z') ||
-			(ch >= 'a' && ch <= 'z') ||
-			(ch >= '0' && ch <= '9'))
-			fileName += title.GetAt(i);
-	}
-
-	if (fileName.IsEmpty())
-		fileName = _T("Feed");
-
-	return fileName;
-}
-
-void CFeedInfo::EnsureUniqueFileName(CString &strFileName) {
-	LOG1(5, "CFeedInfo::EnsureUniqueFileName(%S)", strFileName);
-
-	CString fileName = strFileName;
-
-	CString strTestFN = fileName;
-	// if the file exists, add numerical index
-	CString strTestFullPath;
-	strTestFullPath = GetCacheFile(FILE_TYPE_FEED, Config.CacheLocation, strTestFN);
-	int idx = 1;
-	while (FileExists(strTestFullPath)) {
-		strTestFN.Format(_T("%s%d"), fileName, idx++);
-		strTestFullPath = GetCacheFile(FILE_TYPE_FEED, Config.CacheLocation, strTestFN);
-	}
-
-	// create the file to prevent storing feeds into files with the same file name
-	HANDLE hFile = CreateFile(strTestFullPath, GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_NEW, FILE_ATTRIBUTE_ARCHIVE, NULL);
-	if (hFile != INVALID_HANDLE_VALUE) CloseHandle(hFile);
-
-	strFileName = strTestFN;
+CString CFeedInfo::GenerateFileName(const CString &url) {
+	return GetSha1Hash(url);
 }
 
 #endif
@@ -184,8 +149,10 @@ CSiteItem::CSiteItem(CSiteItem *parent, eType type) {
 	Type = type;
 	Info = NULL;
 	Feed = NULL;
+#ifdef PRSSR_APP
 	Sort.Item = CSortInfo::Date;
 	Sort.Type = CSortInfo::Descending;
+#endif
 
 	if (Type == Site)
 		Status = Empty;
@@ -218,8 +185,10 @@ CSiteItem::CSiteItem(CSiteItem *parent, CSiteItem *siteItem) {
 	ImageIdx = siteItem->ImageIdx;
 	CheckFavIcon = siteItem->CheckFavIcon;
 	Modified = siteItem->Modified;
+#ifdef PRSSR_APP
 	Sort = siteItem->Sort;
 	Info = NULL;
+#endif
 
 	if (siteItem->Type == Site) {
 		Status = Empty;
@@ -288,7 +257,12 @@ void CSiteItem::EnsureSiteLoaded() {
 		if (Status == Empty) {
 			CFeed *feed = new CFeed();
 
-			CString pathName = GetCacheFile(FILE_TYPE_FEED, Config.CacheLocation, Info->FileName);
+			CString pathName;
+#if defined PRSSR_APP
+			pathName = GetCacheFile(FILE_TYPE_FEED, Config.CacheLocation, Info->FileName);
+#elif defined PRSSR_TODAY
+			pathName.Format(_T("%s\\feeds\\%s"), Config.CacheLocation, Info->FileName);
+#endif
 			if (feed->Load(pathName, this)) {
 				Status = Ok;
 

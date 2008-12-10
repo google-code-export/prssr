@@ -34,6 +34,8 @@
 #include "sha1/sha1.h"
 #include "../share/reg.h"
 #include "../share/helpers.h"
+#include "../share/str.h"
+#include "../share/cache.h"
 #include "www/LocalHtmlFile.h"
 
 #ifdef PRSSR_APP
@@ -131,6 +133,8 @@ CFeedItem::~CFeedItem() {
 #endif
 }
 
+#if defined PRSSR_APP
+
 void CFeedItem::ComputeHash(CString prefix) {
 	LOG0(5, "CFeedItem::ComputeHash()");
 
@@ -154,8 +158,6 @@ void CFeedItem::ComputeHash(CString prefix) {
 		hash[(2 * i) + 1] = hexTab[(digest[i] >> 4) & 0x0F];
 	}
 }
-
-#if defined PRSSR_APP
 
 void CFeedItem::GetItemImages(CStringList &list) {
 	LOG0(5, "CFeedItem::GetItemImages()");
@@ -572,10 +574,10 @@ BOOL CFeed::Load(LPCTSTR fileName, CSiteItem *si) {
 		} // while
 
 		if (itemOK) {
+#ifdef PRSSR_APP
 			if (feedItem.Hash.IsEmpty())
 				feedItem.ComputeHash();
 
-#ifdef PRSSR_APP
 			// fill Date
 			feedItem.Date = feedItem.PubDate;
 			// fill milisecond field (crucial for proper sorting)

@@ -23,6 +23,7 @@
 #include "../../share/UIHelper.h"
 #include "TextProgressCtrl.h"
 
+#include "../misc.h"
 #include "../../share/helpers.h"
 
 #ifdef MYDEBUG
@@ -200,7 +201,7 @@ void CTextProgressCtrl::OnTimer(UINT nIDEvent) {
 				SetPos(Downloader->GetDownloadedFileSize());
 
 				CString sText;
-				sText.Format(_T("%s / %s"), 
+				sText.Format(_T("%s / %s"),
 					FormatFileSize(Downloader->GetDownloadedFileSize()),
 					FormatFileSize(Downloader->GetTotalFileSize()));
 				m_strSize = sText;
@@ -216,7 +217,7 @@ void CTextProgressCtrl::OnTimer(UINT nIDEvent) {
 			Redraw(FALSE);
 		}
 	}
-	
+
 	CWnd::OnTimer(nIDEvent);
 }
 

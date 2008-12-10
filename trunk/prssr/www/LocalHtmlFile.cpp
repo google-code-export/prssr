@@ -25,8 +25,10 @@
 
 #include "LocalHtmlFile.h"
 #include "../../share/helpers.h"
+#include "../../share/str.h"
 #include "../Config.h"
 #include "url.h"
+#include "../misc.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
@@ -63,7 +65,7 @@ CLocalHtmlFile::~CLocalHtmlFile() {
 void CLocalHtmlFile::FixTree(DOM_NODE *node) {
 	DOM_NODE *child = domNodeGetFirstChild(node);
 	while (child != NULL) {
-		const char *tag = domNodeGetName(child);		
+		const char *tag = domNodeGetName(child);
 		if (_strnicmp(tag, "!]]", 3) == 0) {
 			// move all childs one level up in the tree
 			DOM_NODE *next = domNodeGetNextSibling(node);

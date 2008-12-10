@@ -488,3 +488,16 @@ BOOL CSyndic8ComSearcher::Search(int limit, CList<CSearchResultItem *, CSearchRe
 void CSyndic8ComSearcher::Terminate() {
 	HttpConnection.Terminate();
 }
+
+CString CSyndic8ComSearcher::GetErrorMsg() {
+	CString errorMsg;
+
+	switch (Error) {
+		case ERROR_CONNECT:	          errorMsg.LoadString(IDS_ERROR_CONNECT); break;
+		case ERROR_SENDING_REQUEST:  errorMsg.LoadString(IDS_ERROR_SENDING_REQUEST); break;
+		case ERROR_GETTING_RESPONSE: errorMsg.LoadString(IDS_RESPONSE_ERROR); break;
+		case ERROR_GETTING_FILE:     errorMsg.LoadString(IDS_ERROR_GETTING_FILE); break;
+		case ERROR_XML_RPC_RESPONSE: errorMsg.LoadString(IDS_ERROR_XML_RPC_RESPONSE); break;
+	}
+	return errorMsg;
+}

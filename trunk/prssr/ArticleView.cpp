@@ -23,15 +23,14 @@
 #include "../share/UIHelper.h"
 #include "ArticleView.h"
 
-//#include "ctrls/CeDialog.h"
-//#include "../share/helpers.h"
-//#include "FeedView.h"
+#include "../share/date.h"
+#include "../share/fs.h"
+#include "misc.h"
 #include "Config.h"
 #include "Feed.h"
 #include "MainFrm.h"
 #include "Appearance.h"
-//#include "www/LocalHtmlFile.h"
-//#include "www/url.h"
+#include "Errors.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
@@ -850,7 +849,7 @@ void CArticleView::OnEnclosureOpen() {
 	if (m_pArticle != NULL && m_pArticle->HasEnclosure()) {
 		CEnclosureItem *ei = m_pArticle->Enclosures.GetHead();
 		ToNormalMode();
-		OpenEnclosure(ei);
+		OpenEnclosure(ei->URL);
 	}
 }
 
@@ -979,7 +978,7 @@ void CArticleView::OnBookmarkLink(UINT nID) {
 	CSocialBookmarkSite *sbs = Config.SocialBookmarkSites[idx];
 	CString url = sbs->Url;
 	if (url.Replace(_T("[%URL%]"), UrlEncode(link)) != 1) {
-		AfxMessageBox(IDS_BAD_URL_FMT_SBS);
+		Error(IDS_BAD_URL_FMT_SBS);
 		return;
 	}
 

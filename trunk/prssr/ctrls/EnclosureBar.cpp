@@ -22,9 +22,10 @@
 #include "../prssr.h"
 
 #include "../../share/UIHelper.h"
-#include "../../share/helpers.h"
+#include "../misc.h"
 #include "EnclosureBar.h"
 #include "../Appearance.h"
+#include "../../share/helpers.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE

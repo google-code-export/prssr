@@ -23,6 +23,7 @@
 #include "httpsock.h"
 #include "http.h"
 #include "../../share/helpers.h"
+#include "../../share/str.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
@@ -131,7 +132,7 @@ void CHttpRequest::Send(CHttpSocket *socket, CStringArray *addHttpHeaders/* = NU
 			delete [] buffer;
 		}
 	}
-	// and CRLF 
+	// and CRLF
 	socket->Send("\r\n", 2);
 
 	// send POST body

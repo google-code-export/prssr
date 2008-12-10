@@ -21,7 +21,7 @@
 #include "StdAfx.h"
 #include "prssr.h"
 #include "RewriteRuleDlg.h"
-#include "../share/helpers.h"
+#include "misc.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE

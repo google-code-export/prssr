@@ -19,7 +19,9 @@
  */
 
 #include "StdAfx.h"
+#include "prssr.h"
 #include "Errors.h"
+#include "MessageDlg.h"
 
 CErrors Errors;
 
@@ -60,3 +62,74 @@ void CErrors::Cleanup() {
 	Unlock();
 }
 
+// errors ////
+
+BOOL Error(LPCTSTR str) {
+	AfxMessageBox(str, MB_OK | MB_ICONERROR);
+	return FALSE;
+}
+
+BOOL Error(UINT nID) {
+	CString strMsg;
+	strMsg.LoadString(nID);
+	return Error(strMsg);
+}
+
+BOOL Error(const CString &str, ...) {
+	static TCHAR buffer[1024];
+
+	va_list args;
+	va_start(args, str);
+	vswprintf(buffer, str, args);
+
+	return Error(buffer);
+}
+
+BOOL Error(UINT nID, LPCTSTR str) {
+	CString s;
+	s.LoadString(nID);
+
+	CString msg;
+	msg.Format(_T("%s\n\n%s"), s, str);
+
+	return Error(msg);
+}
+
+CString FormatSysError(DWORD errCode) {
+	TCHAR errMsg[1024];
+	FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, errCode,
+				  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), errMsg, 1024, NULL);
+
+	CString strMessage;
+	strMessage.Format(_T("(%d) %s"), errCode, errMsg);
+
+	return strMessage;
+}
+
+BOOL SysError(int resID, DWORD err, BOOL quiet, ...) {
+	if (!quiet) {
+		TCHAR msg[1024];
+		msg[0] = 0;
+		va_list arglist;
+		va_start(arglist, quiet);
+
+		CString strFmt;
+		strFmt.LoadString(resID);
+		vswprintf(msg, strFmt, arglist);
+		va_end(arglist);
+
+		CString strMessage;
+		if (err != ERROR_SUCCESS)
+			strMessage.Format(_T("%s\n\n%s"), msg, FormatSysError(err));
+		else
+			strMessage.Format(_T("%s"), msg);
+		AfxMessageBox(strMessage);
+	}
+
+	return FALSE;
+}
+
+int PrssrMessageBox(UINT nCaption, UINT nText, DWORD style, UINT btnID/* = ID_DONE*/) {
+	CMessageDlg dlg(nCaption, nText, style, btnID);
+	return dlg.DoModal();
+}

@@ -127,11 +127,6 @@ BOOL COpmlFile::ParseOutline(CXmlNode *parent, CSiteItem *item) {
 					if (Config.CacheHtml != bCacheHtml)
 						bSpecificCaching = TRUE;
 				}
-				else if (name.CompareNoCase(_T("updateInterval")) == 0) {
-					int ui = 0;
-					swscanf(value, _T("%d"), &ui);
-					nUpdateInterval = UpdateIntervalToMinutes(ui);
-				}
 				else if (name.CompareNoCase(_T("updateMins")) == 0) {
 					swscanf(value, _T("%d"), &nUpdateInterval);
 				}
@@ -187,13 +182,10 @@ BOOL COpmlFile::ParseOutline(CXmlNode *parent, CSiteItem *item) {
 			}
 			else {
 				if (strTitle.GetLength() > 0 &&
-					strXMLurl.GetLength() > 0) {
-
+					strXMLurl.GetLength() > 0)
+				{
 #ifdef PRSSR_APP
-					if (strFileName.GetLength() == 0) {
-						strFileName = CFeedInfo::GenerateFileNameFromTitle(strTitle);
-						CFeedInfo::EnsureUniqueFileName(strFileName);
-					}
+					if (strFileName.GetLength() == 0) strFileName = CFeedInfo::GenerateFileName(strXMLurl);
 #endif
 
 					CFeedInfo *info = new CFeedInfo();
@@ -202,10 +194,8 @@ BOOL COpmlFile::ParseOutline(CXmlNode *parent, CSiteItem *item) {
 #if defined PRSSR_APP
 					info->XmlUrl = strXMLurl;
 
-					if (bSpecificCaching)
-						info->UseGlobalCacheOptions = FALSE;
-					else
-						info->UseGlobalCacheOptions = TRUE;
+					if (bSpecificCaching) info->UseGlobalCacheOptions = FALSE;
+					else info->UseGlobalCacheOptions = TRUE;
 
 					info->CacheItemImages = bCacheItemImages;
 					info->CacheHtml = bCacheHtml;

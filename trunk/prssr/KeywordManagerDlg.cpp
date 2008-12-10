@@ -24,6 +24,7 @@
 #include "../share/helpers.h"
 #include "ProgressDlg.h"
 #include "Site.h"
+#include "Errors.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
@@ -258,7 +259,9 @@ void CKeywordManagerDlg::OnRemove() {
 	LOG0(3, "CKeywordManagerDlg::OnRemove()");
 
 	int nSelItem = m_ctlKeywords.GetNextItem(0, LVNI_SELECTED);
-	if (nSelItem != -1 && m_ctlKeywords.GetItemData(nSelItem) == TRUE && AfxMessageBox(IDS_DELETE_KEYWORDS, MB_YESNO | MB_ICONQUESTION) == IDYES) {
+	if (nSelItem != -1 && m_ctlKeywords.GetItemData(nSelItem) == TRUE &&
+		PrssrMessageBox(IDS_CONFIRM_OPERATION, IDS_DELETE_KEYWORDS, MB_YESNO | MB_ICONQUESTION, IDS_DELETE) == IDYES)
+	{
 		m_ctlKeywords.SetRedraw(FALSE);
 		int nSelItem = m_ctlKeywords.GetNextItem(0, LVNI_SELECTED);
 		while (nSelItem != -1) {

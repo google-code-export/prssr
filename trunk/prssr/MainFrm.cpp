@@ -22,6 +22,7 @@
 #include "prssr.h"
 #include "../share/UIHelper.h"
 #include "../share/reg.h"
+#include "../share/fs.h"
 
 #include "MainFrm.h"
 #include "FeedView.h"
@@ -1835,7 +1836,7 @@ void CMainFrame::OnEnclosuresOpen() {
 		CFeedItem *fi = m_wndFeedView.GetItem(sel);
 		if (fi->HasEnclosure()) {
 			CEnclosureItem *ei = fi->Enclosures.GetHead();
-			OpenEnclosure(ei);
+			OpenEnclosure(ei->URL);
 		}
 	}
 }

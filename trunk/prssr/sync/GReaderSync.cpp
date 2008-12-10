@@ -10,6 +10,7 @@
 #include "../Site.h"
 #include "../xml/FeedFile.h"
 #include "../www/url.h"
+#include "../../share/cache.h"
 
 CString CGReaderSync::BaseUrl = _T("http://www.google.com/reader");
 CString CGReaderSync::Api0 = _T("http://www.google.com/reader/api/0");
@@ -328,8 +329,7 @@ static BOOL ParseSubscriptionObject(CXmlNode *object, CSiteItem *&siteItem) {
 
 		// add site offline
 		CFeedInfo *info = new CFeedInfo();
-		info->FileName = CFeedInfo::GenerateFileNameFromTitle(title);
-		CFeedInfo::EnsureUniqueFileName(info->FileName);
+		info->FileName = CFeedInfo::GenerateFileName(title);
 		info->XmlUrl= url;
 		info->TodayShow = CONFIG_DEFAULT_SHOWNEWCHANNELS;
 

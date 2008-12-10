@@ -23,8 +23,8 @@
 #include "SearchDlg.h"
 #include "prssr.h"
 #include "Config.h"
-//#include "Session.h"
-#include "../share/helpers.h"
+#include "misc.h"
+#include "Errors.h"
 
 #include "net/Searcher.h"
 #include "net/Connection.h"
@@ -44,7 +44,7 @@ static TCHAR THIS_FILE[] = _T(__FILE__);
 static char THIS_FILE[] = __FILE__;
 #endif
 
-static CRITICAL_SECTION CSSearcher; 
+static CRITICAL_SECTION CSSearcher;
 
 DWORD WINAPI SearchThreadProc(LPVOID lpParameter) {
 	CSearchDlg *dlg = (CSearchDlg *) lpParameter;
@@ -129,7 +129,7 @@ void CSearchProgressDlg::OnTimer(UINT nIDEvent) {
 			SetPos(newPos);
 		}
 		LeaveCriticalSection(&CSSearcher);
-		
+
 		if (State != state) {
 			State = state;
 
@@ -147,7 +147,7 @@ void CSearchProgressDlg::OnTimer(UINT nIDEvent) {
 			m_ctlLabel.SetWindowText(sText);
 		}
 	}
-	
+
 	CWnd::OnTimer(nIDEvent);
 }
 
@@ -157,7 +157,7 @@ void CSearchProgressDlg::OnCancel() {
 	EnterCriticalSection(&CSSearcher);
 	if (Searcher != NULL)
 		Searcher->Terminate();
-	LeaveCriticalSection(&CSSearcher);	
+	LeaveCriticalSection(&CSSearcher);
 
 	Parent->m_pProgress = NULL;
 
@@ -191,11 +191,7 @@ void CSearchDlg::DoDataExchange(CDataExchange* pDX) {
 	DDX_Control(pDX, IDC_WHAT, m_ctlWhat);
 	DDX_Text(pDX, IDC_WHAT, m_strWhat);
 	//}}AFX_DATA_MAP
-
-	if (pDX->m_bSaveAndValidate) {
-		if (m_strWhat.IsEmpty())
-			pDX->Fail();
-	}
+	DDV_NotEmpty(pDX, m_strWhat, IDS_SEARCH_FIELD_EMPTY);
 }
 
 
@@ -238,7 +234,7 @@ void CSearchDlg::UpdateControls() {
 void CSearchDlg::OnChangeWhat() {
 	LOG0(5, "CSearchDlg::OnChangeWhat()");
 
-	UpdateControls();	
+	UpdateControls();
 }
 
 void CSearchDlg::ResizeControls() {
@@ -341,6 +337,7 @@ DWORD CSearchDlg::SearchThread() {
 	while (!SearchResults->IsEmpty())
 		delete SearchResults->RemoveHead();
 
+	CString errMsg;
 	BOOL bOK = TRUE;
 	BOOL disconnect;
 	if (CheckConnection(Config.AutoConnect, disconnect)) {
@@ -349,6 +346,7 @@ DWORD CSearchDlg::SearchThread() {
 		}
 		else {
 			bOK = FALSE;
+			errMsg = Searcher->GetErrorMsg();
 		}
 
 		if (disconnect)
@@ -357,6 +355,7 @@ DWORD CSearchDlg::SearchThread() {
 	else {
 		// error: can not connect to the Internet
 		bOK = FALSE;
+		errMsg.LoadString(IDS_NO_INTERNET_CONNECTION);
 	}
 
 	// done
@@ -371,6 +370,7 @@ DWORD CSearchDlg::SearchThread() {
 		else {
 			SetForegroundWindow();
 			m_pProgress->CloseDialog();
+			Error(IDS_SEARCH_ERROR, errMsg);
 		}
 	}
 	m_pProgress = NULL;

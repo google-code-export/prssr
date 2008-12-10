@@ -26,8 +26,9 @@
 #include "Feed.h"
 #include "Site.h"
 #include "Config.h"
-#include "../share/helpers.h"
+#include "misc.h"
 #include "MainFrm.h"
+#include "../share/date.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
@@ -99,7 +100,7 @@ CFeedView::CFeedView() {
 	m_bSelecting = FALSE;
 
 	m_bScrolling = FALSE;
-	
+
 	CtxMenuTimer = 1;
 	m_bOpenCtxMenu = FALSE;
 
@@ -388,7 +389,7 @@ void CFeedView::DrawItem(CDC &dc, CRect &rc, int idx) {
 		else
 			DrawIcon(dc, NOT_CACHED_ITEM_ICON, selected);
 	}
-	
+
 	if (item->HasEnclosure()) {
 		CEnclosureItem *ei = item->Enclosures.GetHead();
 		if (IsEnclosureCached(ei->URL))
@@ -396,7 +397,7 @@ void CFeedView::DrawItem(CDC &dc, CRect &rc, int idx) {
 		else
 			DrawIcon(dc, NOT_CACHED_ITEM_ICON, selected);
 	}
-	
+
 	// keyword
 	if (item->HasKeywordMatch())
 		DrawIcon(dc, KEYWORD_ICON, selected);
@@ -1173,7 +1174,7 @@ void CFeedView::OnItemDelete() {
 		// delete from view
 		int cnt = m_nSelectEnd - m_nSelectStart + 1;
 		m_oItems.RemoveAt(m_nSelectStart, cnt);
-	
+
 		DeselectAllItems();
 		SortItems();
 		UpdateScrollBars();
@@ -1201,7 +1202,7 @@ int CFeedView::MoveToNextItem() {
 		int y;
 		if (m_nSelectFirst > 0) y = m_oItemHeight[m_nSelectFirst - 1];
 		else y = 0;
-		
+
 		if (y < m_nViewTop)
 			m_nViewTop = y;
 		else if (m_oItemHeight[m_nSelectFirst] > m_nViewTop + m_nClientHeight)
@@ -1574,7 +1575,7 @@ void CFeedView::OnUpdateViewHideReadItems(CCmdUI *pCmdUI) {
 int CFeedView::CalcItemHeight(int idx) {
 	if (m_bWrapTitles) {
 		CDC *pDC = GetDC();
-		
+
 		CRect rc(0, 0, m_nClientWidth, m_nClientHeight);
 		rc.DeflateRect(SCALEX(LEFT_SKIP), SCALEY(PADDING_TOP), SCALEX(PADDING_RIGHT), SCALEY(PADDING_BOTTOM));
 		int wd = rc.Width();
@@ -1597,7 +1598,7 @@ void CFeedView::UpdateItemHeights() {
 	CRect rc;
 	GetClientRect(rc);
 	m_nClientWidth = rc.Width();
-	
+
 	m_nTotalHeight = 0;
 	bool refresh = false;
 	for (int i = 0; i < m_oItems.GetSize(); i++) {

@@ -81,6 +81,7 @@ public:
 	BOOL IsTerminated() { return HttpConnection.IsTerminated(); }
 
 	DWORD GetDownloadedFileSize() { return PosOffset + HttpConnection.GetDownloadedFileSize(); }
+	CString GetErrorMsg();
 
 protected:
 	CString What;														// what we are searching for
