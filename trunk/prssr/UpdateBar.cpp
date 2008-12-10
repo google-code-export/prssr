@@ -596,6 +596,8 @@ void CUpdateBar::DownloadHtmlPage(CDownloadItem *di) {
 
 	BOOL ok = FALSE;
 	CreatePath(tmpFileName);
+
+	Downloader->SetUAString(Config.UserAgent);
 	if (Downloader->SaveHttpObject(url, tmpFileName))
 		ok = TRUE;
 	else {
@@ -640,6 +642,7 @@ void CUpdateBar::DownloadFile(CDownloadItem *di) {
 		return;						// file already exists
 
 	BOOL ok = FALSE;
+	Downloader->SetUAString(_T(""));
 
 	CString tmpFileName = di->FileName + _T(".part");
 	HANDLE file = CreateFile(tmpFileName, 0, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);

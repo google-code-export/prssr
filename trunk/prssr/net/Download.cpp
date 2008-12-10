@@ -109,8 +109,6 @@ CDownloader::CDownloader() {
 	LOG0(3, "CDownloader::CDownloader()");
 
 	HTerminate = CreateEvent(NULL, FALSE, FALSE, NULL);
-
-	HttpConnection.UserAgent = Config.UserAgent;
 	AuthSet = FALSE;
 }
 
@@ -496,20 +494,13 @@ BOOL CDownloader::DoAuthentication(const CString &authChallenge, CHttpRequest *&
 		value.TrimLeft('"');
 		value.TrimRight('"');
 
-		if (name.Compare(_T("realm")) == 0)
-			Realm = value;
-		else if (name.Compare(_T("domain")) == 0)
-			Domain = value;
-		else if (name.Compare(_T("nonce")) == 0)
-			Nonce = value;
-		else if (name.Compare(_T("opaque")) == 0)
-			Opaque = value;
-		else if (name.Compare(_T("stale")) == 0)
-			Stale = value;
-		else if (name.Compare(_T("algorithm")) == 0)
-			Algorithm = value;
-		else if (name.Compare(_T("qop")) == 0)
-			Qop = value;
+		if (name.Compare(_T("realm")) == 0) Realm = value;
+		else if (name.Compare(_T("domain")) == 0) Domain = value;
+		else if (name.Compare(_T("nonce")) == 0) Nonce = value;
+		else if (name.Compare(_T("opaque")) == 0) Opaque = value;
+		else if (name.Compare(_T("stale")) == 0) Stale = value;
+		else if (name.Compare(_T("algorithm")) == 0) Algorithm = value;
+		else if (name.Compare(_T("qop")) == 0) Qop = value;
 
 		pos = endPos + 1;
 	}
@@ -531,10 +522,8 @@ BOOL CDownloader::DoAuthentication(const CString &authChallenge, CHttpRequest *&
 ///
 
 void CDownloader::OnBeforeSendRequest(CHttpRequest *&req, LPVOID context) {
-	if (!ETag.IsEmpty())
-		req->SetHeader(_T("If-None-Match"), (LPCTSTR) ETag);
-	if (!LastModified.IsEmpty())
-		req->SetHeader(_T("If-Modified-Since"), (LPCTSTR) LastModified);
+	if (!ETag.IsEmpty()) req->SetHeader(_T("If-None-Match"), (LPCTSTR) ETag);
+	if (!LastModified.IsEmpty()) req->SetHeader(_T("If-Modified-Since"), (LPCTSTR) LastModified);
 }
 
 BOOL CDownloader::OnResponse(CHttpRequest *&req, CHttpResponse *&res, LPVOID context) {
@@ -548,7 +537,8 @@ BOOL CDownloader::OnResponse(CHttpRequest *&req, CHttpResponse *&res, LPVOID con
 	Updated = FALSE;
 	do {
 		statusCode = res->GetStatusCode();
-		LOG1(1, "StausCode: %d", statusCode);
+		LOG1(1, "StatusCode: %d", statusCode);
+
 		switch (statusCode) {
 			case HTTP_STATUS_OK:
 			case HTTP_STATUS_PARTIAL_CONTENT:
@@ -578,10 +568,8 @@ BOOL CDownloader::OnResponse(CHttpRequest *&req, CHttpResponse *&res, LPVOID con
 					else {
 						// relative URL
 						object = newAddress;
-						if (ServiceType == INET_SERVICE_HTTPS)
-							URL.Format(_T("https://%s%s"), ServerName, object);
-						else
-							URL.Format(_T("http://%s%s"), ServerName, object);
+						if (ServiceType == INET_SERVICE_HTTPS) URL.Format(_T("https://%s%s"), ServerName, object);
+						else URL.Format(_T("http://%s%s"), ServerName, object);
 					}
 
 					delete res;
@@ -779,10 +767,8 @@ BOOL CDownloader::PartialDownload(CString &url, const CString &strFileName, DWOR
 
 	FreeAdditionalHeaders();
 	CString sRange;
-	if (endOffset == 0)
-		sRange.Format(_T("bytes=%d-"), startOffset);
-	else
-		sRange.Format(_T("bytes=%d-%d"), startOffset, endOffset);
+	if (endOffset == 0) sRange.Format(_T("bytes=%d-"), startOffset);
+	else sRange.Format(_T("bytes=%d-%d"), startOffset, endOffset);
 	AdditionalHeaders.AddTail(new CHttpHeader(_T("Range"), sRange));
 
 	return SaveHttpObject(url, strFileName, context);

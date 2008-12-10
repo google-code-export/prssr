@@ -110,6 +110,7 @@ public:
 	CString GetCharset() { return Charset; }
 
 	void SetCookie(const CString &cookie);
+	void SetUAString(const CString &uaString) { HttpConnection.UserAgent = uaString; }
 
 	// for Conditional GET
 	CString ETag;

@@ -94,6 +94,7 @@ BOOL CGReaderSync::SyncFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
 
 	CString url;
 	url.Format(_T("%s/atom/feed/%s?n=%d"), BaseUrl, UrlEncode(si->Info->XmlUrl), n);
+	Downloader->SetUAString(_T(""));
 	if (Downloader->SaveHttpObject(url, tmpFileName) && Downloader->Updated) {
 		CFeedFile xml;
 		if (xml.LoadFromFile(tmpFileName)) {
@@ -221,6 +222,7 @@ BOOL CGReaderSync::DownloadFeed(CString &url, const CString &fileName) {
 	CString u;
 	u.Format(_T("%s/atom/feed/%s"), BaseUrl, url);
 
+	Downloader->SetUAString(_T(""));
 	Downloader->SetCookie(FormatSIDCookie(SID));
 	BOOL ret = Downloader->SaveHttpObject(u, fileName);
 
@@ -411,6 +413,7 @@ BOOL CGReaderSync::GetSubscriptions(CSiteList &siteList) {
 	TCHAR fileName[MAX_PATH];
 	GetTempFileName(Config.CacheLocation, L"rsr", 0, fileName);
 
+	Downloader->SetUAString(_T(""));
 	Downloader->SetCookie(FormatSIDCookie(SID));
 	BOOL ret = FALSE;
 	if (Downloader->SaveHttpObject(url, fileName)) {

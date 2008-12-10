@@ -25,10 +25,7 @@
 #endif
 
 #include "HttpConnection.h"
-//#include "Download.h"
 #include "../../share/helpers.h"
-//#include "../Config.h"
-
 #include "../../zlib/zlib.h"
 
 
@@ -178,7 +175,7 @@ CHttpRequest *CHttpConnection::CreateRequest(const CString &object, EHttpMethod 
 
 	req->SetHeader(_T("Host"), HostName);
 	req->SetHeader(_T("Connection"), _T("close"));
-	req->SetHeader(_T("User-Agent"), UserAgent);
+	if (!UserAgent.IsEmpty()) req->SetHeader(_T("User-Agent"), UserAgent);
 //	req->SetHeader(_T("Accept"), _T("text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5"));
 //	req->SetHeader(_T("Accept-Language"), _T("en-us,en;q=0.5"));
 	req->SetHeader(_T("Accept-Encoding"), _T("gzip,deflate"));
