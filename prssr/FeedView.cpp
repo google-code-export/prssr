@@ -205,6 +205,13 @@ void CFeedView::SelectAll() {
 	Invalidate(FALSE);
 }
 
+void CFeedView::SelectItem(int item) {
+	if (item >= 0 && item < m_oItems.GetSize()) {
+		m_nSelectFirst = m_nSelectStart = m_nSelectEnd = item;
+		Invalidate(FALSE);
+	}
+}
+
 void CFeedView::DeleteItem(int idx) {
 	LOG1(1, "CFeedView::DeleteItem(%d)", idx);
 
@@ -457,14 +464,16 @@ void CFeedView::DrawItem(CDC &dc, CRect &rc, int idx) {
 }
 
 void CFeedView::InvalidateItem(int idx, BOOL erase/* = TRUE*/) {
-	CRect rcClient;
-	GetClientRect(rcClient);
+	if (idx >= 0 && idx < m_oItems.GetSize()) {
+		CRect rcClient;
+		GetClientRect(rcClient);
 
-	int top;
-	if (idx > 0) top = m_oItemHeight[idx - 1];
-	else top = 0;
-	CRect rc(rcClient.left, top - m_nViewTop, rcClient.right, m_oItemHeight[idx] - m_nViewTop);
-	InvalidateRect(rc, erase);
+		int top;
+		if (idx > 0) top = m_oItemHeight[idx - 1];
+		else top = 0;
+		CRect rc(rcClient.left, top - m_nViewTop, rcClient.right, m_oItemHeight[idx] - m_nViewTop);
+		InvalidateRect(rc, erase);
+	}
 }
 
 void CFeedView::OnDraw(CDC *pDC) {

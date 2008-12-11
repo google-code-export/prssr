@@ -705,6 +705,7 @@
 #define ID_REWRITE_RULES                32880
 #define ID_SYNC_SUBSCRIPTIONS           32881
 #define ID_TOOLS_FEEDVIEW               32882
+#define ID_CLOSE                        32883
 
 #define ID_SOCIAL_BOOKMARK_BASE			 33000
 
