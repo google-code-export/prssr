@@ -1994,9 +1994,12 @@ void CMainFrame::OnViewSortbyRead() {
 void CMainFrame::OnUpdateSortby(CCmdUI *pCmdUI) {
 	LOG0(3, "CMainFrame::OnUpdateSortby()");
 
-	CSiteItem *si = SiteList.GetAt(Config.ActSiteIdx);
-	if (si != NULL) {
-		pCmdUI->m_pMenu->CheckMenuRadioItem(ID_VIEW_SORTBY_DATE, ID_VIEW_SORTBY_READ, ID_VIEW_SORTBY_DATE + si->Sort.Item - 1, MF_BYCOMMAND);
+	if (Config.ActSiteIdx == SITE_UNREAD) pCmdUI->m_pMenu->CheckMenuRadioItem(ID_VIEW_SORTBY_DATE, ID_VIEW_SORTBY_READ, ID_VIEW_SORTBY_DATE + UnreadItems.Sort.Item - 1, MF_BYCOMMAND);
+	else if (Config.ActSiteIdx == SITE_FLAGGED) pCmdUI->m_pMenu->CheckMenuRadioItem(ID_VIEW_SORTBY_DATE, ID_VIEW_SORTBY_READ, ID_VIEW_SORTBY_DATE + FlaggedItems.Sort.Item - 1, MF_BYCOMMAND);
+	else {
+		CSiteItem *si = SiteList.GetAt(Config.ActSiteIdx);
+		if (si != NULL)
+			pCmdUI->m_pMenu->CheckMenuRadioItem(ID_VIEW_SORTBY_DATE, ID_VIEW_SORTBY_READ, ID_VIEW_SORTBY_DATE + si->Sort.Item - 1, MF_BYCOMMAND);
 	}
 }
 
