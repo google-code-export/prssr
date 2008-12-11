@@ -1453,6 +1453,8 @@ LRESULT CMainFrame::OnUpdateFeed(WPARAM wParam, LPARAM lParam) {
 
 			m_wndFeedView.SelectItem(selectedItem);
 			if (selectedItem != -1) m_wndFeedView.EnsureVisible(selectedItem);
+
+			SetupBanner(m_wndArticleView.m_pArticle, selectedItem + 1, m_wndFeedView.GetItemCount());
 		}
 	}
 
@@ -2586,4 +2588,21 @@ void CMainFrame::OnMouseMove(UINT nFlags, CPoint point) {
 
 void CMainFrame::OnEnterMenuLoop(BOOL bIsTrackPopupMenu) {
 	m_bMenuOpened = TRUE;
+}
+
+void CMainFrame::SetupBanner(CFeedItem *fi, int item, int total) {
+	CSiteItem *si = fi->SiteItem;
+
+	CDC *pDC = GetDC();
+	CString strSiteTitle = GetNumberItemText(pDC, si->Name, si->GetUnreadCount(), GetSystemMetrics(SM_CXSCREEN) - SCALEX(22 + 50));
+	ReleaseDC(pDC);
+
+	m_wndBanner.SetTitle(strSiteTitle);
+	m_wndBanner.SetItems(item, total);
+	m_wndBanner.SetIcon(si->ImageIdx);
+
+	if (fi != NULL) m_wndBanner.SetFlagged(fi->IsFlagged() ? FLAG_ICON : -1);
+
+	if (::IsWindow(m_wndBanner.GetSafeHwnd()))
+		m_wndBanner.Invalidate();
 }
