@@ -1434,16 +1434,12 @@ int CompareVFolder(const void *arg1, const void *arg2) {
 	if (fi1->SiteItem == fi2->SiteItem) {
 		switch (fi1->SiteItem->Sort.Item) {
 			case CSortInfo::Date:
-				if (fi1->SiteItem->Sort.Type == CSortInfo::Ascending)
-					return CompareFeedItemDate(fi1, fi2);
-				else
-					return CompareFeedItemDate(fi2, fi1);
+				if (fi1->SiteItem->Sort.Type == CSortInfo::Ascending) return CompareFeedItemDate(fi1, fi2);
+				else return CompareFeedItemDate(fi2, fi1);
 
 			case CSortInfo::Read:
-				if (fi1->SiteItem->Sort.Type == CSortInfo::Ascending)
-					return CompareFeedItemFlag(fi1, fi2);
-				else
-					return CompareFeedItemFlag(fi2, fi1);
+				if (fi1->SiteItem->Sort.Type == CSortInfo::Ascending) return CompareFeedItemFlag(fi1, fi2);
+				else return CompareFeedItemFlag(fi2, fi1);
 		}
 	}
 	else {
@@ -1476,23 +1472,19 @@ void CFeedView::SortItems() {
 	if (SiteItem == NULL)
 		return;				// no sorting if we dont know how to sort
 
-	if (SiteItem->Type == CSiteItem::VFolder) {
+	if (SiteItem->Type == CSiteItem::VFolder && Config.GroupByFeed) {
 		Sort(CompareVFolder);
 	}
 	else {
 		switch (SiteItem->Sort.Item) {
 			case CSortInfo::Date:
-				if (SiteItem->Sort.Type == CSortInfo::Ascending)
-					Sort(CompareDateAsc);
-				else
-					Sort(CompareDateDesc);
+				if (SiteItem->Sort.Type == CSortInfo::Ascending) Sort(CompareDateAsc);
+				else Sort(CompareDateDesc);
 				break;
 
 			case CSortInfo::Read:
-				if (SiteItem->Sort.Type == CSortInfo::Ascending)
-					Sort(CompareFlagsAsc);
-				else
-					Sort(CompareFlagsDesc);
+				if (SiteItem->Sort.Type == CSortInfo::Ascending) Sort(CompareFlagsAsc);
+				else Sort(CompareFlagsDesc);
 				break;
 		}
 	}

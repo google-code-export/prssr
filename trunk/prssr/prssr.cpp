@@ -28,7 +28,7 @@
 #include "ctrls/InfoBar.h"
 #include "ctrls/CePropertySheet.h"
 
-//#include "Site.h"
+#include "Errors.h"
 #include "Appearance.h"
 #include "Config.h"
 #include "../share/notif.h"
@@ -172,6 +172,7 @@ BOOL CPrssrApp::InitInstance() {
 	CString resLibName;
 	resLibName.Format(_T("res.%03d.dll"), nSystemDPI);
 	m_hResDLL = LoadLibrary(resLibName);
+	if (m_hResDLL == NULL) return Error(IDS_INTERNAL_ERROR, 0x00000002);
 
 	if (!InitHTMLControl(AfxGetInstanceHandle()))
 		return 0;

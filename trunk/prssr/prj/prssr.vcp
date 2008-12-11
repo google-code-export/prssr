@@ -140,7 +140,6 @@ LINK32=link.exe
 SOURCE=..\AboutPg.cpp
 DEP_CPP_ABOUT=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
@@ -151,7 +150,6 @@ DEP_CPP_ABOUT=\
 	"..\ctrls\LinkCtrl.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\net\proxy.h"\
 	"..\prssr.h"\
 	"..\StdAfx.h"\
@@ -208,6 +206,7 @@ DEP_CPP_ADDFE=\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
 	"..\Feed.h"\
+	"..\misc.h"\
 	"..\net\Connection.h"\
 	"..\net\download.h"\
 	"..\net\http.h"\
@@ -249,8 +248,10 @@ DEP_CPP_APPEA=\
 
 SOURCE=..\ArticleView.cpp
 DEP_CPP_ARTIC=\
+	"..\..\share\date.h"\
 	"..\..\share\defs.h"\
 	"..\..\share\file.h"\
+	"..\..\share\fs.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
@@ -274,6 +275,7 @@ DEP_CPP_ARTIC=\
 	"..\Feed.h"\
 	"..\FeedView.h"\
 	"..\MainFrm.h"\
+	"..\misc.h"\
 	"..\net\download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
@@ -340,6 +342,7 @@ DEP_CPP_CACHE=\
 	"..\Feed.h"\
 	"..\FeedView.h"\
 	"..\MainFrm.h"\
+	"..\misc.h"\
 	"..\net\download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
@@ -402,7 +405,6 @@ DEP_CPP_CHOOS=\
 SOURCE=..\Config.cpp
 DEP_CPP_CONFI=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
@@ -412,7 +414,6 @@ DEP_CPP_CONFI=\
 	"..\Config.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\net\proxy.h"\
 	"..\prssr.h"\
 	"..\StdAfx.h"\
@@ -426,7 +427,6 @@ DEP_CPP_CONFI=\
 SOURCE=..\CreditsPg.cpp
 DEP_CPP_CREDI=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
@@ -436,7 +436,6 @@ DEP_CPP_CREDI=\
 	"..\ctrls\CePropertyPage.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\net\proxy.h"\
 	"..\prssr.h"\
 	"..\StdAfx.h"\
@@ -447,9 +446,15 @@ DEP_CPP_CREDI=\
 
 SOURCE=..\Errors.cpp
 DEP_CPP_ERROR=\
+	"..\..\share\defs.h"\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\ctrls\CeDialog.h"\
+	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
+	"..\MessageDlg.h"\
+	"..\prssr.h"\
 	"..\StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
@@ -459,7 +464,6 @@ DEP_CPP_ERROR=\
 SOURCE=..\ErrorsDlg.cpp
 DEP_CPP_ERRORS=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
@@ -469,7 +473,6 @@ DEP_CPP_ERRORS=\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
 	"..\ErrorsDlg.h"\
-	"..\Feed.h"\
 	"..\prssr.h"\
 	"..\StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
@@ -494,11 +497,13 @@ DEP_CPP_FEED_=\
 	"..\..\prssrtoday\Config.h"\
 	"..\..\prssrtoday\StdAfx.h"\
 	"..\..\prssrtoday\todaycmn.h"\
+	"..\..\share\cache.h"\
 	"..\..\share\defs.h"\
 	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
+	"..\..\share\str.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\Config.h"\
@@ -533,7 +538,6 @@ NODEP_CPP_FEED_=\
 SOURCE=..\FeedsTreeCtrl.cpp
 DEP_CPP_FEEDS=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
@@ -556,6 +560,7 @@ DEP_CPP_FEEDS=\
 
 SOURCE=..\FeedView.cpp
 DEP_CPP_FEEDV=\
+	"..\..\share\date.h"\
 	"..\..\share\defs.h"\
 	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
@@ -581,6 +586,7 @@ DEP_CPP_FEEDV=\
 	"..\Feed.h"\
 	"..\FeedView.h"\
 	"..\MainFrm.h"\
+	"..\misc.h"\
 	"..\net\download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
@@ -602,7 +608,6 @@ DEP_CPP_FEEDV=\
 SOURCE=..\ImportFeedsDlg.cpp
 DEP_CPP_IMPOR=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
@@ -668,6 +673,7 @@ DEP_CPP_INFOD=\
 
 SOURCE=..\InfoGeneralPg.cpp
 DEP_CPP_INFOG=\
+	"..\..\share\date.h"\
 	"..\..\share\defs.h"\
 	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
@@ -679,8 +685,8 @@ DEP_CPP_INFOG=\
 	"..\ctrls\Hrule.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\InfoGeneralPg.h"\
+	"..\misc.h"\
 	"..\net\proxy.h"\
 	"..\prssr.h"\
 	"..\StdAfx.h"\
@@ -692,7 +698,6 @@ DEP_CPP_INFOG=\
 SOURCE=..\KeywordManagerDlg.cpp
 DEP_CPP_KEYWO=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
@@ -717,7 +722,6 @@ DEP_CPP_KEYWO=\
 SOURCE=..\LicensePg.cpp
 DEP_CPP_LICEN=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
@@ -726,7 +730,6 @@ DEP_CPP_LICEN=\
 	"..\ctrls\CePropertyPage.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\LicensePg.h"\
 	"..\net\proxy.h"\
 	"..\prssr.h"\
@@ -740,6 +743,7 @@ SOURCE=..\MainFrm.cpp
 DEP_CPP_MAINF=\
 	"..\..\share\defs.h"\
 	"..\..\share\file.h"\
+	"..\..\share\fs.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\notif.h"\
 	"..\..\share\reg.h"\
@@ -780,6 +784,7 @@ DEP_CPP_MAINF=\
 	"..\InfoGeneralPg.h"\
 	"..\KeywordManagerDlg.h"\
 	"..\MainFrm.h"\
+	"..\misc.h"\
 	"..\misc\icon.h"\
 	"..\misc\shnotif.h"\
 	"..\net\Connection.h"\
@@ -814,10 +819,54 @@ DEP_CPP_MAINF=\
 # End Source File
 # Begin Source File
 
+SOURCE=..\MessageDlg.cpp
+DEP_CPP_MESSA=\
+	"..\..\share\defs.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\ctrls\CeDialog.h"\
+	"..\debug\crtdbg.h"\
+	"..\debug\Logger.h"\
+	"..\MessageDlg.h"\
+	"..\prssr.h"\
+	"..\StdAfx.h"\
+	{$(INCLUDE)}"htmlctrl.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\misc.cpp
+DEP_CPP_MISC_=\
+	"..\..\share\defs.h"\
+	"..\..\share\file.h"\
+	"..\..\share\fs.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\Config.h"\
+	"..\debug\crtdbg.h"\
+	"..\debug\Logger.h"\
+	"..\misc.h"\
+	"..\net\Connection.h"\
+	"..\net\proxy.h"\
+	"..\prssr.h"\
+	"..\sha1\sha1.h"\
+	"..\StdAfx.h"\
+	"..\www\url.h"\
+	{$(INCLUDE)}"connmgr.h"\
+	{$(INCLUDE)}"connmgr_proxy.h"\
+	{$(INCLUDE)}"htmlctrl.h"\
+	
+# End Source File
+# Begin Source File
+
 SOURCE=..\OptAppearancePg.cpp
 DEP_CPP_OPTAP=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
@@ -850,6 +899,7 @@ SOURCE=..\OptCachePg.cpp
 DEP_CPP_OPTCA=\
 	"..\..\share\defs.h"\
 	"..\..\share\file.h"\
+	"..\..\share\fs.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
@@ -863,6 +913,7 @@ DEP_CPP_OPTCA=\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
 	"..\Feed.h"\
+	"..\misc.h"\
 	"..\net\proxy.h"\
 	"..\OptCachePg.h"\
 	"..\ProgressDlg.h"\
@@ -878,7 +929,6 @@ DEP_CPP_OPTCA=\
 SOURCE=..\OptConnectionPg.cpp
 DEP_CPP_OPTCO=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
@@ -889,7 +939,6 @@ DEP_CPP_OPTCO=\
 	"..\ctrls\CeEdit.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\net\proxy.h"\
 	"..\OptConnectionPg.h"\
 	"..\ProxyProfilesDlg.h"\
@@ -903,7 +952,6 @@ DEP_CPP_OPTCO=\
 SOURCE=..\OptGeneralPg.cpp
 DEP_CPP_OPTGE=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
@@ -911,7 +959,6 @@ DEP_CPP_OPTGE=\
 	"..\Config.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\net\proxy.h"\
 	"..\OptGeneralPg.h"\
 	"..\prssr.h"\
@@ -925,7 +972,6 @@ DEP_CPP_OPTGE=\
 SOURCE=..\OptRetrievalPg.cpp
 DEP_CPP_OPTRE=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
@@ -935,7 +981,6 @@ DEP_CPP_OPTRE=\
 	"..\ctrls\CeEdit.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\net\proxy.h"\
 	"..\OptRetrievalPg.h"\
 	"..\prssr.h"\
@@ -950,7 +995,6 @@ DEP_CPP_OPTRE=\
 SOURCE=..\OptSyncPg.cpp
 DEP_CPP_OPTSY=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
@@ -959,7 +1003,6 @@ DEP_CPP_OPTSY=\
 	"..\ctrls\CeEdit.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\net\proxy.h"\
 	"..\OptSyncPg.h"\
 	"..\prssr.h"\
@@ -972,7 +1015,6 @@ DEP_CPP_OPTSY=\
 SOURCE=..\ProgressDlg.cpp
 DEP_CPP_PROGR=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
@@ -981,7 +1023,6 @@ DEP_CPP_PROGR=\
 	"..\Appearance.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\ProgressDlg.h"\
 	"..\prssr.h"\
 	"..\StdAfx.h"\
@@ -1043,7 +1084,6 @@ DEP_CPP_PROPC=\
 SOURCE=..\Properties.cpp
 DEP_CPP_PROPE=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
@@ -1116,7 +1156,7 @@ DEP_CPP_PROXY=\
 	"..\ctrls\CeEdit.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"..\misc.h"\
 	"..\net\proxy.h"\
 	"..\ProxyProfilesDlg.h"\
 	"..\prssr.h"\
@@ -1159,6 +1199,7 @@ DEP_CPP_PRSSR=\
 	"..\FeedView.h"\
 	"..\LicensePg.h"\
 	"..\MainFrm.h"\
+	"..\misc.h"\
 	"..\net\download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
@@ -1186,7 +1227,6 @@ SOURCE=..\RewriteRuleDlg.cpp
 DEP_CPP_REWRI=\
 	"..\..\share\defs.h"\
 	"..\..\share\file.h"\
-	"..\..\share\helpers.h"\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
@@ -1194,7 +1234,7 @@ DEP_CPP_REWRI=\
 	"..\ctrls\CeEdit.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"..\misc.h"\
 	"..\prssr.h"\
 	"..\RewriteRuleDlg.h"\
 	"..\StdAfx.h"\
@@ -1206,7 +1246,6 @@ DEP_CPP_REWRI=\
 SOURCE=..\RewritingDlg.cpp
 DEP_CPP_REWRIT=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
@@ -1244,7 +1283,7 @@ DEP_CPP_SEARC=\
 	"..\ctrls\CeEdit.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"..\misc.h"\
 	"..\net\Connection.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
@@ -1281,7 +1320,6 @@ DEP_CPP_SEARCH=\
 	"..\ctrls\Hrule.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
@@ -1306,6 +1344,7 @@ DEP_CPP_SITE_=\
 	"..\..\prssrtoday\todaycmn.h"\
 	"..\..\share\defs.h"\
 	"..\..\share\file.h"\
+	"..\..\share\fs.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
@@ -1315,6 +1354,7 @@ DEP_CPP_SITE_=\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
 	"..\Feed.h"\
+	"..\misc.h"\
 	"..\net\proxy.h"\
 	"..\prssr.h"\
 	"..\Site.h"\
@@ -1341,6 +1381,7 @@ DEP_CPP_SITEM=\
 	"..\..\libexpat\expat_external.h"\
 	"..\..\share\defs.h"\
 	"..\..\share\file.h"\
+	"..\..\share\fs.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
@@ -1362,6 +1403,7 @@ DEP_CPP_SITEM=\
 	"..\Feed.h"\
 	"..\FeedsTreeCtrl.h"\
 	"..\ImportFeedsDlg.h"\
+	"..\misc.h"\
 	"..\net\Connection.h"\
 	"..\net\download.h"\
 	"..\net\http.h"\
@@ -1430,6 +1472,7 @@ DEP_CPP_SUMMA=\
 	"..\Feed.h"\
 	"..\FeedView.h"\
 	"..\MainFrm.h"\
+	"..\misc.h"\
 	"..\net\download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
@@ -1477,6 +1520,7 @@ DEP_CPP_UPDAT=\
 	"..\..\libsgml\SgmlParser.h"\
 	"..\..\share\defs.h"\
 	"..\..\share\file.h"\
+	"..\..\share\fs.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
@@ -1500,6 +1544,7 @@ DEP_CPP_UPDAT=\
 	"..\Feed.h"\
 	"..\FeedView.h"\
 	"..\MainFrm.h"\
+	"..\misc.h"\
 	"..\misc\shnotif.h"\
 	"..\net\Connection.h"\
 	"..\net\download.h"\
@@ -1529,7 +1574,6 @@ DEP_CPP_UPDAT=\
 SOURCE=..\UpdateSitesDlg.cpp
 DEP_CPP_UPDATE=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
@@ -1644,6 +1688,14 @@ SOURCE=..\LicensePg.h
 # Begin Source File
 
 SOURCE=..\MainFrm.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\MessageDlg.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\misc.h
 # End Source File
 # Begin Source File
 
@@ -1834,7 +1886,6 @@ SOURCE=..\debug\Logger.h
 SOURCE=..\ctrls\Banner.cpp
 DEP_CPP_BANNE=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
@@ -1844,7 +1895,6 @@ DEP_CPP_BANNE=\
 	"..\ctrls\Banner.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\prssr.h"\
 	"..\StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
@@ -1871,7 +1921,8 @@ DEP_CPP_BROWS=\
 	"..\ctrls\CeEdit.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"..\Errors.h"\
+	"..\misc.h"\
 	"..\prssr.h"\
 	"..\StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
@@ -1889,7 +1940,6 @@ DEP_CPP_CAPTI=\
 	"..\..\prssrtoday\StdAfx.h"\
 	"..\..\prssrtoday\todaycmn.h"\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
@@ -1899,7 +1949,6 @@ DEP_CPP_CAPTI=\
 	"..\ctrls\Caption.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\prssr.h"\
 	"..\StdAfx.h"\
 	{$(INCLUDE)}"aygshell.h"\
@@ -1920,7 +1969,6 @@ SOURCE=..\ctrls\Caption.h
 
 SOURCE=..\ctrls\CeDialog.cpp
 DEP_CPP_CEDIA=\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
@@ -1929,7 +1977,6 @@ DEP_CPP_CEDIA=\
 	"..\ctrls\CeDialog.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
@@ -1986,7 +2033,6 @@ SOURCE=..\ctrls\CeListCtrl.h
 SOURCE=..\ctrls\CePropertyPage.cpp
 DEP_CPP_CEPRO=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
@@ -1994,7 +2040,6 @@ DEP_CPP_CEPRO=\
 	"..\ctrls\CePropertyPage.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\prssr.h"\
 	"..\StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
@@ -2157,7 +2202,7 @@ DEP_CPP_ENCLO=\
 	"..\ctrls\EnclosureBar.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"..\misc.h"\
 	"..\prssr.h"\
 	"..\StdAfx.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
@@ -2194,7 +2239,6 @@ SOURCE=..\ctrls\GrabKeyDlg.h
 SOURCE=..\ctrls\GroupView.cpp
 DEP_CPP_GROUP=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
@@ -2206,7 +2250,6 @@ DEP_CPP_GROUP=\
 	"..\ctrls\GroupView.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\net\proxy.h"\
 	"..\prssr.h"\
 	"..\StdAfx.h"\
@@ -2288,6 +2331,7 @@ DEP_CPP_INFOB=\
 	"..\Feed.h"\
 	"..\FeedView.h"\
 	"..\MainFrm.h"\
+	"..\misc.h"\
 	"..\net\download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
@@ -2364,7 +2408,7 @@ DEP_CPP_TEXTP=\
 	"..\ctrls\TextProgressCtrl.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"..\misc.h"\
 	"..\net\download.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
@@ -2385,6 +2429,30 @@ SOURCE=..\ctrls\TextProgressCtrl.h
 # Begin Group "share"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\share\cache.cpp
+DEP_CPP_CACHE_=\
+	"..\..\share\cache.h"\
+	
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\share\cache.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\share\date.cpp
+DEP_CPP_DATE_=\
+	"..\..\share\date.h"\
+	
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\share\date.h
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\share\defs.cpp
@@ -2409,33 +2477,37 @@ SOURCE=..\..\share\file.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\share\fs.cpp
+DEP_CPP_FS_CP=\
+	"..\..\share\fs.h"\
+	
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\share\fs.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\share\helpers.cpp
 DEP_CPP_HELPE=\
 	"..\..\prssrtoday\Config.h"\
+	"..\..\prssrtoday\prssrtoday.h"\
 	"..\..\prssrtoday\StdAfx.h"\
 	"..\..\prssrtoday\todaycmn.h"\
+	"..\..\share\date.h"\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
-	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\Config.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
-	"..\net\Connection.h"\
-	"..\net\http.h"\
-	"..\net\HttpConnection.h"\
-	"..\net\httpsock.h"\
 	"..\net\proxy.h"\
 	"..\prssr.h"\
 	"..\StdAfx.h"\
-	"..\www\url.h"\
 	{$(INCLUDE)}"aygshell.h"\
-	{$(INCLUDE)}"connmgr.h"\
-	{$(INCLUDE)}"connmgr_proxy.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	{$(INCLUDE)}"sipapi.h"\
 	{$(INCLUDE)}"winuserm.h"\
@@ -2483,6 +2555,18 @@ SOURCE=..\..\share\resource.h
 # Begin Source File
 
 SOURCE=..\..\share\shguim.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\share\str.cpp
+DEP_CPP_STR_C=\
+	"..\..\share\str.h"\
+	
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\share\str.h
 # End Source File
 # Begin Source File
 
@@ -2570,9 +2654,11 @@ SOURCE=..\net\Download.cpp
 DEP_CPP_DOWNL=\
 	"..\..\share\defs.h"\
 	"..\..\share\file.h"\
+	"..\..\share\fs.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
+	"..\..\share\str.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\AuthenticationDlg.h"\
@@ -2610,14 +2696,13 @@ SOURCE=..\net\Download.h
 SOURCE=..\net\http.cpp
 DEP_CPP_HTTP_=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\shguim.h"\
+	"..\..\share\str.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\net\http.h"\
 	"..\net\httpsock.h"\
 	"..\prssr.h"\
@@ -2644,7 +2729,6 @@ DEP_CPP_HTTPC=\
 	"..\..\zlib\zlib.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
@@ -2691,11 +2775,11 @@ DEP_CPP_PROXY_=\
 	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\shguim.h"\
+	"..\..\share\str.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\net\http.h"\
 	"..\net\HttpConnection.h"\
 	"..\net\httpsock.h"\
@@ -2748,9 +2832,9 @@ SOURCE=..\net\Searcher.h
 SOURCE=..\net\ssl.cpp
 DEP_CPP_SSL_C=\
 	"..\..\share\defs.h"\
-	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\shguim.h"\
+	"..\..\share\str.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\AcceptCertificateDlg.h"\
@@ -2760,7 +2844,6 @@ DEP_CPP_SSL_C=\
 	"..\ctrls\CeEdit.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\net\proxy.h"\
 	"..\net\ssl.h"\
 	"..\prssr.h"\
@@ -2870,11 +2953,11 @@ DEP_CPP_AUTOF=\
 	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\shguim.h"\
+	"..\..\share\str.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\prssr.h"\
 	"..\StdAfx.h"\
 	"..\www\AutoFeedHtmlFile.h"\
@@ -2910,11 +2993,11 @@ DEP_CPP_HTMLF=\
 	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\shguim.h"\
+	"..\..\share\str.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\prssr.h"\
 	"..\StdAfx.h"\
 	"..\www\HTMLFile.h"\
@@ -2952,12 +3035,13 @@ DEP_CPP_LOCAL=\
 	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
 	"..\..\share\shguim.h"\
+	"..\..\share\str.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\Config.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"..\misc.h"\
 	"..\net\proxy.h"\
 	"..\prssr.h"\
 	"..\StdAfx.h"\
@@ -2992,8 +3076,8 @@ DEP_CPP_URL_C=\
 	"..\..\regex\stypes.h"\
 	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
+	"..\..\share\str.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
 	"..\www\HTMLFile.h"\
 	"..\www\url.h"\
 	
@@ -3070,6 +3154,7 @@ DEP_CPP_FEEDF=\
 	"..\..\libsgml\SgmlExtensionHtml.h"\
 	"..\..\libsgml\SgmlExtensionXml.h"\
 	"..\..\libsgml\SgmlParser.h"\
+	"..\..\share\date.h"\
 	"..\..\share\defs.h"\
 	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
@@ -3138,13 +3223,13 @@ DEP_CPP_XMLFI=\
 	"..\..\prssrenc\codepages.h"\
 	"..\..\share\defs.h"\
 	"..\..\share\file.h"\
-	"..\..\share\helpers.h"\
 	"..\..\share\shguim.h"\
+	"..\..\share\str.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
 	"..\debug\crtdbg.h"\
 	"..\debug\Logger.h"\
-	"..\Feed.h"\
+	"..\misc.h"\
 	"..\prssr.h"\
 	"..\StdAfx.h"\
 	"..\xml\XMLFile.h"\
@@ -3200,6 +3285,7 @@ SOURCE=..\sync\GReaderSync.cpp
 DEP_CPP_GREAD=\
 	"..\..\libexpat\expat.h"\
 	"..\..\libexpat\expat_external.h"\
+	"..\..\share\cache.h"\
 	"..\..\share\defs.h"\
 	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\
@@ -3239,6 +3325,7 @@ SOURCE=..\sync\NetworkSync.cpp
 DEP_CPP_NETWO=\
 	"..\..\libexpat\expat.h"\
 	"..\..\libexpat\expat_external.h"\
+	"..\..\share\cache.h"\
 	"..\..\share\defs.h"\
 	"..\..\share\file.h"\
 	"..\..\share\helpers.h"\

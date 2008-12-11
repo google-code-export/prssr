@@ -68,6 +68,7 @@ enum ESyncSite {
 #define CONFIG_DEFAULT_BACKGROUNDUPDATE				TRUE
 #define CONFIG_DEFAULT_NAVIGATION_TYPE				NAVIGATION_TOUCH
 #define CONFIG_DEFAULT_EMAIL_ACCOUNT				_T("ActiveSync")
+#define CONFIG_DEFAULT_GROUP_BY_FEED				FALSE
 
 #define CONFIG_DEFAULT_CLEARERRORLOG				TRUE
 
@@ -157,6 +158,7 @@ public:
 	BOOL WrapAround;
 	BOOL WrapTitles;
 	int NavigationType;
+	BOOL GroupByFeed;
 
 	// cache
 	CString CacheLocation;
