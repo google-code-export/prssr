@@ -613,7 +613,7 @@ void CArticleView::OnItemNext() {
 
 			// check
 			if (View->GetItemCount() > 0) {
-				if (Config.MoveToUnread || Config.HideReadItems) {
+				if (Config.MoveToUnread) {
 					CFeedItem *fi = View->GetItem(idx);
 					if (!fi->IsDeleted() && (fi->IsNew() || fi->IsUnread()))
 						found = TRUE;
@@ -714,7 +714,7 @@ void CArticleView::OnItemPrev() {
 
 			// check
 			if (View->GetItemCount() > 0) {
-				if (Config.MoveToUnread || Config.HideReadItems) {
+				if (Config.MoveToUnread) {
 					CFeedItem *fi = View->GetItem(idx);
 					if (!fi->IsDeleted() && (fi->IsNew() || fi->IsUnread()))
 						found = TRUE;
