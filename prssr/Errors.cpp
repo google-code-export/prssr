@@ -69,11 +69,19 @@ BOOL Error(LPCTSTR str) {
 	return FALSE;
 }
 
-BOOL Error(UINT nID) {
+BOOL Error(UINT nID, ...) {
+	static TCHAR buffer[1024];
+
 	CString strMsg;
 	strMsg.LoadString(nID);
-	return Error(strMsg);
+
+	va_list args;
+	va_start(args, nID);
+	vswprintf(buffer, strMsg, args);
+
+	return Error(buffer);
 }
+
 
 BOOL Error(const CString &str, ...) {
 	static TCHAR buffer[1024];
@@ -83,16 +91,6 @@ BOOL Error(const CString &str, ...) {
 	vswprintf(buffer, str, args);
 
 	return Error(buffer);
-}
-
-BOOL Error(UINT nID, LPCTSTR str) {
-	CString s;
-	s.LoadString(nID);
-
-	CString msg;
-	msg.Format(_T("%s\n\n%s"), s, str);
-
-	return Error(msg);
 }
 
 CString FormatSysError(DWORD errCode) {

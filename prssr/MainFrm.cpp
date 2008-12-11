@@ -990,10 +990,7 @@ void CMainFrame::SelectSite(int nSite) {
 		SaveSiteItemUnreadCount(si, nSite);
 		SaveSiteItemFlaggedCount(si, nSite);
 
-//		if (View == FeedView) {
-			m_wndFeedView.InsertItems(si);
-//			UpdateSort();
-//		}
+		m_wndFeedView.InsertItems(si);
 	}
 	else if (nSite == SITE_UNREAD) {
 		SetTopBarText(IDS_LOADING, TOPBAR_IMAGE_LOADING);
@@ -1023,9 +1020,7 @@ void CMainFrame::SelectSite(int nSite) {
 		UnreadItems.Status = CSiteItem::Ok;
 
 		m_wndFeedView.InsertItems(&UnreadItems);
-		if (View == FeedView) {
-			UpdateSort();
-		}
+		if (View == FeedView) UpdateSort();
 	}
 	else if (nSite == SITE_FLAGGED) {
 		SetTopBarText(IDS_LOADING, TOPBAR_IMAGE_LOADING);
@@ -1055,9 +1050,7 @@ void CMainFrame::SelectSite(int nSite) {
 		FlaggedItems.Status = CSiteItem::Ok;
 
 		m_wndFeedView.InsertItems(&FlaggedItems);
-		if (View == FeedView) {
-			UpdateSort();
-		}
+		if (View == FeedView) UpdateSort();
 	}
 
 	UpdateTopBar();

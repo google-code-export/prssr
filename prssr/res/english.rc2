@@ -1625,8 +1625,8 @@ BEGIN
     IDS_ERROR_GETTING_RESPONSE "Error receiving response"
     IDS_ERROR_GETTING_FILE     "Error getting file."
     IDS_ERROR_XML_RPC_RESPONSE "XML RPC response error"
-	IDS_FEED_NOT_ADDED         "Feed was not added."
-	IDS_SEARCH_ERROR           "Error searching feeds."
+	IDS_FEED_NOT_ADDED         "Feed was not added.\n\n%s"
+	IDS_SEARCH_ERROR           "Error searching feeds.\n\n%s"
 
     IDS_DOWNLOAD_ERROR      "Download error"
     IDS_CANT_CONNECT        "Cannot connect"
@@ -1674,4 +1674,5 @@ BEGIN
     IDS_CONFIRM_OPERATION   "Confirm Operation"
     IDS_DELETE              "Delete"
     IDS_OVERWRITE           "Overwrite"
+	IDS_INTERNAL_ERROR      "Internal error 0x%08d"
 END

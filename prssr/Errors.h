@@ -96,11 +96,9 @@ protected:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-BOOL Error(UINT nID);
 BOOL Error(LPCTSTR str);
-
-BOOL Error(UINT nID, LPCTSTR str);
 BOOL Error(const CString &str, ...);
+BOOL Error(UINT nID, ...);
 
 CString FormatSysError(DWORD errCode);
 BOOL SysError(int resID, DWORD err, BOOL quiet, ...);

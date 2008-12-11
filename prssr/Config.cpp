@@ -78,6 +78,7 @@ LPCTSTR szMoveChannel = _T("Move Channel");
 LPCTSTR szWarnFeedMove = _T("Warn Feed Move");
 LPCTSTR szNavigationType = _T("Navigation Type");
 LPCTSTR szEmailAccount = _T("Email Account");
+LPCTSTR szGroupByFeed = _T("Group By Feed");
 
 // read options
 LPCTSTR szNewSeconds = _T("New Seconds");
@@ -185,6 +186,7 @@ CConfig::CConfig() {
 	WrapTitles = CONFIG_DEFAULT_WRAPTITLES;
 	NavigationType = CONFIG_DEFAULT_NAVIGATION_TYPE;
 	EmailAccount = CONFIG_DEFAULT_EMAIL_ACCOUNT;
+	GroupByFeed = CONFIG_DEFAULT_GROUP_BY_FEED;
 
 	CacheLocation = _T("");
 	CacheLimit = CONFIG_DEFAULT_CACHE_LIMIT;
@@ -263,6 +265,7 @@ void CConfig::Save() {
 	reg.Write(szShowRelativeDates, ShowRelativeDates);
 	reg.Write(szMoveToUnread, MoveToUnread);
 	reg.Write(szEmailAccount, EmailAccount);
+	reg.Write(szGroupByFeed, GroupByFeed);
 
 	// retrieve
 	reg.Write(szUpdateInterval, UpdateInterval);
@@ -310,6 +313,7 @@ void CConfig::Load() {
 	ShowRelativeDates = reg.Read(szShowRelativeDates, CONFIG_DEFAULT_SHOWRELATIVEDATES);
 	MoveToUnread = reg.Read(szMoveToUnread, CONFIG_DEFAULT_MOVETOUNREAD);
 	EmailAccount = reg.Read(szEmailAccount, CONFIG_DEFAULT_EMAIL_ACCOUNT);
+	GroupByFeed = reg.Read(szGroupByFeed, CONFIG_DEFAULT_GROUP_BY_FEED);
 
 	// retrieve
 	UpdateInterval = reg.Read(szUpdateInterval, CONFIG_DEFAULT_UPDATEINTERVAL);

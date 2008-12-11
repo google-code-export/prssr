@@ -456,6 +456,8 @@ void CSiteList::SetRoot(CSiteItem *root) {
 BOOL SaveSiteItem(CSiteItem *item, int idx) {
 	LOG2(5, "SaveSiteItem(%p, %d)", item, idx);
 
+	if (item == NULL) return TRUE;
+
 	CString sRegPath;
 	sRegPath.Format(_T("%s\\%d"), REG_KEY_SUBSCRIPTIONS, idx + 1);
 
