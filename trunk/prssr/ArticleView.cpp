@@ -455,45 +455,6 @@ void CArticleView::OnContextMenu(NM_HTMLCONTEXT *pnmhc) {
 	popup.TrackPopupMenu(TPM_LEFTALIGN, point.x, point.y, GetParent());
 }
 
-/*
-void CArticleView::ResizeControls() {
-	LOG0(3, "CArticleView::ResizeControls()");
-
-	CRect rcClient;
-	GetClientRect(&rcClient);
-
-	CRect rcBanner;
-	m_ctlBanner.GetClientRect(&rcBanner);
-
-	m_ctlBanner.SetWindowPos(NULL, rcClient.left, rcClient.top, rcClient.Width(), SCALEY(21), SWP_NOZORDER);
-
-	rcClient.top += rcBanner.Height();
-
-	// info bar
-	CRect rcInfo;
-	if (::IsWindow(m_ctlInfoBar.GetSafeHwnd())) {
-		m_ctlInfoBar.GetClientRect(rcInfo);
-		m_ctlInfoBar.SetWindowPos(&wndTop, rcClient.left, rcClient.bottom - SCALEX(20),
-			rcClient.Width(), SCALEX(20), 0);
-		m_ctlInfoBar.Invalidate();
-	}
-
-	if (m_pArticle->HasEnclosure()) {
-		CRect rcEnc;
-		m_ctlEnclosureBar.GetClientRect(rcEnc);
-
-		m_ctlEnclosureBar.SetWindowPos(NULL, rcClient.left, rcClient.bottom - SCALEX(20),
-			rcClient.Width(), SCALEX(20), SWP_NOZORDER);
-		m_ctlEnclosureBar.Invalidate();
-
-		rcClient.bottom -= rcEnc.Height();
-	}
-
-	// reposition the html control
-	::SetWindowPos(m_ctlHTML.GetHwnd(), NULL, rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height(), SWP_NOZORDER);
-}
-*/
-
 LRESULT CArticleView::OnHotKey(WPARAM wParam, LPARAM lParam) {
 	LOG0(3, "CArticleView::OnHotKey()");
 
@@ -598,12 +559,9 @@ void CArticleView::OnItemNext() {
 
 		BOOL found = FALSE;
 		while (!found) {
-			if (idx < View->GetItemCount() - 1)
-				idx++;
-			else if (Config.WrapAround)
-				idx = 0;
-			else
-				idx = oldIdx;
+			if (idx < View->GetItemCount() - 1) idx++;
+			else if (Config.WrapAround) idx = 0;
+			else idx = oldIdx;
 
 			// we are back on the original site
 			if (idx == oldIdx) {
@@ -643,17 +601,14 @@ void CArticleView::OnItemNext() {
 				idx++;
 				if (site == oldSite) {
 					// we are back on the original item
-					if (idx == oldIdx)
-						break;
+					if (idx == oldIdx) break;
 				}
 			}
 			else {
 				int t = site;
 				site = View->MoveToNextChannel();
-				if (t == site)
-					break;
-				else
-					idx = 0;
+				if (t == site) break;
+				else idx = 0;
 			}
 
 			// check
@@ -674,8 +629,7 @@ void CArticleView::OnItemNext() {
 
 			frame->m_wndBanner.Invalidate();
 
-			if (oldSite != site)
-				frame->AddSiteToSave(oldSite);
+			if (oldSite != site) frame->AddSiteToSave(oldSite);
 			// TODO: preload the site with unread items if reading only unread
 			frame->PreloadSite(site);
 		}
@@ -706,12 +660,9 @@ void CArticleView::OnItemPrev() {
 
 		BOOL found = FALSE;
 		while (!found) {
-			if (idx > 0)
-				idx--;
-			else if (Config.WrapAround)
-				idx = View->GetItemCount() - 1;
-			else
-				idx = oldIdx;
+			if (idx > 0) idx--;
+			else if (Config.WrapAround) idx = View->GetItemCount() - 1;
+			else idx = oldIdx;
 
 			// we are back on the original site
 			if (idx == oldIdx) {
@@ -751,17 +702,14 @@ void CArticleView::OnItemPrev() {
 				idx--;
 				if (site == oldSite) {
 					// we are back on the original site
-					if (idx == oldIdx)
-						break;
+					if (idx == oldIdx) break;
 				}
 			}
 			else {
 				int t = site;
 				site = View->MoveToPrevChannel();
-				if (t == site)
-					break;
-				else
-					idx = View->GetItemCount() - 1;
+				if (t == site) break;
+				else idx = View->GetItemCount() - 1;
 			}
 
 			// check
@@ -782,8 +730,7 @@ void CArticleView::OnItemPrev() {
 
 			frame->m_wndBanner.Invalidate();
 
-			if (oldSite != site)
-				frame->AddSiteToSave(oldSite);
+			if (oldSite != site) frame->AddSiteToSave(oldSite);
 			// TODO: preload the site with unread items if reading only unread
 			frame->PreloadSite(site);
 		}
@@ -836,10 +783,8 @@ void CArticleView::OnItemOpen() {
 	LOG0(1, "CArticleView::OnItemOpen()");
 
 	ToNormalMode();
-	if (m_strContextMnuUrl.IsEmpty())
-		OpenOnlineMessage(m_pArticle->Link, m_pArticle->SiteItem);
-	else
-		OpenOnlineMessage(m_strContextMnuUrl, m_pArticle->SiteItem);
+	if (m_strContextMnuUrl.IsEmpty()) OpenOnlineMessage(m_pArticle->Link, m_pArticle->SiteItem);
+	else OpenOnlineMessage(m_strContextMnuUrl, m_pArticle->SiteItem);
 }
 
 
@@ -888,9 +833,6 @@ void CArticleView::OnEnclosureDelete() {
 	items.Add(m_pArticle);
 	ClearEnclosures(items);
 
-//	CEnclosureItem *ei = m_pArticle->Enclosures.GetHead();
-//	SetupEnclosureBar(ei);
-//	m_ctlEnclosureBar.Invalidate();
 	CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
 	frame->SetupEnclosureBar(m_pArticle);
 }
@@ -908,10 +850,8 @@ void CArticleView::OnCopyUrl() {
 	LOG0(1, "CArticleView::OnCopyUrl()");
 
 	CString link;
-	if (m_strContextMnuUrl.IsEmpty() && m_pArticle != NULL)
-		link = m_pArticle->Link;
-	else
-		link = m_strContextMnuUrl;
+	if (m_strContextMnuUrl.IsEmpty() && m_pArticle != NULL) link = m_pArticle->Link;
+	else link = m_strContextMnuUrl;
 
 	CopyTextToClipboard(GetSafeHwnd(), link);
 }
@@ -969,10 +909,8 @@ void CArticleView::OnBookmarkLink(UINT nID) {
 
 	// link to bookmark
 	CString link;
-	if (m_strContextMnuUrl.IsEmpty() && m_pArticle != NULL)
-		link = m_pArticle->Link;
-	else
-		link = m_strContextMnuUrl;
+	if (m_strContextMnuUrl.IsEmpty() && m_pArticle != NULL) link = m_pArticle->Link;
+	else link = m_strContextMnuUrl;
 
 	int idx = nID - ID_SOCIAL_BOOKMARK_BASE;
 	CSocialBookmarkSite *sbs = Config.SocialBookmarkSites[idx];
@@ -996,14 +934,8 @@ void CArticleView::OnBookmarkLink(UINT nID) {
 
 void CArticleView::OnViewImage() {
 	CString fileName = GetCacheFile(FILE_TYPE_IMAGE, Config.CacheLocation, m_strContextMnuUrl);
-	if (FileExists(fileName)) {
-		// file is cached -> open it with a local program
-		ShellOpenFile(fileName);
-	}
-	else {
-		// file not cached -> use web browser to open it
-		OpenUrlExt(m_strContextMnuUrl);
-	}
+	if (FileExists(fileName)) ShellOpenFile(fileName); 		// file is cached -> open it with a local program
+	else OpenUrlExt(m_strContextMnuUrl);					// file not cached -> use web browser to open it
 }
 
 void CArticleView::OnCopyImageLocation() {
@@ -1014,10 +946,8 @@ void CArticleView::OnSendByEmail() {
 	ToNormalMode();
 
 	CString link;
-	if (m_strContextMnuUrl.IsEmpty() && m_pArticle != NULL)
-		link = m_pArticle->Link;
-	else
-		link = m_strContextMnuUrl;
+	if (m_strContextMnuUrl.IsEmpty() && m_pArticle != NULL) link = m_pArticle->Link;
+	else link = m_strContextMnuUrl;
 
 	SendByEmail(link);
 }
@@ -1038,7 +968,6 @@ void CArticleView::ToFullScreenMode() {
 		::ReleaseDC(hWnd, hDC);
 
 		InFullScreen = TRUE;
-//		ResizeControls();
 	}
 }
 
@@ -1056,15 +985,12 @@ void CArticleView::ToNormalMode() {
 		::MoveWindow(hWnd, rc.left, rc.top + SCALEY(MENU_HEIGHT), rc.right, rc.bottom - (2 * SCALEY(MENU_HEIGHT)), TRUE);
 
 		InFullScreen = FALSE;
-//		ResizeControls();
 	}
 }
 
 void CArticleView::OnFullscreen() {
-	if (InFullScreen)
-		ToNormalMode();
-	else
-		ToFullScreenMode();
+	if (InFullScreen) ToNormalMode();
+	else ToFullScreenMode();
 }
 
 void CArticleView::OnUpdateFullscreen(CCmdUI *pCmdUI) {

@@ -1403,8 +1403,6 @@ LRESULT CMainFrame::OnUpdateFeed(WPARAM wParam, LPARAM lParam) {
 
 	CSiteItem *si = (CSiteItem *) lParam;
 	if (View == FeedView) {
-		// TODO: prevent loss of selection when feed is updated (important for seq. reading via ArticleDlg)
-
 		// reflect changes
 		if (si != NULL) {
 			if (Config.ActSiteIdx == SITE_UNREAD) {
@@ -1436,6 +1434,25 @@ LRESULT CMainFrame::OnUpdateFeed(WPARAM wParam, LPARAM lParam) {
 				// just a site
 				SelectSite(Config.ActSiteIdx);
 			}
+		}
+	}
+	else if (View == ArticleView) {
+		if (Config.ActSiteIdx == SITE_UNREAD) {
+			// TODO
+		}
+		else if (si == SiteList.GetAt(Config.ActSiteIdx)) {
+			SelectSite(Config.ActSiteIdx);
+
+			int selectedItem = -1;
+			for (int i = 0; i < m_wndFeedView.GetItemCount(); i++) {
+				if (m_wndFeedView.GetItem(i)->Hash.CompareNoCase(m_wndArticleView.m_pArticle->Hash) == 0) {
+					selectedItem = i;
+					break;
+				}
+			}
+
+			m_wndFeedView.SelectItem(selectedItem);
+			if (selectedItem != -1) m_wndFeedView.EnsureVisible(selectedItem);
 		}
 	}
 

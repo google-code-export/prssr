@@ -70,6 +70,7 @@ public:
 	void MarkAllRead();
 	void MarkAllUnread();
 	void MarkItem(int item, DWORD mask);
+	void SelectItem(int item);
 
 	void SortItems();
 	void OnSortAscending();

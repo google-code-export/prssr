@@ -252,6 +252,7 @@ void CAddFeedDlg::DoDataExchange(CDataExchange* pDX) {
 BEGIN_MESSAGE_MAP(CAddFeedDlg, CCeDialog)
 	//{{AFX_MSG_MAP(CAddFeedDlg)
 	ON_COMMAND(ID_ADD, OnAdd)
+	ON_COMMAND(ID_CLOSE, OnClose)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -283,6 +284,12 @@ void CAddFeedDlg::OnAdd() {
 		OnOK();
 }
 
+void CAddFeedDlg::OnClose() {
+	LOG0(1, "CAddFeedDlg::OnClose()");
+	
+	EndDialog(IDOK);
+}
+
 void CAddFeedDlg::UpdateControls() {
 }
 
@@ -311,9 +318,8 @@ void CAddFeedDlg::OnOK() {
 		else
 			m_pProgress->SetActiveWindow();
 	}
-	else {
-		EndDialog(IDOK);
-	}
+	else
+		OnClose();
 }
 
 
@@ -460,7 +466,7 @@ DWORD CAddFeedDlg::AddThread() {
 	DWORD error = 0;
 	if (bOK) {
 		error = 0;
-		CDialog::OnOK();
+		SendMessage(WM_COMMAND, ID_CLOSE);
 	}
 	else {
 		if (Downloader->IsTerminated())

@@ -81,6 +81,7 @@ protected:
 	//{{AFX_MSG(CAddFeedDlg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnAdd();
+	afx_msg void OnClose();
 	//}}AFX_MSG
 
 	virtual void OnOK();
