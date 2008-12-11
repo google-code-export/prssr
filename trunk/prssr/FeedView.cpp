@@ -1299,19 +1299,7 @@ void CFeedView::OpenItem(CFeedItem *fi) {
 	frame->SetupEnclosureBar(fi);
 
 	// setup controls
-	CDC *pDC = GetDC();
-	CString strSiteTitle = GetNumberItemText(pDC, si->Name, si->GetUnreadCount(), GetSystemMetrics(SM_CXSCREEN) - SCALEX(22 + 50));
-	ReleaseDC(pDC);
-
-	frame->m_wndBanner.SetTitle(strSiteTitle);
-	frame->m_wndBanner.SetItems(m_nSelectFirst + 1, m_oItems.GetSize());
-	frame->m_wndBanner.SetIcon(si->ImageIdx);
-
-	if (fi != NULL) frame->m_wndBanner.SetFlagged(fi->IsFlagged() ? FLAG_ICON : -1);
-
-	if (::IsWindow(frame->m_wndBanner.GetSafeHwnd()))
-		frame->m_wndBanner.Invalidate();
-
+	frame->SetupBanner(fi, m_nSelectFirst + 1, m_oItems.GetSize());
 	frame->m_wndArticleView.ShowArticle();
 	frame->UpdateTopBar();
 

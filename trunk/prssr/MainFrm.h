@@ -120,6 +120,7 @@ protected:
 	void SetupSummaryView();
 	void SetupFeedView();
 	void SetupArticleView();
+	void SetupBanner(CFeedItem *fi, int item, int total);
 
 	void SetupEnclosureBar(CFeedItem *fi);
 	void NoNewMessage();
