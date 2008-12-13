@@ -817,8 +817,9 @@ void CSiteManagerDlg::OnRemove() {
 			Syncer->RemoveSubscription(si->Info->XmlUrl);
 		}
 
-		CString fileName = GetCachePath(FILE_TYPE_FEED, Config.CacheLocation) + _T("\\") + si->Info->FileName;
-		DeleteFile(fileName);
+		DeleteFile(GetCachePath(FILE_TYPE_FEED, Config.CacheLocation) + _T("\\") + si->Info->FileName);
+		DeleteFile(GetCacheFile(FILE_TYPE_FAVICON, Config.CacheLocation, si->Info->FileName));
+
 		DeleteItem(hSelItem, TRUE);
 		UpdateControls();
 	}
