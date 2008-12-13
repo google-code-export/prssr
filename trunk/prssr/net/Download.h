@@ -92,7 +92,6 @@ public:
 	virtual BOOL SaveHttpObject(CString &strURL, const CString &strFileName, LPVOID context = NULL);
 	virtual BOOL GetHttpObject(CString &strURL, CString &strBody, LPVOID context = NULL);
 
-	virtual BOOL PartialDownload(CString &strURL, const CString &strFileName, DWORD startOffset, DWORD endOffset = 0, LPVOID context = NULL);
 	virtual BOOL Post(CString &strURL, const CString &strBody, CString &response, LPVOID context = NULL);
 	virtual void Terminate();
 	virtual BOOL IsTerminated();
@@ -108,6 +107,7 @@ public:
 	DWORD GetDownloadedFileSize() { return HttpConnection.GetDownloadedFileSize(); }
 
 	CString GetCharset() { return Charset; }
+	CString GetMimeType() { return MimeType; }
 
 	void SetCookie(const CString &cookie);
 	void SetUAString(const CString &uaString) { HttpConnection.UserAgent = uaString; }
@@ -142,6 +142,8 @@ protected:
 
 	CString URL;			// URL that is processed
 	CString Charset;		// charset of the content
+	CString MimeType;		// MIME type of the downloaded file
+	CString Range;			// range of the file to download
 
 	// host
 	DWORD ServiceType;

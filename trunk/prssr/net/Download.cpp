@@ -131,6 +131,7 @@ void CDownloader::SaveHeaders(CHttpResponse *res) {
 
 	if (res->GetHeader(_T("Content-Type"), value)) {
 		value.MakeLower();
+		MimeType = value;
 		int nPosCharset = value.Find(_T("charset="));
 		if (nPosCharset != -1) {
 			int nPosSemiColon = value.Find(';', nPosCharset);
@@ -583,6 +584,7 @@ BOOL CDownloader::OnResponse(CHttpRequest *&req, CHttpResponse *&res, LPVOID con
 					if (HttpConnection.Open(ServiceType, ServerName, Port)) {
 						req = HttpConnection.CreateRequest(object);
 						if (req != NULL) {
+							if (!Range.IsEmpty()) req->SetHeader(_T("Range"), Range);
 							req->AddHeaders(AdditionalHeaders);
 							HttpConnection.SendRequest(req);
 							res = HttpConnection.ReceiveResponse();
@@ -658,6 +660,19 @@ BOOL CDownloader::IsTerminated() {
 BOOL CDownloader::SaveHttpObject(CString &url, const CString &strFileName, LPVOID context/* = NULL*/) {
 	LOG1(3, "CDownloader::SaveHttpObject('%S')", url);
 
+	HANDLE file = CreateFile(strFileName, 0, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+	if (file == INVALID_HANDLE_VALUE) {
+		// not exists
+		CreatePath(strFileName);
+	}
+	else {
+		// file exists => resume download
+		DWORD fileSize = GetFileSize(file, NULL);
+		CloseHandle(file);
+
+		Range.Format(_T("bytes=%d-"), fileSize);
+	}
+
 	Error = DOWNLOAD_ERROR_NONE;
 	URL = url;
 
@@ -674,6 +689,7 @@ BOOL CDownloader::SaveHttpObject(CString &url, const CString &strFileName, LPVOI
 				CHttpRequest *req = HttpConnection.CreateRequest(objectName);
 				if (req != NULL) {
 					State = DOWNLOAD_STATE_SENDING_REQUEST;
+					if (!Range.IsEmpty()) req->SetHeader(_T("Range"), Range);
 					req->AddHeaders(AdditionalHeaders);
 					req->AddCookies(Cookies);
 					OnBeforeSendRequest(req, context);
@@ -757,21 +773,6 @@ BOOL CDownloader::GetHttpObject(CString &url, CString &strBody, LPVOID context/*
 	DeleteFile(tempFileName);
 
 	return ret;
-}
-
-//
-// ResumeDownload
-//
-BOOL CDownloader::PartialDownload(CString &url, const CString &strFileName, DWORD startOffset, DWORD endOffset/* = 0*/, LPVOID context/* = NULL*/) {
-	LOG1(3, "CDownloader::partialDownload('%S')", url);
-
-	FreeAdditionalHeaders();
-	CString sRange;
-	if (endOffset == 0) sRange.Format(_T("bytes=%d-"), startOffset);
-	else sRange.Format(_T("bytes=%d-%d"), startOffset, endOffset);
-	AdditionalHeaders.AddTail(new CHttpHeader(_T("Range"), sRange));
-
-	return SaveHttpObject(url, strFileName, context);
 }
 
 BOOL CDownloader::Post(CString &url, const CString &strBody, CString &response, LPVOID context/* = NULL*/) {

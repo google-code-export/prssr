@@ -646,7 +646,11 @@ BOOL CHttpConnection::GetFile(CHttpResponse *res, const CString &fileName) {
 	CString sContentLength;
 	ResponseBodySize = 0;
 	ResponseBodyDownloaded = 0;
-	if (res->GetHeader(_T("Content-Length"), sContentLength)) {
+	if (res->GetHeader(_T("Content-Range"), sContentLength)) {
+		DWORD end;
+		swscanf(sContentLength, _T("bytes %d-%d/%d"), &ResponseBodyDownloaded, &end, &ResponseBodySize);
+	}
+	else if (res->GetHeader(_T("Content-Length"), sContentLength)) {
 		swscanf(sContentLength, _T("%d"), &ResponseBodySize);
 	}
 
