@@ -1025,6 +1025,22 @@ void CFeedView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			}
 			break;
 
+		case VK_APPS: {
+			CPoint pt;
+			int y;
+
+			if (m_nSelectFirst > 0) y = (m_oItemHeight[m_nSelectFirst] + m_oItemHeight[m_nSelectFirst - 1]) / 2;
+			else y = m_oItemHeight[m_nSelectFirst] / 2;
+			y -= m_nViewTop;
+
+			pt.x = m_nClientWidth / 2;
+			pt.y = y;
+
+			ClientToScreen(&pt);
+
+			ContextMenu(&pt);
+			} break;
+
 		default:
 			CWnd::OnKeyUp(nChar, nRepCnt, nFlags);
 			break;

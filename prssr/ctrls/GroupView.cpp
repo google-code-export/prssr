@@ -1001,6 +1001,17 @@ void CGroupView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			}
 			break;
 
+		case VK_APPS: {
+			CPoint pt;
+			GVITEM *gi = Items.GetAt(m_hSelectedItem);
+			pt.x = m_nClientWidth / 2;
+			pt.y = gi->yTop - m_nViewTop + SCALEY(ItemHeight / 2);
+
+			ClientToScreen(&pt);
+
+			ContextMenu(&pt);
+			} break;
+
 		default:
 			CView::OnKeyUp(nChar, nRepCnt, nFlags);
 			break;

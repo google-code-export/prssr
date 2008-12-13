@@ -60,8 +60,8 @@ BEGIN_MESSAGE_MAP(CCeEdit, CEdit)
 	ON_WM_INITMENUPOPUP()
 	ON_CONTROL_REFLECT(EN_SETFOCUS, OnSetfocus)
 	ON_CONTROL_REFLECT(EN_KILLFOCUS, OnKillfocus)
+	ON_WM_KEYUP()
 	//}}AFX_MSG_MAP
-//	ON_NOTIFY_REFLECT(GN_CONTEXTMENU, OnContextMenu)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -69,7 +69,7 @@ END_MESSAGE_MAP()
 
 
 void CCeEdit::OnLButtonDown(UINT nFlags, CPoint point) {
-    SHRGINFO shrgi = {0};
+    SHRGINFO shrgi = { 0 };
 
     shrgi.cbSize        = sizeof(SHRGINFO);
     shrgi.hwndClient    = m_hWnd;
@@ -219,4 +219,20 @@ void CCeEdit::OnKillfocus() {
 
 	if (!(GetStyle() & ES_READONLY))
 		SHSipPreference(GetSafeHwnd(), SIP_DOWN);
+}
+
+void CCeEdit::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
+	switch (nChar) {
+		case VK_APPS: {
+			CRect rc;
+			GetClientRect(rc);
+
+			CPoint pt((rc.left + rc.right) / 2, (rc.top + rc.bottom) / 2);
+			ContextMenu(pt);
+			} break;
+
+		default:
+			CEdit::OnKeyUp(nChar, nRepCnt, nFlags);
+			break;
+	}
 }

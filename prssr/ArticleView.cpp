@@ -63,10 +63,8 @@ void OpenOnlineMessage(const CString &link, CSiteItem *si) {
 	}
 	else {
 		// first try to rewrite the URL
-		if (Config.UseHtmlOptimizer && Config.OpenMsgWithHtmlOptimizer)
-			url = MakeHtmlOptimizerUrl(url, Config.HtmlOptimizerURL);
-		else
-			url = RewriteUrl(url, Config.RewriteRules);
+		if (Config.UseHtmlOptimizer && Config.OpenMsgWithHtmlOptimizer) url = MakeHtmlOptimizerUrl(url, Config.HtmlOptimizerURL);
+		else url = RewriteUrl(url, Config.RewriteRules);
 	}
 
 	OpenUrlExt(url);
