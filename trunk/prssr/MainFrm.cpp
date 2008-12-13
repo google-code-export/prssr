@@ -266,8 +266,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 	if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-//	Config.MainView = MAIN_VIEW_SUMMARY_VIEW;
-
 	// view
 	switch (Config.MainView) {
 		case MAIN_VIEW_FEED_LIST:
@@ -450,10 +448,9 @@ void CMainFrame::OnSetFocus(CWnd* pOldWnd) {
 	LOG0(5, "CMainFrame::OnSetFocus()");
 
 	// forward focus to the view window
-	if (View == FeedView)
-		m_wndFeedView.SetFocus();
-	else
-		m_wndSummaryView.SetFocus();
+	if (View == FeedView) m_wndFeedView.SetFocus();
+	else if (View == SummaryView) m_wndSummaryView.SetFocus();
+	else if (View == ArticleView) m_wndArticleView.SetFocus();
 }
 
 BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo) {
@@ -462,24 +459,18 @@ BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO*
 	// let the view have first crack at the command
 	switch (View) {
 		case FeedView:
-			if (m_wndFeedView.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
-				return TRUE;
+			if (m_wndFeedView.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo)) return TRUE;
 			break;
 
 		case SummaryView:
-			if (m_wndSummaryView.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
-				return TRUE;
+			if (m_wndSummaryView.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo)) return TRUE;
 			break;
 
 		case ArticleView:
-			if (m_wndArticleView.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
-				return TRUE;
-			if (m_wndBanner.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
-				return TRUE;
-			if (m_wndEnclosureBar.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
-				return TRUE;
-			if (m_wndInfoBar.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
-				return TRUE;
+			if (m_wndArticleView.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo)) return TRUE;
+			if (m_wndBanner.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo)) return TRUE;
+			if (m_wndEnclosureBar.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo)) return TRUE;
+			if (m_wndInfoBar.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo)) return TRUE;
 			break;
 	}
 
@@ -2370,7 +2361,8 @@ BOOL CMainFrame::PreTranslateMessage(MSG* pMsg) {
 			}
 
 			if (pMsg->wParam == VK_LEFT ||
-				pMsg->wParam == VK_RIGHT)
+				pMsg->wParam == VK_RIGHT ||
+				pMsg->wParam == VK_APPS)
 			{
 				TranslateMessage(pMsg);
 				SendMessage(pMsg->message, pMsg->wParam, pMsg->lParam);
@@ -2396,7 +2388,7 @@ BOOL CMainFrame::PreTranslateMessage(MSG* pMsg) {
 			}
 		}
 		else if (pMsg->message == WM_KEYUP) {
-			if (pMsg->wParam == VK_RETURN) {
+			if (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_APPS) {
 				TranslateMessage(pMsg);
 				SendMessage(pMsg->message, pMsg->wParam, pMsg->lParam);
 				return TRUE;
@@ -2500,6 +2492,15 @@ void CMainFrame::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags) {
 					CFrameWnd::OnKeyUp(nChar, nRepCnt, nFlags);
 				}
 				break;
+
+			case VK_APPS: {
+				CRect rc;
+				GetClientRect(rc);
+
+				CPoint pt((rc.left + rc.right) / 2, SCALEY(30));
+				ClientToScreen(&pt);
+				m_wndArticleView.ContextMenu(pt);
+				} break;
 
 			default:
 				CFrameWnd::OnKeyUp(nChar, nRepCnt, nFlags);
