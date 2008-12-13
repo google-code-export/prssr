@@ -82,6 +82,9 @@ BOOL CTextProgressCtrl::Create(DWORD dwStyle, CRect &rc, CWnd *parent, UINT nID)
 	lf.lfHeight = SCALEY(13);
 	m_fntText.CreateFontIndirect(&lf);
 
+	lf.lfHeight = SCALEY(12);
+	m_fntSize.CreateFontIndirect(&lf);
+
 	return ret;
 }
 
@@ -162,18 +165,19 @@ void CTextProgressCtrl::OnPaint() {
 
 	dc.SetBkMode(TRANSPARENT);
 	dc.SetTextColor(::GetSysColor(COLOR_HIGHLIGHTTEXT));
-	dc.SelectObject(&m_fntText);
 
 	CRect rcSize(0, 0, 0, 0);
 	if (!m_strSize.IsEmpty()) {
+		dc.SelectObject(&m_fntSize);
 		rcSize = rcClient;
-		dc.DrawText(m_strSize, rcSize, DT_RIGHT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX | DT_CALCRECT);
-		dc.DrawText(m_strSize, rcClient, DT_RIGHT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+		dc.DrawText(m_strSize, rcSize, DT_RIGHT | DT_BOTTOM | DT_SINGLELINE | DT_NOPREFIX | DT_CALCRECT);
+		dc.DrawText(m_strSize, rcClient, DT_RIGHT | DT_BOTTOM | DT_SINGLELINE | DT_NOPREFIX);
 	}
 
+	dc.SelectObject(&m_fntText);
 	CRect rcProgress = rcClient;
 	rcProgress.right -= rcSize.Width() - SCALEX(6);
-	DrawTextEndEllipsis(dc, m_strText, rcProgress, DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
+	DrawTextEndEllipsis(dc, m_strText, rcProgress, DT_LEFT | DT_BOTTOM | DT_SINGLELINE | DT_NOPREFIX);
 
 	// validate
 	GetClientRect(&rcClient);
