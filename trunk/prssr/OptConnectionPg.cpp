@@ -202,7 +202,7 @@ void COptConnectionPg::OnEdit() {
 
 void COptConnectionPg::OnRemove() {
 	int idx = m_ctlProxies.GetCurSel();
-	if (idx > 0 && PrssrMessageBox(IDS_CONFIRM_OPERATION, IDS_DELETE_PROXY_PROFILE, MB_YESNO | MB_ICONQUESTION, IDS_DELETE) == IDYES) {
+	if (idx > 0 && PrssrMessageBox(IDS_CONFIRM_OPERATION, IDS_DELETE_PROXY_PROFILE, MB_YESNO | MB_ICONSTOP, IDS_DELETE) == IDYES) {
 		CProxyProfile *prf = Config.ProxyProfiles[idx - 1];
 		Config.ProxyProfiles.RemoveAt(idx - 1);
 		m_ctlProxies.DeleteString(idx);

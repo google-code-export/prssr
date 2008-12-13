@@ -146,7 +146,7 @@ void CRewritingDlg::OnRemove() {
 	int item = m_ctlRules.GetNextItem(-1, LVNI_SELECTED);
 	if (item != -1) {
 		CRewriteRule *rr = (CRewriteRule *) m_ctlRules.GetItemData(item);
-		if (rr != NULL && PrssrMessageBox(IDS_CONFIRM_OPERATION, IDS_DELETE_RULE, MB_YESNO | MB_ICONQUESTION, IDS_DELETE) == IDYES) {
+		if (rr != NULL && PrssrMessageBox(IDS_CONFIRM_OPERATION, IDS_DELETE_RULE, MB_YESNO | MB_ICONSTOP, IDS_DELETE) == IDYES) {
 			m_ctlRules.DeleteItem(item);
 			delete rr;
 		}

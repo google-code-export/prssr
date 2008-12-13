@@ -260,7 +260,7 @@ void CKeywordManagerDlg::OnRemove() {
 
 	int nSelItem = m_ctlKeywords.GetNextItem(0, LVNI_SELECTED);
 	if (nSelItem != -1 && m_ctlKeywords.GetItemData(nSelItem) == TRUE &&
-		PrssrMessageBox(IDS_CONFIRM_OPERATION, IDS_DELETE_KEYWORDS, MB_YESNO | MB_ICONQUESTION, IDS_DELETE) == IDYES)
+		PrssrMessageBox(IDS_CONFIRM_OPERATION, IDS_DELETE_KEYWORDS, MB_YESNO | MB_ICONSTOP, IDS_DELETE) == IDYES)
 	{
 		m_ctlKeywords.SetRedraw(FALSE);
 		int nSelItem = m_ctlKeywords.GetNextItem(0, LVNI_SELECTED);
