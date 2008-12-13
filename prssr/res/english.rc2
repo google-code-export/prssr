@@ -787,8 +787,8 @@ STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "MessageBox"
 FONT 8, "Tahoma"
 BEGIN
-    ICON            IDC_STATIC,IDC_ICO,5,20,21,20
-    LTEXT           "",IDC_TEXT,30,20,125,30
+    ICON            IDI_LOCK_ALERT,IDC_ICO,5,20,21,20
+    LTEXT           "",IDC_TEXT,35,20,120,30
 END
 
 /////////////////////////////////////////////////////////////////////////////

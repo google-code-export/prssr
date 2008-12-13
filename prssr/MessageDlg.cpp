@@ -54,6 +54,16 @@ CMessageDlg::CMessageDlg(UINT nCaption, UINT nText, DWORD style, UINT btnID)
 	else m_nMenuID = IDR_DONE;
 
 	m_strSKLeft.LoadString(btnID);
+
+	HMODULE hGWES = LoadLibraryEx(L"gwes.exe", NULL, LOAD_LIBRARY_AS_DATAFILE);
+	int ico = style & 0x70;
+	switch (ico) {
+		default:
+		case 1: m_hIcon = LoadIcon(hGWES, MAKEINTRESOURCE(MB_ICONHAND)); break;
+		case 2: m_hIcon = LoadIcon(hGWES, MAKEINTRESOURCE(MB_ICONQUESTION)); break;
+		case 3: m_hIcon = LoadIcon(hGWES, MAKEINTRESOURCE(MB_ICONEXCLAMATION)); break;
+		case 4: m_hIcon = LoadIcon(hGWES, MAKEINTRESOURCE(MB_ICONASTERISK)); break;
+	}
 }
 
 CMessageDlg::~CMessageDlg() {
@@ -66,6 +76,7 @@ void CMessageDlg::DoDataExchange(CDataExchange* pDX) {
 
 	CCeDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CMessageDlg)
+	DDX_Control(pDX, IDC_ICO, m_ctlIcon);
 	DDX_Control(pDX, IDC_TEXT, m_ctlText);
 	//}}AFX_DATA_MAP
 }
@@ -97,6 +108,9 @@ BOOL CMessageDlg::OnInitDialog() {
 	LOG0(3, "CMessageDlg::OnInitDialog()");
 
 	CCeDialog::OnInitDialog();
+
+//	m_ctlIcon.SetIcon(m_hIcon, TRUE);
+	SendDlgItemMessageW(GetSafeHwnd(), IDC_ICO, STM_SETIMAGE, IMAGE_ICON, (LPARAM) m_hIcon);
 
 	if ((m_nStyle & MB_YESNO) && (!m_strSKLeft.IsEmpty())) SetMenuCaption(m_hwndCmdBar, IDYES, m_strSKLeft);
 
