@@ -808,7 +808,7 @@ void CSiteManagerDlg::OnRemove() {
 	if (hSelItem == NULL || hSelItem == m_ctlSites.GetRootItem())
 		return;
 
-	if (PrssrMessageBox(IDS_CONFIRM_OPERATION, IDS_DELETE_ITEMS, MB_YESNO | MB_ICONQUESTION, IDS_DELETE) == IDYES) {
+	if (PrssrMessageBox(IDS_CONFIRM_OPERATION, IDS_DELETE_ITEMS, MB_YESNO | MB_ICONSTOP, IDS_DELETE) == IDYES) {
 		CSiteItem *si = (CSiteItem *) m_ctlSites.GetItemData(hSelItem);
 
 		// update subscription in syncer
@@ -1050,7 +1050,7 @@ void CSiteManagerDlg::OnExportOpml() {
 
 		BOOL bExport = TRUE;
 		if (FileExists(strDestinationFileName))
-			bExport = PrssrMessageBox(IDS_CONFIRM_OPERATION, IDS_OVERWRITE_OPML, MB_YESNO | MB_ICONQUESTION, IDS_OVERWRITE) == IDYES;
+			bExport = PrssrMessageBox(IDS_CONFIRM_OPERATION, IDS_OVERWRITE_OPML, MB_YESNO | MB_ICONSTOP, IDS_OVERWRITE) == IDYES;
 
 		if (bExport) {
 			HTREEITEM hRoot = m_ctlSites.GetRootItem();
@@ -1061,12 +1061,8 @@ void CSiteManagerDlg::OnExportOpml() {
 			siteListToExport.SetRoot(root);
 
 			COpmlFile opml;
-			if (opml.Export(strDestinationFileName, siteListToExport)) {
-				AfxMessageBox(IDS_EXPORT_OK);
-			}
-			else {
-				Error(IDS_CANT_EXPORT_FILE);
-			}
+			if (opml.Export(strDestinationFileName, siteListToExport)) AfxMessageBox(IDS_EXPORT_OK);
+			else Error(IDS_CANT_EXPORT_FILE);
 
 			siteListToExport.Detach();
 		}

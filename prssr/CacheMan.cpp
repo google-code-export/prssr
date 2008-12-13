@@ -589,7 +589,7 @@ void CCacheManPg::OnRemove() {
 
 
 		//
-		if (DeleteFileList.GetCount() > 0 && PrssrMessageBox(IDS_DELETE_ITEMS, MB_YESNO | MB_ICONQUESTION, IDS_DELETE) == IDYES) {
+		if (DeleteFileList.GetCount() > 0 && PrssrMessageBox(IDS_DELETE_ITEMS, MB_YESNO | MB_ICONSTOP, IDS_DELETE) == IDYES) {
 			m_pProgress = new CDeleteCacheProgressDlg(this);
 			m_pProgress->OpenDialog(IDS_DELETING, this);
 
@@ -689,7 +689,7 @@ void CCacheManPg::DoPurgeCache() {
 }
 
 void CCacheManPg::OnPurgeCache() {
-	if (PrssrMessageBox(IDS_CONFIRM_OPERATION, IDS_PURGE_CACHE_WARNING, MB_YESNO | MB_ICONQUESTION) == IDYES) {
+	if (PrssrMessageBox(IDS_CONFIRM_OPERATION, IDS_PURGE_CACHE_WARNING, MB_YESNO | MB_ICONSTOP) == IDYES) {
 		if (m_pPurgeProgress == NULL) {
 			DoPurgeCache();
 
