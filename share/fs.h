@@ -46,5 +46,6 @@ BOOL IsFileChanged(LPCTSTR fileName, FILETIME *ft);
 void RemoveDirectories(const CString &rootPath);
 void ScanDirForFiles(const CString &dir, const CString &mask, CList<CFileData *, CFileData *> &list);
 BOOL RemoveLastPathPart(CString &strPath);
+void RemoveEmptyDirs(const CString &fileName, const CString &rootDir);
 
 #endif

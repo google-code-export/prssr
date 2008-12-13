@@ -131,15 +131,7 @@ void ClearCacheFile(EFileType type, const CString &cacheLocation, const CString 
 
 	CString strFileName = fileName;
 	DeleteFile(strFileName);
-
-	// remove empty dirs, if there are some
-	RemoveLastPathPart(strFileName);
-	while (strFileName.GetLength() > 0 && strFileName.CompareNoCase(rootDir) != 0) {
-		if (RemoveDirectory(strFileName))
-			RemoveLastPathPart(strFileName);
-		else
-			break;
-	}
+	RemoveEmptyDirs(strFileName, rootDir);
 }
 
 // DDX/DDV stuff ////

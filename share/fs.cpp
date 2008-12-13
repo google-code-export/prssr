@@ -159,3 +159,14 @@ BOOL RemoveLastPathPart(CString &strPath) {
 	else
 		return FALSE;
 }
+
+void RemoveEmptyDirs(const CString &fileName, const CString &rootDir) {
+	// remove empty dirs, if there are some
+	CString strFileName = fileName;
+
+	RemoveLastPathPart(strFileName);
+	while (strFileName.GetLength() > 0 && strFileName.CompareNoCase(rootDir) != 0) {
+		if (RemoveDirectory(strFileName)) RemoveLastPathPart(strFileName);
+		else break;
+	}
+}

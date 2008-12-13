@@ -80,15 +80,7 @@ void ClearCacheFiles(EFileType type, const CString &cacheLocation, CStringList &
 	while (!deleteList.IsEmpty()) {
 		CString strPath = deleteList.RemoveHead();
 		DeleteFile(strPath);
-
-		// remove empty dirs, if there are some
-		RemoveLastPathPart(strPath);
-		while (strPath.GetLength() > 0 && strPath.CompareNoCase(rootDir) != 0) {
-			if (RemoveDirectory(strPath))
-				RemoveLastPathPart(strPath);
-			else
-				break;
-		}
+		RemoveEmptyDirs(strPath, rootDir);
 	}
 }
 
@@ -301,10 +293,8 @@ void CUpdateBar::EnqueueHtml(const CString &url, CSiteItem *siteItem) {
 	// URL rewriting
 	CString surl = SanitizeUrl(url);
 	CString rurl;
-	if (Config.UseHtmlOptimizer)
-		rurl = MakeHtmlOptimizerUrl(surl, Config.HtmlOptimizerURL);
-	else
-		rurl = RewriteUrl(surl, Config.RewriteRules);
+	if (Config.UseHtmlOptimizer) rurl = MakeHtmlOptimizerUrl(surl, Config.HtmlOptimizerURL);
+	else rurl = RewriteUrl(surl, Config.RewriteRules);
 
 	CString strFileName = GetCacheFile(FILE_TYPE_HTML, Config.CacheLocation, surl);
 	if (!FileExists(strFileName)) {
@@ -395,7 +385,6 @@ void CUpdateBar::UpdateFeeds() {
 
 	BOOL authenticated;
 	if (sync->NeedAuth()) {
-		// authenticate with greader
 		State = UPDATE_STATE_AUTHENTICATING;
 		UpdateProgressText();
 		authenticated = sync->Authenticate();
@@ -494,27 +483,16 @@ void CUpdateBar::UpdateFeeds() {
 				if (!ui->UpdateOnly) {
 					// enqueue items to cache
 					if (si->Info->UseGlobalCacheOptions) {
-						// cache item images
-						if (Config.CacheImages)
-							EnqueueImages(newItems);
-
-						// cache HTML content
-						if (Config.CacheHtml)
-							EnqueueHtmls(newItems);
+						if (Config.CacheImages) EnqueueImages(newItems);	// cache item images
+						if (Config.CacheHtml) EnqueueHtmls(newItems);		// cache HTML content
 					}
 					else {
-						// cache item images
-						if (si->Info->CacheItemImages)
-							EnqueueImages(newItems);
-
-						// cache HTML content
-						if (si->Info->CacheHtml)
-							EnqueueHtmls(newItems);
+						if (si->Info->CacheItemImages) EnqueueImages(newItems);		// cache item images
+						if (si->Info->CacheHtml) EnqueueHtmls(newItems);			// cache HTML content
 					}
 
 					// cache enclosures
-					if (si->Info->CacheEnclosures)
-						EnqueueEnclosures(newItems, si->Info->EnclosureLimit);
+					if (si->Info->CacheEnclosures) EnqueueEnclosures(newItems, si->Info->EnclosureLimit);
 				}
 
 				// get favicon if neccessary
@@ -523,8 +501,7 @@ void CUpdateBar::UpdateFeeds() {
 					CString faviconFileName = GetCacheFile(FILE_TYPE_FAVICON, Config.CacheLocation, si->Info->FileName);
 					// get favicon
 					if (DownloadFavIcon(si->Feed->HtmlUrl, faviconFileName)) {
-						// update favicon in GUI
-						if (frame != NULL) frame->SendMessage(UWM_UPDATE_FAVICON, 0, (LPARAM) si);
+						if (frame != NULL) frame->SendMessage(UWM_UPDATE_FAVICON, 0, (LPARAM) si);	// update favicon in GUI
 					}
 
 					si->CheckFavIcon = FALSE;
@@ -585,18 +562,12 @@ void CUpdateBar::DownloadHtmlPage(CDownloadItem *di) {
 	if (FileExists(di->FileName))
 		return;						// file already exists
 
-	CString tmpFileName = di->FileName + _T(".part");
-	if (FileExists(tmpFileName))
-		DeleteFile(tmpFileName);
+	BOOL ok = FALSE;
+	m_ctlProgress.SetRange(0, 150000);
 
 	CString url = di->URL;
 
-	//
-	m_ctlProgress.SetRange(0, 150000);
-
-	BOOL ok = FALSE;
-	CreatePath(tmpFileName);
-
+	CString tmpFileName = di->FileName + _T(".part");
 	Downloader->SetUAString(Config.UserAgent);
 	if (Downloader->SaveHttpObject(url, tmpFileName))
 		ok = TRUE;
@@ -610,9 +581,20 @@ void CUpdateBar::DownloadHtmlPage(CDownloadItem *di) {
 	}
 
 	if (ok) {
-		if (!TranslateForOfflineReading(tmpFileName, di->FileName, Downloader->GetCharset()))
-			DeleteFile(di->FileName);
-		DeleteFile(tmpFileName);
+		if (Downloader->GetMimeType().CompareNoCase(_T("text/html")) == 0) {
+			if (!TranslateForOfflineReading(tmpFileName, di->FileName, Downloader->GetCharset()))
+				DeleteFile(di->FileName);	
+			DeleteFile(tmpFileName);
+		}
+		else {
+			// it was not an HTML page -> move it among enclosures
+			CString fileName = GetCacheFile(FILE_TYPE_ENCLOSURE, Config.CacheLocation, di->URL);
+			CreatePath(fileName);
+			MoveFile(tmpFileName, fileName);
+
+			CString rd = GetCachePath(FILE_TYPE_HTML, Config.CacheLocation);
+			RemoveEmptyDirs(tmpFileName, rd);
+		}
 	}
 	else {
 		if (Downloader->Error == DOWNLOAD_ERROR_DISK_FULL) {
@@ -645,23 +627,8 @@ void CUpdateBar::DownloadFile(CDownloadItem *di) {
 	Downloader->SetUAString(_T(""));
 
 	CString tmpFileName = di->FileName + _T(".part");
-	HANDLE file = CreateFile(tmpFileName, 0, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-	if (file == INVALID_HANDLE_VALUE) {
-		// not exists
-		CreatePath(tmpFileName);
-		if (Downloader->SaveHttpObject(di->URL, tmpFileName))
-			ok = TRUE;
-	}
-	else {
-		// file exists => resume download
-		DWORD fileSize = GetFileSize(file, NULL);
-		CloseHandle(file);
-
-		if (Downloader->PartialDownload(di->URL, tmpFileName, fileSize))
-			ok = TRUE;
-	}
-
-	if (ok) {
+	CString url = di->URL;
+	if (Downloader->SaveHttpObject(url, tmpFileName)) {
 		MoveFile(tmpFileName, di->FileName);
 	}
 	else {
