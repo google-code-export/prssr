@@ -65,6 +65,7 @@ protected:
 	BOOL RedrawPlanned;
 
 	CFont m_fntText;
+	CFont m_fntSize;
 	CString m_strText;
 	CString m_strSize;
 
