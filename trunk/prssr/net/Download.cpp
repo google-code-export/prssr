@@ -131,12 +131,16 @@ void CDownloader::SaveHeaders(CHttpResponse *res) {
 
 	if (res->GetHeader(_T("Content-Type"), value)) {
 		value.MakeLower();
-		MimeType = value;
 		int nPosCharset = value.Find(_T("charset="));
 		if (nPosCharset != -1) {
 			int nPosSemiColon = value.Find(';', nPosCharset);
 			Charset = nPosSemiColon == -1 ? value.Mid(nPosCharset + 8) : value.Mid(nPosCharset + 8, nPosSemiColon - nPosCharset - 8);
 		}
+
+		int nPosSemiColon = value.Find(';');
+		if (nPosSemiColon != -1) MimeType = value.Left(nPosSemiColon);
+		else MimeType = value;
+		value.TrimRight();
 	}
 }
 
