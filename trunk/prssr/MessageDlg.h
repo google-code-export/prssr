@@ -41,6 +41,7 @@ public:
 	enum { IDD = IDD_MESSAGEBOX };
 	enum { IDD_WIDE = IDD_MESSAGEBOX_WIDE };
 	//}}AFX_DATA
+	CWnd m_ctlIcon;
 	CStatic m_ctlText;
 
 // Overrides
@@ -60,6 +61,7 @@ protected:
 	CString m_strText;
 	CString m_strSKLeft;
 	DWORD m_nStyle;
+	HICON m_hIcon;
 
 	virtual void ResizeControls();
 
