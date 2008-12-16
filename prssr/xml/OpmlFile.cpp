@@ -112,7 +112,8 @@ BOOL COpmlFile::ParseOutline(CXmlNode *parent, CSiteItem *item) {
 						bSpecificCaching = TRUE;
 				}
 				else if (name.CompareNoCase(_T("store_images")) == 0 ||
-						name.CompareNoCase(_T("cacheImages")) == 0) {
+						name.CompareNoCase(_T("cacheImages")) == 0)
+				{
 					swscanf(value, _T("%d"), &bCacheItemImages);
 					bGroup = FALSE;
 					if (Config.CacheImages != bCacheItemImages)
