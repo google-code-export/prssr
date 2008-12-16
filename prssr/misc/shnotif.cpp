@@ -90,8 +90,8 @@ void prssrNotification(int newItems) {
 		SND.cbStruct = sizeof(SHNOTIFICATIONDATA);
 	}
 
-	SND.grfFlags = SHNF_STRAIGHTTOTRAY | SHNF_SILENT;
-//	SND.grfFlags = SHNF_STRAIGHTTOTRAY;
+//	SND.grfFlags = SHNF_STRAIGHTTOTRAY | SHNF_SILENT;
+	SND.grfFlags = SHNF_STRAIGHTTOTRAY;
 //	SND.grfFlags = SHNF_SILENT;
 	SND.dwID = PRSSRSRV_NOTIFICATION_ID;
 	SND.npPriority = SHNP_INFORM;
