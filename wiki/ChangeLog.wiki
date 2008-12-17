@@ -4,6 +4,30 @@
 = !ChangeLog =
 ----
 
+== Version 1.4.4 ==
+Released on December 17, 2008
+
+*What's New:*
+ * Today plugin: user can specify cycling time
+ * Added sort menu to the menu in the feed list view
+ * Site manager renamed to 'Manage subscriptions'
+ * UA-String is more sane (R.I.P. Bitevni kocka pitypacka)
+ * !AppToDate support
+ * Email account for sending email can be selected in GUI (Menu | Options)
+ * Improved message boxes of the !YesNo type
+ * Can move back to the read items when in sequentional reading and hiding read items
+ * Context menus can be opened by HW key
+
+*Fixes:*
+ * No context menu for URL-entry box in feed properties dialog
+ * Fixed regression with non-working enter key on article view
+ * Sort button was not display unless user changed sorting
+ * Larger item height in feed view when long item titles are on
+ * When hiding read items and the user exits the prssr in article view and there were no unread items, prssr showed an empty item on the next start.
+ * Spinner shown on the last item and did not go away
+ * No notify sound when update finishes and user set it in Notifications
+ * and more...
+
 == Version 1.4.3 ==
 Released on November 8, 2008
 
