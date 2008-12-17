@@ -2617,6 +2617,10 @@ SOURCE=..\..\share\UIHelper.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\share\version.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\share\wnd.cpp
 DEP_CPP_WND_C=\
 	"..\..\share\wnd.h"\
