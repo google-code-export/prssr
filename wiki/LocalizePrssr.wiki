@@ -210,6 +210,18 @@ $(PRODUCT)-$(VERSION)-cs.ARM.CAB: $(INF)
   * type: {{{make xxx}}} (replace {{{xxx}}} with your 3-letter abbreviation, in my case {{{csy}}})
   * congratulations, if you did everything correctly, you should get a CAB file which you should be able to install on your device
 
+= Final Steps ==
+
+ * Please try the installation of the CAB file and check that the localization is ok (no truncated strings, everything makes sense, etc.)
+ * If you thing the localization is ready:
+   # right-click the prssr directory (where you did the checkout)
+   # Select *TortoiseSVN | Create Patch*
+   # Check *Show unversioned files* option
+   # Include the rc2 files
+   # Click *OK*
+   # Select an export path, chose a file name, click *Save*
+   # Submit the patch file to [http://groups.google.com/group/prssr-devel prssr-devel] group
+
 = More Info =
 
 If you get stuck, I can help you in [http://groups.google.com/group/prssr-devel prssr-devel] group.
