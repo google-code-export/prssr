@@ -17,25 +17,25 @@
    # You do not have to install Standard SDK which comes with eVC 4.0
  # The installation of SDK of PPC2003 is again Next, next, finish.
  # TortoiseSVN is also next, next finish
- # !UnxUitls do not come with the installer, so you need to unpack it somewhere (I install it in the Program Files directory)
-   # Then you need to set up your environment so that you can use UnxUtils from the command line. 
+ # !UnxUtils do not come with the installer, so you need to unpack it somewhere (I install it in the Program Files directory)
+   # Then you need to set up your environment so that you can use !UnxUtils from the command line. 
    # On Windows XP:
      # Right click My computer | Properties | Advanced tab | Environment variables
      # Edit system-wide variable called Path
-     # Add the path to the UnxUtils, in my case I add *C:\Program Files\UnxUtils\usr\local\wbin* (Do not forget to separate this new path by a semicolon (;).
+     # Add the path to the UnxUtils, in my case I add *{{{C:\Program Files\!UnxUtils\usr\local\wbin}}}* (Do not forget to separate this new path by a semicolon (;).
     
 
 = Getting the Source Code =
 
- * Create a working directory, for example *C:\pda\prssr*
+ * Create a working directory, for example *{{{C:\pda\prssr}}}*
  * Right click the created directory and select *SVN Checkout*
- * URL of the repository is: http://prssr.googlecode.com/svn/branches/X.Y.Z/ (replace X.Y.Z with a latest version - for example 1.4.4)
+ * URL of the repository is: {{{http://prssr.googlecode.com/svn/branches/X.Y.Z/}}} (replace X.Y.Z with a latest version - for example 1.4.4)
 
 = Before Making the Localization =
 
 Before you start doing the localization, you have to understand what you are going to do, so please read this carefully:
 
-  * prssr workspace contains several project and you will be working with three of them: the main application - prssr, the today plug-in - prssrtoday, and installation DLL - setup.
+  * prssr workspace contains several project and you will be working with three of them: the main application - *prssr*, the today plug-in - *prssrtoday*, and installation DLL - *setup*.
   * Each project contains so called resources that you will be modifying. Based on the preprocessor directives, the language specific resources are included and used during the compilation time.
   * Therefore, each language is going to have a specific configuration that will be used for building a localized version.
 
@@ -44,18 +44,18 @@ Before we start, we need to find out a few things:
   # Take the value from *Language Code* (3-letter abbreviation)
   # Note the value of Default code page
 
-For example, Czech has CSY as a Language ID and 1250 as the Codepage.
+For example, Czech has *CSY* as a Language ID and *1250* as the Codepage.
 
 = Making the Localization =
 
- # Go into the *C:\pda\prssr* and open *prssr.vcw*
+ # Go into the {{{C:\pda\prssr}}} and open *prssr.vcw*
  
 == Create Configurations ==
  
  # Select *Build | Configurations*
- # Click on prssr, then click *Add..*
-   # CPU has to be: Win32 (WCE ARMV4) Release
-   # Copy settings from *prssr - Win32 (WCE ARMV4) Release*
+ # Click on *prssr*, then click *Add..*
+   # CPU has to be: {{{Win32 (WCE ARMV4) Release}}}
+   # Copy settings from *{{{prssr - Win32 (WCE ARMV4) Release}}}*
    # Configuration: *ReleaseXXX* (replace XXX with the your language, in my case it is Czech - do not use spaces, otherwise you will have to do more edits in the project settings)
    # click *OK*
 
@@ -65,10 +65,10 @@ For example, Czech has CSY as a Language ID and 1250 as the Codepage.
 == Modify Project Settings ===
 
  # Open *Project | Settings...*
- # Select prssr (in the left part) and switch the *settings for:* Win32 (WCE ARMV4) ReleaseXXX (where XXX is your language, in my case Czech)
+ # Select prssr (in the left part) and switch the *settings for:* {{{Win32 (WCE ARMV4) ReleaseXXX}}} (where {{{XXX}}} is your language, in my case Czech)
  # Activate *Resources* tab
  # In *Language*, select your language (in my case Czech)
- # In *Preprocessor definitions* find AFX_TARG_ENU and replace it with AFX_TARG_YYY, where YYY is the three letter abbreviation from above (in my case CSY)
+ # In *Preprocessor definitions* find {{{AFX_TARG_ENU}}} and replace it with {{{AFX_TARG_YYY}}}, where {{{YYY}}} is the three letter abbreviation from above (in my case CSY)
  # Switch to the *Link* tab, Category *Input*
  # Copy the content of *Additional library path* from Release configuration to your new configuration.
  # Repeat for *prssrtoday* and *setup* projects.
@@ -79,9 +79,8 @@ For example, Czech has CSY as a Language ID and 1250 as the Codepage.
  * Now we have to modify .rc files so that the language specified resource will be included during the compilation.
  * We have to do this outside the eVC and by hand
 
- # Go to the [http://msdn.microsoft.com/en-us/library/bb202928.aspx] and find LANG_LLL and SUBLANG_SSS values for your language. In my case it is LANG_CZECH, and because there is no SUBLANG_CZECH, then my SUBLANG_SSS is SUBLANG_DEFAULT.
-
- # Edit <root>\prssr\prssr.rc and go all the way down where you find
+ # Go to the [http://msdn.microsoft.com/en-us/library/bb202928.aspx] and find {{{LANG_LLL}}} and {{{SUBLANG_SSS}}} values for your language. In my case it is {{{LANG_CZECH}}}, and because there is no {{{SUBLANG_CZECH_MMM}}}, then my {{{SUBLANG_SSS}}} is {{{SUBLANG_DEFAULT}}}.
+ # Edit {{{<root>\prssr\prssr.rc}}} and go all the way down where you find
 {{{
 /////////////////////////////////////////////////////////////////////////////
 // English (U.S.) resources
@@ -105,39 +104,39 @@ LANGUAGE LANG_CZECH, SUBLANG_DEFAULT
 }}}
  # Replace the following values with the values that you get above:
    * Czech
-   * AFX_TARG_CSY
-   * LANG_CZECH
-   * LANG_DEFAULT
-   * codepage(1250)
-   * res\czech.rc2 (chose suitable name for you language - do not remove the res\ part)
+   * {{{AFX_TARG_CSY}}}
+   * {{{LANG_CZECH}}}
+   * {{{LANG_DEFAULT}}}
+   * {{{codepage(1250)}}}
+   * {{{res\czech.rc2}}} (chose suitable name for you language - do not remove the res\ part)
 
  # Repeat this for files:
-   * <root>\prssrtoday\prssrtoday.rc
-   * <root>\setup\setup.rc
+   * {{{<root>\prssrtoday\prssrtoday.rc}}}
+   * {{{<root>\setup\setup.rc}}}
 
 Note: it may happen that the section for your language in these files already exists, then use the existing one (it is a remnant from the previous versions)
 
 == Create rc2 Files ==
 
- # Go to the <root>\prssr\res\
- # copy *english.rc2* to *your language.rc2* (in my case czech.rc2)
+ # Go to the {{{<root>\prssr\res\}}}
+ # copy {{{english.rc2}}} to {{{your language.rc2}}} (in my case {{{czech.rc2}}})
  # Translate the file (see for details)
- # Repeat for <root>\prssrtoday\res\ and <root>\setup\res\
+ # Repeat for {{{<root>\prssrtoday\res\}}} and {{{<root>\setup\res\}}}
 
 == Add the rc2 Files into Projects ==
 
- # Switch back to eVC, and activate FileView
- # Activate prssr project
+ # Switch back to eVC, and activate !FileView
+ # Activate *prssr* project
  # Right-click *Resource Files* item and select *Add Files to Folder*
- # Go to <root>\prssr\res\language.rc2 (where language is your language, in my case czech.rc2, has to match the file name you have chosen in the .rc file)
+ # Go to {{{<root>\prssr\res\language.rc2}}} (where language is your language, in my case {{{czech.rc2}}}, has to match the file name you have chosen in the .rc file)
  # Repeat for *prssrtoday* and *setup* projects
  
 == Translate the rc2 Files ==
 
  * If you are not familiar with resource files, read below what to do
- * Open the <root>\prssr\res\language.rc2 file (in my case czech.rc2 file)
+ * Open the {{{<root>\prssr\res\language.rc2}}} file (in my case {{{czech.rc2}}} file)
  * There are several sections you need to change (see below)
- * Repeat the translation for all your language.rc2 files
+ * Repeat the translation for all your {{{language.rc2}}} files
 
 === Dialogs ===
 
@@ -156,14 +155,14 @@ BEGIN
 END
 }}}
 
- * Translate the CAPTION
- * Do not touch anything the is not in the double quotes (")
+ * Translate the {{{CAPTION}}}
+ * Do not touch anything the is not in the double quotes ({{{"}}})
  * You may need to change positions and dimensions of the controls if the text does not fit in them, then change the four numbers, their meaning is: x, y, width, height
  * A lot of dialogs have the portrait and landscape version, you need to translate both
  
 === Menus ===
 
- * Menu is easy to translate, just change what is in the double quotes (")
+ * Menu is easy to translate, just change what is in the double quotes ({{{"}}})
  * You should not use very long captions, since the menus are then too wide
 
 
@@ -176,23 +175,23 @@ END
 
 = Building the Localized Version =
 
- * First you need to build the libraries: prssrenc, res096, res192,
+ * First you need to build the libraries: prssrenc, res096, res192
  * Then build: prssrnot
 
 = Modifying Installation Files =
 
- * Go to the <root>\install
- * Edit the pRSSreader.inf
-   * Find section *SourceDisksNames.ARM* and add:
+ * Go to the {{{<root>\install}}}
+ * Edit the {{{pRSSreader.inf}}}
+   * Find section {{{SourceDisksNames.ARM}}} and add:
 {{{
 [SourceDisksNames.XXX]
 	 1 = ,"prssr",,..\prssr\prj\armv4releaseRRR
 	 4 = ,"prssrtoday",,..\prssrtoday\prj\armv4releaseRRR
 	 5 = ,"setup",,..\setup\prj\armv4releaseRRR
 }}}
-   * Replace the XXX with 3-letter abbreviation from above (in my case CSY)
-   * Replace the RRR with the language (should match to what you chosen when creating the configurations)
- * Edit the Makefile
+   * Replace the {{{XXX}}} with 3-letter abbreviation from above (in my case {{{CSY}}})
+   * Replace the {{{RRR}}} with the language (should match to what you chosen when creating the configurations)
+ * Edit the {{{Makefile}}}
    * Find section for localizations (at the end) and add:
 {{{
 csy: $(PRODUCT)-$(VERSION)-cs.ARM.CAB
@@ -206,12 +205,11 @@ $(PRODUCT)-$(VERSION)-cs.ARM.CAB: $(INF)
 
 = Building the Binaries =
 
-  * Go to the  <root>\install
-  * start s command line
-  * type: {{{make xxx}}} (replace xxx with your 3-letter abbreviation, in my case csy)
+  * Go to the  {{{<root>\install}}}
+  * start the command line
+  * type: {{{make xxx}}} (replace {{{xxx}}} with your 3-letter abbreviation, in my case {{{csy}}})
   * congratulations, if you did everything correctly, you should get a CAB file which you should be able to install on your device
 
 = More Info =
 
 If you get stuck, I can help you in [http://groups.google.com/group/prssr-devel prssr-devel] group.
-
