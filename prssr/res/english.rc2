@@ -1101,7 +1101,6 @@ BEGIN
     POPUP "Menu"
     BEGIN
         MENUITEM "Mark All Items Read",         ID_TOOLS_MARKALLITEMSREAD
-        MENUITEM "Mark All Items Unread",       ID_TOOLS_MARKALLITEMSUNREAD
         MENUITEM SEPARATOR
         POPUP "Sort by"
         BEGIN
