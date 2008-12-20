@@ -186,6 +186,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_UPDATE_COMMAND_UI(ID_TOOLS_MARKALLITEMSREAD, OnUpdateToolsMarkAllRead)
 	ON_COMMAND(ID_TOOLS_MARKALLITEMSUNREAD, OnToolsMarkAllUnread)
 	ON_UPDATE_COMMAND_UI(ID_TOOLS_MARKALLITEMSUNREAD, OnUpdateToolsMarkAllUnread)
+	ON_COMMAND(ID_TOOLS_MAKRASUNFLAGGED, OnToolsMarkAllUnflagged)
 
 	ON_NOTIFY(TBN_DROPDOWN, AFX_IDW_TOOLBAR + 1, OnTopBarClick)
 //	ON_COMMAND(IDC_ACT_SITE, OnOpenSiteList)
@@ -575,6 +576,18 @@ void CMainFrame::SetupFeedView() {
 	fSuccess = SHCreateMenuBar(&mbi);
 	::DestroyWindow(m_hwndCmdBar);
 	m_hwndCmdBar = mbi.hwndMB;
+
+	// modify menu for flagged folder
+	if (Config.ActSiteIdx == SITE_FLAGGED) {
+		TBBUTTON tb;
+		::SendMessage(m_hwndCmdBar, TB_GETBUTTON, 1, (LPARAM) &tb);
+		HMENU hMenu = (HMENU) tb.dwData;
+
+		CString sText;
+		sText.LoadString(IDS_MARK_ALL_UNFLAGGED);
+
+		::InsertMenu(hMenu, 1, MF_STRING | MF_ENABLED | MF_BYPOSITION, ID_TOOLS_MAKRASUNFLAGGED, sText);
+	}
 }
 
 void CMainFrame::SetupArticleView() {
@@ -602,8 +615,6 @@ void CMainFrame::SetupArticleView() {
 	fSuccess = SHCreateMenuBar(&mbi);
 	::DestroyWindow(m_hwndCmdBar);
 	m_hwndCmdBar = mbi.hwndMB;
-
-//	m_wndArticleView.SubclassWindow(GetSafeHwnd());
 }
 
 void CMainFrame::SwitchView(EView view) {
@@ -922,6 +933,7 @@ void CMainFrame::OnSiteSelected(UINT nID) {
 		AddSiteToSave(Config.ActSiteIdx);
 
 	if (View == SummaryView) {
+		Config.ActSiteIdx = nSite;
 		SwitchView(FeedView);
 		SelectSite(nSite);
 		PreloadSite(nSite);
@@ -2602,4 +2614,12 @@ void CMainFrame::SetupBanner(CFeedItem *fi, int item, int total) {
 
 	if (::IsWindow(m_wndBanner.GetSafeHwnd()))
 		m_wndBanner.Invalidate();
+}
+
+void CMainFrame::OnToolsMarkAllUnflagged() {
+	if (View == FeedView) {
+		m_wndFeedView.MarkAllUnflagged();
+
+		UpdateTopBar();
+	}
 }

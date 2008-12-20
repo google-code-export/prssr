@@ -302,12 +302,15 @@ void CSummaryView::OnItemClicked() {
 	if (hItem == NULL) return;
 	CSiteItem *si = (CSiteItem *) GetItemData(hItem);
 	if (si != NULL && (si->Type == CSiteItem::Site || si->Type == CSiteItem::VFolder)) {
+		int nSite;
+		if (si == &UnreadItems) nSite = SITE_UNREAD;
+		else if (si == &FlaggedItems) nSite = SITE_FLAGGED;
+		else nSite = SiteList.GetIndexOf(si);
+
+		Config.ActSiteIdx = nSite;
 		CMainFrame *frame = (CMainFrame *) AfxGetMainWnd();
 		frame->SwitchView(CMainFrame::FeedView);
-
-		if (si == &UnreadItems) frame->SelectSite(SITE_UNREAD);
-		else if (si == &FlaggedItems) frame->SelectSite(SITE_FLAGGED);
-		else frame->SelectSite(SiteList.GetIndexOf(si));
+		frame->SelectSite(nSite);
 	}
 }
 

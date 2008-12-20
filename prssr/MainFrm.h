@@ -208,6 +208,7 @@ protected:
 	afx_msg void OnUpdateToolsMarkAllRead(CCmdUI *pCmdUI);
 	afx_msg void OnToolsMarkAllUnread();
 	afx_msg void OnUpdateToolsMarkAllUnread(CCmdUI *pCmdUI);
+	afx_msg void OnToolsMarkAllUnflagged();
 
 	afx_msg void OnToolsUpdateChannels();
 	afx_msg void OnUpdateToolsUpdateChannels(CCmdUI *pCmdUI);

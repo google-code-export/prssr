@@ -321,6 +321,21 @@ void CFeedView::MarkAllUnread() {
 	Invalidate(TRUE);
 }
 
+
+void CFeedView::MarkAllUnflagged() {
+	LOG0(1, "CFeedView::MarkAllUnflagged()");
+
+	for (int i = 0; i < m_oItems.GetSize(); i++)
+		UnflagItem(i);
+
+	AdjustViewTop();
+
+	DeselectAllItems();
+	SortItems();
+	UpdateScrollBars();
+	Invalidate(TRUE);
+}
+
 //
 //
 //
@@ -1624,4 +1639,3 @@ void CFeedView::UpdateItemHeights() {
 		}
 	}
 }
-

@@ -368,6 +368,7 @@
 #define IDS_SEARCH_ERROR                662
 #define IDS_SEARCH_FIELD_EMPTY          663
 #define IDS_INTERNAL_ERROR              664
+#define IDS_MARK_ALL_UNFLAGGED          665
 
 // controls
 #define IDC_HTML                        1000
@@ -706,6 +707,7 @@
 #define ID_SYNC_SUBSCRIPTIONS           32881
 #define ID_TOOLS_FEEDVIEW               32882
 #define ID_CLOSE                        32883
+#define ID_TOOLS_MAKRASUNFLAGGED        32884
 
 #define ID_SOCIAL_BOOKMARK_BASE			 33000
 

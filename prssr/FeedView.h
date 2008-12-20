@@ -69,6 +69,7 @@ public:
 
 	void MarkAllRead();
 	void MarkAllUnread();
+	void MarkAllUnflagged();
 	void MarkItem(int item, DWORD mask);
 	void SelectItem(int item);
 

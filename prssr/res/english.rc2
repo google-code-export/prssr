@@ -1591,6 +1591,7 @@ BEGIN
     IDS_OPEN_SITE_LIST      "Open site list"
     IDS_UPDATE_CHANNEL      "Update channel"
     IDS_UPDATE_ALL_CHANNELS "Update all channels"
+	IDS_MARK_ALL_UNFLAGGED  "Remove All Flags"
 END
 
 // dialog captions
