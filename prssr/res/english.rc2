@@ -1100,7 +1100,7 @@ BEGIN
     MENUITEM "Channels",                        ID_TOOLS_SUMMARYVIEW
     POPUP "Menu"
     BEGIN
-        MENUITEM "Mark All Items Read",         ID_TOOLS_MARKALLITEMSREAD
+        MENUITEM "Mark All as Read",		    ID_TOOLS_MARKALLITEMSREAD
         MENUITEM SEPARATOR
         POPUP "Sort by"
         BEGIN
