@@ -112,12 +112,11 @@ void CLocalHtmlFile::Filter(DOM_NODE *node) {
 			_stricmp(tag, "embed") == 0 ||
 			_stricmp(tag, "meta") == 0)
 		{
-			DOM_NODE *prev = domNodeGetPreviousSibling(child);
-			domNodeDestroySpecific(child);
-			if (prev == NULL)
-				child = domNodeGetFirstChild(node);
-			else
-				child = domNodeGetNextSibling(prev);
+			domNodeDestroy(child->attributes);
+			child->attributes = NULL;
+
+			Filter(child);
+			child = domNodeGetNextSibling(child);
 		}
 		else if (_strnicmp(tag, "![", 2) == 0) {
 			DOM_NODE *prev = domNodeGetPreviousSibling(child);
