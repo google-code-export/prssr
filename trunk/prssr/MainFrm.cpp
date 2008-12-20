@@ -547,8 +547,6 @@ void CMainFrame::SetupSummaryView() {
 	fSuccess = SHCreateMenuBar(&mbi);
 	::DestroyWindow(m_hwndCmdBar);
 	m_hwndCmdBar = mbi.hwndMB;
-
-//	m_wndArticleView.UnsubclassWindow();
 }
 
 void CMainFrame::SetupFeedView() {
@@ -577,8 +575,6 @@ void CMainFrame::SetupFeedView() {
 	fSuccess = SHCreateMenuBar(&mbi);
 	::DestroyWindow(m_hwndCmdBar);
 	m_hwndCmdBar = mbi.hwndMB;
-
-//	m_wndArticleView.UnsubclassWindow();
 }
 
 void CMainFrame::SetupArticleView() {
