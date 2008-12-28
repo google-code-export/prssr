@@ -639,6 +639,11 @@ void CSiteManagerDlg::DeleteItem(HTREEITEM hItem, BOOL free/* = TRUE*/) {
 		MapUrlToTreeItem.RemoveKey(item->Info->XmlUrl);
 
 	if (free) {
+		if (item->Info != NULL) {
+			DeleteFile(GetCachePath(FILE_TYPE_FEED, Config.CacheLocation) + _T("\\") + item->Info->FileName);
+			DeleteFile(GetCacheFile(FILE_TYPE_FAVICON, Config.CacheLocation, item->Info->FileName));
+		}
+
 		item->Destroy();
 		delete item;
 	}
@@ -816,9 +821,6 @@ void CSiteManagerDlg::OnRemove() {
 			CWaitCursor wait;
 			Syncer->RemoveSubscription(si->Info->XmlUrl);
 		}
-
-		DeleteFile(GetCachePath(FILE_TYPE_FEED, Config.CacheLocation) + _T("\\") + si->Info->FileName);
-		DeleteFile(GetCacheFile(FILE_TYPE_FAVICON, Config.CacheLocation, si->Info->FileName));
 
 		DeleteItem(hSelItem, TRUE);
 		UpdateControls();
