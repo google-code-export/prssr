@@ -58,15 +58,21 @@ static BOOL TranslateForOfflineReading(const CString &srcFileName, const CString
 
 	BOOL translated = FALSE;
 
-	CLocalHtmlFile file;
-	file.LoadFromFile(srcFileName);
-	file.DetectEncoding(srcEncoding);
+	if (Config.AdvancedHtmlOptimizer) {
+		MoveFile(srcFileName, destFileName);
+	}
+	else {
+		CLocalHtmlFile file;
+		file.LoadFromFile(srcFileName);
+		file.DetectEncoding(srcEncoding);
 
-	file.Filter();
-	// TODO: find the content and drop everything else
-	file.TranslateForOffline();
-	file.Recode();
-	file.Save(destFileName);
+		file.Filter();
+		// TODO: find the content and drop everything else
+		file.TranslateForOffline();
+		file.Recode();
+
+		file.Save(destFileName);
+	}
 
 	return TRUE;
 }
