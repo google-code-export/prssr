@@ -25,6 +25,7 @@
 
 #include "../share/date.h"
 #include "../share/fs.h"
+#include "../share/str.h"
 #include "misc.h"
 #include "Config.h"
 #include "Feed.h"
@@ -170,51 +171,75 @@ void CArticleView::ShowArticle() {
 		AddText(m_pArticle->Title);
 		AddText(L"</strong></p>");
 
-		// translate
-		CString description ;
-		description.Format(_T("<div>%s</div>"), m_pArticle->Description);		// workaround for libsgml
-		AddText(L"<p>");
-		AddText(description);
-		AddText(L"</p>");
+		BOOL cached = IsHTMLCached(m_pArticle->Link, TRUE);
 
-		// author
-		sText.Empty();
-		if (!m_pArticle->Author.IsEmpty())
-			sText += m_pArticle->Author + _T(" | ");
-		// date/time
-		CString sDateTime;
-		SYSTEMTIME st = TimeToTimeZone(&m_pArticle->PubDate);		// convert to local time zone
-		FormatDateTime(sDateTime, st, Config.ShowRelativeDates);
-		sText += sDateTime;
+		if (cached && Config.AdvancedHtmlOptimizer) {
+			HANDLE file;
+			CString fileName = GetCacheFile(FILE_TYPE_HTML, Config.CacheLocation, m_pArticle->Link);
+			if ((file = CreateFile(fileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL)) != INVALID_HANDLE_VALUE) {
+				do {
+					char buffer[1024] = { 0 };
+					DWORD read;
+					BOOL res = ReadFile(file, buffer, 1023, &read, NULL);
+					if (res && (read == 0)) break;
 
-		// keywords
-		if (m_pArticle->HasKeywordMatch()) {
-			AddText(L"<p>Keywords: ");
-			for (int i = 0; i < m_pArticle->KeywordPos.GetSize(); i++) {
-				if (i > 0) AddText(L", ");
-				AddText(Config.Keywords.GetAt(i));
+					CString text = CharToWChar(buffer, CP_UTF8);
+					AddText(text);
+				} while (TRUE);
+
+				CloseHandle(file);
 			}
+			else {
+				CString text;
+				text.Format(_T("Could not open the cached HTML file: %s"), fileName);
+				AddText(text);
+			}
+		}
+		else {
+			// translate
+			CString description;
+			description.Format(_T("<div>%s</div>"), m_pArticle->Description);		// workaround for libsgml
+			AddText(L"<p>");
+			AddText(description);
+			AddText(L"</p>");
+
+			// author
+			sText.Empty();
+			if (!m_pArticle->Author.IsEmpty())
+				sText += m_pArticle->Author + _T(" | ");
+			// date/time
+			CString sDateTime;
+			SYSTEMTIME st = TimeToTimeZone(&m_pArticle->PubDate);		// convert to local time zone
+			FormatDateTime(sDateTime, st, Config.ShowRelativeDates);
+			sText += sDateTime;
+
+			// keywords
+			if (m_pArticle->HasKeywordMatch()) {
+				AddText(L"<p>Keywords: ");
+				for (int i = 0; i < m_pArticle->KeywordPos.GetSize(); i++) {
+					if (i > 0) AddText(L", ");
+					AddText(Config.Keywords.GetAt(i));
+				}
+				AddText(L"</p>");
+			}
+
+			AddText(L"<p><font color=\"#aaa\">");
+			AddText(sText);
+			AddText(L"</font></p>");
+
+			// horz divider
+			AddText(L"<hr/>");
+
+			sTemp.LoadString(IDS_LINK_TO_ARTICLE);
+			if (cached)
+				sText.Format(_T("<a href=\"%s\"><strong>%s</strong></a>"), m_pArticle->Link, sTemp);
+			else
+				sText.Format(_T("<a href=\"%s\">%s</a>"), m_pArticle->Link, sTemp);
+
+			AddText(L"<p>");
+			AddText(sText);
 			AddText(L"</p>");
 		}
-
-		AddText(L"<p><font color=\"#aaa\">");
-		AddText(sText);
-		AddText(L"</font></p>");
-
-		// horz divider
-		AddText(L"<hr/>");
-
-		sTemp.LoadString(IDS_LINK_TO_ARTICLE);
-		if (IsHTMLCached(m_pArticle->Link, TRUE))
-			sText.Format(_T("<a href=\"%s\"><strong>%s</strong></a>"), m_pArticle->Link, sTemp);
-		else
-			sText.Format(_T("<a href=\"%s\">%s</a>"), m_pArticle->Link, sTemp);
-
-		AddText(L"<p>");
-		AddText(sText);
-		AddText(L"</p>");
-
-		AddText(L"</font></p>");
 	}
 	else {
 		sTemp.Format(IDS_NOTHING_TO_DISPLAY);

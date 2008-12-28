@@ -199,6 +199,7 @@ public:
 	// HTML optimizer
 	BOOL UseHtmlOptimizer;
 	CString HtmlOptimizerURL;
+	BOOL AdvancedHtmlOptimizer;
 
 	CStringArray Keywords;
 	CArray<CRewriteRule *, CRewriteRule *> RewriteRules;

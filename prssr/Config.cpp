@@ -111,6 +111,7 @@ LPCTSTR szEnclosurePlaylistFormat = _T("Enclosure Playlist Format");
 // html optimizer
 LPCTSTR szUseHtmlOptimizer = _T("Use HTML Optimizer");
 LPCTSTR szHtmlOptimizerURL = _T("HTML Optimizer URL");
+LPCTSTR szAdvancedHtmlOptimizer = _T("Advanced Html Optimizer");
 
 static LPCTSTR szMatch = _T("Match");
 static LPCTSTR szReplace = _T("Replace");
@@ -352,6 +353,7 @@ void CConfig::Load() {
 	// html optimizer
 	UseHtmlOptimizer = reg.Read(szUseHtmlOptimizer, CONFIG_DEFAULT_USE_HTML_OPTIMIZER);
 	HtmlOptimizerURL = reg.Read(szHtmlOptimizerURL, _T(""));
+	AdvancedHtmlOptimizer = reg.Read(szAdvancedHtmlOptimizer, FALSE);
 
 	///////////////////////////////////////////////////////////////////////////
 
