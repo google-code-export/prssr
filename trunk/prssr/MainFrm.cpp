@@ -2545,6 +2545,7 @@ void CMainFrame::OnLButtonDown(UINT nFlags, CPoint point) {
 	ClientToScreen(&pt);
 
 	m_bClick = TRUE;
+	m_articleNotSwitched = TRUE;
 	LastCursorPos = pt;
 
 //	SetCapture();
@@ -2591,7 +2592,25 @@ void CMainFrame::OnMouseMove(UINT nFlags, CPoint point) {
 		if (delta > 0) ::SendMessage(hSB, WM_VSCROLL, SB_LINEDOWN, NULL);
 		else if (delta < 0) ::SendMessage(hSB, WM_VSCROLL, SB_LINEUP, NULL);
 
-		LastCursorPos = pt;
+		// Gesture Move right or left
+		if (m_articleNotSwitched) {
+			switch (Config.NavigationType) {
+				case NAVIGATION_TOUCH: 
+					delta = pt.x - LastCursorPos.x;
+					if (delta > 100) {
+						m_wndArticleView.OnItemNext();
+						m_articleNotSwitched = FALSE;
+					} else if (delta < -100) {
+						m_wndArticleView.OnItemPrev();
+						m_articleNotSwitched = FALSE;
+					}
+					break;
+				default: 
+					break;
+			}
+		}
+
+		LastCursorPos.y = pt.y;
 	}
 }
 
