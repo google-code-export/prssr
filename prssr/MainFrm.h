@@ -108,6 +108,8 @@ protected:  // control bar embedded members
 	// article view touch scrolling
 	BOOL m_bClick;
 	CPoint LastCursorPos;
+	// ItemNext / ItemLast marker touch
+	BOOL m_articleNotSwitched;
 
 	UINT CtxMenuTimer;
 	BOOL m_bOpenCtxMenu;
