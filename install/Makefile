@@ -4,7 +4,7 @@
 #
 
 PRODUCT=pRSSreader
-VERSION=1.4.4
+VERSION=1.4.5
 INF=pRSSreader.inf
 
 # On linux
