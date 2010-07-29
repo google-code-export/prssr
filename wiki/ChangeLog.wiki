@@ -8,7 +8,7 @@
 Released on July 29, 2010
 
 *What's New:*
- * Gesture support for article view for touch friendly mode
+ * Gesture support for article view in touch friendly mode
    * Shift right switches to next article
    * Shift left switches to last article
 
