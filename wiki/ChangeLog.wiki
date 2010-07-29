@@ -4,6 +4,17 @@
 = !ChangeLog =
 ----
 
+== Version 1.4.5 ==
+Released on July 29, 2010
+
+*What's New:*
+ * Gesture support for article view for touch friendly mode
+   * Shift right switches to next article
+   * Shift left switches to last article
+
+*Fixes:*
+ * none
+
 == Version 1.4.4 ==
 Released on December 17, 2008
 
