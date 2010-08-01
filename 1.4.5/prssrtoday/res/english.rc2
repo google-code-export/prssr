@@ -1,0 +1,153 @@
+/////////////////////////////////////////////////////////////////////////////
+// English resources
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_EMPTY DIALOG DISCARDABLE  0, 0, 160, 165
+STYLE WS_POPUP
+FONT 8, "Tahoma"
+BEGIN
+END
+
+IDD_CFG_CHANNELS DIALOG DISCARDABLE  0, 0, 160, 165
+STYLE DS_SETFOREGROUND | WS_POPUP | WS_VISIBLE | WS_CAPTION
+CAPTION "Channels"
+FONT 8, "Tahoma"
+BEGIN
+    LTEXT           "Selected channels will be shown:",IDC_STATIC,4,4,152,10
+    CONTROL         "List1",IDC_CHANNELS,"SysListView32",LVS_REPORT | 
+                    LVS_NOCOLUMNHEADER | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,
+                    4,16,152,105
+    CONTROL         "Automatically show new channels",IDC_SHOW_NEW_CHANNELS,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,4,124,152,10
+END
+
+IDD_CFG_MODE DIALOG DISCARDABLE  0, 0, 160, 165
+STYLE DS_SETFOREGROUND | WS_POPUP | WS_VISIBLE | WS_CAPTION
+CAPTION "Mode"
+FONT 8, "Tahoma"
+BEGIN
+    LTEXT           "Mode:",IDC_STATIC,4,6,35,10
+    COMBOBOX        IDC_MODE,40,4,80,63,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    CONTROL         "Cycle only site names",IDC_SITE_NAMES,"Button",BS_AUTORADIOBUTTON | WS_GROUP,
+                    10,20,146,10
+    CONTROL         "Cycle feed items",IDC_FEED_ITEMS,"Button",BS_AUTORADIOBUTTON,
+                    10,31,146,10
+    CONTROL         "Show site name",IDC_SHOW_SITE_NAME,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,23,42,134,11
+    CONTROL         "Show date and time",IDC_SHOW_DATE_TIME,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,23,53,134,11
+    CONTROL         "Show only new items",IDC_SHOW_ONLY_NEW,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,11,68,146,11
+    LTEXT           "Cycling speed:",IDC_DISPLAY_SPEED_LBL,10,82,58,10
+    COMBOBOX        IDC_DISPLAYSPEED,70,81,30,70,CBS_DROPDOWN | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "second(s)",IDC_DISPLAY_SPEED_SECS,103,82,45,10
+END
+
+IDD_CFG_APPEARANCE DIALOG DISCARDABLE  0, 0, 160, 165
+STYLE DS_SETFOREGROUND | WS_POPUP | WS_VISIBLE | WS_CAPTION
+CAPTION "Appearance"
+FONT 8, "Tahoma"
+BEGIN
+    CONTROL         "Show plugin icon",IDC_PLUGIN_ICON,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,4,4,152,10
+    CONTROL         "Use font size",IDC_USEFONTSIZE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,4,17,57,10
+    COMBOBOX        IDC_FONTSIZE,62,16,27,63,CBS_DROPDOWN | WS_VSCROLL | 
+                    WS_TABSTOP
+    LTEXT           "pixel(s)",IDC_STATIC,93,17,25,10
+    CONTROL         "Hide plugin if there are no new items",IDC_HIDE_PLUGIN,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,4,30,152,10
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_CFG_APPEARANCE, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 133
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 147
+    END
+
+    IDD_EMPTY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 129
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 144
+    END
+
+    IDD_CFG_MODE, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 133
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 147
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menubar
+//
+
+IDR_DONE MENU DISCARDABLE
+BEGIN
+    MENUITEM "Done",                           IDOK
+    MENUITEM "Cancel",                         IDCANCEL
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_TODAY               "Today"
+    IDS_YESTERDAY           "Yesterday"
+    IDS_NO_NEWS             "No new items"
+    IDS_UPDATE_ALL          "Update All..."
+    IDS_MODE_BRIEF          "Brief"
+    IDS_MODE_CYCLING        "Cycling"
+    IDS_SETTINGS            "Settings..."
+    IDS_NEW_UNREAD_ITEMS    "%d new, %d unread item(s)"
+    IDS_NEW_ITEMS           "%d new item(s)"
+    IDS_UNREAD_ITEMS        "%d unread item(s)"
+    IDS_DAYS_AGO            "%d days ago"
+    IDS_MINUTES_AGO         "%d minutes ago"
+    IDS_HOURS_AGO           "%d hours ago"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_OPTION_TITLE        "Today: pRSSreader Options"
+    IDS_SLOWEST             "Slowest"
+    IDS_SLOW                "Slow"
+    IDS_MEDIUM              "Medium"
+    IDS_FAST                "Fast"
+    IDS_FASTEST             "Fastest"
+    IDS_NO_ITEMS_TO_DISPLAY "No items to display"
+    IDS_LOADING             "Loading..."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CAP_TODAY           "Today"
+END
+

@@ -1,0 +1,14 @@
+/////////////////////////////////////////////////////////////////////////////
+// English resources
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_INSTALL_TITLE         "pRSSreader"
+    IDS_ACTIVATE_TODAY_PLUGIN "Activate the Today plugin?"
+	IDS_KEEP_SETTINGS         "Do you want to keep your settings?"
+END

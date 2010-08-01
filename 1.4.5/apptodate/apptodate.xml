@@ -1,0 +1,8 @@
+<application>
+	<name>pRSSreader</name>
+	<version>1.4.5</version>
+	<description>pRSSreader is a free RSS reader for Windows Mobile.</description>
+	<versionurl>http://prssr.googlecode.com/svn/trunk/apptodate/apptodate.xml</versionurl>
+	<caburl>http://prssr.googlecode.com/files/pRSSreader-1.4.5.cab</caburl>
+</application>
+
