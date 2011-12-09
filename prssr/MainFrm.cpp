@@ -202,7 +202,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 
 	ON_COMMAND(ID_VIEW_SORTBY_DATE, OnViewSortbyDate)
 	ON_COMMAND(ID_VIEW_SORTBY_READ, OnViewSortbyRead)
-	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_SORTBY_DATE, ID_VIEW_SORTBY_READ, OnUpdateSortby)
+    ON_COMMAND(ID_VIEW_SORTBY_KEYWORD, OnViewSortbyKeyword)
+	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_SORTBY_DATE, ID_VIEW_SORTBY_KEYWORD, OnUpdateSortby)
 
 	ON_COMMAND(ID_OPEN, OnOpenPRSSreader)
 	ON_COMMAND(ID_HIDE, OnHide)
@@ -990,6 +991,8 @@ void CMainFrame::SelectSite(int nSite) {
 		SaveSiteItemFlaggedCount(si, nSite);
 
 		m_wndFeedView.InsertItems(si);
+		if (View == FeedView) UpdateSort();
+
 	}
 	else if (nSite == SITE_UNREAD) {
 		SetTopBarText(IDS_LOADING, TOPBAR_IMAGE_LOADING);
@@ -1948,6 +1951,7 @@ void CMainFrame::OnSortChange() {
 	switch (cmd) {
 		case ID_VIEW_SORTBY_DATE: OnViewSortbyDate(); break;
 		case ID_VIEW_SORTBY_READ: OnViewSortbyRead(); break;
+		case ID_VIEW_SORTBY_KEYWORD: OnViewSortbyKeyword(); break;
 	}
 }
 
@@ -1992,9 +1996,31 @@ void CMainFrame::OnViewSortbyRead() {
 
 	if (m_wndFeedView.SiteItem == NULL)
 		return;
-
+		
 	if (m_wndFeedView.SiteItem->Sort.Item != CSortInfo::Read) {
 		m_wndFeedView.SiteItem->Sort.Item = CSortInfo::Read;
+		m_wndFeedView.DeselectAllItems();
+		m_wndFeedView.SortItems();
+	}
+	else {
+		switch (m_wndFeedView.SiteItem->Sort.Type) {
+			case CSortInfo::Descending:	m_wndFeedView.OnSortAscending(); break;
+			case CSortInfo::Ascending:	m_wndFeedView.OnSortDescending(); break;
+		}
+		UpdateSort();
+	}
+
+	SaveSiteItem(SiteList.GetAt(Config.ActSiteIdx), Config.ActSiteIdx);
+}
+
+void CMainFrame::OnViewSortbyKeyword() {
+	LOG0(1, "CMainFrame::OnViewSortbyKeyword()");
+	
+	if (m_wndFeedView.SiteItem == NULL)
+		return;
+
+	if (m_wndFeedView.SiteItem->Sort.Item != CSortInfo::Keyword) {
+		m_wndFeedView.SiteItem->Sort.Item = CSortInfo::Keyword;
 		m_wndFeedView.DeselectAllItems();
 		m_wndFeedView.SortItems();
 	}
@@ -2012,13 +2038,14 @@ void CMainFrame::OnViewSortbyRead() {
 void CMainFrame::OnUpdateSortby(CCmdUI *pCmdUI) {
 	LOG0(3, "CMainFrame::OnUpdateSortby()");
 
-	if (Config.ActSiteIdx == SITE_UNREAD) pCmdUI->m_pMenu->CheckMenuRadioItem(ID_VIEW_SORTBY_DATE, ID_VIEW_SORTBY_READ, ID_VIEW_SORTBY_DATE + UnreadItems.Sort.Item - 1, MF_BYCOMMAND);
-	else if (Config.ActSiteIdx == SITE_FLAGGED) pCmdUI->m_pMenu->CheckMenuRadioItem(ID_VIEW_SORTBY_DATE, ID_VIEW_SORTBY_READ, ID_VIEW_SORTBY_DATE + FlaggedItems.Sort.Item - 1, MF_BYCOMMAND);
+	if (Config.ActSiteIdx == SITE_UNREAD) pCmdUI->m_pMenu->CheckMenuRadioItem(ID_VIEW_SORTBY_DATE, ID_VIEW_SORTBY_KEYWORD, ID_VIEW_SORTBY_DATE + UnreadItems.Sort.Item - 1, MF_BYCOMMAND);
+	else if (Config.ActSiteIdx == SITE_FLAGGED) pCmdUI->m_pMenu->CheckMenuRadioItem(ID_VIEW_SORTBY_DATE, ID_VIEW_SORTBY_KEYWORD, ID_VIEW_SORTBY_DATE + FlaggedItems.Sort.Item - 1, MF_BYCOMMAND);
 	else {
 		CSiteItem *si = SiteList.GetAt(Config.ActSiteIdx);
 		if (si != NULL)
-			pCmdUI->m_pMenu->CheckMenuRadioItem(ID_VIEW_SORTBY_DATE, ID_VIEW_SORTBY_READ, ID_VIEW_SORTBY_DATE + si->Sort.Item - 1, MF_BYCOMMAND);
+			pCmdUI->m_pMenu->CheckMenuRadioItem(ID_VIEW_SORTBY_DATE, ID_VIEW_SORTBY_KEYWORD, ID_VIEW_SORTBY_DATE + si->Sort.Item - 1, MF_BYCOMMAND);
 	}
+
 }
 
 //  /////////////////

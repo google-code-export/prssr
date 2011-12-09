@@ -74,7 +74,8 @@ BOOL CCreditsPg::OnInitDialog() {
 	CString credits;
 	credits.Format(
 		L" David Andrs\r\n"
-		L" Jörg (eljoest)\r\n");
+		L" Jörg (eljoest)\r\n"
+		L" hd$ http://4pda.ru/forum/index.php?showtopic=12541\r\n");
 
 	m_ctlCredits.SetWindowText(credits);
 	m_ctlCredits.SetReadOnly();

@@ -51,8 +51,7 @@ RSC=rc.exe
 # ADD BASE RSC /l 0x409 /d UNDER_CE=$(CEVersion) /d _WIN32_WCE=$(CEVersion) /d "NDEBUG" /d "UNICODE" /d "_UNICODE" /d "$(CePlatform)" /d "ARM" /d "_ARM_" /d "ARMV4" /d "_AFXDLL" /r
 # ADD RSC /l 0x409 /d UNDER_CE=$(CEVersion) /d _WIN32_WCE=$(CEVersion) /d "NDEBUG" /d "UNICODE" /d "_UNICODE" /d "$(CePlatform)" /d "ARM" /d "_ARM_" /d "ARMV4" /d "_AFXDLL" /d "AFX_TARG_ENU" /r
 # ADD BASE CPP /nologo /W3 /D "ARM" /D "_ARM_" /D "ARMV4" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "NDEBUG" /D "_AFXDLL" /Yu"StdAfx.h" /O2 /M$(CECrtMT) /c
-# ADD CPP /nologo /W3 /D "NDEBUG" /D "ARM" /D "_ARM_" /D "ARMV4" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_AFXDLL" /D "PRSSR_APP" /D "LOGGING" /Yu"StdAfx.h" /O2 /M$(CECrtMT) /c
-# SUBTRACT CPP /Fr
+# ADD CPP /nologo /W3 /D "NDEBUG" /D "ARM" /D "_ARM_" /D "ARMV4" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_AFXDLL" /D "PRSSR_APP" /D "LOGGING" /Fr /Yu"StdAfx.h" /O2 /M$(CECrtMT) /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
 BSC32=bscmake.exe
@@ -255,6 +254,7 @@ DEP_CPP_ARTIC=\
 	"..\..\share\helpers.h"\
 	"..\..\share\reg.h"\
 	"..\..\share\shguim.h"\
+	"..\..\share\str.h"\
 	"..\..\share\SyncList.h"\
 	"..\..\share\UIHelper.h"\
 	"..\..\share\wnd.h"\
@@ -529,7 +529,7 @@ DEP_CPP_FEED_=\
 	{$(INCLUDE)}"winuserm.h"\
 	
 NODEP_CPP_FEED_=\
-	"..\..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	"C:\Program Files (x86)\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
@@ -1369,7 +1369,7 @@ DEP_CPP_SITE_=\
 	{$(INCLUDE)}"winuserm.h"\
 	
 NODEP_CPP_SITE_=\
-	"..\..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	"C:\Program Files (x86)\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
@@ -1869,7 +1869,7 @@ DEP_CPP_LOGGE=\
 	{$(INCLUDE)}"winuserm.h"\
 	
 NODEP_CPP_LOGGE=\
-	"..\..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	"C:\Program Files (x86)\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
@@ -1957,7 +1957,7 @@ DEP_CPP_CAPTI=\
 	{$(INCLUDE)}"winuserm.h"\
 	
 NODEP_CPP_CAPTI=\
-	"..\..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	"C:\Program Files (x86)\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
@@ -2072,7 +2072,7 @@ DEP_CPP_CEPROP=\
 	{$(INCLUDE)}"winuserm.h"\
 	
 NODEP_CPP_CEPROP=\
-	"..\..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	"C:\Program Files (x86)\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
@@ -2513,7 +2513,7 @@ DEP_CPP_HELPE=\
 	{$(INCLUDE)}"winuserm.h"\
 	
 NODEP_CPP_HELPE=\
-	"..\..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	"C:\Program Files (x86)\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
@@ -3011,7 +3011,7 @@ DEP_CPP_HTMLF=\
 	{$(INCLUDE)}"winuserm.h"\
 	
 NODEP_CPP_HTMLF=\
-	"..\..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	"C:\Program Files (x86)\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
 	
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File

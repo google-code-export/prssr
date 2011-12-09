@@ -421,8 +421,9 @@ void CFeedView::DrawItem(CDC &dc, CRect &rc, int idx) {
 	}
 
 	// keyword
-	if (item->HasKeywordMatch())
+	if (item->HasKeywordMatch()) {
 		DrawIcon(dc, KEYWORD_ICON, selected);
+	}
 
 	// flagged?
 	if (item->IsFlagged())
@@ -1431,6 +1432,10 @@ int CompareFeedItemFlag(CFeedItem *fi1, CFeedItem *fi2) {
 	return ((int) fi1->GetReadState() - (int) fi2->GetReadState());
 }
 
+int CompareFeedItemKeyword(CFeedItem *fi1, CFeedItem *fi2) {
+	return ((int) fi1->GetKeywordState() - (int) fi2->GetKeywordState());
+}
+
 int CompareFlagsAsc(const void *arg1, const void *arg2) {
 	CFeedItem *fi1 = (*(CFeedItem **) arg1);
 	CFeedItem *fi2 = (*(CFeedItem **) arg2);
@@ -1453,6 +1458,18 @@ int CompareDateDesc(const void *arg1, const void *arg2) {
 	CFeedItem *fi1 = (*(CFeedItem **) arg1);
 	CFeedItem *fi2 = (*(CFeedItem **) arg2);
 	return CompareFeedItemDate(fi2, fi1);
+}
+
+int CompareKeywordAsc(const void *arg1, const void *arg2) {
+	CFeedItem *fi1 = (*(CFeedItem **) arg1);
+	CFeedItem *fi2 = (*(CFeedItem **) arg2);
+	return CompareFeedItemKeyword(fi2, fi1);
+}
+
+int CompareKeywordDesc(const void *arg1, const void *arg2) {
+	CFeedItem *fi1 = (*(CFeedItem **) arg1);
+	CFeedItem *fi2 = (*(CFeedItem **) arg2);
+	return CompareFeedItemKeyword(fi1, fi2);
 }
 
 int CompareVFolder(const void *arg1, const void *arg2) {
@@ -1498,7 +1515,7 @@ void CFeedView::SortItems() {
 	LOG0(3, "CFeedView::SortItems()");
 
 	if (SiteItem == NULL)
-		return;				// no sorting if we dont know how to sort
+		return;			// no sorting if we dont know how to sort
 
 	if (SiteItem->Type == CSiteItem::VFolder && Config.GroupByFeed) {
 		Sort(CompareVFolder);
@@ -1513,6 +1530,11 @@ void CFeedView::SortItems() {
 			case CSortInfo::Read:
 				if (SiteItem->Sort.Type == CSortInfo::Ascending) Sort(CompareFlagsAsc);
 				else Sort(CompareFlagsDesc);
+				break;
+
+			case CSortInfo::Keyword:
+				if (SiteItem->Sort.Type == CSortInfo::Ascending) Sort(CompareKeywordAsc);
+				else Sort(CompareKeywordDesc);
 				break;
 		}
 	}
@@ -1558,23 +1580,31 @@ void CFeedView::InsertItems(CSiteItem *si) {
 			for (int i = 0, j = 0; i < feed->GetItemCount(); i++) {
 				CFeedItem *item = feed->GetItem(i);
 				if (!Config.HideReadItems || !item->IsRead())
-					if (InsertItem(j, item))
-						j++;
+					if (InsertItem(j, item)) j++;
+					if (item->HasKeywordMatch()) {
+						item->SetFlags(MESSAGE_KEYWORD, MESSAGE_KEYWORD);
+					} else {
+						item->SetFlags(0, MESSAGE_KEYWORD);
+					}
 			}
 		}
 		else if (si->Type == CSiteItem::VFolder) {
 			for (int i = 0, j = 0; i < feed->GetItemCount(); i++) {
 				CFeedItem *item = feed->GetItem(i);
 				if ((item->GetFlags() & si->FlagMask) != 0)
-					if (InsertItem(j, item))
-						j++;
+					if (InsertItem(j, item)) j++;
+					if (item->HasKeywordMatch()) {
+						item->SetFlags(MESSAGE_KEYWORD, MESSAGE_KEYWORD);
+					} else {
+						item->SetFlags(0, MESSAGE_KEYWORD);
+					}
 			}
 		}
 		feed->Unlock();
 	}
 	SortItems();
 	UpdateScrollBars();
-
+    
 	SetRedraw(TRUE);
 	Invalidate();
 }

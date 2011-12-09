@@ -485,8 +485,9 @@ BOOL SaveSiteItem(CSiteItem *item, int idx) {
 	reg.Write(szCheckFavIcon, item->CheckFavIcon);
 
 	switch (item->Sort.Item) {
-		case CSortInfo::Date: reg.Write(szSort, _T("date")); break;
-		case CSortInfo::Read: reg.Write(szSort, _T("read")); break;
+		case CSortInfo::Date: reg.Write(szSort, _T("date"));break;
+		case CSortInfo::Read: reg.Write(szSort, _T("read"));break;
+		case CSortInfo::Keyword: reg.Write(szSort, _T("keyword"));break;
 	}
 
 	if (item->Sort.Type == CSortInfo::Ascending)
