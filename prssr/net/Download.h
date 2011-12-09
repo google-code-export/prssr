@@ -110,6 +110,7 @@ public:
 	CString GetMimeType() { return MimeType; }
 
 	void SetCookie(const CString &cookie);
+	void SetHeader(const CString &name, const CString &value);
 	void SetUAString(const CString &uaString) { HttpConnection.UserAgent = uaString; }
 
 	// for Conditional GET

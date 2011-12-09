@@ -40,6 +40,7 @@
 
 #include "sync/NetworkSync.h"
 #include "sync/GReaderSync.h"
+#include "sync/GReaderSyncCL.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE

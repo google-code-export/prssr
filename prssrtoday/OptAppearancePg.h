@@ -49,7 +49,9 @@ public:
 	CComboBox	m_ctlFontSize;
 	BOOL	m_bUseFontSize;
 	CButton	m_ctlDisplayIcon;
+	CButton m_ctlDisplayFavicon;
 	BOOL	m_bDisplayIcon;
+	BOOL	m_bDisplayFavicon;
 	CButton	m_ctlHidePlugin;
 	BOOL	m_bHidePlugin;
 	//}}AFX_DATA
@@ -71,6 +73,8 @@ protected:
 	//{{AFX_MSG(COptAppearancePg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnUsefontsize();
+	afx_msg void OnDisplayIcon();
+	afx_msg void OnDisplayFavicon();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 

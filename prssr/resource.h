@@ -3,6 +3,8 @@
 // Used by prssr.rc
 //
 #define IDI_NOTIFY                      203
+#define IDI_GR                          204
+#define IDI_GRMODERN                    205
 
 #define IDD_ABOUTBOX                    100
 #define IDD_ABOUTBOX_WIDE               101
@@ -621,6 +623,10 @@
 #define IDC_WRAP_TITLES                 1252
 #define IDC_EMAIL                       1253
 #define IDC_ICO                         1254
+#define IDC_STATIC10					1255
+#define IDC_STATIC11					1256
+#define IDC_STATIC12					1257
+#define IDC_STATIC13					1258
 
 #define ID_TOOLS_OPTIONS                32774
 #define ID_TOOLS_SITEMANAGER            32775

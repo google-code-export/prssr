@@ -52,6 +52,7 @@ COptAppearancePg::COptAppearancePg() : CPropertyPage(COptAppearancePg::IDD) {
 	m_bUseFontSize = Config.FontSize != -1;
 	m_bDisplayIcon = Config.DisplayIcon;
 	m_bHidePlugin = Config.HidePlugin;
+	m_bDisplayFavicon = Config.DisplayFavicon;
 	//}}AFX_DATA_INIT
 }
 
@@ -68,7 +69,9 @@ void COptAppearancePg::DoDataExchange(CDataExchange* pDX) {
 	DDX_Control(pDX, IDC_FONTSIZE, m_ctlFontSize);
 	DDX_Check(pDX, IDC_USEFONTSIZE, m_bUseFontSize);
 	DDX_Control(pDX, IDC_PLUGIN_ICON, m_ctlDisplayIcon);
+	DDX_Control(pDX, IDC_PLUGIN_FAVICON, m_ctlDisplayFavicon);
 	DDX_Check(pDX, IDC_PLUGIN_ICON, m_bDisplayIcon);
+	DDX_Check(pDX, IDC_PLUGIN_FAVICON, m_bDisplayFavicon);
 	DDX_Control(pDX, IDC_HIDE_PLUGIN, m_ctlHidePlugin);
 	DDX_Check(pDX, IDC_HIDE_PLUGIN, m_bHidePlugin);
 	//}}AFX_DATA_MAP
@@ -78,6 +81,8 @@ void COptAppearancePg::DoDataExchange(CDataExchange* pDX) {
 BEGIN_MESSAGE_MAP(COptAppearancePg, CPropertyPage)
 	//{{AFX_MSG_MAP(COptAppearancePg)
 	ON_BN_CLICKED(IDC_USEFONTSIZE, OnUsefontsize)
+	ON_BN_CLICKED(IDC_PLUGIN_ICON, OnDisplayIcon)
+	ON_BN_CLICKED(IDC_PLUGIN_FAVICON, OnDisplayFavicon)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -125,6 +130,7 @@ void COptAppearancePg::OnOK() {
 
 	Config.DisplayIcon = m_bDisplayIcon;
 	Config.HidePlugin = m_bHidePlugin;
+	Config.DisplayFavicon = m_bDisplayFavicon;
 
 	CPropertyPage::OnOK();
 }
@@ -136,11 +142,27 @@ void COptAppearancePg::UpdateControls() {
 		m_ctlFontSize.EnableWindow();
 	else
 		m_ctlFontSize.EnableWindow(FALSE);
-}
 
+	if (m_ctlDisplayIcon.GetCheck() == BST_CHECKED)
+		m_ctlDisplayFavicon.EnableWindow();
+	else
+		m_ctlDisplayFavicon.EnableWindow(FALSE);
+}
 
 void COptAppearancePg::OnUsefontsize() {
 	LOG0(5, "COptAppearancePg::OnUsefontsize()");
+
+	UpdateControls();
+}
+
+void COptAppearancePg::OnDisplayIcon() {
+	LOG0(5, "COptAppearancePg::OnDisplayFavicon()");
+
+	UpdateControls();
+}
+
+void COptAppearancePg::OnDisplayFavicon() {
+	LOG0(5, "COptAppearancePg::OnDisplayFavicon()");
 
 	UpdateControls();
 }

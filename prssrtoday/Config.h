@@ -39,6 +39,7 @@
 #define CONFIG_DEFAULT_HIDE_PLUGIN				FALSE
 #define CONFIG_DEFAULT_FONT_SIZE				9
 #define CONFIG_DEFAULT_DISPLAY_ICON				TRUE
+#define CONFIG_DEFAULT_DISPLAY_FAVICON			FALSE
 
 // minimal synchronization interval in minutes
 //#define CONFIG_DEFAULT_MINIMALSYNCINTERVAL		0
@@ -47,8 +48,11 @@
 #define CONFIG_DEFAULT_CYCLING_SUBMODE			CYCLING_SUBMODE_SITES
 #define CONFIG_DEFAULT_SHOW_SITE_NAME			TRUE
 #define CONFIG_DEFAULT_SHOW_DATE_TIME			TRUE
+#define CONFIG_DEFAULT_SHOW_DATETIME_TAIL		FALSE
 #define CONFIG_DEFAULT_SHOW_ONLY_NEW			TRUE
 #define CONFIG_DEFAULT_CYCLING_SPEED			3
+#define CONFIG_DEFAULT_DISPLAY_ROWS				2
+#define CONFIG_DEFAULT_SHOW_TODAY_WRAP			FALSE
 
 //#define CONFIG_DEFAULT_SKIP_NONEWS_SITES	FALSE
 //#define CONFIG_DEFAULT_CYCLE_TITLES			FALSE
@@ -86,6 +90,7 @@ public:
 	int VOffset;
 	BOOL DisplayIcon;
 	BOOL HidePlugin;
+	BOOL DisplayFavicon;
 
 	// apperance
 	int FontSize;
@@ -96,6 +101,9 @@ public:
 	int CyclingSpeed;
 	BOOL ShowOnlyNew;
 	BOOL ShowDateTime;
+	BOOL ShowDateTimeTail;
+	BOOL ShowTodayWrap;
+	int DisplayRows;
 
 	// read-only (global for the whole application)
 //	DWORD StartupDelay;

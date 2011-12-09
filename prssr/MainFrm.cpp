@@ -63,6 +63,7 @@
 #include "CacheMan.h"
 
 #include "sync/GReaderSync.h"
+#include "sync/GReaderSyncCL.h"
 #include "sync/NetworkSync.h"
 #include "net/Connection.h"
 
@@ -258,6 +259,7 @@ CMainFrame::~CMainFrame() {
 void CMainFrame::CreateSyncer() {
 	switch (Config.SyncSite) {
 		case SYNC_SITE_GOOGLE_READER: Syncer = new CGReaderSync(&Downloader, Config.SyncUserName, Config.SyncPassword);  break;
+		case SYNC_SITE_GOOGLE_READERCL: Syncer = new CGReaderSyncCL(&Downloader, Config.SyncUserName, Config.SyncPassword);  break;
 		default: Syncer = new CNetworkSync(&Downloader); break;
 	}
 }
@@ -410,7 +412,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 
 	HPreloadThread = CreateThread(NULL, 0, PreloadSitesStubProc, this, 0, NULL);
 //	SetThreadPriority(HPreloadThread, THREAD_PRIORITY_LOWEST);
-
+ 
 	CreateSyncer();
 	HSyncItemsThread = CreateThread(NULL, 0, SyncItemsStubProc, this, 0, NULL);
 

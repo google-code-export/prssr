@@ -76,17 +76,43 @@ END_MESSAGE_MAP()
 
 void COptSyncPg::UpdateControls() {
 	int site = m_ctlSyncSite.GetCurSel();
+	GetDlgItem(IDC_STATIC10)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_STATIC11)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_STATIC12)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_STATIC13)->ShowWindow(SW_HIDE);
+
 	if (site == 0) { // No sync site
 		m_lblUserName.EnableWindow(FALSE);
 		m_ctlUserName.EnableWindow(FALSE);
 		m_lblPassword.EnableWindow(FALSE);
 		m_ctlPassword.EnableWindow(FALSE);
+		GetDlgItem(IDC_STATIC10)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC11)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC12)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC13)->ShowWindow(SW_HIDE);
 	}
 	else {
 		m_lblUserName.EnableWindow();
 		m_ctlUserName.EnableWindow();
 		m_lblPassword.EnableWindow();
 		m_ctlPassword.EnableWindow();
+		if (site == 1) {
+			if (GetSystemMetrics(SM_CXSCREEN) == 240) {
+				GetDlgItem(IDC_STATIC12)->ShowWindow(SW_SHOW);
+				GetDlgItem(IDC_STATIC13)->ShowWindow(SW_HIDE);
+			} else if (GetSystemMetrics(SM_CXSCREEN) == 480) {
+				GetDlgItem(IDC_STATIC10)->ShowWindow(SW_SHOW);
+				GetDlgItem(IDC_STATIC11)->ShowWindow(SW_HIDE);
+			}
+		} else {
+			if (GetSystemMetrics(SM_CXSCREEN) == 240) {
+				GetDlgItem(IDC_STATIC12)->ShowWindow(SW_HIDE);
+				GetDlgItem(IDC_STATIC13)->ShowWindow(SW_SHOW);
+			} else if (GetSystemMetrics(SM_CXSCREEN) == 480) {
+				GetDlgItem(IDC_STATIC10)->ShowWindow(SW_HIDE);
+				GetDlgItem(IDC_STATIC11)->ShowWindow(SW_SHOW);
+			}
+		}
 	}
 }
 
@@ -95,6 +121,8 @@ BOOL COptSyncPg::OnInitDialog() {
 
 	m_ctlSyncSite.AddString(_T("None"));
 	m_ctlSyncSite.AddString(_T("Google Reader"));
+	m_ctlSyncSite.AddString(_T("Google Reader CL"));
+
 	m_ctlSyncSite.SetCurSel(Config.SyncSite);
 
 	UpdateControls();
@@ -106,6 +134,7 @@ BOOL COptSyncPg::OnApply() {
 	UpdateData();
 
 	Config.SyncSite = (ESyncSite) m_ctlSyncSite.GetCurSel();
+
 	Config.SyncUserName = m_strUserName;
 	Config.SyncPassword = m_strPassword;
 

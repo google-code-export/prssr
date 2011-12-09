@@ -48,7 +48,6 @@ public:
 	CComboBox m_ctlNavigation;
 	CComboBox m_ctlEmailAccount;
 
-
 // Overrides
 	// ClassWizard generate virtual function overrides
 	//{{AFX_VIRTUAL(COptGeneralPg)

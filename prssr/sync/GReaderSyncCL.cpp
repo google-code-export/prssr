@@ -1,10 +1,10 @@
-// GReaderSync.cpp: implementation of the CGReaderSync class.
+// GReaderSyncCL.cpp: implementation of the CGReaderSyncCL class.
 //
 //////////////////////////////////////////////////////////////////////
 
 #include "../StdAfx.h"
 #include "../prssr.h"
-#include "GReaderSync.h"
+#include "GReaderSyncCL.h"
 #include "../net/Download.h"
 #include "../Config.h"
 #include "../Site.h"
@@ -12,74 +12,74 @@
 #include "../www/url.h"
 #include "../../share/cache.h"
 
-CString CGReaderSync::BaseUrl = _T("http://www.google.com/reader");
-CString CGReaderSync::Api0 = _T("http://www.google.com/reader/api/0");
+CString CGReaderSyncCL::BaseUrl = _T("http://www.google.com/reader");
+CString CGReaderSyncCL::Api0 = _T("http://www.google.com/reader/api/0");
 
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CGReaderSync::CGReaderSync(CDownloader *downloader, const CString &userName, const CString &password) : CFeedSync(downloader) {
+CGReaderSyncCL::CGReaderSyncCL(CDownloader *downloader, const CString &userName, const CString &password) : CFeedSync(downloader) {
 	UserName = userName;
 	Password = password;
 
 	InitializeCriticalSection(&CS);
 }
 
-CGReaderSync::~CGReaderSync() {
+CGReaderSyncCL::~CGReaderSyncCL()
+{
 	DeleteCriticalSection(&CS);
 }
 
-BOOL CGReaderSync::Authenticate() {
-	LOG0(1, "CGReaderSync::Authenticate()");
+BOOL CGReaderSyncCL::Authenticate() {
+	LOG0(1, "CGReaderSyncCL::Authenticate()");
 
 	EnterCriticalSection(&CS);
 
-	SID.Empty();
+	Auth.Empty();
 
 	BOOL ret = FALSE;
 	if (Downloader != NULL) {
-
-		Downloader->SetHeader(_T("Authorization"),_T(""));
 
 		TCHAR tempFileName[MAX_PATH];
 		GetTempFileName(Config.CacheLocation, L"rsr", 0, tempFileName);
 
 		CString url, body, response;
-		url.Format(_T("https://www.google.com/accounts/ClientLogin"), UserName, Password);
-		body.Format(_T("Email=%s&Passwd=%s"), UserName, Password);
+		url.Format(_T("https://www.google.com/accounts/ClientLogin?accountType=GOOGLE&service=reader&Email=%s&Passwd=%s"),UserName, Password);
+		body = "";
 
 		if (Downloader->Post(url, body, response)) {
 			int npos = response.Find('\n');
 			int start = 0;
 			while (npos != -1) {
 				int eqpos = response.Find('=', start);
-				if (eqpos != -1 && response.Mid(start, eqpos - start).Compare(_T("SID")) == 0) {
-					SID = response.Mid(eqpos + 1, npos - eqpos - 1);
+				if (eqpos != -1 && response.Mid(start, eqpos - start).Compare(_T("Auth")) == 0) {
+					Auth = response.Mid(eqpos + 1, npos - eqpos - 1);
+					Downloader->SetHeader(_T("Authorization"),_T("GoogleLogin ") + FormatAuthMarker(Auth));
 				}
 				start = npos + 1;
 				npos = response.Find('\n', start);
 			}
-			ret = !SID.IsEmpty();
+
+			ret = !Auth.IsEmpty();
 		}
 
 		DeleteFile(tempFileName);
 	}
 
 	LeaveCriticalSection(&CS);
-
 	return ret;
 }
 
-BOOL CGReaderSync::SyncFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
-	LOG0(1, "CGReaderSync::SyncFeed()");
+BOOL CGReaderSyncCL::SyncFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
+	LOG0(1, "CGReaderSyncCL::SyncFeed()");
 
 	EnterCriticalSection(&CS);
 
 	BOOL ret = FALSE;
 	Downloader->Reset();
-	Downloader->SetCookie(FormatSIDCookie(SID));
+	//Downloader->SetHeader(_T("Authorization"),_T("GoogleLogin ") + FormatAuthMarker(Auth));
 
 	CString sTmpFileName;
 	LPTSTR tmpFileName = sTmpFileName.GetBufferSetLength(MAX_PATH + 1);
@@ -133,8 +133,8 @@ BOOL CGReaderSync::SyncFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
 	return ret;
 }
 
-BOOL CGReaderSync::MergeFeed(CSiteItem *si, CFeed *feed, CArray<CFeedItem *, CFeedItem *> &newItems, CArray<CFeedItem *, CFeedItem *> &itemsToClean) {
-	LOG0(1, "CGReaderSync::MergeFeed()");
+BOOL CGReaderSyncCL::MergeFeed(CSiteItem *si, CFeed *feed, CArray<CFeedItem *, CFeedItem *> &newItems, CArray<CFeedItem *, CFeedItem *> &itemsToClean) {
+	LOG0(1, "CGReaderSyncCL::MergeFeed()");
 
 	EnterCriticalSection(&CS);
 
@@ -150,8 +150,8 @@ BOOL CGReaderSync::MergeFeed(CSiteItem *si, CFeed *feed, CArray<CFeedItem *, CFe
 	return TRUE;
 }
 
-void CGReaderSync::UpdateInGreader() {
-	LOG0(1, "CGReaderSync::DownloadFeed()");
+void CGReaderSyncCL::UpdateInGreader() {
+	LOG0(1, "CGReaderSyncCL::DownloadFeed()");
 
 	int i;
 
@@ -172,15 +172,15 @@ void CGReaderSync::UpdateInGreader() {
 	MarkStarredItems.RemoveAll();
 }
 
-BOOL CGReaderSync::SyncItem(CFeedItem *fi, DWORD mask) {
-	LOG0(1, "CGReaderSync::SyncItem()");
+BOOL CGReaderSyncCL::SyncItem(CFeedItem *fi, DWORD mask) {
+	LOG0(1, "CGReaderSyncCL::SyncItem()");
 
 	EnterCriticalSection(&CS);
 
 	CString url, body, response;
 	BOOL ret = TRUE;
 
-	if (SID.IsEmpty()) ret = Authenticate();
+	if (Auth.IsEmpty()) ret = Authenticate();
 	if (ret) {
 		if (Token.IsEmpty()) ret = GetToken();
 		if (ret) {
@@ -213,19 +213,19 @@ BOOL CGReaderSync::SyncItem(CFeedItem *fi, DWORD mask) {
 	return ret;
 }
 
-BOOL CGReaderSync::DownloadFeed(CString &url, const CString &fileName) {
-	LOG0(1, "CGReaderSync::DownloadFeed()");
+BOOL CGReaderSyncCL::DownloadFeed(CString &url, const CString &fileName) {
+	LOG0(1, "CGReaderSyncCL::DownloadFeed()");
 
 	EnterCriticalSection(&CS);
 
 	Downloader->Reset();
-	if (SID.IsEmpty()) Authenticate();
+	if (Auth.IsEmpty()) Authenticate();
 
 	CString u;
 	u.Format(_T("%s/atom/feed/%s"), BaseUrl, url);
 
 	Downloader->SetUAString(_T(""));
-	Downloader->SetCookie(FormatSIDCookie(SID));
+	//Downloader->SetHeader(_T("Authorization"),_T("GoogleLogin ") + FormatAuthMarker(Auth));
 	BOOL ret = Downloader->SaveHttpObject(u, fileName);
 
 	LeaveCriticalSection(&CS);
@@ -233,20 +233,19 @@ BOOL CGReaderSync::DownloadFeed(CString &url, const CString &fileName) {
 	return ret;
 }
 
-CString CGReaderSync::FormatSIDCookie(const CString &sid) {
-	CString sSIDCookie;
-//	sSIDCookie.Format(_T("SID=%s; expires=1600000000; path=/; domain=.google.com"), sid);
-	sSIDCookie.Format(_T("SID=%s"), sid);
-	return sSIDCookie;
+CString CGReaderSyncCL::FormatAuthMarker(const CString &auth) {
+	CString sAuthMarker;
+	sAuthMarker.Format(_T("auth=%s"), auth);
+	return sAuthMarker;
 }
 
-BOOL CGReaderSync::GetToken() {
-	LOG0(5, "CGReaderSync::GetToken()");
+BOOL CGReaderSyncCL::GetToken() {
+	LOG0(5, "CGReaderSyncCL::GetToken()");
 
 	EnterCriticalSection(&CS);
 
 	Downloader->Reset();
-	Downloader->SetCookie(FormatSIDCookie(SID));
+	//Downloader->SetHeader(_T("Authorization"),_T("GoogleLogin ") + FormatAuthMarker(Auth));
 
 	Token.Empty();
 	CString url;
@@ -258,8 +257,8 @@ BOOL CGReaderSync::GetToken() {
 	return ret;
 }
 
-void CGReaderSync::FeedIntersection(CFeed *first, CFeed *second, CArray<CFeedItem *, CFeedItem *> *diff) {
-	LOG0(5, "CGReaderSync::FeedIntersection()");
+void CGReaderSyncCL::FeedIntersection(CFeed *first, CFeed *second, CArray<CFeedItem *, CFeedItem *> *diff) {
+	LOG0(5, "CGReaderSyncCL::FeedIntersection()");
 
 	CCache cache;
 	int i;
@@ -401,13 +400,13 @@ static BOOL ParseSubscriptions(CXmlNode *parent, CSiteList &siteList) {
 	return TRUE;
 }
 
-BOOL CGReaderSync::GetSubscriptions(CSiteList &siteList) {
-	LOG0(5, "CGReaderSync::GetSubscriptions()");
+BOOL CGReaderSyncCL::GetSubscriptions(CSiteList &siteList) {
+	LOG0(5, "CGReaderSyncCL::GetSubscriptions()");
 
 	EnterCriticalSection(&CS);
 
 	Downloader->Reset();
-	if (SID.IsEmpty()) Authenticate();
+	if (Auth.IsEmpty()) Authenticate();
 
 	CString url;
 	url.Format(_T("%s/subscription/list?output=xml"), Api0);
@@ -416,7 +415,7 @@ BOOL CGReaderSync::GetSubscriptions(CSiteList &siteList) {
 	GetTempFileName(Config.CacheLocation, L"rsr", 0, fileName);
 
 	Downloader->SetUAString(_T(""));
-	Downloader->SetCookie(FormatSIDCookie(SID));
+	//Downloader->SetHeader(_T("Authorization"),_T("GoogleLogin ") + FormatAuthMarker(Auth));
 	BOOL ret = FALSE;
 	if (Downloader->SaveHttpObject(url, fileName)) {
 		CXmlFile xml;
@@ -431,15 +430,15 @@ BOOL CGReaderSync::GetSubscriptions(CSiteList &siteList) {
 	return ret;
 }
 
-BOOL CGReaderSync::AddSubscription(const CString &feedUrl, const CString &title) {
-	LOG0(1, "CGReaderSync::AddSubscription()");
+BOOL CGReaderSyncCL::AddSubscription(const CString &feedUrl, const CString &title) {
+	LOG0(1, "CGReaderSyncCL::AddSubscription()");
 
 	EnterCriticalSection(&CS);
 
 	CString url, body, response;
 	BOOL ret = TRUE;
 
-	if (SID.IsEmpty()) ret = Authenticate();
+	if (Auth.IsEmpty()) ret = Authenticate();
 	if (ret) {
 		if (Token.IsEmpty()) ret = GetToken();
 		if (ret) {
@@ -454,15 +453,15 @@ BOOL CGReaderSync::AddSubscription(const CString &feedUrl, const CString &title)
 	return ret;
 }
 
-BOOL CGReaderSync::RemoveSubscription(const CString &feedUrl) {
-	LOG0(1, "CGReaderSync::RemoveSubscription()");
+BOOL CGReaderSyncCL::RemoveSubscription(const CString &feedUrl) {
+	LOG0(1, "CGReaderSyncCL::RemoveSubscription()");
 
 	EnterCriticalSection(&CS);
 
 	CString url, body, response;
 	BOOL ret = TRUE;
 
-	if (SID.IsEmpty()) ret = Authenticate();
+	if (Auth.IsEmpty()) ret = Authenticate();
 	if (ret) {
 		if (Token.IsEmpty()) ret = GetToken();
 		if (ret) {

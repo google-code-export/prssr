@@ -43,12 +43,78 @@ UINT ModeID[] = {
 //	IDS_MODE_TREE
 };
 
-int SpeedSecs[] = {
+/* int SpeedSecs[] = {
 	1,
 	3,
 	5,
 	7,
 	10
+}; */
+
+int SpeedSecs[] = {
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	10,
+	11,
+	12,
+	13,
+	14,
+	15,
+	16,
+	17,
+	18,
+	19,
+	20,
+	21,
+	22,
+	23,
+	24,
+	25,
+	26,
+	27,
+	28,
+	29,
+	30
+};
+
+
+int DisplayRowsCnt[] = {
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	10,
+	11,
+	12,
+	13,
+	14,
+	15,
+	16,
+	17,
+	18,
+	19,
+	20,
+	21,
+	22,
+	23,
+	24,
+	25,
+	26,
+	27,
+	28,
+	29,
+	30
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -65,7 +131,9 @@ COptModePg::COptModePg() : CPropertyPage(COptModePg::IDD)
 	m_nCyclingSubMode = Config.CyclingSubMode;
 	m_bShowSiteName = Config.ShowSiteName;
 	m_bShowDateTime = Config.ShowDateTime;
+	m_bShowDateTimeTail = Config.ShowDateTimeTail;
 	m_bShowOnlyNew = Config.ShowOnlyNew;
+	m_bShowTodayWrap = Config.ShowTodayWrap;
 	//}}AFX_DATA_INIT
 }
 
@@ -87,17 +155,23 @@ void COptModePg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_FEED_ITEMS, m_ctlFeedItems);
 	DDX_Control(pDX, IDC_SHOW_SITE_NAME, m_ctlShowSiteName);
 	DDX_Control(pDX, IDC_SHOW_DATE_TIME, m_ctlShowDateTime);
+	DDX_Control(pDX, IDC_SHOW_DATETIME_TAIL, m_ctlShowDateTimeTail);
 	DDX_Control(pDX, IDC_SHOW_ONLY_NEW, m_ctlShowOnlyNew);
 	DDX_Control(pDX, IDC_DISPLAY_SPEED_LBL, m_ctlDisplaySpeedLbl);
 	DDX_Control(pDX, IDC_DISPLAYSPEED, m_ctlDisplaySpeed);
 	DDX_Control(pDX, IDC_DISPLAY_SPEED_SECS, m_ctlDisplaySpeedSecs);
+	DDX_Control(pDX, IDC_SHOW_TODAY_WRAP, m_ctlShowTodayWrap);
+	DDX_Control(pDX, IDC_DISPLAY_ROWS_LBL, m_ctlDisplayRowsLbl);
+	DDX_Control(pDX, IDC_DISPLAYROWS, m_ctlDisplayRows);
 	// general
 	DDX_CBIndex(pDX, IDC_MODE, m_nMode);
 	// cycling
 	DDX_Radio(pDX, IDC_SITE_NAMES, m_nCyclingSubMode);
 	DDX_Check(pDX, IDC_SHOW_SITE_NAME, m_bShowSiteName);
 	DDX_Check(pDX, IDC_SHOW_DATE_TIME, m_bShowDateTime);
+	DDX_Check(pDX, IDC_SHOW_DATETIME_TAIL, m_bShowDateTimeTail);
 	DDX_Check(pDX, IDC_SHOW_ONLY_NEW, m_bShowOnlyNew);
+	DDX_Check(pDX, IDC_SHOW_TODAY_WRAP, m_bShowTodayWrap);
 	//}}AFX_DATA_MAP
 }
 
@@ -107,6 +181,9 @@ BEGIN_MESSAGE_MAP(COptModePg, CPropertyPage)
 	ON_CBN_SELENDOK(IDC_MODE, OnSelendokMode)
 	ON_BN_CLICKED(IDC_SITE_NAMES, OnSiteNames)
 	ON_BN_CLICKED(IDC_FEED_ITEMS, OnFeedItems)
+	ON_BN_CLICKED(IDC_SHOW_TODAY_WRAP, OnShowTodayWrap)
+	ON_BN_CLICKED(IDC_SHOW_DATE_TIME, OnShowDateTime)
+	ON_BN_CLICKED(IDC_SHOW_DATETIME_TAIL, OnShowDateTimeTail)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -142,9 +219,25 @@ BOOL COptModePg::OnInitDialog() {
 		if (SpeedSecs[i] == Config.CyclingSpeed)
 			m_ctlDisplaySpeed.SetCurSel(item);
 	}
+
+	// display rows
+	CString strRows;
+	for (i = 0; i < sizeof(DisplayRowsCnt) / sizeof(DisplayRowsCnt[0]); i++) {
+		strRows.Format(_T("%d"), DisplayRowsCnt[i]);
+		int item = m_ctlDisplayRows.AddString(strRows);
+
+		if (DisplayRowsCnt[i] == Config.DisplayRows)
+			m_ctlDisplayRows.SetCurSel(item);
+	}
+
 	if (m_ctlDisplaySpeed.GetCurSel() == CB_ERR) {
 		strSpeed.Format(_T("%d"), Config.CyclingSpeed);
 		m_ctlDisplaySpeed.SetWindowText(strSpeed);
+	}
+
+	if (m_ctlDisplayRows.GetCurSel() == CB_ERR) {
+		strRows.Format(_T("%d"), Config.DisplayRows);
+		m_ctlDisplayRows.SetWindowText(strRows);
 	}
 
 	SetForegroundWindow();
@@ -160,7 +253,9 @@ void COptModePg::OnOK() {
 	Config.CyclingSubMode = m_nCyclingSubMode;
 	Config.ShowSiteName = m_bShowSiteName;
 	Config.ShowDateTime = m_bShowDateTime;
+	Config.ShowDateTimeTail = m_bShowDateTimeTail;
 	Config.ShowOnlyNew = m_bShowOnlyNew;
+	Config.ShowTodayWrap = m_bShowTodayWrap;
 
 	CString strSpeed;
 	m_ctlDisplaySpeed.GetWindowText(strSpeed);
@@ -169,6 +264,14 @@ void COptModePg::OnOK() {
 		Config.CyclingSpeed = speed;
 	else
 		Config.CyclingSpeed = CONFIG_DEFAULT_CYCLING_SPEED;
+
+	CString strRows;
+	m_ctlDisplayRows.GetWindowText(strRows);
+	int rows;
+	if (swscanf(strRows, _T("%d"), &rows) == 1)
+		Config.DisplayRows = rows;
+	else
+		Config.DisplayRows = CONFIG_DEFAULT_DISPLAY_ROWS;
 
 	CPropertyPage::OnOK();
 }
@@ -182,20 +285,46 @@ void COptModePg::UpdateControlsCycling(BOOL enabled/* = TRUE*/) {
 	m_ctlFeedItems.ShowWindow(nShowCmd);
 	m_ctlShowSiteName.ShowWindow(nShowCmd);
 	m_ctlShowDateTime.ShowWindow(nShowCmd);
+	m_ctlShowDateTimeTail.ShowWindow(nShowCmd);
 	m_ctlShowOnlyNew.ShowWindow(nShowCmd);
 	m_ctlDisplaySpeedLbl.ShowWindow(nShowCmd);
 	m_ctlDisplaySpeed.ShowWindow(nShowCmd);
 	m_ctlDisplaySpeedSecs.ShowWindow(nShowCmd);
+	m_ctlShowTodayWrap.ShowWindow(nShowCmd);
+	m_ctlDisplayRowsLbl.ShowWindow(nShowCmd);
+	m_ctlDisplayRows.ShowWindow(nShowCmd);
 
 	if (enabled) {
+		if (m_ctlFeedItems.GetCheck() == BST_CHECKED) {
+			m_ctlShowSiteName.EnableWindow();
+			m_ctlShowTodayWrap.EnableWindow();
+		}
+
+		if (m_ctlShowTodayWrap.GetCheck() == BST_CHECKED) {
+			m_ctlDisplayRowsLbl.EnableWindow();
+			m_ctlDisplayRows.EnableWindow();
+		} else {
+			m_ctlDisplayRowsLbl.EnableWindow(FALSE);
+			m_ctlDisplayRows.EnableWindow(FALSE);
+		}
+
+		if (m_ctlShowDateTime.GetCheck() == BST_CHECKED)
+			m_ctlShowDateTimeTail.EnableWindow(FALSE);
+		else 
+			m_ctlShowDateTimeTail.EnableWindow();
+
+		if (m_ctlShowDateTimeTail.GetCheck() == BST_CHECKED)
+			m_ctlShowDateTime.EnableWindow(FALSE);
+		else 
+			m_ctlShowDateTime.EnableWindow();
+
 		if (m_ctlSiteNames.GetCheck() == BST_CHECKED) {
 			m_ctlShowSiteName.EnableWindow(FALSE);
 			m_ctlShowDateTime.EnableWindow(FALSE);
-		}
-
-		if (m_ctlFeedItems.GetCheck() == BST_CHECKED) {
-			m_ctlShowSiteName.EnableWindow();
-			m_ctlShowDateTime.EnableWindow();
+			m_ctlShowDateTimeTail.EnableWindow(FALSE);
+			m_ctlShowTodayWrap.EnableWindow(FALSE);
+			m_ctlDisplayRowsLbl.EnableWindow(FALSE);
+			m_ctlDisplayRows.EnableWindow(FALSE);
 		}
 	}
 }
@@ -228,6 +357,24 @@ void COptModePg::OnSiteNames() {
 
 void COptModePg::OnFeedItems() {
 	LOG0(1, "COptModePg::OnFeedItems()");
+
+	UpdateControls();
+}
+
+void COptModePg::OnShowTodayWrap() {
+	LOG0(1, "COptModePg::OnShowTodayWrap()");
+
+	UpdateControls();
+}
+
+void COptModePg::OnShowDateTime() {
+	LOG0(1, "COptModePg::OnShowDateTime()");
+
+	UpdateControls();
+}
+
+void COptModePg::OnShowDateTimeTail() {
+	LOG0(1, "COptModePg::OnShowDateTime()");
 
 	UpdateControls();
 }

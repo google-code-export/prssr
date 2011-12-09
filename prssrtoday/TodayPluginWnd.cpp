@@ -18,11 +18,9 @@
  *
  */
 
-
 #include "StdAfx.h"
 #include "prssrtoday.h"
 #include "TodayPluginWnd.h"
-
 #include "todaycmn.h"
 #include "Config.h"
 #include "../prssr/ctrls/CePropertySheet.h"
@@ -31,6 +29,9 @@
 #include "OptModePg.h"
 
 #include "../prssr/xml/FeedFile.h"
+
+#include "icon.h"
+
 #include "../share/helpers.h"
 
 #include "../share/defs.h"
@@ -58,6 +59,8 @@ static char THIS_FILE[] = __FILE__;
 
 #define CONFIG_DEFAULT_FONT_SIZE			9
 #define LINE_SPACING						2
+
+#define WM_FAVICONSRESET (WM_USER + 100)
 
 //int CyclingSpeed[] = { 1000, 2500, 5000, 7500, 10000 };
 
@@ -122,6 +125,7 @@ BEGIN_MESSAGE_MAP(CTodayPluginWnd, CWnd)
 	ON_COMMAND(ID_TODAY_CYCLING, OnTodayCycling)
 	ON_COMMAND(ID_TODAY_UPDATEALL, OnTodayUpdateall)
 	ON_COMMAND(ID_TODAY_SETTINGS, OnTodaySettings)
+	ON_MESSAGE(WM_FAVICONSRESET, OnFaviconsReset)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -203,13 +207,27 @@ BOOL CTodayPluginWnd::Create(HWND hwndParent) {
 
 	// load the font
 	LoadFonts();
-
+	
 	HIcon = (HICON) ::LoadImage(AfxGetResourceHandle(), MAKEINTRESOURCE(IDI_DISPLAYICON), IMAGE_ICON, SCALEX(16), SCALEX(16), 0);
 
 	EnterCriticalSection(&CSSiteList);
 //	LoadSiteList(SiteList);
-	if (SiteList.GetCount() > 0)
-		SiteIdx = 0;
+
+	for (int i=0;i<1024;i++) {
+		HIcons[i] = NULL;
+	}
+
+	if (SiteList.GetCount() > 0) {
+		CString fileName;
+
+		for (int i = 0;i<SiteList.GetCount();i++) {
+			if (SiteList.GetAt(i)->CheckFavIcon) {
+				fileName = GetCacheFile(FILE_TYPE_FAVICON, Config.CacheLocation, SiteList.GetAt(i)->Info->FileName);
+				HIcons[i] = LoadIconFromFile(fileName, SCALEX(16), SCALEY(16));
+			}
+		}
+
+		SiteIdx = 0; }
 	else
 		SiteIdx = -1;
 	LeaveCriticalSection(&CSSiteList);
@@ -233,6 +251,12 @@ void CTodayPluginWnd::OnDestroy() {
 	KillTimer(TapAndHoldTimer);
 
 	DestroyIcon(HIcon); HIcon = NULL;
+
+	for (int i=0;i<SiteList.GetCount();i++) {
+		DestroyIcon(HIcons[i]);
+		HIcons[i] = NULL;
+	}
+
 	m_fntNormal.DeleteObject();
 	m_fntBold.DeleteObject();
 }
@@ -248,7 +272,6 @@ BOOL CTodayPluginWnd::OnEraseBkgnd(CDC* pDC) {
 
 	return TRUE;
 }
-
 
 int CTodayPluginWnd::DrawSiteTitle(CDC &dc, CSiteItem *si, CRect *rc, UINT uFormat) {
 	LOG2(5, "CTodayPluginWnd::DrawSiteTitle(, %p, , %d)", si, uFormat);
@@ -289,6 +312,36 @@ int CTodayPluginWnd::DrawSiteTitle(CDC &dc, CSiteItem *si, CRect *rc, UINT uForm
 	return dc.DrawText(buffer, rc, uFormat);
 }
 
+// cache from misc
+CString CTodayPluginWnd::GetCachePath(EFileType type, const CString &strPath) {
+	CString path = strPath;
+	if (path.Right(1) == _T("\\"))
+		path = path.Left(path.GetLength() - 1);
+	CString cPath;
+	switch (type) {
+		case FILE_TYPE_FEED:      cPath.Format(_T("%s\\feeds"), path); break;
+		case FILE_TYPE_ENCLOSURE: cPath.Format(_T("%s\\enclosures"), path); break;
+		case FILE_TYPE_FAVICON:   cPath.Format(_T("%s\\favicons"), path); break;
+		case FILE_TYPE_IMAGE:
+		case FILE_TYPE_HTML:      cPath.Format(_T("%s\\html"), path); break;
+		case FILE_TYPE_OPML:
+		default:                  cPath.Format(_T("%s"), path); break;
+	}
+	return cPath;
+}
+
+CString CTodayPluginWnd::GetCacheFile(EFileType type, const CString &strPath, const CString &url) {
+	CString filePath;
+	switch (type) {
+		case FILE_TYPE_FAVICON:	  filePath.Format(_T("%s\\%s.ico"), GetCachePath(type, strPath), url); break;
+	//	case FILE_TYPE_ENCLOSURE: filePath.Format(_T("%s\\%s"), GetCachePath(type, strPath), UrlToFileName(url, FALSE)); break;
+	//	case FILE_TYPE_HTML:      filePath.Format(_T("%s\\%s"), GetCachePath(type, strPath), UrlToFileName(url, TRUE)); break;
+	//	case FILE_TYPE_IMAGE:     filePath.Format(_T("%s\\%s"), GetCachePath(type, strPath), UrlToFileName(url, FALSE)); break;
+		default:				  filePath.Format(_T("%s\\%s"), GetCachePath(type, strPath), url); break;
+	}
+	return filePath;
+}
+
 void CTodayPluginWnd::DrawMessage(CDC &dc, CRect &rect, UINT nID) {
 	// no news
 	CString strNoNews;
@@ -324,7 +377,16 @@ void CTodayPluginWnd::DrawCycling(CDC &dc, CRect &rcLabel) {
 	dc.SelectObject(m_fntBold);
 	CSiteItem *si = SiteList.GetAt(SiteIdx);
 
+	// if favicon changed
+	if (SiteIdx != -1) {
+		if (LoadSiteFeed != si->Name && Config.DisplayFavicon) {
+			LoadSiteFeed = si->Name;
+			CTodayPluginWnd::OnPaint();
+		}
+	}
+
 	switch (Config.CyclingSubMode) {
+
 		case CYCLING_SUBMODE_SITES:
 			DrawSiteTitle(dc, si, &rcLabel, DT_LEFT | DT_TOP);
 			break;
@@ -357,11 +419,35 @@ void CTodayPluginWnd::DrawCycling(CDC &dc, CRect &rcLabel) {
 
 				CString sFeedTitle = fi->Title;
 				ReplaceHTMLEntities(sFeedTitle);
-				DrawTextEndEllipsis(dc, sFeedTitle, rcLabel, DT_LEFT | DT_TOP | DT_NOPREFIX);
+
+				if (Config.ShowDateTimeTail) {
+					CString strDateTime;
+					SYSTEMTIME st = { 0 };
+					if (fi->PubDate.wYear != 0) {
+//						if (Config.GMTTimes)
+//							st = fi->PubDate;		// leave at GMT
+//						else
+							st = TimeToTimeZone(&fi->PubDate);		// convert to local time zone
+					}
+					if (!FormatDateTime(strDateTime, st, Config.ShowRelativeDates))
+						strDateTime.Empty();
+					sFeedTitle += _T(" (") + strDateTime + _T(")");
+				}
+
+				if (Config.ShowTodayWrap)
+					dc.DrawText(sFeedTitle, &rcLabel, DT_LEFT | DT_TOP | DT_NOPREFIX | DT_WORDBREAK);
+				else 
+					DrawTextEndEllipsis(dc, sFeedTitle, rcLabel, DT_LEFT | DT_TOP | DT_NOPREFIX);
 
 				if (Config.ShowDateTime) {
-					rcLabel.top += RowHeight;
-					rcLabel.bottom += RowHeight;
+
+					if (Config.ShowTodayWrap) {
+						rcLabel.top += (Config.DisplayRows)*RowHeight;
+						rcLabel.bottom += (Config.DisplayRows)*RowHeight;
+					} else {
+						rcLabel.top += RowHeight;
+						rcLabel.bottom += RowHeight;
+					}
 
 					CString strDateTime;
 					SYSTEMTIME st = { 0 };
@@ -399,6 +485,7 @@ void CTodayPluginWnd::OnPaint() {
 
 	// Get appropriate text color from shell
 	COLORREF crText;
+	CSiteItem *si = SiteList.GetAt(SiteIdx);
 
 	if (Selected) {
 		COLORREF clrBkgnd = GetParent()->SendMessage(TODAYM_GETCOLOR, (WPARAM) TODAYCOLOR_HIGHLIGHT, NULL);
@@ -420,35 +507,72 @@ void CTodayPluginWnd::OnPaint() {
 	rcLabel.left += SCALEX(4);
 	rcLabel.right -= SCALEX(4);
 
+	CString fileName;
+
+	if (SiteIdx != -1)
+		fileName = GetCacheFile(FILE_TYPE_FAVICON, Config.CacheLocation, si->Info->FileName);
+
 	if (Loading) {
-		if (Config.DisplayIcon) {
+		if (Config.DisplayIcon && Config.DisplayFavicon) {
+			if (SiteIdx != -1) {
+				// correcting if favicon was lost
+				if (HIcons[SiteIdx] == NULL || HIcons[SiteIdx] == HIcon) {
+					if (FileExists(fileName))
+						HIcons[SiteIdx] = LoadIconFromFile(GetCacheFile(FILE_TYPE_FAVICON, Config.CacheLocation, si->Info->FileName), SCALEX(16), SCALEY(16));
+					else
+						HIcons[SiteIdx] = HIcon;
+				}
+				DrawIconEx(dc.GetSafeHdc(), SCALEX(2), SCALEY(2), HIcons[SiteIdx], SCALEX(16), SCALEY(16), 0, NULL, DI_NORMAL);
+				rcLabel.left += SCALEX(24);
+			} else { 
+				Config.DisplayFavicon = FALSE;
+				Config.Save();
+				MessageBox(_T("Feeds not found."), _T("Pichalka .("), MB_OK | MB_ICONERROR);
+			}
+		} else if (Config.DisplayIcon) {
 			DrawIconEx(dc.GetSafeHdc(), SCALEX(2), SCALEY(2), HIcon, SCALEX(16), SCALEY(16), 0, NULL, DI_NORMAL);
 			rcLabel.left += SCALEX(24);
 		}
-
 		DrawMessage(dc, rcLabel, IDS_LOADING);
 	}
 	else {
 		BOOL bNewsAvailable = NewsAvailable();
 		if (bNewsAvailable || !Config.HidePlugin) {
-			if (Config.DisplayIcon) {
+			if (Config.DisplayIcon && Config.DisplayFavicon && Config.Mode != MODE_BRIEF && bNewsAvailable) {
+				if (SiteIdx != -1) {
+					// correcting if favicon was lost
+					if (HIcons[SiteIdx] == NULL || HIcons[SiteIdx] == HIcon) {
+						if (FileExists(fileName))
+							HIcons[SiteIdx] = LoadIconFromFile(fileName, SCALEX(16), SCALEY(16));
+						else
+							HIcons[SiteIdx] = HIcon;
+					}
+					DrawIconEx(dc.GetSafeHdc(), SCALEX(2), SCALEY(2), HIcons[SiteIdx], SCALEX(16), SCALEY(16), 0, NULL, DI_NORMAL);
+					rcLabel.left += SCALEX(24);
+				} else { 
+					Config.DisplayFavicon = FALSE;
+					Config.Save();
+					MessageBox(_T("Feeds not found."), _T("Pichalka .("), MB_OK | MB_ICONERROR);
+				}
+			} else if (Config.DisplayIcon) {
 				DrawIconEx(dc.GetSafeHdc(), SCALEX(2), SCALEY(2), HIcon, SCALEX(16), SCALEY(16), 0, NULL, DI_NORMAL);
 				rcLabel.left += SCALEX(24);
 			}
-
-			if (Config.Mode == MODE_BRIEF)
+			if (Config.Mode == MODE_BRIEF) {
+				if (Config.DisplayIcon)
+					DrawIconEx(dc.GetSafeHdc(), SCALEX(2), SCALEY(2), HIcon, SCALEX(16), SCALEY(16), 0, NULL, DI_NORMAL);
 				DrawBrief(dc, rcLabel);
-			else if (Config.Mode == MODE_CYCLING) {
+			} else if (Config.Mode == MODE_CYCLING) {
 				if (SiteIdx != -1 && bNewsAvailable)
 					DrawCycling(dc, rcLabel);
-				else
+				else {
+					DrawIconEx(dc.GetSafeHdc(), SCALEX(2), SCALEY(2), HIcon, SCALEX(16), SCALEY(16), 0, NULL, DI_NORMAL);
 					DrawMessage(dc, rcLabel, IDS_NO_NEWS);
+				}
 			}
 		}
 	}
-
 	ValidateRect(rcClient);
-
 	dc.RestoreDC(saveDC);
 	// Do not call CWnd::OnPaint() for painting messages
 }
@@ -510,6 +634,9 @@ BOOL CTodayPluginWnd::OnQueryRefreshCache(TODAYLISTITEM *ptli) {
 
 					if (Config.ShowDateTime)
 						nHeight += RowHeight;
+
+					if (Config.ShowTodayWrap)
+						nHeight += (Config.DisplayRows-1)*RowHeight;
 				}
 			}
 			break;
@@ -590,7 +717,6 @@ void CTodayPluginWnd::OnLButtonUp(UINT nFlags, CPoint point) {
 
 	Invalidate();
 }
-
 
 LRESULT CTodayPluginWnd::WindowProc(UINT message, WPARAM wParam, LPARAM lParam) {
 	if (message == WM_SH_UIMETRIC_CHANGE) {
@@ -769,6 +895,12 @@ void CTodayPluginWnd::OnSize(UINT nType, int cx, int cy) {
 	CWnd::OnSize(nType, cx, cy);
 }
 
+
+void CTodayPluginWnd::OnFaviconsReset(WPARAM wParam, LPARAM lParam) {
+	for (int i=0;i<1024;i++) {
+		HIcons[i] = NULL;
+	}
+}
 /////////////////////////////////////////////////////////////////////////////
 
 void CTodayPluginWnd::UpdateAll() {
@@ -923,10 +1055,13 @@ void CTodayPluginWnd::InvalidateSiteTitle() {
 	CRect rcClient;
 	GetClientRect(&rcClient);
 
-	rcClient.top += SCALEY(Config.VOffset);
-	rcClient.left += SCALEX(4);
-	if (Config.DisplayIcon)
+	if (!Config.DisplayFavicon) {
+		rcClient.top += SCALEY(Config.VOffset);
+		rcClient.left += SCALEX(4);
+	}
+	if (Config.DisplayIcon && !Config.DisplayFavicon)
 		rcClient.left += SCALEX(24);
+
 	InvalidateRect(rcClient);
 	UpdateWindow();
 }
@@ -937,16 +1072,17 @@ void CTodayPluginWnd::InvalidateFeedItem() {
 	CRect rcClient;
 	GetClientRect(&rcClient);
 
-	rcClient.top += SCALEY(Config.VOffset);
-	if (Config.ShowSiteName)
+	if (!Config.DisplayFavicon)
+		rcClient.top += SCALEY(Config.VOffset);
+	if (Config.ShowSiteName && !Config.DisplayFavicon)
 		rcClient.top += RowHeight + SCALEY(2) + SCALEY(2);
 	rcClient.left += SCALEX(4);
-	if (Config.DisplayIcon)
+	if (Config.DisplayIcon && !Config.DisplayFavicon)
 		rcClient.left += SCALEX(24);
+
 	InvalidateRect(rcClient);
 	UpdateWindow();
 }
-
 
 //
 // returns TRUE if news are here

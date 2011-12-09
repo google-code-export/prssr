@@ -885,6 +885,20 @@ void CDownloader::SetCookie(const CString &cookie) {
 	Cookies.AddTail(cookie);
 }
 
+void CDownloader::SetHeader(const CString &name, const CString &value) {
+	POSITION pos = AdditionalHeaders.GetHeadPosition();
+	while (pos != NULL) {
+		CHttpHeader *hdr = AdditionalHeaders.GetNext(pos);
+		if (hdr->Name.Compare(name) == 0) {
+			hdr->Value = value;
+			return;
+		}
+	}
+
+	// not found -> add new
+	AdditionalHeaders.AddTail(new CHttpHeader(name, value));
+}
+
 CString CDownloader::GetErrorMsg() {
 	CString errorMsg;
 
