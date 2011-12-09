@@ -28,6 +28,15 @@
 #include "../share/helpers.h"
 #include "../prssr/Site.h"
 
+enum EFileType {
+		FILE_TYPE_FEED,
+		FILE_TYPE_ENCLOSURE,
+		FILE_TYPE_FAVICON,
+		FILE_TYPE_HTML,
+		FILE_TYPE_IMAGE,
+		FILE_TYPE_OPML
+};
+
 /////////////////////////////////////////////////////////////////////////////
 // CTodayPluginWnd window
 
@@ -70,6 +79,7 @@ protected:
 	CFont m_fntNormal;
 	CFont m_fntBold;
 	HICON HIcon;
+	HICON HIcons[1024]; 
 
 	BOOL Selected;
 	int RowHeight;
@@ -119,6 +129,7 @@ protected:
 	void ContextMenu(CPoint pt);
 
 	CString GetPrssFilePath();
+	CString LoadSiteFeed;					// active feed site name
 
 	//{{AFX_MSG(CTodayPluginWnd)
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
@@ -132,6 +143,7 @@ protected:
 	afx_msg void OnTodayCycling();
 	afx_msg void OnTodayUpdateall();
 	afx_msg void OnTodaySettings();
+	afx_msg void OnFaviconsReset(WPARAM wParam, LPARAM lParam);
 	//}}AFX_MSG
 
 
@@ -160,6 +172,10 @@ protected:
 	friend DWORD WINAPI ThreadStubProc(LPVOID lpPar);
 
 	DECLARE_MESSAGE_MAP()
+
+	// cache from misc
+	CString GetCachePath(EFileType type, const CString &strPath);
+	CString GetCacheFile(EFileType type, const CString &strPath, const CString &url);
 };
 
 extern CTodayPluginWnd		TodayPluginWnd;

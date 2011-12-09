@@ -28,7 +28,8 @@
 
 enum ESyncSite {
 	SYNC_SITE_NONE,
-	SYNC_SITE_GOOGLE_READER
+	SYNC_SITE_GOOGLE_READER,
+	SYNC_SITE_GOOGLE_READERCL						// google clientlogin auth
 };
 
 

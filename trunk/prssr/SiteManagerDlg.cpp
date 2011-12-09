@@ -47,6 +47,7 @@
 #include "net/Connection.h"
 #include "sync/NetworkSync.h"
 #include "sync/GReaderSync.h"
+#include "sync/GReaderSyncCL.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
@@ -64,6 +65,7 @@ static char THIS_FILE[] = __FILE__;
 // OPML file name
 #define OPML_FILENAME						_T("myChannels.opml")
 
+#define WM_FAVICONSRESET (WM_USER + 100)
 
 /////////////////////////////////////////////////////////////////////////////
 // CSiteTreeCtrl control
@@ -768,6 +770,8 @@ void CSiteManagerDlg::OnAddFeed() {
 
 //		if (Config.SetPropertiesAfterSiteAdded)
 //			SetSiteProperties(item);
+
+		NotifyTodayPlugin(WM_FAVICONSRESET,0,0);	// confirm the changes in the today plugin
 	}
 }
 
@@ -825,6 +829,7 @@ void CSiteManagerDlg::OnRemove() {
 		DeleteItem(hSelItem, TRUE);
 		UpdateControls();
 	}
+	NotifyTodayPlugin(WM_FAVICONSRESET,0,0);	// confirm the changes in the today plugin
 }
 
 void CSiteManagerDlg::OnRename() {

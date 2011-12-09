@@ -21,6 +21,7 @@
 #include "StdAfx.h"
 #include "prssr.h"
 #include "PropGeneralPg.h"
+#include "Errors.h"
 
 #ifdef MYDEBUG
 #undef THIS_FILE
@@ -57,6 +58,16 @@ void CPropGeneralPg::DoDataExchange(CDataExchange* pDX) {
 	DDX_Text(pDX, IDC_NAME, m_strName);
 	DDX_Text(pDX, IDC_URL, m_strURL);
 	DDX_Check(pDX, IDC_SHOW_ON_TODAY, m_bShowOnToday);
+	if (pDX->m_bSaveAndValidate) {
+		if (m_strName.IsEmpty()) {
+			Error(IDS_NAME_CAN_NOT_BE_EMPTY);
+			pDX->Fail();
+		}
+		if (m_strURL.IsEmpty()) {
+			Error(IDS_URL_CAN_NOT_BE_EMPTY);
+			pDX->Fail();
+		}
+	}
 	//}}AFX_DATA_MAP
 }
 

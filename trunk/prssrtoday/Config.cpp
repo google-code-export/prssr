@@ -32,14 +32,18 @@ LPCTSTR szMode            = _T("Mode");
 
 LPCTSTR szVerticalOffset  = _T("VertOffset");
 LPCTSTR szDisplayIcon     = _T("DisplayIcon");
+LPCTSTR szDisplayFavicon  = _T("DisplayFavicon");
 LPCTSTR szHidePlugin      = _T("HidePlugin");
 LPCTSTR szFontSize        = _T("FontSize");
 
 LPCTSTR szCyclingSubMode  = _T("CyclingSubMode");
 LPCTSTR szShowSiteName    = _T("ShowSiteName");
 LPCTSTR szShowDateTime    = _T("ShowDateTime");
+LPCTSTR szShowDateTimeTail    =_T("ShowDateTimeTail");
 LPCTSTR szShowOnlyNew     = _T("ShowOnlyNew");
 LPCTSTR szCyclingSpeed    = _T("CyclingSpeed");
+LPCTSTR szShowTodayWrap   = _T("ShowTodayWrap");
+LPCTSTR szDisplayRows     = _T("DisplayRows");
 
 //LPCTSTR szStartupDelay    = _T("Startup Delay");
 
@@ -65,14 +69,18 @@ CConfig::CConfig() {
 
 	VOffset = CONFIG_DEFAULT_VOFFSET;
 	DisplayIcon = CONFIG_DEFAULT_DISPLAY_ICON;
+	DisplayFavicon = CONFIG_DEFAULT_DISPLAY_FAVICON;
 	HidePlugin = CONFIG_DEFAULT_HIDE_PLUGIN;
 	FontSize = CONFIG_DEFAULT_FONT_SIZE;
 
 	CyclingSubMode = CONFIG_DEFAULT_CYCLING_SUBMODE;
 	ShowSiteName = CONFIG_DEFAULT_SHOW_SITE_NAME;
 	ShowDateTime = CONFIG_DEFAULT_SHOW_DATE_TIME;
+	ShowDateTimeTail = CONFIG_DEFAULT_SHOW_DATETIME_TAIL;
 	ShowOnlyNew = CONFIG_DEFAULT_SHOW_ONLY_NEW;
 	CyclingSpeed = CONFIG_DEFAULT_CYCLING_SPEED;
+	ShowTodayWrap = CONFIG_DEFAULT_SHOW_TODAY_WRAP;
+	DisplayRows = CONFIG_DEFAULT_DISPLAY_ROWS;
 
 //	StartupDelay = CONFIG_DEFAULT_STARTUP_DELAY;
 }
@@ -90,12 +98,16 @@ void CConfig::Save() {
 	reg.Write(szHidePlugin, HidePlugin);
 	reg.Write(szFontSize, FontSize);
 	reg.Write(szDisplayIcon, DisplayIcon);
+	reg.Write(szDisplayFavicon, DisplayFavicon);
 
 	reg.Write(szCyclingSubMode, CyclingSubMode);
 	reg.Write(szShowSiteName, ShowSiteName);
 	reg.Write(szShowDateTime, ShowDateTime);
+	reg.Write(szShowDateTimeTail, ShowDateTimeTail);
 	reg.Write(szShowOnlyNew, ShowOnlyNew);
 	reg.Write(szCyclingSpeed, CyclingSpeed);
+	reg.Write(szShowTodayWrap, ShowTodayWrap);
+	reg.Write(szDisplayRows, DisplayRows);
 
 #ifdef LOGGING
 	reg.Write(szLogFile, LogFile);
@@ -117,13 +129,17 @@ void CConfig::Load() {
 	HidePlugin = reg.Read(szHidePlugin, CONFIG_DEFAULT_HIDE_PLUGIN);
 	FontSize = reg.Read(szFontSize, CONFIG_DEFAULT_FONT_SIZE);
 	DisplayIcon = reg.Read(szDisplayIcon, CONFIG_DEFAULT_DISPLAY_ICON);
+	DisplayFavicon = reg.Read(szDisplayFavicon, CONFIG_DEFAULT_DISPLAY_FAVICON);
 
 	// cycling mode
 	CyclingSubMode = reg.Read(szCyclingSubMode, CONFIG_DEFAULT_CYCLING_SUBMODE);
 	ShowSiteName = reg.Read(szShowSiteName, CONFIG_DEFAULT_SHOW_SITE_NAME);
 	ShowDateTime = reg.Read(szShowDateTime, CONFIG_DEFAULT_SHOW_DATE_TIME);
+	ShowDateTimeTail = reg.Read(szShowDateTimeTail, CONFIG_DEFAULT_SHOW_DATETIME_TAIL);
 	ShowOnlyNew = reg.Read(szShowOnlyNew, CONFIG_DEFAULT_SHOW_ONLY_NEW);
 	CyclingSpeed = reg.Read(szCyclingSpeed, CONFIG_DEFAULT_CYCLING_SPEED);
+	ShowTodayWrap = reg.Read(szShowTodayWrap, CONFIG_DEFAULT_SHOW_TODAY_WRAP);
+	DisplayRows = reg.Read(szDisplayRows, CONFIG_DEFAULT_DISPLAY_ROWS);
 
 //	StartupDelay = reg.Read(szStartupDelay, CONFIG_DEFAULT_STARTUP_DELAY);
 

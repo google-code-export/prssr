@@ -47,21 +47,21 @@ CFG=prssrtoday - Win32 (WCE emulator) Debug
 # PROP Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-LINK32=link.exe
-# ADD BASE LINK32 /nologo /base:"0x00100000" /stack:0x10000,0x1000 /entry:"_DllMainCRTStartup" /dll /subsystem:$(CESubsystem) /MACHINE:IX86
-# ADD LINK32 /nologo /base:"0x00100000" /stack:0x10000,0x1000 /entry:"_DllMainCRTStartup" /dll /subsystem:$(CESubsystem) /MACHINE:IX86
-BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-MTL=midl.exe
-# ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
-# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
-CPP=cl.exe
-# ADD BASE CPP /nologo /W3 /D "_i386_" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "NDEBUG" /D "_WIN32_WCE_CEPC" /D "_AFXDLL" /Yu"StdAfx.h" /Gs8192 /GF /O2 /c
-# ADD CPP /nologo /W3 /D "_i386_" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "NDEBUG" /D "_WIN32_WCE_CEPC" /D "_AFXDLL" /D "_USRDLL" /Yu"StdAfx.h" /Gs8192 /GF /O2 /c
 RSC=rc.exe
 # ADD BASE RSC /l 0x409 /d UNDER_CE=$(CEVersion) /d _WIN32_WCE=$(CEVersion) /d "UNICODE" /d "_UNICODE" /d "NDEBUG" /d "$(CePlatform)" /d "_X86_" /d "x86" /d "_i386_" /d "_AFXDLL" /r
 # ADD RSC /l 0x409 /d UNDER_CE=$(CEVersion) /d _WIN32_WCE=$(CEVersion) /d "UNICODE" /d "_UNICODE" /d "NDEBUG" /d "$(CePlatform)" /d "_X86_" /d "x86" /d "_i386_" /d "_AFXDLL" /r
+CPP=cl.exe
+# ADD BASE CPP /nologo /W3 /D "_i386_" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "NDEBUG" /D "_WIN32_WCE_CEPC" /D "_AFXDLL" /Yu"StdAfx.h" /Gs8192 /GF /O2 /c
+# ADD CPP /nologo /W3 /D "_i386_" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "NDEBUG" /D "_WIN32_WCE_CEPC" /D "_AFXDLL" /D "_USRDLL" /Yu"StdAfx.h" /Gs8192 /GF /O2 /c
+MTL=midl.exe
+# ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
+# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 /nologo /base:"0x00100000" /stack:0x10000,0x1000 /entry:"_DllMainCRTStartup" /dll /subsystem:$(CESubsystem) /MACHINE:IX86
+# ADD LINK32 /nologo /base:"0x00100000" /stack:0x10000,0x1000 /entry:"_DllMainCRTStartup" /dll /subsystem:$(CESubsystem) /MACHINE:IX86
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
 
@@ -80,21 +80,21 @@ RSC=rc.exe
 # PROP Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-LINK32=link.exe
-# ADD BASE LINK32 /nologo /base:"0x00100000" /stack:0x10000,0x1000 /entry:"_DllMainCRTStartup" /dll /debug /subsystem:$(CESubsystem) /MACHINE:IX86
-# ADD LINK32 /nologo /base:"0x00100000" /stack:0x10000,0x1000 /entry:"_DllMainCRTStartup" /dll /debug /subsystem:$(CESubsystem) /MACHINE:IX86
-BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-MTL=midl.exe
-# ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o "NUL" /win32
-# ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o "NUL" /win32
-CPP=cl.exe
-# ADD BASE CPP /nologo /W3 /Zi /Od /D "DEBUG" /D "_i386_" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "_WIN32_WCE_CEPC" /D "_AFXDLL" /Yu"StdAfx.h" /Gs8192 /GF /c
-# ADD CPP /nologo /W3 /Zi /Od /D "DEBUG" /D "_i386_" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "_WIN32_WCE_CEPC" /D "_AFXDLL" /D "_USRDLL" /Yu"StdAfx.h" /Gs8192 /GF /c
 RSC=rc.exe
 # ADD BASE RSC /l 0x409 /d "DEBUG" /d "$(CePlatform)" /d "_X86_" /d "x86" /d "_i386_" /d UNDER_CE=$(CEVersion) /d _WIN32_WCE=$(CEVersion) /d "UNICODE" /d "_UNICODE" /d "_AFXDLL" /r
 # ADD RSC /l 0x409 /d "DEBUG" /d "$(CePlatform)" /d "_X86_" /d "x86" /d "_i386_" /d UNDER_CE=$(CEVersion) /d _WIN32_WCE=$(CEVersion) /d "UNICODE" /d "_UNICODE" /d "_AFXDLL" /r
+CPP=cl.exe
+# ADD BASE CPP /nologo /W3 /Zi /Od /D "DEBUG" /D "_i386_" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "_WIN32_WCE_CEPC" /D "_AFXDLL" /Yu"StdAfx.h" /Gs8192 /GF /c
+# ADD CPP /nologo /W3 /Zi /Od /D "DEBUG" /D "_i386_" /D UNDER_CE=$(CEVersion) /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "_WIN32_WCE_CEPC" /D "_AFXDLL" /D "_USRDLL" /Yu"StdAfx.h" /Gs8192 /GF /c
+MTL=midl.exe
+# ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o "NUL" /win32
+# ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o "NUL" /win32
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 /nologo /base:"0x00100000" /stack:0x10000,0x1000 /entry:"_DllMainCRTStartup" /dll /debug /subsystem:$(CESubsystem) /MACHINE:IX86
+# ADD LINK32 /nologo /base:"0x00100000" /stack:0x10000,0x1000 /entry:"_DllMainCRTStartup" /dll /debug /subsystem:$(CESubsystem) /MACHINE:IX86
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
 
@@ -176,6 +176,47 @@ LINK32=link.exe
 # Begin Source File
 
 SOURCE=..\Config.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
+DEP_CPP_CONFI=\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\Config.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_CONFI=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_CONFI=\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\Config.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_CONFI=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
+
 DEP_CPP_CONFI=\
 	"..\..\prssr\debug\Logger.h"\
 	"..\..\share\defs.h"\
@@ -190,16 +231,109 @@ DEP_CPP_CONFI=\
 	{$(INCLUDE)}"winuserm.h"\
 	
 NODEP_CPP_CONFI=\
-	"..\..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
 	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
+
+DEP_CPP_CONFI=\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\Config.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_CONFI=\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\icon.cpp
 
 !IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
 
+DEP_CPP_ICON_=\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\icon.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_ICON_=\
+	"..\..\..\share\file.h"\
+	"..\..\debug\crtdbg.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\emulator\vibrate.h"\
+	
+
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_ICON_=\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\icon.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_ICON_=\
+	"..\..\..\share\file.h"\
+	"..\..\debug\crtdbg.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\emulator\vibrate.h"\
+	
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
 
+DEP_CPP_ICON_=\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\share\file.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\icon.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	{$(INCLUDE)}"aygshell.h"\
+	{$(INCLUDE)}"sipapi.h"\
+	{$(INCLUDE)}"winuserm.h"\
+	
+NODEP_CPP_ICON_=\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	
+
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
+
+DEP_CPP_ICON_=\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\icon.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_ICON_=\
+	"..\..\..\share\file.h"\
+	"..\..\debug\crtdbg.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	
 
 !ENDIF 
 
@@ -207,6 +341,51 @@ NODEP_CPP_CONFI=\
 # Begin Source File
 
 SOURCE=..\OptAppearancePg.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
+DEP_CPP_OPTAP=\
+	"..\..\prssr\ctrls\Caption.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\Config.h"\
+	"..\OptAppearancePg.h"\
+	"..\prssrtoday.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_OPTAP=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_OPTAP=\
+	"..\..\prssr\ctrls\Caption.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\Config.h"\
+	"..\OptAppearancePg.h"\
+	"..\prssrtoday.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_OPTAP=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
+
 DEP_CPP_OPTAP=\
 	"..\..\prssr\ctrls\Caption.h"\
 	"..\..\prssr\debug\crtdbg.h"\
@@ -223,16 +402,29 @@ DEP_CPP_OPTAP=\
 	{$(INCLUDE)}"winuserm.h"\
 	
 NODEP_CPP_OPTAP=\
-	"..\..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
 	
 
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
-
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
+
+DEP_CPP_OPTAP=\
+	"..\..\prssr\ctrls\Caption.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\Config.h"\
+	"..\OptAppearancePg.h"\
+	"..\prssrtoday.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_OPTAP=\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	
 
 !ENDIF 
 
@@ -240,6 +432,63 @@ NODEP_CPP_OPTAP=\
 # Begin Source File
 
 SOURCE=..\OptChannelsPg.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
+DEP_CPP_OPTCH=\
+	"..\..\prssr\ctrls\CeListCtrl.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\Feed.h"\
+	"..\..\prssr\Site.h"\
+	"..\..\prssr\www\url.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\Config.h"\
+	"..\OptChannelsPg.h"\
+	"..\prssrtoday.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_OPTCH=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_OPTCH=\
+	"..\..\prssr\ctrls\CeListCtrl.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\Feed.h"\
+	"..\..\prssr\Site.h"\
+	"..\..\prssr\www\url.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\Config.h"\
+	"..\OptChannelsPg.h"\
+	"..\prssrtoday.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_OPTCH=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
+
 DEP_CPP_OPTCH=\
 	"..\..\prssr\ctrls\CeListCtrl.h"\
 	"..\..\prssr\debug\crtdbg.h"\
@@ -262,16 +511,35 @@ DEP_CPP_OPTCH=\
 	{$(INCLUDE)}"winuserm.h"\
 	
 NODEP_CPP_OPTCH=\
-	"..\..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
 	
 
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
-
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
+
+DEP_CPP_OPTCH=\
+	"..\..\prssr\ctrls\CeListCtrl.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\Feed.h"\
+	"..\..\prssr\Site.h"\
+	"..\..\prssr\www\url.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\Config.h"\
+	"..\OptChannelsPg.h"\
+	"..\prssrtoday.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_OPTCH=\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	
 
 !ENDIF 
 
@@ -279,6 +547,49 @@ NODEP_CPP_OPTCH=\
 # Begin Source File
 
 SOURCE=..\OptModePg.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
+DEP_CPP_OPTMO=\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\Config.h"\
+	"..\OptModePg.h"\
+	"..\prssrtoday.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_OPTMO=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_OPTMO=\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\Config.h"\
+	"..\OptModePg.h"\
+	"..\prssrtoday.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_OPTMO=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
+
 DEP_CPP_OPTMO=\
 	"..\..\prssr\debug\crtdbg.h"\
 	"..\..\prssr\debug\Logger.h"\
@@ -294,16 +605,28 @@ DEP_CPP_OPTMO=\
 	{$(INCLUDE)}"winuserm.h"\
 	
 NODEP_CPP_OPTMO=\
-	"..\..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
 	
 
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
-
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
+
+DEP_CPP_OPTMO=\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\Config.h"\
+	"..\OptModePg.h"\
+	"..\prssrtoday.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_OPTMO=\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	
 
 !ENDIF 
 
@@ -311,6 +634,59 @@ NODEP_CPP_OPTMO=\
 # Begin Source File
 
 SOURCE=..\prssrtoday.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
+DEP_CPP_PRSSR=\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\Feed.h"\
+	"..\..\prssr\Site.h"\
+	"..\..\prssr\www\url.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\Config.h"\
+	"..\prssrtoday.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	"..\TodayPluginWnd.h"\
+	
+NODEP_CPP_PRSSR=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_PRSSR=\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\Feed.h"\
+	"..\..\prssr\Site.h"\
+	"..\..\prssr\www\url.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\Config.h"\
+	"..\prssrtoday.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	"..\TodayPluginWnd.h"\
+	
+NODEP_CPP_PRSSR=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
+
 DEP_CPP_PRSSR=\
 	"..\..\prssr\debug\crtdbg.h"\
 	"..\..\prssr\debug\Logger.h"\
@@ -331,16 +707,33 @@ DEP_CPP_PRSSR=\
 	{$(INCLUDE)}"winuserm.h"\
 	
 NODEP_CPP_PRSSR=\
-	"..\..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
 	
 
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
-
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
+
+DEP_CPP_PRSSR=\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\Feed.h"\
+	"..\..\prssr\Site.h"\
+	"..\..\prssr\www\url.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\Config.h"\
+	"..\prssrtoday.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	"..\TodayPluginWnd.h"\
+	
+NODEP_CPP_PRSSR=\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	
 
 !ENDIF 
 
@@ -367,6 +760,41 @@ SOURCE=..\prssrtoday.rc
 # Begin Source File
 
 SOURCE=..\StdAfx.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
+DEP_CPP_STDAF=\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_STDAF=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_STDAF=\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_STDAF=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
+
 DEP_CPP_STDAF=\
 	"..\..\prssr\debug\Logger.h"\
 	"..\..\share\shguim.h"\
@@ -378,19 +806,25 @@ DEP_CPP_STDAF=\
 	{$(INCLUDE)}"winuserm.h"\
 	
 NODEP_CPP_STDAF=\
-	"..\..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
 	
-
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
-
 # ADD CPP /Yc"StdAfx.h"
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
 
+DEP_CPP_STDAF=\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_STDAF=\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	
 # ADD CPP /Yc"StdAfx.h"
 
 !ENDIF 
@@ -399,6 +833,9 @@ NODEP_CPP_STDAF=\
 # Begin Source File
 
 SOURCE=..\TodayPluginWnd.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
 DEP_CPP_TODAY=\
 	"..\..\libexpat\expat.h"\
 	"..\..\libexpat\expat_external.h"\
@@ -429,21 +866,136 @@ DEP_CPP_TODAY=\
 	"..\StdAfx.h"\
 	"..\todaycmn.h"\
 	"..\TodayPluginWnd.h"\
+	
+NODEP_CPP_TODAY=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_TODAY=\
+	"..\..\libexpat\expat.h"\
+	"..\..\libexpat\expat_external.h"\
+	"..\..\prssr\ctrls\Caption.h"\
+	"..\..\prssr\ctrls\CeListCtrl.h"\
+	"..\..\prssr\ctrls\CePropertySheet.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\Feed.h"\
+	"..\..\prssr\Site.h"\
+	"..\..\prssr\www\url.h"\
+	"..\..\prssr\xml\FeedFile.h"\
+	"..\..\prssr\xml\XMLFile.h"\
+	"..\..\share\date.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\file.h"\
+	"..\..\share\fs.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\Config.h"\
+	"..\OptAppearancePg.h"\
+	"..\OptChannelsPg.h"\
+	"..\OptModePg.h"\
+	"..\prssrtoday.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	"..\TodayPluginWnd.h"\
+	
+NODEP_CPP_TODAY=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
+
+DEP_CPP_TODAY=\
+	"..\..\libexpat\expat.h"\
+	"..\..\libexpat\expat_external.h"\
+	"..\..\prssr\ctrls\Caption.h"\
+	"..\..\prssr\ctrls\CeListCtrl.h"\
+	"..\..\prssr\ctrls\CePropertySheet.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\Feed.h"\
+	"..\..\prssr\Site.h"\
+	"..\..\prssr\www\url.h"\
+	"..\..\prssr\xml\FeedFile.h"\
+	"..\..\prssr\xml\XMLFile.h"\
+	"..\..\share\date.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\file.h"\
+	"..\..\share\fs.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\Config.h"\
+	"..\icon.h"\
+	"..\OptAppearancePg.h"\
+	"..\OptChannelsPg.h"\
+	"..\OptModePg.h"\
+	"..\prssrtoday.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	"..\TodayPluginWnd.h"\
 	{$(INCLUDE)}"aygshell.h"\
 	{$(INCLUDE)}"sipapi.h"\
 	{$(INCLUDE)}"winuserm.h"\
 	
 NODEP_CPP_TODAY=\
-	"..\..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
 	
 
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
-
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
+
+DEP_CPP_TODAY=\
+	"..\..\libexpat\expat.h"\
+	"..\..\libexpat\expat_external.h"\
+	"..\..\prssr\ctrls\Caption.h"\
+	"..\..\prssr\ctrls\CeListCtrl.h"\
+	"..\..\prssr\ctrls\CePropertySheet.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\Feed.h"\
+	"..\..\prssr\misc.h"\
+	"..\..\prssr\misc\icon.h"\
+	"..\..\prssr\Site.h"\
+	"..\..\prssr\www\url.h"\
+	"..\..\prssr\xml\FeedFile.h"\
+	"..\..\prssr\xml\XMLFile.h"\
+	"..\..\share\date.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\file.h"\
+	"..\..\share\fs.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\Config.h"\
+	"..\OptAppearancePg.h"\
+	"..\OptChannelsPg.h"\
+	"..\OptModePg.h"\
+	"..\prssrtoday.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	"..\TodayPluginWnd.h"\
+	
+NODEP_CPP_TODAY=\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\ygshell.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	
 
 !ENDIF 
 
@@ -455,6 +1007,10 @@ NODEP_CPP_TODAY=\
 # Begin Source File
 
 SOURCE=..\Config.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\icon.h
 # End Source File
 # Begin Source File
 
@@ -511,20 +1067,31 @@ SOURCE=..\res\prssrtoday.rc2
 # Begin Source File
 
 SOURCE=..\..\share\cache.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
 DEP_CPP_CACHE=\
 	"..\..\share\cache.h"\
 	
 
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_CACHE=\
+	"..\..\share\cache.h"\
+	
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
 
+DEP_CPP_CACHE=\
+	"..\..\share\cache.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
 
+DEP_CPP_CACHE=\
+	"..\..\share\cache.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ENDIF 
@@ -537,20 +1104,31 @@ SOURCE=..\..\share\cache.h
 # Begin Source File
 
 SOURCE=..\..\share\date.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
 DEP_CPP_DATE_=\
 	"..\..\share\date.h"\
 	
 
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_DATE_=\
+	"..\..\share\date.h"\
+	
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
 
+DEP_CPP_DATE_=\
+	"..\..\share\date.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
 
+DEP_CPP_DATE_=\
+	"..\..\share\date.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ENDIF 
@@ -586,21 +1164,35 @@ SOURCE=..\..\share\defs.h
 # Begin Source File
 
 SOURCE=..\..\share\file.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
 DEP_CPP_FILE_=\
 	"..\..\prssr\debug\crtdbg.h"\
 	"..\..\share\file.h"\
 	
 
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_FILE_=\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\share\file.h"\
+	
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
 
+DEP_CPP_FILE_=\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\share\file.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
 
+DEP_CPP_FILE_=\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\share\file.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ENDIF 
@@ -613,20 +1205,31 @@ SOURCE=..\..\share\file.h
 # Begin Source File
 
 SOURCE=..\..\share\fs.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
 DEP_CPP_FS_CP=\
 	"..\..\share\fs.h"\
 	
 
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_FS_CP=\
+	"..\..\share\fs.h"\
+	
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
 
+DEP_CPP_FS_CP=\
+	"..\..\share\fs.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
 
+DEP_CPP_FS_CP=\
+	"..\..\share\fs.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ENDIF 
@@ -639,6 +1242,65 @@ SOURCE=..\..\share\fs.h
 # Begin Source File
 
 SOURCE=..\..\share\helpers.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
+DEP_CPP_HELPE=\
+	"..\..\prssr\Config.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\net\proxy.h"\
+	"..\..\prssr\prssr.h"\
+	"..\..\prssr\StdAfx.h"\
+	"..\..\share\date.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\Config.h"\
+	"..\prssrtoday.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_HELPE=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\tmlctrl.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_HELPE=\
+	"..\..\prssr\Config.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\net\proxy.h"\
+	"..\..\prssr\prssr.h"\
+	"..\..\prssr\StdAfx.h"\
+	"..\..\share\date.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\Config.h"\
+	"..\prssrtoday.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_HELPE=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\tmlctrl.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
+
 DEP_CPP_HELPE=\
 	"..\..\prssr\Config.h"\
 	"..\..\prssr\debug\crtdbg.h"\
@@ -662,19 +1324,37 @@ DEP_CPP_HELPE=\
 	{$(INCLUDE)}"winuserm.h"\
 	
 NODEP_CPP_HELPE=\
-	"..\..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
 	
-
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
-
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
 
+DEP_CPP_HELPE=\
+	"..\..\prssr\Config.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\net\proxy.h"\
+	"..\..\prssr\prssr.h"\
+	"..\..\prssr\StdAfx.h"\
+	"..\..\share\date.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\Config.h"\
+	"..\prssrtoday.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_HELPE=\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\tmlctrl.h"\
+	".\ygshell.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ENDIF 
@@ -687,21 +1367,35 @@ SOURCE=..\..\share\helpers.h
 # Begin Source File
 
 SOURCE=..\..\share\reg.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
 DEP_CPP_REG_C=\
 	"..\..\prssr\debug\crtdbg.h"\
 	"..\..\share\reg.h"\
 	
 
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_REG_C=\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\share\reg.h"\
+	
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
 
+DEP_CPP_REG_C=\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\share\reg.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
 
+DEP_CPP_REG_C=\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\share\reg.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ENDIF 
@@ -714,20 +1408,31 @@ SOURCE=..\..\share\reg.h
 # Begin Source File
 
 SOURCE=..\..\share\str.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
 DEP_CPP_STR_C=\
 	"..\..\share\str.h"\
 	
 
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_STR_C=\
+	"..\..\share\str.h"\
+	
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
 
+DEP_CPP_STR_C=\
+	"..\..\share\str.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
 
+DEP_CPP_STR_C=\
+	"..\..\share\str.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ENDIF 
@@ -740,21 +1445,35 @@ SOURCE=..\..\share\str.h
 # Begin Source File
 
 SOURCE=..\..\share\UIHelper.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
 DEP_CPP_UIHEL=\
 	"..\..\share\shguim.h"\
 	"..\..\share\UIHelper.h"\
 	
 
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_UIHEL=\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
 
+DEP_CPP_UIHEL=\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
 
+DEP_CPP_UIHEL=\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ENDIF 
@@ -767,21 +1486,35 @@ SOURCE=..\..\share\UIHelper.h
 # Begin Source File
 
 SOURCE=..\..\share\wnd.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
 DEP_CPP_WND_C=\
 	"..\..\prssr\debug\Logger.h"\
 	"..\..\share\wnd.h"\
 	
 
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_WND_C=\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\share\wnd.h"\
+	
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
 
+DEP_CPP_WND_C=\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\share\wnd.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
 
+DEP_CPP_WND_C=\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\share\wnd.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ENDIF 
@@ -798,6 +1531,115 @@ SOURCE=..\..\share\wnd.h
 # Begin Source File
 
 SOURCE=..\..\prssr\Feed.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
+DEP_CPP_FEED_=\
+	"..\..\libexpat\expat.h"\
+	"..\..\libexpat\expat_external.h"\
+	"..\..\libsgml\DomComment.h"\
+	"..\..\libsgml\DomDocument.h"\
+	"..\..\libsgml\DomElement.h"\
+	"..\..\libsgml\DomNode.h"\
+	"..\..\libsgml\DomNodeList.h"\
+	"..\..\libsgml\DomText.h"\
+	"..\..\libsgml\libsgml.h"\
+	"..\..\libsgml\SgmlExtensionHtml.h"\
+	"..\..\libsgml\SgmlExtensionXml.h"\
+	"..\..\libsgml\SgmlParser.h"\
+	"..\..\prssr\Config.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\Feed.h"\
+	"..\..\prssr\net\Connection.h"\
+	"..\..\prssr\net\proxy.h"\
+	"..\..\prssr\prssr.h"\
+	"..\..\prssr\sha1\sha1.h"\
+	"..\..\prssr\Site.h"\
+	"..\..\prssr\StdAfx.h"\
+	"..\..\prssr\www\HTMLFile.h"\
+	"..\..\prssr\www\LocalHtmlFile.h"\
+	"..\..\prssr\www\url.h"\
+	"..\..\prssr\xml\FeedFile.h"\
+	"..\..\prssr\xml\XMLFile.h"\
+	"..\..\share\cache.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\file.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\str.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\Config.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_FEED_=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\onnmgr.h"\
+	".\onnmgr_proxy.h"\
+	".\tmlctrl.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_FEED_=\
+	"..\..\libexpat\expat.h"\
+	"..\..\libexpat\expat_external.h"\
+	"..\..\libsgml\DomComment.h"\
+	"..\..\libsgml\DomDocument.h"\
+	"..\..\libsgml\DomElement.h"\
+	"..\..\libsgml\DomNode.h"\
+	"..\..\libsgml\DomNodeList.h"\
+	"..\..\libsgml\DomText.h"\
+	"..\..\libsgml\libsgml.h"\
+	"..\..\libsgml\SgmlExtensionHtml.h"\
+	"..\..\libsgml\SgmlExtensionXml.h"\
+	"..\..\libsgml\SgmlParser.h"\
+	"..\..\prssr\Config.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\Feed.h"\
+	"..\..\prssr\net\Connection.h"\
+	"..\..\prssr\net\proxy.h"\
+	"..\..\prssr\prssr.h"\
+	"..\..\prssr\sha1\sha1.h"\
+	"..\..\prssr\Site.h"\
+	"..\..\prssr\StdAfx.h"\
+	"..\..\prssr\www\HTMLFile.h"\
+	"..\..\prssr\www\LocalHtmlFile.h"\
+	"..\..\prssr\www\url.h"\
+	"..\..\prssr\xml\FeedFile.h"\
+	"..\..\prssr\xml\XMLFile.h"\
+	"..\..\share\cache.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\file.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\str.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\Config.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_FEED_=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\onnmgr.h"\
+	".\onnmgr_proxy.h"\
+	".\tmlctrl.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
+
 DEP_CPP_FEED_=\
 	"..\..\libexpat\expat.h"\
 	"..\..\libexpat\expat_external.h"\
@@ -846,19 +1688,62 @@ DEP_CPP_FEED_=\
 	{$(INCLUDE)}"winuserm.h"\
 	
 NODEP_CPP_FEED_=\
-	"..\..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
 	
-
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
-
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
 
+DEP_CPP_FEED_=\
+	"..\..\libexpat\expat.h"\
+	"..\..\libexpat\expat_external.h"\
+	"..\..\libsgml\DomComment.h"\
+	"..\..\libsgml\DomDocument.h"\
+	"..\..\libsgml\DomElement.h"\
+	"..\..\libsgml\DomNode.h"\
+	"..\..\libsgml\DomNodeList.h"\
+	"..\..\libsgml\DomText.h"\
+	"..\..\libsgml\libsgml.h"\
+	"..\..\libsgml\SgmlExtensionHtml.h"\
+	"..\..\libsgml\SgmlExtensionXml.h"\
+	"..\..\libsgml\SgmlParser.h"\
+	"..\..\prssr\Config.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\Feed.h"\
+	"..\..\prssr\net\Connection.h"\
+	"..\..\prssr\net\proxy.h"\
+	"..\..\prssr\prssr.h"\
+	"..\..\prssr\sha1\sha1.h"\
+	"..\..\prssr\Site.h"\
+	"..\..\prssr\StdAfx.h"\
+	"..\..\prssr\www\HTMLFile.h"\
+	"..\..\prssr\www\LocalHtmlFile.h"\
+	"..\..\prssr\www\url.h"\
+	"..\..\prssr\xml\FeedFile.h"\
+	"..\..\prssr\xml\XMLFile.h"\
+	"..\..\share\cache.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\file.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\str.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\Config.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_FEED_=\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\onnmgr.h"\
+	".\onnmgr_proxy.h"\
+	".\tmlctrl.h"\
+	".\ygshell.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ENDIF 
@@ -871,6 +1756,85 @@ SOURCE=..\..\prssr\Feed.h
 # Begin Source File
 
 SOURCE=..\..\prssr\Site.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
+DEP_CPP_SITE_=\
+	"..\..\libexpat\expat.h"\
+	"..\..\libexpat\expat_external.h"\
+	"..\..\prssr\Config.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\Feed.h"\
+	"..\..\prssr\misc.h"\
+	"..\..\prssr\net\proxy.h"\
+	"..\..\prssr\prssr.h"\
+	"..\..\prssr\Site.h"\
+	"..\..\prssr\StdAfx.h"\
+	"..\..\prssr\www\url.h"\
+	"..\..\prssr\xml\FeedFile.h"\
+	"..\..\prssr\xml\OpmlFile.h"\
+	"..\..\prssr\xml\XMLFile.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\file.h"\
+	"..\..\share\fs.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\Config.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_SITE_=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\tmlctrl.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_SITE_=\
+	"..\..\libexpat\expat.h"\
+	"..\..\libexpat\expat_external.h"\
+	"..\..\prssr\Config.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\Feed.h"\
+	"..\..\prssr\misc.h"\
+	"..\..\prssr\net\proxy.h"\
+	"..\..\prssr\prssr.h"\
+	"..\..\prssr\Site.h"\
+	"..\..\prssr\StdAfx.h"\
+	"..\..\prssr\www\url.h"\
+	"..\..\prssr\xml\FeedFile.h"\
+	"..\..\prssr\xml\OpmlFile.h"\
+	"..\..\prssr\xml\XMLFile.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\file.h"\
+	"..\..\share\fs.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\Config.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_SITE_=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\tmlctrl.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
+
 DEP_CPP_SITE_=\
 	"..\..\libexpat\expat.h"\
 	"..\..\libexpat\expat_external.h"\
@@ -904,19 +1868,47 @@ DEP_CPP_SITE_=\
 	{$(INCLUDE)}"winuserm.h"\
 	
 NODEP_CPP_SITE_=\
-	"..\..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
 	
-
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
-
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
 
+DEP_CPP_SITE_=\
+	"..\..\libexpat\expat.h"\
+	"..\..\libexpat\expat_external.h"\
+	"..\..\prssr\Config.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\Feed.h"\
+	"..\..\prssr\misc.h"\
+	"..\..\prssr\net\proxy.h"\
+	"..\..\prssr\prssr.h"\
+	"..\..\prssr\Site.h"\
+	"..\..\prssr\StdAfx.h"\
+	"..\..\prssr\www\url.h"\
+	"..\..\prssr\xml\FeedFile.h"\
+	"..\..\prssr\xml\OpmlFile.h"\
+	"..\..\prssr\xml\XMLFile.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\file.h"\
+	"..\..\share\fs.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\Config.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_SITE_=\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\tmlctrl.h"\
+	".\ygshell.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ENDIF 
@@ -933,6 +1925,61 @@ SOURCE=..\..\prssr\Site.h
 # Begin Source File
 
 SOURCE=..\..\prssr\ctrls\Caption.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
+DEP_CPP_CAPTI=\
+	"..\..\prssr\Appearance.h"\
+	"..\..\prssr\ctrls\Caption.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\prssr.h"\
+	"..\..\prssr\StdAfx.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_CAPTI=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\tmlctrl.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_CAPTI=\
+	"..\..\prssr\Appearance.h"\
+	"..\..\prssr\ctrls\Caption.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\prssr.h"\
+	"..\..\prssr\StdAfx.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_CAPTI=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\tmlctrl.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
+
 DEP_CPP_CAPTI=\
 	"..\..\prssr\Appearance.h"\
 	"..\..\prssr\ctrls\Caption.h"\
@@ -954,19 +2001,35 @@ DEP_CPP_CAPTI=\
 	{$(INCLUDE)}"winuserm.h"\
 	
 NODEP_CPP_CAPTI=\
-	"..\..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
 	
-
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
-
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
 
+DEP_CPP_CAPTI=\
+	"..\..\prssr\Appearance.h"\
+	"..\..\prssr\ctrls\Caption.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\prssr.h"\
+	"..\..\prssr\StdAfx.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\reg.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_CAPTI=\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\tmlctrl.h"\
+	".\ygshell.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ENDIF 
@@ -979,6 +2042,43 @@ SOURCE=..\..\prssr\ctrls\Caption.h
 # Begin Source File
 
 SOURCE=..\..\prssr\ctrls\CeListCtrl.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
+DEP_CPP_CELIS=\
+	"..\..\prssr\ctrls\CeListCtrl.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\prssr.h"\
+	"..\..\prssr\StdAfx.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	
+NODEP_CPP_CELIS=\
+	".\tmlctrl.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_CELIS=\
+	"..\..\prssr\ctrls\CeListCtrl.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\prssr.h"\
+	"..\..\prssr\StdAfx.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	
+NODEP_CPP_CELIS=\
+	".\tmlctrl.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
+
 DEP_CPP_CELIS=\
 	"..\..\prssr\ctrls\CeListCtrl.h"\
 	"..\..\prssr\debug\crtdbg.h"\
@@ -991,17 +2091,24 @@ DEP_CPP_CELIS=\
 	"..\..\share\wnd.h"\
 	{$(INCLUDE)}"htmlctrl.h"\
 	
-
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
-
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
 
+DEP_CPP_CELIS=\
+	"..\..\prssr\ctrls\CeListCtrl.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\prssr.h"\
+	"..\..\prssr\StdAfx.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	
+NODEP_CPP_CELIS=\
+	".\tmlctrl.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ENDIF 
@@ -1014,6 +2121,57 @@ SOURCE=..\..\prssr\ctrls\CeListCtrl.h
 # Begin Source File
 
 SOURCE=..\..\prssr\ctrls\CePropertySheet.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
+DEP_CPP_CEPRO=\
+	"..\..\prssr\ctrls\CePropertySheet.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\prssr.h"\
+	"..\..\prssr\StdAfx.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\prssrtoday.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_CEPRO=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\tmlctrl.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_CEPRO=\
+	"..\..\prssr\ctrls\CePropertySheet.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\prssr.h"\
+	"..\..\prssr\StdAfx.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\prssrtoday.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_CEPRO=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\tmlctrl.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
+
 DEP_CPP_CEPRO=\
 	"..\..\prssr\ctrls\CePropertySheet.h"\
 	"..\..\prssr\debug\crtdbg.h"\
@@ -1033,19 +2191,33 @@ DEP_CPP_CEPRO=\
 	{$(INCLUDE)}"winuserm.h"\
 	
 NODEP_CPP_CEPRO=\
-	"..\..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
 	
-
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
-
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
 
+DEP_CPP_CEPRO=\
+	"..\..\prssr\ctrls\CePropertySheet.h"\
+	"..\..\prssr\debug\crtdbg.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\prssr.h"\
+	"..\..\prssr\StdAfx.h"\
+	"..\..\share\defs.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\..\share\wnd.h"\
+	"..\prssrtoday.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_CEPRO=\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\tmlctrl.h"\
+	".\ygshell.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ENDIF 
@@ -1062,20 +2234,31 @@ SOURCE=..\..\prssr\ctrls\CePropertySheet.h
 # Begin Source File
 
 SOURCE=..\..\prssr\sha1\sha1.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
 DEP_CPP_SHA1_=\
 	"..\..\prssr\sha1\sha1.h"\
 	
 
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_SHA1_=\
+	"..\..\prssr\sha1\sha1.h"\
+	
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
 
+DEP_CPP_SHA1_=\
+	"..\..\prssr\sha1\sha1.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
 
+DEP_CPP_SHA1_=\
+	"..\..\prssr\sha1\sha1.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ENDIF 
@@ -1092,20 +2275,31 @@ SOURCE=..\..\prssr\sha1\sha1.h
 # Begin Source File
 
 SOURCE=..\..\prssr\debug\crtdbg.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
 DEP_CPP_CRTDB=\
 	"..\..\prssr\debug\Logger.h"\
 	
 
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_CRTDB=\
+	"..\..\prssr\debug\Logger.h"\
+	
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
 
+DEP_CPP_CRTDB=\
+	"..\..\prssr\debug\Logger.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
 
+DEP_CPP_CRTDB=\
+	"..\..\prssr\debug\Logger.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ENDIF 
@@ -1118,6 +2312,45 @@ SOURCE=..\..\prssr\debug\crtdbg.h
 # Begin Source File
 
 SOURCE=..\..\prssr\debug\Logger.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
+DEP_CPP_LOGGE=\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\StdAfx.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_LOGGE=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\tmlctrl.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_LOGGE=\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\StdAfx.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_LOGGE=\
+	"..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\tmlctrl.h"\
+	".\ygshell.h"\
+	
+
+!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
+
 DEP_CPP_LOGGE=\
 	"..\..\prssr\debug\Logger.h"\
 	"..\..\prssr\StdAfx.h"\
@@ -1131,19 +2364,27 @@ DEP_CPP_LOGGE=\
 	{$(INCLUDE)}"winuserm.h"\
 	
 NODEP_CPP_LOGGE=\
-	"..\..\..\..\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
 	
-
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
-
-!ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
-
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
 
+DEP_CPP_LOGGE=\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\StdAfx.h"\
+	"..\..\share\shguim.h"\
+	"..\..\share\UIHelper.h"\
+	"..\StdAfx.h"\
+	"..\todaycmn.h"\
+	
+NODEP_CPP_LOGGE=\
+	".\inuserm.h"\
+	".\ipapi.h"\
+	".\tmlctrl.h"\
+	".\ygshell.h"\
+	"C:\Program Files\Windows CE Tools\wce420\POCKET PC 2003\Include\ARMV4\vibrate.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ENDIF 
@@ -1160,6 +2401,9 @@ SOURCE=..\..\prssr\debug\Logger.h
 # Begin Source File
 
 SOURCE=..\..\prssr\www\url.cpp
+
+!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
+
 DEP_CPP_URL_C=\
 	"..\..\libexpat\expat.h"\
 	"..\..\libexpat\expat_external.h"\
@@ -1183,16 +2427,81 @@ DEP_CPP_URL_C=\
 	"..\..\share\str.h"\
 	
 
-!IF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Release"
-
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE emulator) Debug"
+
+DEP_CPP_URL_C=\
+	"..\..\libexpat\expat.h"\
+	"..\..\libexpat\expat_external.h"\
+	"..\..\libsgml\DomComment.h"\
+	"..\..\libsgml\DomDocument.h"\
+	"..\..\libsgml\DomElement.h"\
+	"..\..\libsgml\DomNode.h"\
+	"..\..\libsgml\DomNodeList.h"\
+	"..\..\libsgml\DomText.h"\
+	"..\..\libsgml\libsgml.h"\
+	"..\..\libsgml\SgmlExtensionHtml.h"\
+	"..\..\libsgml\SgmlExtensionXml.h"\
+	"..\..\libsgml\SgmlParser.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\www\HTMLFile.h"\
+	"..\..\prssr\www\url.h"\
+	"..\..\regex\regex.h"\
+	"..\..\regex\stypes.h"\
+	"..\..\share\file.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\str.h"\
+	
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Release"
 
+DEP_CPP_URL_C=\
+	"..\..\libexpat\expat.h"\
+	"..\..\libexpat\expat_external.h"\
+	"..\..\libsgml\DomComment.h"\
+	"..\..\libsgml\DomDocument.h"\
+	"..\..\libsgml\DomElement.h"\
+	"..\..\libsgml\DomNode.h"\
+	"..\..\libsgml\DomNodeList.h"\
+	"..\..\libsgml\DomText.h"\
+	"..\..\libsgml\libsgml.h"\
+	"..\..\libsgml\SgmlExtensionHtml.h"\
+	"..\..\libsgml\SgmlExtensionXml.h"\
+	"..\..\libsgml\SgmlParser.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\www\HTMLFile.h"\
+	"..\..\prssr\www\url.h"\
+	"..\..\regex\regex.h"\
+	"..\..\regex\stypes.h"\
+	"..\..\share\file.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\str.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ELSEIF  "$(CFG)" == "prssrtoday - Win32 (WCE ARMV4) Debug"
 
+DEP_CPP_URL_C=\
+	"..\..\libexpat\expat.h"\
+	"..\..\libexpat\expat_external.h"\
+	"..\..\libsgml\DomComment.h"\
+	"..\..\libsgml\DomDocument.h"\
+	"..\..\libsgml\DomElement.h"\
+	"..\..\libsgml\DomNode.h"\
+	"..\..\libsgml\DomNodeList.h"\
+	"..\..\libsgml\DomText.h"\
+	"..\..\libsgml\libsgml.h"\
+	"..\..\libsgml\SgmlExtensionHtml.h"\
+	"..\..\libsgml\SgmlExtensionXml.h"\
+	"..\..\libsgml\SgmlParser.h"\
+	"..\..\prssr\debug\Logger.h"\
+	"..\..\prssr\www\HTMLFile.h"\
+	"..\..\prssr\www\url.h"\
+	"..\..\regex\regex.h"\
+	"..\..\regex\stypes.h"\
+	"..\..\share\file.h"\
+	"..\..\share\helpers.h"\
+	"..\..\share\str.h"\
+	
 # SUBTRACT CPP /YX /Yc /Yu
 
 !ENDIF 

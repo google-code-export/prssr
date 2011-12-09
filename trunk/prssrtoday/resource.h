@@ -62,6 +62,12 @@
 #define IDC_CHANNELS                    1027
 #define IDC_DISPLAY_SPEED_SECS          1028
 
+#define IDC_SHOW_TODAY_WRAP             1029
+#define IDC_DISPLAY_ROWS_LBL            1030
+#define IDC_DISPLAYROWS                 1031
+#define IDC_SHOW_DATETIME_TAIL          1032
+#define IDC_PLUGIN_FAVICON              1033
+
 #define ID_TODAY                        40000
 #define IDS_CAP_TODAY                   40002
 #define ID_TODAY_UPDATEALL              40003
