@@ -245,6 +245,7 @@ protected:
 	afx_msg void OnSortChange();
 	afx_msg void OnViewSortbyDate();
 	afx_msg void OnViewSortbyRead();
+	afx_msg void OnViewSortbyKeyword();
 	afx_msg void OnUpdateSortby(CCmdUI *pCmdUI);
 
 	LRESULT OnHibernate(WPARAM wParam, LPARAM lParam);

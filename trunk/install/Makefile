@@ -4,7 +4,7 @@
 #
 
 PRODUCT=pRSSreader
-VERSION=1.4.5
+VERSION=1.4.6
 INF=pRSSreader.inf
 
 # On linux
@@ -20,7 +20,7 @@ all: cab
 cab: $(PRODUCT)-$(VERSION).cab
 
 $(PRODUCT)-$(VERSION).cab: $(PRODUCT).ARM.CAB
-	mv -f $(PRODUCT).ARM.CAB $(PRODUCT)-$(VERSION).cab
+	ren $(PRODUCT).ARM.CAB $(PRODUCT)-$(VERSION).cab
 
 $(PRODUCT).ARM.CAB: $(INF)
 	$(CABWIZ) $(INF) /cpu ARM || sleep 1

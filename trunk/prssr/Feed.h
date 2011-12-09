@@ -86,6 +86,7 @@ class CSiteItem;
 #define MESSAGE_NEW								0x0002
 #define MESSAGE_FLAG							0x0004
 //#define MESSAGE_STICKY						0x0008
+#define MESSAGE_KEYWORD                         0x0008
 #define MESSAGE_SYNC							0x0040
 
 #define MESSAGE_DELETED							0x0080
@@ -135,6 +136,7 @@ public:
 
 	DWORD GetFlags() { return Flags; }
 	DWORD GetReadState() { return Flags & MESSAGE_READ_STATE; }
+	DWORD GetKeywordState() { return Flags & MESSAGE_KEYWORD; }
 	BOOL IsRead()    { return (Flags & MESSAGE_READ_STATE) == MESSAGE_READ; }
 	BOOL IsUnread()  { return (Flags & MESSAGE_READ_STATE) == MESSAGE_UNREAD; }
 	BOOL IsNew()     { return (Flags & MESSAGE_READ_STATE) == MESSAGE_NEW; }
@@ -147,9 +149,10 @@ protected:
 	// flag
 	//
 	// 00000000
-	// |    |||
-	// |    |++--- read state (0 - read, 1 - unread, 2 - new)
-	// |    +----- flag (1 - flag set)
+	// |   ||||
+	// |   ||++--- read state (0 - read, 1 - unread, 2 - new)
+	// |   |+----- flag (1 - flag set)
+	// |   +------ keyword state (1 - flag set)
 	// +---------- deleted (1 - deleted)
 	//
 

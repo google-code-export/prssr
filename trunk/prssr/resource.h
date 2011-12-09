@@ -639,8 +639,9 @@
 #define ID_ITEM_DELETE                  32839
 
 #define ID_VIEW_HIDEREADITEMS           32797
-#define ID_VIEW_SORTBY_DATE             32798
-#define ID_VIEW_SORTBY_READ             32799
+#define ID_VIEW_SORTBY_DATE            	32778	//32798
+#define ID_VIEW_SORTBY_READ             32779	//32799
+#define ID_VIEW_SORTBY_KEYWORD          32780
 #define ID_VIEW_SORTBY_COMBINATION      32800
 #define ID_EDIT                         32801
 #define ID_CACHE_GET_ONLINECONTENT      32808

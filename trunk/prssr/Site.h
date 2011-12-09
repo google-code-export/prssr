@@ -42,11 +42,12 @@ public:
 
 	enum ESortItem {
 		Date = 1,
-		Read = 2
+		Read = 2,
+		Keyword = 3
 	};
 
 	ESortType Type;				// ascending/descending
-	ESortItem Item;				// date/read
+	ESortItem Item;				// date/read/keyword
 
 	CSortInfo() {
 		Type = Descending;

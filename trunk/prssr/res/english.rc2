@@ -1106,6 +1106,7 @@ BEGIN
         BEGIN
             MENUITEM "Date",                    ID_VIEW_SORTBY_DATE
             MENUITEM "Read",                    ID_VIEW_SORTBY_READ
+	    MENUITEM "Keyword",                 ID_VIEW_SORTBY_KEYWORD
         END
         MENUITEM SEPARATOR
         MENUITEM "Hide Read Items",             ID_VIEW_HIDEREADITEMS
@@ -1357,6 +1358,7 @@ IDR_SORT MENU DISCARDABLE
 BEGIN
     MENUITEM "Date",                            ID_VIEW_SORTBY_DATE
     MENUITEM "Read",                            ID_VIEW_SORTBY_READ
+    MENUITEM "Keyword",                         ID_VIEW_SORTBY_KEYWORD
 END
 
 IDR_YESNO MENU DISCARDABLE
