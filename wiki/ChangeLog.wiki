@@ -4,6 +4,28 @@
 = !ChangeLog =
 ----
 
+== Version 1.4.7 ==
+Released on December 9, 2011
+
+*What's New:*
+ * Google Reader CL (ClientLogin Autch)
+ * Select today plugin rows view
+ * Wrap today feeds titles 
+ * Show favicon on today
+ * Date in the feed title tail on today
+
+*Fixes:*
+ * none
+
+== Version 1.4.6 ==
+Released on November 30, 2011
+
+*What's New:*
+ * Sorting by keyword
+
+*Fixes:*
+ * Disappearing sorting arrow at the first entrance to the channel
+
 == Version 1.4.5 ==
 Released on July 29, 2010
 
