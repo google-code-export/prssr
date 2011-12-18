@@ -16,3 +16,5 @@ http://prssr.googlecode.com/svn/wiki/screenshots/prssr-1.4.1-feed-info.gif
 http://prssr.googlecode.com/svn/wiki/screenshots/prssr-1.4.1-keyword-manager.gif
 http://prssr.googlecode.com/svn/wiki/screenshots/prssr-1.4.1-cache-manager.gif
 http://prssr.googlecode.com/svn/wiki/screenshots/prssr-1.4.1-errors.gif
+
+http://prssr.googlecode.com/svn/wiki/screenshots//prssr-1.4.8-summary-view.gif
