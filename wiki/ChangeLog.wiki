@@ -3,6 +3,19 @@
 
 = !ChangeLog =
 ----
+== Version 1.4.8 ==
+Released on December 18, 2011
+
+*What's New:*
+ * Joystick left/right today items moving
+ * Reverse channel switching
+ * Disable gestures
+ * Select and copy all
+ * Leave only keyword
+
+*Fixes:*
+ * Fixed old bug
+ * Fixed icon blink (undone in v1.4.7)
 
 == Version 1.4.7 ==
 Released on December 9, 2011
