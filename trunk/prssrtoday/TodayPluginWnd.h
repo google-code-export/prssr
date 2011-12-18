@@ -79,7 +79,9 @@ protected:
 	CFont m_fntNormal;
 	CFont m_fntBold;
 	HICON HIcon;
-	HICON HIcons[1024]; 
+	HICON HIcons[1024];
+	BOOL UpdateFavicon;
+	int OldSiteIdx;
 
 	BOOL Selected;
 	int RowHeight;
@@ -161,7 +163,7 @@ protected:
 //	void ReloadFeed();
 	void UpdateUnreadNewCounts();
 
-	void Cycle();
+	void Cycle(BOOL enabled = TRUE, int direct = VK_RIGHT);
 	void CheckFeedFile(CSiteItem *si);
 	void UpdateFeedFlags(CSiteItem *si);
 

@@ -72,6 +72,8 @@ BEGIN
                     WS_TABSTOP,4,30,152,10
 	CONTROL         "Show feed favicon",IDC_PLUGIN_FAVICON,"Button",BS_AUTOCHECKBOX | 
                     WS_TABSTOP,4,43,152,10
+	CONTROL         "Reverse channel switching",IDC_PLUGIN_REVERSESWITCH,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,4,55,152,10
 END
 
 

@@ -33,6 +33,7 @@ LPCTSTR szMode            = _T("Mode");
 LPCTSTR szVerticalOffset  = _T("VertOffset");
 LPCTSTR szDisplayIcon     = _T("DisplayIcon");
 LPCTSTR szDisplayFavicon  = _T("DisplayFavicon");
+LPCTSTR szReverseSwitch	  = _T("ReverseSwitch");
 LPCTSTR szHidePlugin      = _T("HidePlugin");
 LPCTSTR szFontSize        = _T("FontSize");
 
@@ -70,6 +71,7 @@ CConfig::CConfig() {
 	VOffset = CONFIG_DEFAULT_VOFFSET;
 	DisplayIcon = CONFIG_DEFAULT_DISPLAY_ICON;
 	DisplayFavicon = CONFIG_DEFAULT_DISPLAY_FAVICON;
+	ReverseSwitch = CONFIG_DEFAULT_REVERSE_SWITCH;
 	HidePlugin = CONFIG_DEFAULT_HIDE_PLUGIN;
 	FontSize = CONFIG_DEFAULT_FONT_SIZE;
 
@@ -99,6 +101,7 @@ void CConfig::Save() {
 	reg.Write(szFontSize, FontSize);
 	reg.Write(szDisplayIcon, DisplayIcon);
 	reg.Write(szDisplayFavicon, DisplayFavicon);
+	reg.Write(szReverseSwitch, ReverseSwitch);
 
 	reg.Write(szCyclingSubMode, CyclingSubMode);
 	reg.Write(szShowSiteName, ShowSiteName);
@@ -130,6 +133,7 @@ void CConfig::Load() {
 	FontSize = reg.Read(szFontSize, CONFIG_DEFAULT_FONT_SIZE);
 	DisplayIcon = reg.Read(szDisplayIcon, CONFIG_DEFAULT_DISPLAY_ICON);
 	DisplayFavicon = reg.Read(szDisplayFavicon, CONFIG_DEFAULT_DISPLAY_FAVICON);
+	ReverseSwitch = reg.Read(szReverseSwitch, CONFIG_DEFAULT_REVERSE_SWITCH);
 
 	// cycling mode
 	CyclingSubMode = reg.Read(szCyclingSubMode, CONFIG_DEFAULT_CYCLING_SUBMODE);

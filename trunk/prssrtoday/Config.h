@@ -40,6 +40,7 @@
 #define CONFIG_DEFAULT_FONT_SIZE				9
 #define CONFIG_DEFAULT_DISPLAY_ICON				TRUE
 #define CONFIG_DEFAULT_DISPLAY_FAVICON			FALSE
+#define CONFIG_DEFAULT_REVERSE_SWITCH			FALSE
 
 // minimal synchronization interval in minutes
 //#define CONFIG_DEFAULT_MINIMALSYNCINTERVAL		0
@@ -91,6 +92,7 @@ public:
 	BOOL DisplayIcon;
 	BOOL HidePlugin;
 	BOOL DisplayFavicon;
+	BOOL ReverseSwitch;
 
 	// apperance
 	int FontSize;

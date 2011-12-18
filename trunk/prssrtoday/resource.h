@@ -67,6 +67,7 @@
 #define IDC_DISPLAYROWS                 1031
 #define IDC_SHOW_DATETIME_TAIL          1032
 #define IDC_PLUGIN_FAVICON              1033
+#define IDC_PLUGIN_REVERSESWITCH		1034
 
 #define ID_TODAY                        40000
 #define IDS_CAP_TODAY                   40002

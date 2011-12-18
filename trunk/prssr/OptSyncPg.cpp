@@ -120,7 +120,7 @@ BOOL COptSyncPg::OnInitDialog() {
 	CPropertyPage::OnInitDialog();
 
 	m_ctlSyncSite.AddString(_T("None"));
-	m_ctlSyncSite.AddString(_T("Google Reader"));
+	m_ctlSyncSite.AddString(_T("Google Reader R.I.P."));
 	m_ctlSyncSite.AddString(_T("Google Reader CL"));
 
 	m_ctlSyncSite.SetCurSel(Config.SyncSite);

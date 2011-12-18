@@ -48,6 +48,7 @@ public:
 	BOOL IsSelection();
 	void CopySelectionToNewIStream(DWORD *rsd, LPSTREAM *stream);
 	HWND SetParent(HWND hNewParent);
+	void SelectAll();
 
 protected:
 	static HINSTANCE HHtmlDLL;

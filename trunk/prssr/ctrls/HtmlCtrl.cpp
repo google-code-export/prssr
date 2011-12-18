@@ -129,3 +129,7 @@ void CHTMLCtrl::CopySelectionToNewIStream(DWORD *rsd, LPSTREAM *stream) {
 HWND CHTMLCtrl::SetParent(HWND hNewParent) {
 	return ::SetParent(m_hWnd, hNewParent);
 }
+
+void CHTMLCtrl::SelectAll() {
+	::SendMessage(m_hWnd, DTM_SELECTALL, 0, 0);
+}

@@ -221,8 +221,10 @@ void CLocalHtmlFile::TranslateForOffline(DOM_NODE *node) {
 			const char *src = domElementGetAttribute(node, "src");
 			if (src != NULL) {
 				CString value = CharToWChar(src);
-
-				CString url = MakeAbsoluteUrl(value, Server, ActivePath);
+				
+				// CString url = MakeAbsoluteUrl(value, Server, ActivePath);
+				CString url;
+				url.Format(_T("%S"),MakeAbsoluteUrl(value, Server, ActivePath));
 				if (IsHTMLCached(url, FALSE)) {
 					CString fileName = UrlToFileName(url, FALSE);
 					CString path = GetCachePath(FILE_TYPE_HTML, Config.CacheLocation);

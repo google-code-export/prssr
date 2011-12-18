@@ -113,6 +113,9 @@ protected:
 	afx_msg void OnSendByEmail();
 	afx_msg void OnFullscreen();
 	afx_msg void OnUpdateFullscreen(CCmdUI *pCmdUI);
+	afx_msg void OnDisableGestures();
+	afx_msg void OnUpdateDisableGestures(CCmdUI *pCmdUI);
+	afx_msg void OnSelectAndCopyAll();
 
 	friend class CMainFrame;
 

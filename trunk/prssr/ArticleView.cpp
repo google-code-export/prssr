@@ -46,7 +46,6 @@ static TCHAR THIS_FILE[] = _T(__FILE__);
 static char THIS_FILE[] = __FILE__;
 #endif
 
-
 static DWORD MakeRGBVal(COLORREF clr) {
 	return (GetRValue(clr) << 16) | (GetGValue(clr) << 8) | GetBValue(clr);
 }
@@ -85,6 +84,7 @@ CArticleView::CArticleView() {
 	m_pArticle = NULL;
 
 	InFullScreen = FALSE;
+
 }
 
 CArticleView::~CArticleView() {
@@ -119,6 +119,9 @@ BEGIN_MESSAGE_MAP(CArticleView, CHTMLCtrl)
 	ON_COMMAND(ID_SEND_BY_EMAIL, OnSendByEmail)
 	ON_COMMAND(ID_FULLSCREEN, OnFullscreen)
 	ON_UPDATE_COMMAND_UI(ID_FULLSCREEN, OnUpdateFullscreen)
+	ON_COMMAND(ID_DISABLE_GESTURES, OnDisableGestures)
+	ON_UPDATE_COMMAND_UI(ID_DISABLE_GESTURES, OnUpdateDisableGestures)
+	ON_COMMAND(ID_SELECTANDCOPY_ALL_ARTICLE, OnSelectAndCopyAll)
 
 	ON_COMMAND(ID_VIEW_IMAGE, OnViewImage)
 	ON_COMMAND(ID_COPY_IMAGE_LOCATION, OnCopyImageLocation)
@@ -276,6 +279,8 @@ void CArticleView::CreateMenu(HWND hwndCmdBar) {
 	AppendBookmarkMenu(&mnu);
 	AppendMenuFromResource(&mnu, IDR_SEND_BY_EMAIL);
 	AppendMenuFromResource(&mnu, IDR_FULLSCREEN);
+	AppendMenuFromResource(&mnu, IDR_SELECTANDCOPY_ALL_ARTICLE);
+	AppendMenuFromResource(&mnu, IDR_DISABLE_GESTURES);
 	mnu.AppendMenu(MF_SEPARATOR);
 //	AppendMenuFromResource(&mnu, IDR_REFRESH);
 	AppendMenuFromResource(&mnu, IDR_EXIT);
@@ -427,6 +432,8 @@ void CArticleView::ContextMenu(CPoint point) {
 	AppendMenuFromResource(&popup, IDR_ITEM_FLAG);
 	AppendMenuFromResource(&popup, IDR_COPY);
 	AppendMenuFromResource(&popup, IDR_FULLSCREEN);
+	AppendMenuFromResource(&popup, IDR_SELECTANDCOPY_ALL_ARTICLE);
+	AppendMenuFromResource(&popup, IDR_DISABLE_GESTURES);
 
 	popup.TrackPopupMenu(TPM_LEFTALIGN, point.x, point.y, GetParent());
 }
@@ -472,6 +479,8 @@ void CArticleView::OnContextMenu(NM_HTMLCONTEXT *pnmhc) {
 	AppendMenuFromResource(&popup, IDR_ITEM_FLAG);
 	AppendMenuFromResource(&popup, IDR_COPY);
 	AppendMenuFromResource(&popup, IDR_FULLSCREEN);
+	AppendMenuFromResource(&popup, IDR_SELECTANDCOPY_ALL_ARTICLE);
+	AppendMenuFromResource(&popup, IDR_DISABLE_GESTURES);
 
 	//
 	CPoint point = pnmhc->pt;
@@ -1018,4 +1027,60 @@ void CArticleView::OnFullscreen() {
 
 void CArticleView::OnUpdateFullscreen(CCmdUI *pCmdUI) {
 	pCmdUI->SetCheck(InFullScreen);
+}
+
+void CArticleView::OnDisableGestures() {
+	LOG0(1, "CArticleView::OnDisableGestures()");
+	// Config.DisableGestures = !Config.DisableGestures; - not used
+ 	switch (Config.NavigationType) {
+		case NAVIGATION_NORMAL: 
+			Config.NavigationType = NAVIGATION_TOUCH; 
+			Config.Save();
+			break;
+		case NAVIGATION_TOUCH: 
+			Config.NavigationType = NAVIGATION_NORMAL; 
+			Config.Save();
+			break;
+	}
+}
+
+void CArticleView::OnUpdateDisableGestures(CCmdUI *pCmdUI) {
+	// pCmdUI->SetCheck(Config.DisableGestures); - not used
+	switch (Config.NavigationType) {
+		case NAVIGATION_NORMAL: pCmdUI->SetCheck(TRUE); break;
+		case NAVIGATION_TOUCH: pCmdUI->SetCheck(FALSE); break;
+	}
+}
+
+void CArticleView::OnSelectAndCopyAll() {
+	LOG0(1, "CArticleView::OnSelectAndCopyAll()");
+
+	CString link;
+	if (m_strContextMnuUrl.IsEmpty() && m_pArticle != NULL) link = m_pArticle->Link;
+	else link = m_strContextMnuUrl;
+
+	SelectAll();
+
+	LPSTREAM stream = 0;		// give us the output stream here
+	DWORD rsd = 0;				// required, can be checked with SUCCEEDED?...
+	CopySelectionToNewIStream(&rsd, &stream);
+	if (stream) {
+		// got it
+		STATSTG stat = { 0 };
+		stream->Stat(&stat, 0); // probably check for the S_OK code...
+
+		if (LPBYTE buf = (LPBYTE) LocalAlloc(LHND, (UINT) stat.cbSize.QuadPart + 2)) {
+			ULONG ulNumChars;
+			// read whole
+			if (SUCCEEDED(stream->Read(buf, (ULONG) stat.cbSize.QuadPart, &ulNumChars)) &&
+				ulNumChars == stat.cbSize.QuadPart)
+			{
+				CString strSelectedText((LPCWSTR) buf); // our text here!
+				CopyTextToClipboard(GetSafeHwnd(), strSelectedText + _T("\n") + link);
+			}
+
+			LocalFree(buf);
+		}
+		stream->Release();
+	}
 }

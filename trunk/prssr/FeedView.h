@@ -132,6 +132,9 @@ protected:
 	afx_msg void OnViewHideReadItems();
 	afx_msg void OnUpdateViewHideReadItems(CCmdUI *pCmdUI);
 
+	afx_msg void OnViewLeaveOnlyKeyword();
+	afx_msg void OnUpdateViewLeaveOnlyKeyword(CCmdUI *pCmdUI);
+
 	afx_msg void OnCopyUrl();
 	afx_msg void OnSendByEmail();
 
