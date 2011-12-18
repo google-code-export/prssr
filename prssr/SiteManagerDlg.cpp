@@ -65,7 +65,7 @@ static char THIS_FILE[] = __FILE__;
 // OPML file name
 #define OPML_FILENAME						_T("myChannels.opml")
 
-#define WM_FAVICONSRESET (WM_USER + 100)
+#define WM_FAVICONSRESET		(WM_USER + 108)
 
 /////////////////////////////////////////////////////////////////////////////
 // CSiteTreeCtrl control

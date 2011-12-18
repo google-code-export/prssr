@@ -50,8 +50,10 @@ public:
 	BOOL	m_bUseFontSize;
 	CButton	m_ctlDisplayIcon;
 	CButton m_ctlDisplayFavicon;
+	CButton m_ctlReverseSwitch;
 	BOOL	m_bDisplayIcon;
 	BOOL	m_bDisplayFavicon;
+	BOOL	m_bReverseSwitch;
 	CButton	m_ctlHidePlugin;
 	BOOL	m_bHidePlugin;
 	//}}AFX_DATA
@@ -75,6 +77,7 @@ protected:
 	afx_msg void OnUsefontsize();
 	afx_msg void OnDisplayIcon();
 	afx_msg void OnDisplayFavicon();
+	afx_msg void OnReverseSwitch();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 

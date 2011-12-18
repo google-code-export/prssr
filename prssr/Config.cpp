@@ -54,6 +54,7 @@ LPCTSTR szActSiteIdx = _T("ActiveSiteIdx");
 LPCTSTR szActFeedItem = _T("ActiceFeedItem");
 
 LPCTSTR szHideReadItems = _T("Hide Read Items");
+LPCTSTR szLeaveOnlyKeyword = _T("Leave Only Keyword");
 LPCTSTR szHideReadFeeds = _T("Hide Read Feeds");
 LPCTSTR szSortType = _T("Sort Type");
 LPCTSTR szSortItem = _T("Sort Item");
@@ -63,6 +64,7 @@ LPCTSTR szShowFlaggedItems = _T("Show Flagged Items");
 LPCTSTR szMainView = _T("Main View");
 LPCTSTR szWorkOffline = _T("Work Offline");
 LPCTSTR szUpdateOnly = _T("Update Only");
+LPCTSTR szDisableGestures = _T("Disable Gestures");
 
 LPCTSTR szSetPropertiesAfterSiteAdded = _T("Set Properties After Site Added");
 
@@ -175,8 +177,8 @@ CConfig::CConfig() {
 #ifdef LOGGING
 	LogFile = reg.Read(szLogFile, CONFIG_DEFAULT_LOGFILE);
 	LogLevel = reg.Read(szLogLevel, CONFIG_DEFAULT_LOGLEVEL);
-//	LogFile = _T("\\storage card\\program files\\prssreader\\prssr.log");
-//	LogLevel = 1;
+//	LogFile = _T("\\storage card\\prssr.log");
+//	LogLevel = 5;
 #endif
 
 	// ////
@@ -234,7 +236,9 @@ CConfig::CConfig() {
 	WorkOffline = CONFIG_DEFAULT_WORK_OFFLINE;
 	HideGroups = CONFIG_DEFAULT_HIDE_GROUPS;
 	HideReadItems = CONFIG_DEFAULT_HIDE_READ_ITEMS;
+	LeaveOnlyKeyword = CONFIG_DEFAULT_LEAVE_ONLY_KEYWORD;
 	UpdateOnly = CONFIG_DEFAULT_UPDATE_ONLY;
+	DisableGestures = CONFIG_DEFAULT_DISABLE_GESTURES;
 }
 
 CConfig::~CConfig() {
@@ -398,7 +402,9 @@ void CConfig::SaveUI() {
 	reg.Write(szWorkOffline, WorkOffline);
 	reg.Write(szHideGroups, HideGroups);
 	reg.Write(szHideReadItems, HideReadItems);
+	reg.Write(szLeaveOnlyKeyword, LeaveOnlyKeyword);
 	reg.Write(szUpdateOnly, UpdateOnly);
+	reg.Write(szDisableGestures, DisableGestures);
 }
 
 void CConfig::LoadUI() {
@@ -410,7 +416,9 @@ void CConfig::LoadUI() {
 	WorkOffline = reg.Read(szWorkOffline, CONFIG_DEFAULT_WORK_OFFLINE);
 	HideGroups = reg.Read(szHideGroups, CONFIG_DEFAULT_HIDE_GROUPS);
 	HideReadItems = reg.Read(szHideReadItems, CONFIG_DEFAULT_HIDE_READ_ITEMS);
+	LeaveOnlyKeyword = reg.Read(szLeaveOnlyKeyword, CONFIG_DEFAULT_LEAVE_ONLY_KEYWORD);
 	UpdateOnly = reg.Read(szUpdateOnly, CONFIG_DEFAULT_UPDATE_ONLY);
+	DisableGestures = reg.Read(szDisableGestures, CONFIG_DEFAULT_DISABLE_GESTURES);
 }
 
 // Proxy Profiles ////

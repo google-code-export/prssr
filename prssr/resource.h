@@ -126,6 +126,8 @@
 #define IDR_FULLSCREEN                  342
 #define IDR_REWRITING                   343
 #define IDR_EXIT                        344
+#define IDR_DISABLE_GESTURES            345
+#define IDR_SELECTANDCOPY_ALL_ARTICLE	346
 
 #define IDS_TODAY                       400
 #define IDS_YESTERDAY                   401
@@ -644,6 +646,7 @@
 #define ID_ITEM_FLAG                    32841
 #define ID_ITEM_DELETE                  32839
 
+#define ID_VIEW_LEAVEONLYKEYWORD        32795
 #define ID_VIEW_HIDEREADITEMS           32797
 #define ID_VIEW_SORTBY_DATE            	32778	//32798
 #define ID_VIEW_SORTBY_READ             32779	//32799
@@ -715,6 +718,8 @@
 #define ID_TOOLS_FEEDVIEW               32882
 #define ID_CLOSE                        32883
 #define ID_TOOLS_MAKRASUNFLAGGED        32884
+#define ID_DISABLE_GESTURES				32885
+#define ID_SELECTANDCOPY_ALL_ARTICLE	32886
 
 #define ID_SOCIAL_BOOKMARK_BASE			 33000
 

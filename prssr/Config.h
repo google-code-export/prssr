@@ -65,11 +65,13 @@ enum ESyncSite {
 #define CONFIG_DEFAULT_WORK_OFFLINE					FALSE
 #define CONFIG_DEFAULT_HIDE_GROUPS					FALSE
 #define CONFIG_DEFAULT_HIDE_READ_ITEMS				FALSE
+#define CONFIG_DEFAULT_LEAVE_ONLY_KEYWORD			FALSE
 #define CONFIG_DEFAULT_UPDATE_ONLY					FALSE
 #define CONFIG_DEFAULT_BACKGROUNDUPDATE				TRUE
 #define CONFIG_DEFAULT_NAVIGATION_TYPE				NAVIGATION_TOUCH
 #define CONFIG_DEFAULT_EMAIL_ACCOUNT				_T("ActiveSync")
 #define CONFIG_DEFAULT_GROUP_BY_FEED				FALSE
+#define CONFIG_DEFAULT_DISABLE_GESTURES				FALSE
 
 #define CONFIG_DEFAULT_CLEARERRORLOG				TRUE
 
@@ -150,9 +152,11 @@ public:
 	int MainView;
 	BOOL HideGroups;
 	BOOL HideReadItems;
+	BOOL LeaveOnlyKeyword;
 	BOOL UpdateOnly;
 	CString EmailAccount;					// email service used for sending emails (ActiveSync by default)
-
+	BOOL DisableGestures; 
+	
 	////
 
 	BOOL NotifyNew;

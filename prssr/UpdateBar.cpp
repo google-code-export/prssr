@@ -52,6 +52,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 #define BUFSIZE						8192
+#define WM_FAVICONSRESET			(WM_USER + 108)
 
 static BOOL TranslateForOfflineReading(const CString &srcFileName, const CString &destFileName, const CString &srcEncoding = _T("windows-1251")) {
 	LOG2(5, "TranslateForOfflineReading('%S', '%S')", srcFileName, destFileName);
@@ -758,6 +759,7 @@ void CUpdateBar::UpdateThread() {
 	HUpdateThread = NULL;
 
 	if (frame != NULL) frame->SendMessage(UWM_UPDATE_FINISHED);
+	NotifyTodayPlugin(WM_FAVICONSRESET,0,0);	// confirm the changes in the today plugin
 
 	LOG0(3, "CUpdateBar::UpdateThread() - end");
 }

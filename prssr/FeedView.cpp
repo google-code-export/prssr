@@ -146,6 +146,9 @@ BEGIN_MESSAGE_MAP(CFeedView, CWnd)
 
 	ON_COMMAND(ID_VIEW_HIDEREADITEMS, OnViewHideReadItems)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_HIDEREADITEMS, OnUpdateViewHideReadItems)
+
+	ON_COMMAND(ID_VIEW_LEAVEONLYKEYWORD, OnViewLeaveOnlyKeyword)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_LEAVEONLYKEYWORD, OnUpdateViewLeaveOnlyKeyword)
 END_MESSAGE_MAP()
 
 
@@ -1579,25 +1582,26 @@ void CFeedView::InsertItems(CSiteItem *si) {
 		if (si->Type == CSiteItem::Site) {
 			for (int i = 0, j = 0; i < feed->GetItemCount(); i++) {
 				CFeedItem *item = feed->GetItem(i);
+				if (item->HasKeywordMatch()) {
+					item->SetFlags(MESSAGE_KEYWORD, MESSAGE_KEYWORD);
+				} else {
+					item->SetFlags(0, MESSAGE_KEYWORD);
+				}
 				if (!Config.HideReadItems || !item->IsRead())
-					if (InsertItem(j, item)) j++;
-					if (item->HasKeywordMatch()) {
-						item->SetFlags(MESSAGE_KEYWORD, MESSAGE_KEYWORD);
-					} else {
-						item->SetFlags(0, MESSAGE_KEYWORD);
-					}
+					if (!Config.LeaveOnlyKeyword || item->IsKeyword())
+						if (InsertItem(j, item)) j++;
 			}
 		}
 		else if (si->Type == CSiteItem::VFolder) {
 			for (int i = 0, j = 0; i < feed->GetItemCount(); i++) {
 				CFeedItem *item = feed->GetItem(i);
 				if ((item->GetFlags() & si->FlagMask) != 0)
-					if (InsertItem(j, item)) j++;
 					if (item->HasKeywordMatch()) {
 						item->SetFlags(MESSAGE_KEYWORD, MESSAGE_KEYWORD);
 					} else {
 						item->SetFlags(0, MESSAGE_KEYWORD);
 					}
+					if (InsertItem(j, item)) j++;
 			}
 		}
 		feed->Unlock();
@@ -1620,6 +1624,19 @@ void CFeedView::OnViewHideReadItems() {
 
 void CFeedView::OnUpdateViewHideReadItems(CCmdUI *pCmdUI) {
 	pCmdUI->SetCheck(Config.HideReadItems);
+}
+
+void CFeedView::OnViewLeaveOnlyKeyword() {
+	Config.LeaveOnlyKeyword = !Config.LeaveOnlyKeyword;
+	Config.SaveUI();
+
+	InsertItems(SiteItem);
+	UpdateScrollBars();
+	UpdateItemHeights();
+}
+
+void CFeedView::OnUpdateViewLeaveOnlyKeyword(CCmdUI *pCmdUI) {
+	pCmdUI->SetCheck(Config.LeaveOnlyKeyword);
 }
 
 int CFeedView::CalcItemHeight(int idx) {

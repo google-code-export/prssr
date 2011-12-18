@@ -53,6 +53,7 @@ COptAppearancePg::COptAppearancePg() : CPropertyPage(COptAppearancePg::IDD) {
 	m_bDisplayIcon = Config.DisplayIcon;
 	m_bHidePlugin = Config.HidePlugin;
 	m_bDisplayFavicon = Config.DisplayFavicon;
+	m_bReverseSwitch = Config.ReverseSwitch;
 	//}}AFX_DATA_INIT
 }
 
@@ -70,8 +71,10 @@ void COptAppearancePg::DoDataExchange(CDataExchange* pDX) {
 	DDX_Check(pDX, IDC_USEFONTSIZE, m_bUseFontSize);
 	DDX_Control(pDX, IDC_PLUGIN_ICON, m_ctlDisplayIcon);
 	DDX_Control(pDX, IDC_PLUGIN_FAVICON, m_ctlDisplayFavicon);
+	DDX_Control(pDX, IDC_PLUGIN_REVERSESWITCH, m_ctlReverseSwitch);
 	DDX_Check(pDX, IDC_PLUGIN_ICON, m_bDisplayIcon);
 	DDX_Check(pDX, IDC_PLUGIN_FAVICON, m_bDisplayFavicon);
+	DDX_Check(pDX, IDC_PLUGIN_REVERSESWITCH, m_bReverseSwitch);
 	DDX_Control(pDX, IDC_HIDE_PLUGIN, m_ctlHidePlugin);
 	DDX_Check(pDX, IDC_HIDE_PLUGIN, m_bHidePlugin);
 	//}}AFX_DATA_MAP
@@ -83,6 +86,7 @@ BEGIN_MESSAGE_MAP(COptAppearancePg, CPropertyPage)
 	ON_BN_CLICKED(IDC_USEFONTSIZE, OnUsefontsize)
 	ON_BN_CLICKED(IDC_PLUGIN_ICON, OnDisplayIcon)
 	ON_BN_CLICKED(IDC_PLUGIN_FAVICON, OnDisplayFavicon)
+	ON_BN_CLICKED(IDC_PLUGIN_REVERSESWITCH,OnReverseSwitch)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -131,6 +135,7 @@ void COptAppearancePg::OnOK() {
 	Config.DisplayIcon = m_bDisplayIcon;
 	Config.HidePlugin = m_bHidePlugin;
 	Config.DisplayFavicon = m_bDisplayFavicon;
+	Config.ReverseSwitch = m_bReverseSwitch;
 
 	CPropertyPage::OnOK();
 }
@@ -163,6 +168,12 @@ void COptAppearancePg::OnDisplayIcon() {
 
 void COptAppearancePg::OnDisplayFavicon() {
 	LOG0(5, "COptAppearancePg::OnDisplayFavicon()");
+
+	UpdateControls();
+}
+
+void COptAppearancePg::OnReverseSwitch() {
+	LOG0(5, "COptAppearancePg::OnReverseSwitch()");
 
 	UpdateControls();
 }

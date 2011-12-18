@@ -144,6 +144,7 @@ public:
 	BOOL IsDeleted() { return Flags & MESSAGE_DELETED; }
 	BOOL IsFlagged() { return Flags & MESSAGE_FLAG; }
 	BOOL IsSynced()  { return Flags & MESSAGE_SYNC; }
+	BOOL IsKeyword() { return Flags & MESSAGE_KEYWORD; }
 
 protected:
 	// flag
