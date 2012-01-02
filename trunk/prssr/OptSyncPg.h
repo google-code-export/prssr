@@ -41,13 +41,16 @@ public:
 // Dialog Data
 	//{{AFX_DATA(COptSyncPg)
 	enum { IDD = IDD_OPT_SYNC };
-	CComboBox	m_ctlSyncSite;
+	CComboBox m_ctlSyncSite;
 	CStatic	m_lblUserName;
 	CCeEdit	m_ctlUserName;
 	CStatic	m_lblPassword;
 	CCeEdit	m_ctlPassword;
 	CString m_strUserName;
 	CString m_strPassword;
+	BOOL m_bTranslate;
+	CButton	m_ctlTranslate;
+	CComboBox m_ctlTranslateLanguage;
 	//}}AFX_DATA
 
 // Overrides
@@ -67,6 +70,7 @@ protected:
 	//{{AFX_MSG(COptSyncPg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSelendokSyncSite();
+	afx_msg void OnTranslate();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 

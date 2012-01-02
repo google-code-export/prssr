@@ -629,6 +629,8 @@
 #define IDC_STATIC11					1256
 #define IDC_STATIC12					1257
 #define IDC_STATIC13					1258
+#define IDC_TRANSLATE_LANGUAGE			1259
+#define IDC_TRANSLATE					1260
 
 #define ID_TOOLS_OPTIONS                32774
 #define ID_TOOLS_SITEMANAGER            32775

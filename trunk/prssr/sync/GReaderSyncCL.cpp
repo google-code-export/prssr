@@ -95,7 +95,11 @@ BOOL CGReaderSyncCL::SyncFeed(CSiteItem *si, CFeed *feed, BOOL updateOnly) {
 		n = 25;			// fallback
 
 	CString url;
-	url.Format(_T("%s/atom/feed/%s?n=%d"), BaseUrl, UrlEncode(si->Info->XmlUrl), n);
+	if (Config.TranslateLanguage) {
+		url.Format(_T("%s/atom/feed/%s?trans=true&n=%d"), BaseUrl, UrlEncode(si->Info->XmlUrl), n);
+		Downloader->SetHeader(_T("Accept-Language"), AcceptLanguage[Config.SelectedLanguage]);
+	} else
+		url.Format(_T("%s/atom/feed/%s?trans=false&n=%d"), BaseUrl, UrlEncode(si->Info->XmlUrl), n);
 	Downloader->SetUAString(_T(""));
 	if (Downloader->SaveHttpObject(url, tmpFileName) && Downloader->Updated) {
 		CFeedFile xml;
@@ -222,8 +226,12 @@ BOOL CGReaderSyncCL::DownloadFeed(CString &url, const CString &fileName) {
 	if (Auth.IsEmpty()) Authenticate();
 
 	CString u;
-	u.Format(_T("%s/atom/feed/%s"), BaseUrl, url);
 
+	if (Config.TranslateLanguage) {
+		u.Format(_T("%s/atom/feed/%s?trans=true"), BaseUrl, url);
+		Downloader->SetHeader(_T("Accept-Language"), AcceptLanguage[Config.SelectedLanguage]);
+	} else
+		u.Format(_T("%s/atom/feed/%s?trans=false"), BaseUrl, url);
 	Downloader->SetUAString(_T(""));
 	//Downloader->SetHeader(_T("Authorization"),_T("GoogleLogin ") + FormatAuthMarker(Auth));
 	BOOL ret = Downloader->SaveHttpObject(u, fileName);

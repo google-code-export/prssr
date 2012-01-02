@@ -25,13 +25,39 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-
 enum ESyncSite {
 	SYNC_SITE_NONE,
 	SYNC_SITE_GOOGLE_READER,
 	SYNC_SITE_GOOGLE_READERCL						// google clientlogin auth
 };
 
+enum ESelectedLanguage {
+	SELECTED_LANGUAGE_RU_RU,
+	SELECTED_LANGUAGE_UK_UA,
+	SELECTED_LANGUAGE_CS_CZ,
+	SELECTED_LANGUAGE_ET_EE,
+	SELECTED_LANGUAGE_LV_LV,
+	SELECTED_LANGUAGE_PL_PL,
+	SELECTED_LANGUAGE_DE_DE,
+	SELECTED_LANGUAGE_FR_FR,
+	SELECTED_LANGUAGE_IT_IT,
+	SELECTED_LANGUAGE_ES_SP,
+	SELECTED_LANGUAGE_EN_US
+};
+
+static CString AcceptLanguage[] = {
+	_T("ru-RU,ru;q=0.8"),
+	_T("uk-UA,ua;q=0.8"),
+	_T("cs-CZ,cs;q=0.8"),
+	_T("et-EE,et;q=0.8"),
+	_T("lv-LV,lv;q=0.8"),
+	_T("pl-PL,pl;q=0.8"),
+	_T("de-DE,de;q=0.8"),
+    _T("fr-FR,fr;q=0.8"),
+	_T("it-IT,fr;q=0.8"),
+	_T("es-SP,es;q=0.8"),
+	_T("en-US,en;q=0.8")
+};
 
 // Playlist format
 #define PLAYLIST_FORMAT_ASX							0
@@ -59,6 +85,9 @@ enum ESyncSite {
 #define CONFIG_DEFAULT_NOTIFYNEW                    TRUE
 #define CONFIG_DEFAULT_WRAPTITLES                   TRUE
 
+// sync
+#define CONFIG_DEFAULT_TRANSLATE_LANGUAGE			FALSE
+
 // GUI
 #define CONFIG_DEFAULT_MAIN_VIEW					MAIN_VIEW_SUMMARY_VIEW
 #define CONFIG_DEFAULT_ACTSITEIDX					-1
@@ -79,6 +108,7 @@ enum ESyncSite {
 #define CONFIG_DEFAULT_CACHE_HTML					FALSE
 
 #define CONFIG_DEFAULT_SYNCSITE						SYNC_SITE_NONE
+#define CONFIG_DEFAULT_SELECTEDLANGUAGE				SELECTED_LANGUAGE_RU_RU
 
 #define CONFIG_DEFAULT_GENERATEPLAYLISTS			FALSE
 #define CONFIG_DEFAULT_ENCLOSUREPLAYLISTFORMAT		PLAYLIST_FORMAT_ASX
@@ -113,7 +143,7 @@ enum ESyncSite {
 	#endif
 #endif
 
-
+#define USER_AGENT_STRING	_T("Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)") //_T("Mozilla/4.0 (compatible; MSIE 4.01; Windows CE; PPC; %dx%d) pRSSreader/%d.%d.%d")
 
 #include "net/proxy.h"
 #include "../share/helpers.h"
@@ -194,8 +224,10 @@ public:
 
 	// sync
 	ESyncSite SyncSite;
+	ESelectedLanguage SelectedLanguage;
 	CString SyncUserName;
 	CString SyncPassword;
+	BOOL TranslateLanguage;
 
 	// enclosures
 	BOOL GeneratePlaylists;

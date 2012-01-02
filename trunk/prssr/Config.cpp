@@ -40,8 +40,6 @@ static TCHAR THIS_FILE[] = _T(__FILE__);
 #define new MYDEBUG_NEW
 #endif
 
-#define USER_AGENT_STRING										_T("Mozilla/4.0 (compatible; MSIE 4.01; Windows CE; PPC; %dx%d) pRSSreader/%d.%d.%d")
-
 CConfig Config;
 
 LPCTSTR szAdditionalHttpHeaders = _T("Additional HTTP Headers");
@@ -105,6 +103,8 @@ LPCTSTR szCacheHtml = _T("Cache Html");
 LPCTSTR szSyncSite = _T("Sync Site");
 LPCTSTR szSyncUserName = _T("Sync UserName");
 LPCTSTR szSyncPassword = _T("Sync Password");
+LPCTSTR szTranslateLanguage = _T("Translate Language");
+LPCTSTR szSelectedLanguage = _T("Selected Language"); 
 
 // enclosures
 LPCTSTR szGeneratePlaylists = _T("Generate Playlists");
@@ -183,7 +183,8 @@ CConfig::CConfig() {
 
 	// ////
 
-	UserAgent.Format(USER_AGENT_STRING, ::GetSystemMetrics(SM_CXSCREEN), ::GetSystemMetrics(SM_CYSCREEN), VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
+	//UserAgent.Format(USER_AGENT_STRING, ::GetSystemMetrics(SM_CXSCREEN), ::GetSystemMetrics(SM_CYSCREEN), VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH);
+	UserAgent.Format(USER_AGENT_STRING);
 
 	NotifyNew = CONFIG_DEFAULT_NOTIFYNEW;
 	WrapTitles = CONFIG_DEFAULT_WRAPTITLES;
@@ -209,7 +210,10 @@ CConfig::CConfig() {
 	UpdateAtTime.wMinute = 0;
 	UpdateAtTime.wSecond = 0;
 
+	// sync
 	SyncSite = CONFIG_DEFAULT_SYNCSITE;
+	TranslateLanguage = CONFIG_DEFAULT_TRANSLATE_LANGUAGE;
+	SelectedLanguage = CONFIG_DEFAULT_SELECTEDLANGUAGE;
 
 	// enclosure
 	GeneratePlaylists = CONFIG_DEFAULT_GENERATEPLAYLISTS;
@@ -293,6 +297,8 @@ void CConfig::Save() {
 	reg.Write(szSyncSite, SyncSite);
 	reg.Write(szSyncUserName, SyncUserName);
 	reg.Write(szSyncPassword, SyncPassword);
+	reg.Write(szTranslateLanguage, TranslateLanguage);
+	reg.Write(szSelectedLanguage, SelectedLanguage);
 
 	// enclosures
 	reg.Write(szGeneratePlaylists, GeneratePlaylists);
@@ -349,6 +355,8 @@ void CConfig::Load() {
 	SyncSite = (ESyncSite) reg.Read(szSyncSite, CONFIG_DEFAULT_SYNCSITE);
 	SyncUserName = reg.Read(szSyncUserName, _T(""));
 	SyncPassword = reg.Read(szSyncPassword, _T(""));
+	TranslateLanguage = reg.Read(szTranslateLanguage, CONFIG_DEFAULT_TRANSLATE_LANGUAGE);
+	SelectedLanguage = (ESelectedLanguage) reg.Read(szSelectedLanguage, CONFIG_DEFAULT_SELECTEDLANGUAGE);
 
 	// enclosures
 	GeneratePlaylists = reg.Read(szGeneratePlaylists, CONFIG_DEFAULT_GENERATEPLAYLISTS);

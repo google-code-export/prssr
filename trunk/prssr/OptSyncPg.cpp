@@ -45,6 +45,8 @@ COptSyncPg::COptSyncPg() : CPropertyPage(COptSyncPg::IDD) {
 	//{{AFX_DATA_INIT(COptSyncPg)
 	m_strUserName = Config.SyncUserName;
 	m_strPassword = Config.SyncPassword;
+	m_bTranslate = Config.TranslateLanguage;
+	m_ctlTranslateLanguage.SetCurSel(Config.SelectedLanguage);
 	//}}AFX_DATA_INIT
 }
 
@@ -61,6 +63,9 @@ void COptSyncPg::DoDataExchange(CDataExchange* pDX) {
 	DDX_Control(pDX, IDC_SYNC_PASSWORD, m_ctlPassword);
 	DDX_Text(pDX, IDC_SYNC_USERNAME, m_strUserName);
 	DDX_Text(pDX, IDC_SYNC_PASSWORD, m_strPassword);
+	DDX_Check(pDX, IDC_TRANSLATE, m_bTranslate);
+	DDX_Control(pDX, IDC_TRANSLATE, m_ctlTranslate);
+	DDX_Control(pDX, IDC_TRANSLATE_LANGUAGE, m_ctlTranslateLanguage);
 	//}}AFX_DATA_MAP
 }
 
@@ -68,6 +73,7 @@ void COptSyncPg::DoDataExchange(CDataExchange* pDX) {
 BEGIN_MESSAGE_MAP(COptSyncPg, CPropertyPage)
 	//{{AFX_MSG_MAP(COptSyncPg)
 	ON_CBN_SELENDOK(IDC_SYNC_SITE, OnSelendokSyncSite)
+	ON_BN_CLICKED(IDC_TRANSLATE, OnTranslate)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -81,11 +87,15 @@ void COptSyncPg::UpdateControls() {
 	GetDlgItem(IDC_STATIC12)->ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_STATIC13)->ShowWindow(SW_HIDE);
 
+	m_ctlTranslate.ShowWindow(FALSE);
+	m_ctlTranslateLanguage.ShowWindow(FALSE);
+
 	if (site == 0) { // No sync site
 		m_lblUserName.EnableWindow(FALSE);
 		m_ctlUserName.EnableWindow(FALSE);
 		m_lblPassword.EnableWindow(FALSE);
 		m_ctlPassword.EnableWindow(FALSE);
+
 		GetDlgItem(IDC_STATIC10)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_STATIC11)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_STATIC12)->ShowWindow(SW_HIDE);
@@ -105,6 +115,11 @@ void COptSyncPg::UpdateControls() {
 				GetDlgItem(IDC_STATIC11)->ShowWindow(SW_HIDE);
 			}
 		} else {
+			m_ctlTranslate.ShowWindow(TRUE);
+			if (m_ctlTranslate.GetCheck() == BST_CHECKED)
+				m_ctlTranslateLanguage.ShowWindow(TRUE);
+			else
+				m_ctlTranslateLanguage.ShowWindow(FALSE);
 			if (GetSystemMetrics(SM_CXSCREEN) == 240) {
 				GetDlgItem(IDC_STATIC12)->ShowWindow(SW_HIDE);
 				GetDlgItem(IDC_STATIC13)->ShowWindow(SW_SHOW);
@@ -116,14 +131,27 @@ void COptSyncPg::UpdateControls() {
 	}
 }
 
-BOOL COptSyncPg::OnInitDialog() {
+	BOOL COptSyncPg::OnInitDialog() {
 	CPropertyPage::OnInitDialog();
 
 	m_ctlSyncSite.AddString(_T("None"));
 	m_ctlSyncSite.AddString(_T("Google Reader R.I.P."));
 	m_ctlSyncSite.AddString(_T("Google Reader CL"));
 
+	m_ctlTranslateLanguage.AddString(_T("Russian"));
+	m_ctlTranslateLanguage.AddString(_T("Ukrainian"));;
+	m_ctlTranslateLanguage.AddString(_T("Czech"));
+	m_ctlTranslateLanguage.AddString(_T("Estonian"));
+	m_ctlTranslateLanguage.AddString(_T("Latvian"));
+	m_ctlTranslateLanguage.AddString(_T("Polish"));
+	m_ctlTranslateLanguage.AddString(_T("Dutch"));
+	m_ctlTranslateLanguage.AddString(_T("French"));
+	m_ctlTranslateLanguage.AddString(_T("Italian"));
+	m_ctlTranslateLanguage.AddString(_T("Spanish"));
+	m_ctlTranslateLanguage.AddString(_T("English USA"));
+
 	m_ctlSyncSite.SetCurSel(Config.SyncSite);
+	m_ctlTranslateLanguage.SetCurSel(Config.SelectedLanguage);
 
 	UpdateControls();
 
@@ -134,13 +162,21 @@ BOOL COptSyncPg::OnApply() {
 	UpdateData();
 
 	Config.SyncSite = (ESyncSite) m_ctlSyncSite.GetCurSel();
+	Config.SelectedLanguage = (ESelectedLanguage) m_ctlTranslateLanguage.GetCurSel();
 
 	Config.SyncUserName = m_strUserName;
 	Config.SyncPassword = m_strPassword;
+	Config.TranslateLanguage = m_bTranslate;
+
+	Config.Save();
 
 	return CPropertyPage::OnApply();
 }
 
 void COptSyncPg::OnSelendokSyncSite() {
+	UpdateControls();
+}
+
+void COptSyncPg::OnTranslate() {
 	UpdateControls();
 }
