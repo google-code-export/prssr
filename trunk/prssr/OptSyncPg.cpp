@@ -116,10 +116,11 @@ void COptSyncPg::UpdateControls() {
 			}
 		} else {
 			m_ctlTranslate.ShowWindow(TRUE);
+			m_ctlTranslateLanguage.ShowWindow(TRUE);
 			if (m_ctlTranslate.GetCheck() == BST_CHECKED)
-				m_ctlTranslateLanguage.ShowWindow(TRUE);
+				m_ctlTranslateLanguage.EnableWindow();
 			else
-				m_ctlTranslateLanguage.ShowWindow(FALSE);
+				m_ctlTranslateLanguage.EnableWindow(FALSE);
 			if (GetSystemMetrics(SM_CXSCREEN) == 240) {
 				GetDlgItem(IDC_STATIC12)->ShowWindow(SW_HIDE);
 				GetDlgItem(IDC_STATIC13)->ShowWindow(SW_SHOW);
