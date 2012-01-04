@@ -173,16 +173,25 @@ CHttpRequest *CHttpConnection::CreateRequest(const CString &object, EHttpMethod 
 	else
 		req = new CHttpRequest(method, object);
 
-	req->SetHeader(_T("Host"), HostName);
+// 	req->SetHeader(_T("Host"), HostName);
+// 	req->SetHeader(_T("Connection"), _T("close"));
+// 	if (!UserAgent.IsEmpty()) req->SetHeader(_T("User-Agent"), UserAgent);
+// //	req->SetHeader(_T("Accept"), _T("text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5"));
+// //	req->SetHeader(_T("Accept-Language"), _T("en-us,en;q=0.5"));
+// 	req->SetHeader(_T("Accept-Encoding"), _T("gzip,deflate"));
+// 	// for testing
+// ////	req->SetHeader(_T("Accept-Encoding"), _T("gzip"));
+// ////	req->SetHeader(_T("Accept-Encoding"), _T("deflate"));
+// //	req->SetHeader(_T("Accept-Charset"), _T("ISO-8859-1,utf-8;q=0.7,*;q=0.7"));
+
+	// This User-Agent headers are taken from MSDN topic http://msdn.microsoft.com/en-us/library/ms537503%28v=vs.85%29.aspx
+	req->SetHeader(_T("Host"),HostName);
+	req->SetHeader(_T("User-Agent"), Config.UserAgent);
+	req->SetHeader(_T("Accept"), _T("text/html, application/xhtml+xml, */*"));
+	req->SetHeader(_T("Accept-Language"), _T("en-US,en;q=0.8"));
+	req->SetHeader(_T("Accept-Encoding"), _T("gzip, deflate"));
+	req->SetHeader(_T("Proxy-Connection"), _T("Keep-Alive"));
 	req->SetHeader(_T("Connection"), _T("close"));
-	if (!UserAgent.IsEmpty()) req->SetHeader(_T("User-Agent"), UserAgent);
-//	req->SetHeader(_T("Accept"), _T("text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5"));
-//	req->SetHeader(_T("Accept-Language"), _T("en-us,en;q=0.5"));
-	req->SetHeader(_T("Accept-Encoding"), _T("gzip,deflate"));
-	// for testing
-////	req->SetHeader(_T("Accept-Encoding"), _T("gzip"));
-////	req->SetHeader(_T("Accept-Encoding"), _T("deflate"));
-//	req->SetHeader(_T("Accept-Charset"), _T("ISO-8859-1,utf-8;q=0.7,*;q=0.7"));
 
 	return req;
 }

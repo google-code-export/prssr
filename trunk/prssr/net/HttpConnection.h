@@ -30,6 +30,7 @@
 #include <connmgr.h>
 #include "http.h"
 #include "../../share/file.h"
+#include "../Config.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
