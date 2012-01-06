@@ -149,6 +149,13 @@ BOOL CGReaderSyncCL::MergeFeed(CSiteItem *si, CFeed *feed, CArray<CFeedItem *, C
 
 	UpdateInGreader();
 
+	// because feeds marked as read after translating
+	if (Config.TranslateLanguage)
+		for (int i = 0; i < newItems.GetSize(); i++) {
+			newItems[i]->SetFlags(MESSAGE_UNREAD, MESSAGE_READ_STATE);
+			newItems[i]->SetFlags(MESSAGE_NEW, MESSAGE_READ_STATE);
+		}
+
 	LeaveCriticalSection(&CS);
 
 	return TRUE;
